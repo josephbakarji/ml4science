@@ -19,6 +19,6 @@ items:
   name: Project
   icon_class: fas fa-user-graduate
 
-- url: /materials/
-  name: Materials
+- url: /references/
+  name: References
   icon_class: fas fa-book
