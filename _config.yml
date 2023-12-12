@@ -1,19 +1,19 @@
 # Site settings
-course_name: History of Magic
-course_description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ornare aliquam mattis. Donec hendrerit sollicitudin urna. Aliquam venenatis rutrum velit, at lobortis dui cursus a. Nam varius metus in turpis maximus, ut rhoncus tellus dictum. In aliquam tortor nec mi dapibus, sit amet vehicula dolor auctor."
-course_semester: "Fall 1998"
+course_name: Data-Driven Scientific Modeling
+course_description: "How do we go from a high dimensional, noisy, nonlinear, complex, and multiscale universe to simple and predictive mathematical models? This course introduces traditional and modern data-driven modeling techniques using a wide variety of examples in physical, social and biological sciences. Modern data-driven approaches that take advantage of recent advances in machine learning are introduced, including: sparse identification of differential equations, dynamics mode decomposition, physics informed neural networks, and data-driven Koopman analysis."
+course_semester: "Spring 2024"
 
-baseurl: "/jekyll-course-website-template" # the subpath of your site, e.g. /blog/
-url: "http://kazemnejad.github.io/" # the base hostname & protocol for your site
+baseurl: "/ddsm" # the subpath of your site, e.g. /blog/
+url: "http://josephbakarji.github.io/" # the base hostname & protocol for your site
 
-schoolname: "Hogwarts"
-schoolurl: "https://hogwarts.edu"
-twitter_username: username 
+schoolname: "American University of Beirut"
+schoolurl: "https://www.aub.edu.lb"
+twitter_username: josephbakarji 
 
 address: |
-    School of Witchcraft and Wizardry
-    Hogwarts
-    Scotland
+    American University of Beirut
+    P.O.Box 11-0236 / Mechanical Engineering
+    Riad El-Solh / Beirut 1107 2020
 
 # Set your Google Analytics tracking ID (set up yours at http://www.google.com/analytics/)
 # google_analytics: UA-XXXXXXXX-X
