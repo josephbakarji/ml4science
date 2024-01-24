@@ -8,6 +8,7 @@ permalink: syllabus/
 * Lectures: Mon, Wed - 5:00 - 6:15 PM @ SRB 413 
 * Instructor: [Joseph Bakarji](www.josephbakarji.com)
 * Office: Bechtel M403
+* Office hours: Wed 10:00 AM - 12:00 PM
 
 ## Description
 How do we go from a high dimensional, noisy, nonlinear, complex, and multiscale universe to simple and predictive mathematical models? This course introduces modern machine learning techniques using a wide variety of examples in physical, social and biological sciences. Modern data-driven approaches that take advantage of recent advances in machine learning are introduced, including: sparse identification of differential equations, dynamics mode decomposition, and physics informed neural networks.

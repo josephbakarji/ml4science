@@ -9,8 +9,11 @@ including: sparse identification of differential equations, dynamics mode decomp
 and physics informed neural networks."
 course_semester: "Spring 2024"
 
-baseurl: "/ml4science/" # the subpath of your site, e.g. /blog/
-url: "http://josephbakarji.github.io/" # the base hostname & protocol for your site
+# baseurl: "/ml4science/" # the subpath of your site, e.g. /blog/
+# url: "http://josephbakarji.github.io/" # the base hostname & protocol for your site
+
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: "https://ml4science.com" # the base hostname & protocol for your site
 
 schoolname: "American University of Beirut"
 schoolurl: "https://www.aub.edu.lb"
