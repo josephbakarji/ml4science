@@ -17,12 +17,12 @@ How do we go from a high dimensional, noisy, nonlinear, complex, and multiscale 
 
 ## Topics 
 ### Overview 
-- How machine learning is changing science and engineering
+- Machine learning is transforming science and engineering.
 - The three pillars of artificial intelligence: modeling, learning and inference.
 - Scientific Python: Scipy, Matplotlib, Numpy, Pandas, etc.
 - What is scientific modeling: laws, differential equations, linear systems, networks etc.
 - Noise, probability, uncertainty quantificaiton, nonlinearity and chaos.
-- The problem of scales and high-dimensionality
+- The problem of scales and high-dimensionality.
 
 ### Introduction to Machine Learning
 - Introduction to linear regression.

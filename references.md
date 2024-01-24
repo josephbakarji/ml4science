@@ -36,7 +36,7 @@ permalink: references/
 - [Watching Neural Nets Learn](https://www.youtube.com/watch?v=TkwXa7Cvfr8&ab_channel=EmergentGarden)
 - [How Well Can DeepMind's AI Learn Physics?](https://www.youtube.com/watch?v=2Bw5f4vYL98&ab_channel=TwoMinutePapers)
 - [Will AI discover new physics, Lisa Randall and Lex Fridman](https://www.youtube.com/watch?v=q0flNQPw94A&ab_channel=LexClips)
-- [How “Digital Twins” Could Help Us Predict the Future | Karen Willcox | TED](https://www.youtube.com/watch?v=r2_VWdjxchY&ab_channel=TED)
+- [How “Digital Twins” Could Help Us Predict the Future - Karen Willcox - TED](https://www.youtube.com/watch?v=r2_VWdjxchY&ab_channel=TED)
 
 ## Technical Talks
 ### Playlists
