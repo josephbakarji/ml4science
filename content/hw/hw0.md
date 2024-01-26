@@ -1,24 +1,14 @@
 ---
 layout: page
-title: "Problem Set #2 - Linear Algebra and Calculus"
+title: "Problem Set #0 - Linear Algebra and Calculus Recap"
 permalink: /content/hw/hw0/
 ---
-
-\[x = 2 \]
-\\[x = 2 \\]
-$$ x = 2 $$
-\( x = 2 \)
-\\( x = 2 \\)
-\$\$ x = 2 \$\$
-\$ x = 2 \$
-
-
 
 These questions are inspired by those given in the introduction to machine learning course at Stanford (CS229). They require some thinking but brief answers. The purpose of this homework is to brush up on your linear algebra and multivariate calculus. Some of them may be useful for subsequent problem sets. If you have questions, I encourage you to post them on the forum. This homework is not graded, but it doesn't mean that you should do it.
 
 ## Problem 1: Gradients and Hessians
 
-Recall that a matrix $$ A \in \mathbb{R}^{n \times n} $$ is symmetric if $$ A^T = A $$, that is $$ A_{ij} = A_{ji} $$ for all $$ i, j $$. Also, recall the gradient $$ \nabla f(x) $$ of a function $$ f : \mathbb{R}^n \rightarrow \mathbb{R} $$ which is the n-vector of partial derivatives:
+A matrix $$ A \in \mathbb{R}^{n \times n} $$ is symmetric if $$ A^T = A $$, that is $$ A_{ij} = A_{ji} $$ for all $$ i, j $$. Recall the gradient $$ \nabla f(x) $$ of a function $$ f : \mathbb{R}^n \rightarrow \mathbb{R} $$ which is the n-vector of partial derivatives:
 
 $$ \nabla f(x) = \begin{bmatrix} \frac{\partial}{\partial x_1} f(x) \\ \vdots \\ \frac{\partial}{\partial x_n} f(x) \end{bmatrix} $$
 
@@ -30,18 +20,19 @@ The Hessian $$ \nabla^2 f(x) $$ of a function $$ f : \mathbb{R}^n \rightarrow \m
 
 $$ \nabla^2 f(x) = \begin{bmatrix} \frac{\partial^2}{\partial x_1^2} f(x) & \cdots & \frac{\partial^2}{\partial x_1 \partial x_n} f(x) \\ \vdots & \ddots & \vdots \\ \frac{\partial^2}{\partial x_n \partial x_1} f(x) & \cdots & \frac{\partial^2}{\partial x_n^2} f(x) \end{bmatrix} $$
 
-(a) Let $$ f(x) = \frac{1}{2} x^T Ax + b^T x $$ where $$ A $$ is a symmetric matrix and $$ b \in \mathbb{R}^n $$ is a vector. What is $$ \nabla f(x) $$?
+(a) Let $$ f(x) = \frac{1}{2} x^T Ax + b^T x $$ where $$ A $$ is a symmetric matrix and $$ b \in \mathbb{R}^n $$ is a vector. What is $$ \nabla f(x) $$? Hint: write down the element-wise multiplication and deduce the expression from the resulting matrix. 
 
 (b) Let $$ f(x) = g(h(x)) $$ where $$ g : \mathbb{R} \rightarrow \mathbb{R} $$ is differentiable and $$ h : \mathbb{R}^n \rightarrow \mathbb{R} $$ is differentiable. What is $$ \nabla f(x) $$?
 
 (c) What is $$ \nabla^2 f(x) $$ for the $$ f(x) $$ from part (a)?
+
 (d) Let $$ f(x) = g(a^T x) $$ where $$ g : \mathbb{R} \rightarrow \mathbb{R} $$ is continuously differentiable and $$ a \in \mathbb{R}^n $$ is a vector. What are $$ \nabla f(x) $$ and $$ \nabla^2 f(x) $$? (Hint: your expression for $$ \nabla^2 f(x) $$ may have as few as 11 symbols including $$ \nabla $$ and parentheses.)
 
 <br>
 
 ## Problem 2: Positive Definite Matrices
 
-(a) A matrix $$ A \in \mathbb{R}^{n \times n} $$ is positive semi-definite (PSD), denoted $$ A \succeq 0 $$, if $$ A = A^T $$ and $$ x^T Ax \geq 0 $$ for all $$ x \in \mathbb{R}^n $$. A matrix $$ A $$ is positive definite, denoted $$ A \succ 0 $$, if $$ A = A^T $$ and $$ x^T Ax > 0 $$ for all non-zero $$ x \in \mathbb{R}^n $$.The simplest example of a positive definite matrix is the identity $$ I $$ (the diagonal matrix with 1s on the diagonal and 0s elsewhere), which satisfies $$ x^T Ix = \|x\|^2 = \sum_{i=1}^n x_i^2 $$.
+A matrix $$ A \in \mathbb{R}^{n \times n} $$ is positive semi-definite (PSD), denoted $$ A \succeq 0 $$, if $$ A = A^T $$ and $$ x^T Ax \geq 0 $$ for all $$ x \in \mathbb{R}^n $$. A matrix $$ A $$ is positive definite, denoted $$ A \succ 0 $$, if $$ A = A^T $$ and $$ x^T Ax > 0 $$ for all non-zero $$ x \in \mathbb{R}^n $$.The simplest example of a positive definite matrix is the identity $$ I $$ (the diagonal matrix with 1s on the diagonal and 0s elsewhere), which satisfies $$ x^T Ix = \|x\|^2 = \sum_{i=1}^n x_i^2 $$.
 
 (a) Let $$ z \in \mathbb{R}^n $$ be an n-vector. Show that $$ A = zz^T $$ is positive semidefinite.
 
