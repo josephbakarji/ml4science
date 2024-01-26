@@ -1,8 +1,17 @@
 ---
 layout: page
-title: "Problem Set #0 - Linear Algebra and Calculus"
-permalink: content/hw/hw0/
+title: "Problem Set #2 - Linear Algebra and Calculus"
+permalink: /content/hw/hw0/
 ---
+
+\[x = 2 \]
+\\[x = 2 \\]
+$$ x = 2 $$
+\( x = 2 \)
+\\( x = 2 \\)
+\$\$ x = 2 \$\$
+\$ x = 2 \$
+
 
 
 These questions are inspired by those given in the introduction to machine learning course at Stanford (CS229). They require some thinking but brief answers. The purpose of this homework is to brush up on your linear algebra and multivariate calculus. Some of them may be useful for subsequent problem sets. If you have questions, I encourage you to post them on the forum. This homework is not graded, but it doesn't mean that you should do it.
