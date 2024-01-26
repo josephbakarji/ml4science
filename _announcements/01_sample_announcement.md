@@ -1,4 +1,4 @@
 ---
-date: 2018-10-03T10:00:00+3:30
+date: 2024-01-26T18:00:00
 ---
 Welcome to the course! If you're looking for the syllabus, [here it is](syllabus)
