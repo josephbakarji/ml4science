@@ -5,6 +5,6 @@ title: Supervised Learning and Linear Regression
 tldr: "Empirical laws, linear models, and the least squares method."
 # thumbnail: /static_files/thumbnail/world-data-model.png
 links: 
-    - url: /content/notes/ml_intro_notes/
+    - url: /content/notes/ml_intro_notes
       name: Notes 
 ---

@@ -11,28 +11,30 @@ Imagine being a 17th century scientist. You have discovered a way to design an e
 First you will have to measure a few input-output pairs: 
 
 
-| $$x$$ (Force) | $$y$$ (Length) |
-|---------------|----------------|
-| 1             | 0.12            |
-| 2             | 0.21            |
-| 3             | 0.29            |
-| 4             | 0.41            |
-| 5             | 0.48            |
+| $$x$$ (Weights) || $$y$$ (Length)   
+|---------------||----------------  \ 
+| 1             || 55            | 
+| .5             || 37.5            |
+| 2             || 89.8            |
+| .3             || 31.8            |
+| .2             || 31            |
+|---------------||----------------  \ 
 
 
-You can plot these pairs on a Cartesian coordinate system.
+You can plot these input-output pairs on a Cartesian coordinate system.
 
-<!-- ![Hooke's Law](../images/hookes-law.png) -->
+![Hooke's Law](./data-train-test.png)
 
-You notice that the points seem to lie on a straight line. You can use this line to predict the length of the spring for any force. This is a *model*. You can write it as:
+You notice that the points seem to lie on a straight line. You can use this line to predict the length of the spring for other weights. The line you're looking for is called a **model**, or sometimes a **hypothesis**. You can write it as:
 
 $$y = f(x) = kx + c$$
 
-where $$k$$ and $$c$$ are the parameters of the model. In this case, $$k$$ is the spring constant, and $$c$$ is the length of the spring when no force is applied. For generality, we're going to write this model as:
+where $$k$$ and $$c$$ are unknown parameters that will depend on the measurements you're making. In this case, $$k$$ is the spring constant, and $$c$$ is the length of the spring when no force is applied. To make notation a little more general, we can write this model as:
 
 $$y = f_\mathbf{w}(x) = w_0 + w_1 x = [w_0, w_1] \cdot [1, x]$$
 
-where $$\mathbf w = [w_0, w_1]$$ is a vector of *fitting parameters* that we want to find from the data; in this case, $$w_0 = c$$ and $$w_1 = k$$. Let's say, you're interested in predicting the length of the spring for a force of 6 Newtons. If you know $$\mathbf w$$, you can use the model for **inferring** the length of the spring for this force: $$f(6) = 0.6$$.
+where $$\mathbf w = [w_0, w_1]$$ is a vector of *fitting parameters* that we want to find from the data; in this case, $$w_0 = c$$ and $$w_1 = k$$. Let's say, you're interested in predicting the length of the spring for a force of 1.5 Kg. If you know $$\mathbf w$$, you can use the model for **inferring** the length of the spring for this force: $$f(1.5) = 72.5$$.
+
 
 In the early days of science, empirical laws tended to be linear, and the mathematical approach for fitting them might have come down to drawing a straight line with a straight ruler that passes through all the measurement data laid out on a piece of paper. In modern times, where the amount of data much greater, and models are much more complex than Hooke's law, scientists solve **optimization** problems on computers to find the best set of weights $$\mathbf w$$ that fit a model $$y = f(x)$$. 
 
@@ -70,7 +72,7 @@ This problem has a closed-form solution, called the **normal equation**:
 
 $$ \mathbf w = (\mathbf X^T \mathbf X)^{-1} \mathbf X^T \mathbf y $$
 
-where $$\mathbf X^T$$ is the transpose of $$\mathbf X$$, and $$(\mathbf X^T \mathbf X)^{-1}$$ is the inverse of $$\mathbf X^T \mathbf X$$. This is the solution that minimizes the sum of squared errors.Can you guess how we found it? Most problems in machine learning don't have such a simple solution, and we have to use numerical methods to find the optimal weights. Also, if $$\mathbf X$$ is large (you have a lot of measurements or examples), then computing the inverse of $$\mathbf X^T \mathbf X$$ can be computationally expensive. 
+where $$\mathbf X^T$$ is the transpose of $$\mathbf X$$, and $$(\mathbf X^T \mathbf X)^{-1}$$ is the inverse of $$\mathbf X^T \mathbf X$$. This is the solution that minimizes the sum of squared errors. Can you guess how we found it? (Hint: keep reading). Most problems in machine learning don't have such a simple solution, and we have to use numerical methods to find the optimal weights. Also, if $$\mathbf X$$ is large (you have a lot of measurements or examples), then computing the inverse of $$\mathbf X^T \mathbf X$$ can be computationally expensive. 
 
 For those reasons, the best way to get to the solutions will often be a numerical optimization technique: **gradient descent**. 
 
@@ -93,7 +95,7 @@ and the gradient of $$G$$ with respect to $$\mathbf w$$ is:
 
 $$ \nabla G(\mathbf w) = -2 \mathbf X^T (\mathbf y - \mathbf X \mathbf w) $$
 
-Can you derive it?? Using the gradient descent update rule, we can write the iterative algorithm for finding the best weights as:
+You can get the normal equation above by setting this gradient to zero. Otherwise, using the gradient descent update rule, we can write the iterative algorithm for finding the best weights as:
 
 $$ \mathbf w^{(n+1)} = \mathbf w^{(n)} + 2 \eta \mathbf X^T (\mathbf y - \mathbf X \mathbf w^{(n)}) $$
 
@@ -105,8 +107,8 @@ Here's a simple example for implementing gradient descent:
 import numpy as np
 
 # Measurement data 
-inputs = [1, 2, 3, 4, 5]  # Weight in Newtons
-outputs = [0.12, 0.21, 0.29, 0.41, 0.48]  # Length in meters
+inputs = [1, .5, 2, .3, .2]  # Weight in Kgs
+outputs = [55, 37.5, 89.8, 31.8, 31]  # Length in cm 
 
 # Learning rate
 eta = 0.01
@@ -115,7 +117,7 @@ eta = 0.01
 w = np.array([0, 0])
 
 # Number of iterations
-n_iterations = 1000
+n_iterations = 500
 
 # Gradient descent
 for i in range(n_iterations):
@@ -124,16 +126,16 @@ for i in range(n_iterations):
     w = w - eta * gradients
 
 # Predicted lengths for new weights
-new_weights = [6, 7]
-inputs_query = np.array([np.ones(len(new_weights)), new_weights])
+test_weights = [1.5, .8]
+inputs_query = np.array([np.ones(len(test_weights)), test_weights])
 predicted_lengths = inputs_query.T.dot(w)
 
 print("Predicted Lengths:", predicted_lengths)
 ```
 
-The evolution of the weights is as follows:
+The every update the weights change, until they settle to a minimum value. Here's a plot of the weights as a function of the number of iterations:
 
-![Weight Evolution](../evolution-weights.png)
+![Weight Evolution](./evolution-weights.png)
 
 ## Feature engineering
 
@@ -143,7 +145,9 @@ Let's say we didn't know that the law is linear in $$\mathbf w$$ and $$x$$, and 
 
 In fact, if you think about it, isn't there a way to fit all the data perfectly? You can always find a polynomial of degree $$N-1$$ that passes through $$N$$ points by solving a linear system of equations.
 
-Try it out yourself:
+What does that system look like? Try to write it down for a 3-rd order polynomial.
+
+
 
 
 
