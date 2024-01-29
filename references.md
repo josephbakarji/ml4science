@@ -4,15 +4,30 @@ title: Useful Resources
 permalink: references/ 
 ---
 
-## Course references 
+## Course book references 
 - Murphy, K. P. (2022). Probabilistic machine learning: an introduction. MIT press. [Free online version](https://probml.github.io/pml-book/book1.html)
 - Brunton, S. L., & Kutz, J. N. (2022). Data-driven science and engineering: Machine learning, dynamical systems, and control. Cambridge University Press. [Free online version](https://faculty.washington.edu/sbrunton/DataBookV2.pdf)
+- Hastie, Tibshirani, and Friedman. The Elements of Statistical Learning [Free online version](https://hastie.su.domains/ElemStatLearn/).
 - Géron, A. (2022). Hands-on machine learning with Scikit-Learn, Keras, and TensorFlow. "O'Reilly Media, Inc."
 - Kutz, J. N. (2013). Data-driven modeling & scientific computation: methods for complex systems & big data. Oxford University Press.
+
+## Online course references
+- [Stanford's Introduction to Machine Learning CS229](https://cs229.stanford.edu/main_notes.pdf)
+- 
 
 ### Other online books
 - [Parallel Computing and Scientific Machine Learning (SciML): Methods and Applications](https://book.sciml.ai/)
 - [Modern applications of machine learning in quantum sciences](https://arxiv.org/abs/2204.04198)
+
+## Data sources
+- [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/index.php)
+- [Kaggle](https://www.kaggle.com/)
+    - [Electrical grid data](https://www.kaggle.com/robikscube/hourly-energy-consumption)
+- [Google Dataset Search](https://datasetsearch.research.google.com/)
+- [US weather data](https://www.ncdc.noaa.gov/data-access/)
+- [US NATIONAL OCEANIC AND ATMOSPHERIC ADMINISTRATION data](https://www.noaa.gov/data)
+- [NASA data](https://data.nasa.gov/)
+
 
 ## YouTube Channels 
 - My channel has a few useful videos: [Joseph Bakarji](https://www.youtube.com/@JosephBakarji)
@@ -29,7 +44,15 @@ permalink: references/
 - [How Much of the World Is It Possible to Model?](https://www.newyorker.com/culture/annals-of-inquiry/how-much-of-the-world-is-it-possible-to-model)
 
 ## Packages
+- [Numpy](https://numpy.org/)
+- [Matplotlib](https://matplotlib.org/)
+- [PyTorch](https://pytorch.org/)
+- [Tensorflow](https://www.tensorflow.org/)
+- [Keras](https://keras.io/)
+- [SciKit-learn](https://scikit-learn.org/stable/)
+- [Pandas](https://pandas.pydata.org/)
 - [Flux: A Julia ML Stack:](https://fluxml.ai/)
+
 
 ## Other Videos
 - [AI Learns to Walk (deep reinforcement learning) ](https://www.youtube.com/watch?v=L_4BPjLBF4E&ab_channel=AIWarehouse)
@@ -51,7 +74,7 @@ permalink: references/
 - [Nathan Kutz - The Dynamic Mode Decomposition - A Data-Driven Algorithm](https://www.youtube.com/watch?v=-VENSFxJstU&list=PLw74xLHy0_j8DXxAKb15DbgtNvUOeTPbZ&ab_channel=TheAlanTuringInstitute)
 
 
-## Courses:
+## Related Courses:
 - Scientific Machine learning
     - [Deep learning for scientific computing - ETH Zurich (2023)](https://www.youtube.com/playlist?list=PLJkYEExhe7rYY5HjpIJbgo-tDZ3bIAqAm)
     - [Parallel Computing and Scientific Machine Learning - MIT (2020)](https://www.youtube.com/playlist?list=PLCAl7tjCwWyGjdzOOnlbGnVNZk0kB8VSa)
