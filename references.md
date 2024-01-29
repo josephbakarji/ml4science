@@ -11,11 +11,8 @@ permalink: references/
 - Géron, A. (2022). Hands-on machine learning with Scikit-Learn, Keras, and TensorFlow. "O'Reilly Media, Inc."
 - Kutz, J. N. (2013). Data-driven modeling & scientific computation: methods for complex systems & big data. Oxford University Press.
 
-## Online course references
+### Other online references
 - [Stanford's Introduction to Machine Learning CS229](https://cs229.stanford.edu/main_notes.pdf)
-- 
-
-### Other online books
 - [Parallel Computing and Scientific Machine Learning (SciML): Methods and Applications](https://book.sciml.ai/)
 - [Modern applications of machine learning in quantum sciences](https://arxiv.org/abs/2204.04198)
 

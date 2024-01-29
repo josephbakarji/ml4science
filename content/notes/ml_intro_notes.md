@@ -1,8 +1,8 @@
-For more references related to this topic see the following (free) online references:
-- Chapters 2 and 3 of *The Elements of Statistical Learning* (Hastie, Tibshirani, and Friedman)
-- Chapter 1 of Stanford's *CS229* course notes
-- Slightly more advanced overview: Chapter 4 of *Data-Driven Science and Engineering* (Brunton and Kutz)
-- A probabilistic perspective: Chapter 11 of *Probabilistic Machine Learning* (Murphy)
+The notes in this page use the following (free) references (see the [references](/references) section for links):
+- Chapters 2 and 3 of *The Elements of Statistical Learning* (Hastie, Tibshirani, and Friedman).
+- Chapter 1 of Stanford's *CS229* course notes.
+- Slightly more advanced overview: Chapter 4 of *Data-Driven Science and Engineering* (Brunton and Kutz).
+- A probabilistic perspective: Chapter 11 of *Probabilistic Machine Learning* (Murphy).
 
 ## Introduction to Supervised Learning: Linear Regression 
 
