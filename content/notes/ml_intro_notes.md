@@ -56,11 +56,11 @@ where $$\mathbf w = [w_0, w_1, \dots, w_{d-1}]$$ is a vector of *weights* (or *p
 
 ## The Least Squares Method
 
-Given the data, we want to find the best set of weights $$\mathbf w$$ that fit the model to the data. One way to do this is to minimize the sum of squared errors between the model and the data:
+One way to do this is to minimize the sum of squared errors between the model and the data:
 
-$$ \min_{\mathbf w} \sum_{i=1}^N (y_i - f_{\mathbf w}(x_i))^2$$
+$$ \mathbf w^* = \underset{\mathbf w}{\text{argmin}} \frac{1}{N} \sum_{i=1}^N (y_i - f_{\mathbf w}(x_i))^2$$
 
-where $$N$$ is the number of data points. This is called the **least squares** method, and it was first proposed by Carl Friedrich Gauss in 1795. The function we're minimizing, $$\mathcal L(x, y, \mathbf w) = \sum_{i=1}^N (y_i - f_{\mathbf w}(x_i))^2$$ is called a **loss function** (minimizing our loss is a universal desire). $$\mathcal L$$ a function of the input-output pairs $$(x, y)$$, and the weights $$\mathbf w$$. We can write this minimization problem in matrix form as:
+where $$N$$ is the number of data points. This is called the **least squares** method, and it was first proposed by Carl Friedrich Gauss in 1795. For a given input-output pair $$(x, y)$$, we can define a **loss function**: $$\mathcal L(x, y, \mathbf w) = (y - f_{\mathbf w}(x))^2$$ which we would like to minimize for all such pairs (minimizing our loss is a universal desire). We can also write this minimization problem in matrix form as:
 
 $$ \mathcal L(\mathbf x, \mathbf y, \mathbf w) = \|\mathbf y - \mathbf X \mathbf w\|_2^2 $$
 
