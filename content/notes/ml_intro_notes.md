@@ -44,15 +44,15 @@ Here, we assumed that the model is linear in $$x$$, but in general, you can defi
 
 $$ y = f_{\mathbf w}(x) = w_0 + w_1 x + w_2 x^2 + w_3 x^3 + \dots $$
 
-which would still be linear in $$\mathbf w$$, but nonlinear in $$x$$. We can define the **feature vector** $$\phi(x)$$ as:
+which would still be linear in $$\mathbf w$$, but nonlinear in $$x$$. Let's define the **feature vector** $$\phi(x)$$ as:
 
 $$ \phi(x) = [1, x, x^2, x^3, \dots] $$
 
 and write the model as:
 
-$$ y = f_{\mathbf w}(x) = \mathbf w \cdot \phi(x) = \sum_{i=0}^{d-1} w_i \phi_i(x) = x_0 \phi_0 + x_1 \phi_1 + \ldots $$
+$$ y = f_{\mathbf w}(x) = \mathbf w \cdot \phi(x) = \sum_{i=0}^{d-1} w_i \phi_i(x) = w_0 + w_1 x + w_2 x^2 + \ldots $$
 
-where $$\mathbf x = [x_0, x_1, \dots, x_{d-1}]$$ is a vector of *features* (or *inputs*), and $$\mathbf w = [w_0, w_1, \dots, w_{d-1}]$$ is a vector of *weights* (or *parameters*). The goal of *linear regression* is to find the best set of weights $$\mathbf w$$ that fit the data.
+where $$\mathbf w = [w_0, w_1, \dots, w_{d-1}]$$ is a vector of *weights* (or *parameters*). The goal of *linear regression* is to find the best set of weights $$\mathbf w^*$$ that fit the data. How do we define that problem mathematically?
 
 ## The Least Squares Method
 
@@ -95,9 +95,11 @@ and the gradient of $$G$$ with respect to $$\mathbf w$$ is:
 
 $$ \nabla G(\mathbf w) = -2 \mathbf X^T (\mathbf y - \mathbf X \mathbf w) $$
 
-You can get the normal equation above by setting this gradient to zero. Otherwise, using the gradient descent update rule, we can write the iterative algorithm for finding the best weights as:
+One can get the normal equation above by setting this gradient to zero. Otherwise, we can write an iterative algorithm for finding the best set of weights using this gradient descent update rule:
 
 $$ \mathbf w^{(n+1)} = \mathbf w^{(n)} + 2 \eta \mathbf X^T (\mathbf y - \mathbf X \mathbf w^{(n)}) $$
+
+where $$n$$ is the iteration number.
 
 ## Implementation in Python
 

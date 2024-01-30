@@ -158,26 +158,52 @@ blockquote {
 /**
  * Code formatting
  */
+// pre,
+// code {
+//     font-size: 14px;
+//     border: 1px solid $grey-color-light;
+//     border-radius: 3px;
+//     background-color: #eef;
+// }
+
+// code {
+//     padding: 1px 5px;
+// }
+
+// pre {
+//     padding: 8px 12px;
+//     overflow-x: scroll;
+
+//     >code {
+//         border: 0;
+//         padding-right: 0;
+//         padding-left: 0;
+//     }
+// }
+
 pre,
 code {
     font-size: 14px;
-    border: 1px solid $grey-color-light;
+    border: 1px solid #3f4451; // Subtle border color
     border-radius: 3px;
-    background-color: #eef;
+    background-color: white;// #282c34; // Dark background for better contrast
 }
 
 code {
     padding: 1px 5px;
+    color: #abb2bf; // Light grey text for better readability
 }
 
 pre {
     padding: 8px 12px;
-    overflow-x: scroll;
+    overflow-x: auto; // 'scroll' can be replaced with 'auto' to only show scrollbars when necessary
+    color: #abb2bf; // Ensuring preformatted text is also readable
 
-    >code {
+    > code {
         border: 0;
         padding-right: 0;
         padding-left: 0;
+        // Add specific colors for syntax highlighting if needed
     }
 }
 
