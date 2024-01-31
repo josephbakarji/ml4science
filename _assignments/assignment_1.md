@@ -2,7 +2,7 @@
 type: assignment
 date: 2024-01-31T16:00:00+4:30
 title: 'Problem set #1 - Regression in Empirical Laws'
-location: /content/hw/hw1/
+location: /content/hw/hw1_1/
 # pdf: /static_files/assignments/asg.pdf
 attachment: /content/hw_files/hw1_files.zip
 # solutions: /static_files/assignments/asg_solutions.pdf

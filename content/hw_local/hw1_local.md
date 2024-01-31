@@ -17,7 +17,7 @@ In 1676, Robert Hooke discovered the law of elasticity, which states that the ex
 
 (c) Plot the model $f_{\mathbf w^*}(x)$ on top of the data. What is the total loss of the model?
 
-(d) Repeat the same exercise using stochastic gradient descent. Start with $\mathbf w = [0, 0]$, and use a learning rate of $\eta = 0.001$. Plot the model $f_{\mathbf w}(x)$ on top of the data. 
+(d) Repeat the same exercise using stochastic gradient descent. Start with $\mathbf w = [0, 0]$, and use a learning rate of $\eta = 0.01$. Plot the model $f_{\mathbf w}(x)$ on top of the data. 
 
 (e) Plot the evolution of the loss as a function of the number of epochs.
 
@@ -42,7 +42,7 @@ $f_\mathbf{w}(x) = g(\phi(x) \cdot \mathbf w) = \frac{1}{1 + e^{-\phi(x) \cdot \
 
 (a) Find the derivative $g'(z) = dg/dz$ as a function of $g(z)$. Here $z \equiv \phi(x) \cdot \mathbf w$. 
 
-(b) Find the log-likelihood $l(\mathbf w)$ from the likelihood $p(y^{(i)} | x^{(i)}; \mathbf w)$ in terms of $\mathbf w$, $x^{(i)}$, and $y^{(i)}$.
+(b) Find the log-likelihood $l(\mathbf w)$ from the likelihood $p(y^{(i)} \vert x^{(i)}; \mathbf w)$ in terms of $\mathbf w$, $x^{(i)}$, and $y^{(i)}$.
 
 Derive the equation for the gradient of the log-likelihood $\nabla_\mathbf{w} l(\mathbf w)$ (you can use vector identities or get the derivative with respect to one parameter ($w_j$) at a time, i.e. $\partial l(\mathbf w) / \partial w_j$, where $w_j$ is the $j^{th}$ element of the vector $\mathbf w$.
 
