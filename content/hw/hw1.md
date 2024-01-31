@@ -1,0 +1,109 @@
+---
+layout: page
+title: "Problem Set #1 - Regression for Empirical Laws"
+permalink: /content/hw/hw1/
+---
+
+Submit your coding problems in separate folders. If you use notebooks, provide a brief explanation for each question using the markdown functionality. I encourage you to discuss the problems, but when you write down the solution please do it on your own. You can raise and answer each other’s questions on Moodle; but please don’t provide exact solutions. Submit a handwritten solution for problems 0 and 1, and Jupyter notebooks (or scripts) for problems 2 and 3.
+
+
+## Problem 0: Stochastic Gradient Descent for Hooke's Law (10 points)
+
+In 1676, Robert Hooke discovered the law of elasticity, which states that the extension of a spring is proportional to the force applied to it. In class, we measured the extension of the spring for different weights and plotted the data. 
+
+(a) Read the data from the file $$\texttt{spring-data.csv}$$ and plot it.
+
+(b) Build the design matrix $$\mathbf X$$, the output vector $$\mathbf y$$ from your data, and compute the least squares solution $$\mathbf w^*$$ using the normal equation.
+
+(c) Plot the model $$f_{\mathbf w^*}(x)$$ on top of the data. What is the total loss of the model?
+
+(d) Repeat the same exercise using stochastic gradient descent. Start with $$\mathbf w = [0, 0]$$, and use a learning rate of $$\eta = 0.001$$. Plot the model $$f_{\mathbf w}(x)$$ on top of the data. 
+
+(e) Plot the evolution of the loss as a function of the number of epochs.
+
+(f) Plot the evolution of the weights in the $$(w_0, w_1)$$ plane.
+
+## Problem 1 (5 points):
+
+Given the least mean square expression in matrix form: $$ \mathcal L(\mathbf w) = \| \mathbf X \mathbf w - \mathbf y \|_2^2$$, derive the normal equation using the following linear algebra properties:
+
+- $$ \nabla_{A^T} f(A) = (\nabla_A f(A))^T$$
+
+- $$ \nabla_A tr(ABA^TC) = CAB + C^TAB^T$$
+
+- $$ \nabla_{A^T} tr(ABA^TC) = BA^TC + B^TA^TC^T$$
+
+
+## Problem 1: Logistic Regression (10 points)
+
+Given a dataset $$\{ (x^{(i)}, y^{(i)}) \}_{i=1}^{n}$$ with $$x^{(i)} \in \mathbb R$$ and $$y^{(i)} \in \mathbb [0, 1]$$, we would like to fit a logistic classifier with fitting parameters $$\mathbf w$$, and predictor 
+
+$$f_\mathbf{w}(x) = g(\phi(x) \cdot \mathbf w) = \frac{1}{1 + e^{-\phi(x) \cdot \mathbf w}}$$
+
+(a) Find the derivative $$g'(z) = dg/dz$$ as a function of $$g(z)$$. Here $$z \equiv \phi(x) \cdot \mathbf w$$. 
+
+(b) Find the log-likelihood $$l(\mathbf w)$$ from the likelihood $$p(y^{(i)} | x^{(i)}; \mathbf w)$$ in terms of $$\mathbf w$$, $$x^{(i)}$$, and $$y^{(i)}$$.
+
+Derive the equation for the gradient of the log-likelihood $$\nabla_\mathbf{w} l(\mathbf w)$$ (you can use vector identities or get the derivative with respect to one parameter ($$w_j$$) at a time, i.e. $$\partial l(\mathbf w) / \partial w_j$$, where $$w_j$$ is the $$j^{th}$$ element of the vector $$\mathbf w$$.
+
+(c) What is the least mean squares (LMS) update rule to maximize the log-likelihood?
+
+
+## Problem 2: True or False (10 points)
+Determine if the following statements are True or False and provide a brief explanation:
+
+(a) If the linear predictor is overfitting on the training set the training set error is much larger than the test set error.
+
+(b) The purpose of cross-validation is to prevent overfitting on the test set.
+
+(c) A development set (or dev set) is used to prevent overfitting on the test set.
+
+(d) Increasing the amount of data will prevent the algorithm from overfitting. 
+
+(e) Adding a regularization term will decrease the likelihood of underfitting.
+
+(f) Stochastic gradient descent requires less updates on $$\mathbf w$$ to converge to the optimal solution.
+
+
+## Problem 3: Classification with Scikit-Learn (30 points)
+
+I have provided two files $$\texttt{p2\_x.txt}$$ and $$\texttt{p2\_y.txt}$$. These files contain inputs $$x^{(i)} \in \mathbb R^2$$ and outputs $$y^{(i)} \in \{ -1, 1 \}$$, respectively, with one training example per row. This is a binary classification problem.
+
+(a) Read the data (you can use [Pandas](https://pandas.pydata.org/)) from the files, and split it into training and test sets. Make sure to shuffle the data before splitting it.
+
+(b) Plot the training data (your axes should be $$x_1$$ and $$x_2$$, corresponding to the two coordinates of the inputs, and you should use a different symbol for each point plotted to indicate whether that example had label 1 or -1, and whether it is a training or test data point). 
+
+(c) Use [scikit-learn](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) to fit a logistic regression model to the data. (Extra credit (5 points): use the stochastic gradient descent algorithm we wrote in class and make sure you get a similar result). 
+
+(d) Plot the decision boundary. This should be a straight line showing the boundary separating the region where $$f_\mathbf{w}(\mathbf x) > 0.5$$ from where $$f_\mathbf{w}(\mathbf x) \le 0.5$$.). What is the test score of the model?
+
+(e) What is the purpose of the penalty argument in the LogisticRegression classifier? Try the $$L_1$$, $$L_2$$ and $$ElasticNet$$ penalties and compare their decision boundaries as well as their test scores.
+
+(f) How does [SVM](\href{https://scikit-learn.org/stable/modules/svm.html) compare to Logistic Regression on this data-set? 
+
+(g) Open ended, extra credit (5 points): search for 3 other classification algorithms that you can use on this data-set and state their advantages over logistic regression?
+
+## Problem 4: Galileo Galil-AI (40 points)
+In 1602, Galileo started conducting experiments on the pendulum that ultimately led to his discovery of the relationship between its period and length:
+
+$$T = 2 \pi \sqrt{ \frac{L}{g} }$$
+
+Imagine being in his shoes, except with and smart and machine learning at your disposal. This is an open-ended problem whose purpose is to get you familiar with data collection, pre-processing and linear regression.
+
+Download an app on your phone that allows you to save sensor data. I recommend the physics toolbox sensors suite app which seems to be available on both \href[iPhone](https://apps.apple.com/us/app/physics-toolbox-sensor-suite/id1128914250) and [Android](https://play.google.com/store/apps/details?id=com.chrystianvieyra.physicstoolboxsuite&gl=US) platforms. Hang your phone at the end of a string and use it as a pendulum. You can use your charger cable as the string but you might want to put a cushiony surface under it in case the phone falls off the cable. Perform pendulum free oscillation experiments (as Galileo probably did) with different string lengths. Let $$x^{(i)}(t)$$ be the sensor measurement for every experiment $$i$$ with string length $$L^{(i)}$$. $$x^{(i)}(t)$$ can be the angular acceleration if you are using the gyroscope, or the linear acceleration if you are using the accelerometer. We are interested in predicting the period of oscillation $$T$$ from the length of the string $$L$$.
+
+(a) Briefly describe your setup and data collection method. For example, how did you measure $$L$$? How many data points did you use?
+
+(b) Data cleaning: remove pre- and post- oscillation measurements from your sensor data and plot the time series for each experiment $$i$$ (you can do so on the same plot or on separate [subplots](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html)). If you are using a gyroscope that truncates values between $$0$$ and $$2 \pi$$, process the data to get a sinusoidal looking time series.
+
+(b) Transform (algorithmically, not by hand) the time series data $$z^{(i)}(t)$$ to the an average period of oscillation $$T^{(i)}$$ for each experiment $$i$$. Briefly describe the method you used. (hint: what's the best way to find the frequencies in a time-series data?)
+
+(c) Split your data into a training and test sets, and plot $$T^{(i)}$$ as a function of $$L^{(i)}$$ for all data points $$i$$. 
+
+(d) What is your input $$x$$ and output $$y$$? Suggest a few choices for the feature extractor $$\phi(x)$$ and write down $$f_\mathbf{w}(x) = \phi(x) \cdot \mathbf w$$. Explain the motivation behind your choices. (hint: what happens if you $$log()$$ the data? What happens if you use a polynomial of degree higher than $$2$$? Discuss these issues in the next question.)
+
+(e) Depending on your choice of $$\phi()$$, $$x$$ and $$y$$, use linear regression, ridge regression (with $$L_2$$ regularization) or Lasso (with $$L_1$$ regularization) with scikit-learn and compare your results to the theory. What did you obtain for $$g$$?
+
+(f) Briefly describe whether the data points you collected were enough and if you had to iterate to get more measurements.
+
+Extra credit (5 points): use [LassoCV](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LassoCV.html) to optimize over the hyperparameter associated with the magnitude of the $$L_1$$ regularization term in the Lasso loss function.
