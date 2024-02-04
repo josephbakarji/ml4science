@@ -25,7 +25,16 @@ permalink: references/
 - [US NATIONAL OCEANIC AND ATMOSPHERIC ADMINISTRATION data](https://www.noaa.gov/data)
 - [NASA data](https://data.nasa.gov/)
 
-
+## Recommended papers
+- [Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations](https://www.sciencedirect.com/science/article/pii/S0021999118307125)
+- [Deep learning for universal linear embeddings of nonlinear dynamics](https://www.nature.com/articles/s41467-018-07210-0)
+- [Learning to Simulate Complex Physics with Graph Networks](https://proceedings.mlr.press/v119/sanchez-gonzalez20a.html)
+- [Modern Koopman Theory for Dynamical Systems](https://arxiv.org/abs/2102.12086)
+- [Discovering governing equations from data by sparse identification of nonlinear dynamical systems](https://www.pnas.org/doi/abs/10.1073/pnas.1517384113)
+- [Distilling free-form natural laws from experimental data](https://www.science.org/doi/pdf/10.1126/science.1165893)
+- [Accelerating Eulerian Fluid Simulation With Convolutional Networks](https://proceedings.mlr.press/v70/tompson17a/tompson17a.pdf)
+- [Deep learning and process understanding for data-driven Earth system science](https://www.nature.com/articles/s41586-019-0912-1)
+- [Accelerating Eulerian Fluid Simulation With Convolutional Networks](https://proceedings.mlr.press/v70/tompson17a/tompson17a.pdf)
 ## YouTube Channels 
 - My channel has a few useful videos: [Joseph Bakarji](https://www.youtube.com/@JosephBakarji)
 - Steven Brunton's [YouTube channel on data-driven fluid dynamics and control](https://www.youtube.com/c/eigensteve)
@@ -39,16 +48,6 @@ permalink: references/
 - [Science Is Becoming Less Human](https://www.theatlantic.com/technology/archive/2023/12/ai-scientific-research/676304/)
 - [Author Admits She Used ChatGPT to Write Award-Winning Novel](https://themessenger.com/tech/author-admits-she-used-chatgpt-to-write-award-winning-novel)
 - [How Much of the World Is It Possible to Model?](https://www.newyorker.com/culture/annals-of-inquiry/how-much-of-the-world-is-it-possible-to-model)
-
-## Packages
-- [Numpy](https://numpy.org/)
-- [Matplotlib](https://matplotlib.org/)
-- [PyTorch](https://pytorch.org/)
-- [Tensorflow](https://www.tensorflow.org/)
-- [Keras](https://keras.io/)
-- [SciKit-learn](https://scikit-learn.org/stable/)
-- [Pandas](https://pandas.pydata.org/)
-- [Flux: A Julia ML Stack:](https://fluxml.ai/)
 
 
 ## Other Videos
@@ -82,4 +81,16 @@ permalink: references/
     - Stanford Intro to AI - CS221: [YouTube](https://www.youtube.com/playlist?list=PLoROMvodv4rO1NB9TD4iUZ3qghGEGtqNX). [Course website](http://cs221.stanford.edu/)
     - [Harvard's CS50](https://cs50.harvard.edu/)
     - [Deep Learning Specialization - Andrew Ng](https://www.coursera.org/specializations/deep-learning)
+
+## Useful Python Packages
+- [Numpy](https://numpy.org/)
+- [Matplotlib](https://matplotlib.org/)
+- [Pandas](https://pandas.pydata.org/)
+
+- [JAX](https://jax.readthedocs.io/)
+- [PyTorch](https://pytorch.org/)
+- [Tensorflow](https://www.tensorflow.org/)
+- [Keras](https://keras.io/)
+- [SciKit-learn](https://scikit-learn.org/stable/)
+- [Flux: A Julia ML Stack:](https://fluxml.ai/)
 
