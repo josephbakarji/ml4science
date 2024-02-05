@@ -81,12 +81,14 @@ permalink: references/
     - Stanford Intro to AI - CS221: [YouTube](https://www.youtube.com/playlist?list=PLoROMvodv4rO1NB9TD4iUZ3qghGEGtqNX). [Course website](http://cs221.stanford.edu/)
     - [Harvard's CS50](https://cs50.harvard.edu/)
     - [Deep Learning Specialization - Andrew Ng](https://www.coursera.org/specializations/deep-learning)
+    - [Neural networks: zero to hero](https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ)
 
 ## Useful Python Packages
 - [Numpy](https://numpy.org/)
 - [Matplotlib](https://matplotlib.org/)
 - [Pandas](https://pandas.pydata.org/)
 
+- [Hugging Face](https://huggingface.co/)
 - [JAX](https://jax.readthedocs.io/)
 - [PyTorch](https://pytorch.org/)
 - [Tensorflow](https://www.tensorflow.org/)
@@ -94,3 +96,7 @@ permalink: references/
 - [SciKit-learn](https://scikit-learn.org/stable/)
 - [Flux: A Julia ML Stack:](https://fluxml.ai/)
 
+## People
+
+- [Andrej Karpathy](https://karpathy.ai/)
+- 

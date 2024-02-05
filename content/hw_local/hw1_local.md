@@ -54,8 +54,6 @@ Determine if the following statements are True or False and provide a brief expl
 
 (a) If the linear predictor is overfitting on the training set the training set error is much larger than the test set error.
 
-(b) The purpose of cross-validation is to prevent overfitting on the test set.
-
 (c) A development set (or dev set) is used to prevent overfitting on the test set.
 
 (d) Increasing the amount of data will prevent the algorithm from overfitting. 
