@@ -5,6 +5,8 @@ title: Supervised Learning and Linear Regression
 tldr: "Empirical laws, linear models, and the least squares method."
 thumbnail: /static_files/thumbnail/data-train-test.png
 links: 
-    - url: /content/notes/ml_intro_notes
+    - url: /content/notes/01_intro_ml/ml_intro_notes
       name: Notes 
+    - url: https://www.youtube.com/watch?v=UThuJRt9_N8&ab_channel=JosephBakarji
+      name: Video
 ---
