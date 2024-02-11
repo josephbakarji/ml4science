@@ -99,4 +99,6 @@ permalink: references/
 ## People
 
 - [Andrej Karpathy](https://karpathy.ai/)
-- 
+
+## Python Tutorials
+- [CS231n: Convolutional Neural Networks for Visual Recognition](https://cs231n.github.io/python-numpy-tutorial/)
