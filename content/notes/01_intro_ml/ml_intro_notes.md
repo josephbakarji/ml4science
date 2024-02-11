@@ -176,7 +176,7 @@ This leads us to express the probability of $$ y^{(i)} $$ given $$ \phi(x^{(i)})
 
 $$ p(y^{(i)} | \phi(x^{(i)}); \mathbf{w}) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{(y^{(i)} - \mathbf{w}\cdot \phi(x^{(i)}))^2}{2\sigma^2}\right) $$
 
-Given a design matrix $$ X $$ containing all $$ \phi(x^{(i)}) $$'s and the parameters $$ \mathbf{w} $$, we consider the likelihood function $$ L(\mathbf{w}) = p(\vec{y} | X; \mathbf{w}) $$, which can be expressed as a product of the individual probabilities for each $$ y^{(i)} $$:
+Given a design matrix $$ X $$ containing all $$ \phi(x^{(i)}) $$'s and the parameters $$ \mathbf{w} $$, we consider the likelihood function $$ L(\mathbf{w}) = p(\vec{y} \vert X; \mathbf{w}) $$, which can be expressed as a product of the individual probabilities for each $$ y^{(i)} $$:
 
 $$ L(\mathbf{w}) = \prod_{i=1}^N p(y^{(i)} | \phi(x^{(i)}); \mathbf{w}) $$
 
