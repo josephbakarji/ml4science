@@ -54,13 +54,13 @@ Determine if the following statements are True or False and provide a brief expl
 
 (a) If the linear predictor is overfitting on the training set the training set error is much larger than the test set error.
 
-(c) A development set (or dev set) is used to prevent overfitting on the test set.
+(b) A development set (or dev set) is used to prevent overfitting on the test set.
 
-(d) Increasing the amount of data will prevent the algorithm from overfitting. 
+(c) Increasing the amount of data will prevent the algorithm from overfitting. 
 
-(e) Adding a regularization term will decrease the likelihood of underfitting.
+(d) Adding a regularization term will decrease the likelihood of underfitting.
 
-(f) Stochastic gradient descent requires less updates on $\mathbf w$ to converge to the optimal solution.
+(e) Stochastic gradient descent requires less updates on $\mathbf w$ to converge to the optimal solution.
 
 
 ## Problem 3: Classification with Scikit-Learn (30 points)

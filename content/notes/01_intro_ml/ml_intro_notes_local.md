@@ -11,7 +11,7 @@ Imagine being a 17th century scientist. You have discovered a way to design an e
 First you will have to measure a few input-output pairs: 
 
 
-| $x$ (Weights) || $y$ (Length)  \ 
+| $x$ (Weights) || $y$ (Length)   
 |---------------||----------------  \ 
 | 1             || 55            | 
 | .5            || 37.5            |
