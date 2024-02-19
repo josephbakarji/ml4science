@@ -311,7 +311,7 @@ The PDF is normalized such that the integral over the whole sample space is equa
 
 Given that $$x(t)$$ is a function of a dependent variable, it's called a random field. We define the PDF of a random field in a similar way as we did with a random variable, but the PDF is now a function of time as well $$f_x(X; t)$$.
 
-The best way to see what that PDF looks like at a given time $$t$$ is to look at the histogram of the solution at that time. Let's do that for the first variable $$x(t)$$ at $$t^*$$ with time index 800.
+The easiest way to see what the PDF looks like at a given time $$t$$ is to look at the histogram of the solution at $$t$$. Let's do that for the first variable $$x(t)$$.
 
 
 ```python
@@ -321,22 +321,15 @@ indices = [100, 300, 500]
 # Define the colors
 colors = ['red', 'green', 'blue']
 
-# Create a figure and axis
-fig, ax = plt.subplots()
-
 # Plot the histograms
+fig, ax = plt.subplots()
 for i, index in enumerate(indices):
     ax.hist(x_arr[:, index], bins=30, alpha=0.5, color=colors[i], label=f't = {t[index]:.2f}')
 
-# Set the labels and title
 ax.set_xlabel('x')
 ax.set_ylabel('Frequency')
 ax.set_title('Histograms for Different Indices')
-
-# Add a legend
 ax.legend()
-
-# Show the plot
 plt.show()
 
 
