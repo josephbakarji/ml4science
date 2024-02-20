@@ -47,21 +47,23 @@ In 1827, botanist Robert Brown observed that pollen grains suspended in water mo
 
 In 1905, Albert Einstein published a paper that provided a quantitative explanation of Brownian motion, and its relationship with the [diffusion equation](https://en.wikipedia.org/wiki/Diffusion_equation); thus, providing strong theoretical evidence for the existence of discrete atoms. 
 
-Later, Norbert Wiener and Paul Lévy developed the mathematical theory of Brownian motion, which laid the foundation for the field of stochastic calculus, and had a profound impact on fields as diverse as finance, physics, and biology. The equation for a Brownian particle is given by:
+Later, Norbert Wiener and Paul Lévy developed the mathematical theory of Brownian motion, which laid the foundation for the field of stochastic calculus, and had a profound impact on fields as diverse as finance, physics, and biology. The equation for a Brownian particle is given by the stochastic differential equation (SDE):
 
 $$dX = v dt + \gamma dW$$
 
-where $$X$$ is the position of the particle, $$v$$ is the drift velocity (do to bulk motion; e.g. water particle drifting with a river), $$\gamma$$ is related to the diffusion coefficient, $$dt$$ is the time step, and $$dW$$ is a Wiener process (a mathematical object that represents a continuous-time random walk). The Wiener process has the property that 
+where $$X$$ is the position of the particle, $$v$$ is the drift velocity (due to bulk motion; e.g. water particle drifting with a river flowing at velocity $$v$$), $$\gamma$$ is related to the diffusion coefficient, $$dt$$ is the infinitesimal time step, and $$dW$$ is a Wiener process (a mathematical object that represents a continuous-time random walk). The Wiener process is sampled from a gaussian distribution, such that 
 
 $$dW \sim \mathcal{N}(0, dt)$$; 
 
-In other words, it is a normally distributed random variable with mean 0 and variance $$dt$$. To generate a Wiener process, you can use the normal distribution to generate a random number at each time step, and then sum the random numbers to get the time series Wiener process.
+In other words, it is a normally distributed random variable with mean 0 and variance $$dt$$. In practice, to generate a Wiener process, you can use the normal distribution with mean 0, and variance $\Delta t$, where $\Delta t$ is the finite time increment. Thus, a discrete form of an SDE is given by:
+
+$$X(t + \Delta t) = X(t) + v \Delta t + \gamma \mathcal{N}(0, \Delta t)$$
 
 We want to show, like Einstein did in the early 20th century, that the diffusion equation models the statistical evolution of the random particles. But instead of doing it analytically, we will use a Monte Carlo simulation.
 
-(a) Generate a time series of the Brownian motion for $$v = 0.1$$, $$\gamma = 0.1$$, and $$X(t=0) = 0$$ for 1000 particles. Plot the time series for the first 10 particles. Based on the plot decide whether you need a longer time series (you can update that answer later)
+(a) Generate a time series of the Brownian motion for $$v = 0.03$$, $$\gamma = 0.1$$, $$X(t=0) = 0$$, $t_\text{final} = 50$ seconds, discretized into 2000 time steps, for 2000 particles. Plot the time series for the first 10 particles. Based on the plot decide whether you need a longer time series (you can update that answer later)
 
-(b) Use the time series data to estimate the probability density function (PDF) of the positions of the particles at every time step using Kernel Density Estimation (KDE). Plot the PDFs at 5 different time steps on the same plot. Increase the number of particle (e.g. 10000) and see how the PDFs change. 
+(b) Use the time series data to estimate the probability density function (PDF) of the positions of the particles at every time step using Kernel Density Estimation (KDE). Plot the PDFs at 5 different time steps on the same plot. Increase the number of particle (e.g. 10000) and change the bandwidth to see how they affect the PDFs. 
 
 (c) Use the KDE data to find the advection and diffusion coefficients in the Advection-Diffusion equation of the form:
 
@@ -71,17 +73,19 @@ where $$p$$ is the probability density function of the position of the particles
 
 (d) Discretize the equation you obtained and solve it numerically using the finite difference method. Compare the solution with the PDF data you obtained in part (b).
 
-(e) What is the relationship between $$v$$, $$\gamma$$, $$a$$, and $$b$$? 
+(e) What is the relationship between $$v$$, $$\gamma$$, $$a$$, and $$b$$? You can answer this questions by inspection (and by doing some research). 
+
+(f) Bonus: Find the relationship between $$\gamma$$ and $$b$$ (the diffusion coefficient) by plotting them against each other and fitting a model through them.
 
 ## Problem 4: Open Problem (20 points)
 
 Go through the list of differential equations in different fields on this [Wikipedia page](https://en.wikipedia.org/wiki/List_of_named_differential_equations), and pick one that you find interesting. 
 
-(a) Write a brief explanation of the equation, its applications, and how you can collect data for the variable it is solving for. Once you have the data, what would be a good scenario where you would be interested in estimating its coefficients from data? 
+(a) Write a brief explanation of the equation, its applications, and how you can collect data for the variable it is solving for. What would be a good scenario where you would be interested in estimating its coefficients from data? (e.g. finding a spring constant from a mass-spring system, or finding the damping coefficient of a pendulum from data.)
 
 (b) Solve the equation using a numerical method of your choice; and compare the solution with the analytical solution if it exists. 
 
-(c) Define the library of functions you should use to discover the equation from data. Is there a larger set of functions that you can define in the absence of knowledge of the equation? (e.g. polynomials, trigonometric functions, etc. In the Lorenz System example, we used general polynomials of order 2 that contained actual terms.) 
+(c) Define the library of functions (feature vector) that you should use to discover the equation from data. Is there a larger set of functions that you can define in the absence of knowledge of the equation? (e.g. polynomials up to n-th degree, trigonometric functions, etc. In the Lorenz System example, we used general polynomials of degree 2 that contained the terms we're interested in.) 
 
-(d) Use the generated data to estimate the coefficients of the equation using the [PySINDy library](https://pysindy.readthedocs.io/en/latest/index.html).
+(d) Bonus: use the generated data to estimate the coefficients of the equation using the [PySINDy library](https://pysindy.readthedocs.io/en/latest/index.html) that sparsifies the equation using a sparsity regularization term (e.g. L1 norm).
 
