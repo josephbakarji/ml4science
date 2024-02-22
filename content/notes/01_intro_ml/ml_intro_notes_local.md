@@ -184,11 +184,11 @@ Given this probabilistic model relating the target variables to the inputs, we c
 
 Instead of maximizing $L(\mathbf w)$, we can also maximize any strictly increasing function of it. In particular, the derivations will be a bit simpler if we maximize the logarithm of the likelihood: 
 
-$$\log L(\mathbf w) = \log \prod_{i=1}^{n} \frac{1}{\sqrt{2\pi\sigma}} \exp \left( \frac{(y^{(i)} - \mathbf w \cdot \phi(x^{(i)}))^2}{2\sigma^2} \right)$$
+$$\log L(\mathbf w) = \log \prod_{i=1}^{n} \frac{1}{\sqrt{2\pi\sigma^2}} \exp \left( \frac{(y^{(i)} - \mathbf w \cdot \phi(x^{(i)}))^2}{2\sigma^2} \right)$$
 
-$$= \sum_{i=1}^{n} \log \left[ \frac{1}{\sqrt{2\pi\sigma}} \exp \left( \frac{(y^{(i)} - \mathbf w \cdot\phi(x^{(i)}))^2}{2\sigma^2} \right) \right]$$ 
+$$= \sum_{i=1}^{n} \log \left[ \frac{1}{\sqrt{2\pi\sigma^2}} \exp \left( \frac{(y^{(i)} - \mathbf w \cdot\phi(x^{(i)}))^2}{2\sigma^2} \right) \right]$$ 
 
-$$= n \log \frac{1}{\sqrt{2\pi\sigma}} - \frac{\sigma^2}{2} \sum_{i=1}^{n} \frac{(y^{(i)} - \mathbf w \cdot\phi(x^{(i)}))^2}{\sigma^2}$$ 
+$$= n \log \frac{1}{\sqrt{2\pi\sigma^2}} - \frac{\sigma^2}{2} \sum_{i=1}^{n} \frac{(y^{(i)} - \mathbf w \cdot\phi(x^{(i)}))^2}{\sigma^2}$$ 
 
 Noticing that the first term is not a function of $\mathbf w$, maximizing $L(\mathbf w)$ gives the same answer as minimizing $\frac{1}{n} \sum_{i=1}^{n} (y^{(i)} - \mathbf w \cdot \phi(x^{(i)}))^2$, which is our original least-squares cost function! 
 

@@ -41,7 +41,7 @@ where $$S$$ is the number of susceptible individuals, $$I$$ is the number of inf
 
 (d) Compare the solution of the discovered model with the solution of the original model. To do that, define a new polynomial differential equation that includes all the non-zero discovered terms. For example, you might have an extra term like $$S I$$ in the third equation.
 
-## Problem 3: Brownian Motion and the Diffusion Equation (30 points)
+## Problem 2: Brownian Motion and the Diffusion Equation (30 points)
 
 In 1827, botanist Robert Brown observed that pollen grains suspended in water moved in a random zig-zag motion. This phenomenon later came to be known as [Brownian motion](https://en.wikipedia.org/wiki/Brownian_motion). At the time, the atomistic nature of matter was not yet widely accepted, and Brownian motion provided some of the first evidence that matter was composed of atoms. 
 
@@ -61,7 +61,7 @@ $$X(t + \Delta t) = X(t) + v \Delta t + \gamma \mathcal{N}(0, \Delta t)$$
 
 We want to show, like Einstein did in the early 20th century, that the diffusion equation models the statistical evolution of the random particles. But instead of doing it analytically, we will use a Monte Carlo simulation.
 
-(a) Generate a time series of the Brownian motion for $$v = 0.03$$, $$\gamma = 0.1$$, $$X(t=0) = 0$$, $t_\text{final} = 50$ seconds, discretized into 2000 time steps, for 2000 particles. Plot the time series for the first 10 particles. Based on the plot decide whether you need a longer time series (you can update that answer later)
+(a) Generate a time series of the Brownian motion for $$v = 0.03$$, $$\gamma = 0.1$$, $$X(t=0) = 0$$, $$t_\text{final} = 50$$ seconds, discretized into 2000 time steps, for 2000 particles. Plot the time series for the first 10 particles. Based on the plot decide whether you need a longer time series (you can update that answer later)
 
 (b) Use the time series data to estimate the probability density function (PDF) of the positions of the particles at every time step using Kernel Density Estimation (KDE). Plot the PDFs at 5 different time steps on the same plot. Increase the number of particle (e.g. 10000) and change the bandwidth to see how they affect the PDFs. 
 
@@ -69,7 +69,7 @@ We want to show, like Einstein did in the early 20th century, that the diffusion
 
 $$\frac{\partial p}{\partial t} = - a \frac{\partial p}{\partial x} + b \frac{\partial^2 p}{\partial x^2} $$
 
-where $$p$$ is the probability density function of the position of the particles. For build a library of partial derivatives in $$x$$: $$\phi(p(x)) = [\frac{\partial p}{\partial x},  \frac{\partial^2 p}{\partial x^2}]$$, and an label (output) array $$y = \frac{\partial p}{\partial t}$$; where you have to approximate the partial derivatives numerically. Hint: use the ```gaussian_kde``` function from the ```scipy.stats``` library to estimate the PDFs. You might get an error if all the points have the same position (at initial condition), so you can either add a small random number to the position of each particle, or avoid the I.C. all together. 
+where $$p$$ is the probability density function of the position of the particles. For build a library of partial derivatives in $$x$$: $$\phi(p(x)) = [\frac{\partial p}{\partial x},  \frac{\partial^2 p}{\partial x^2}]$$, and an label (output) array $$y = \frac{\partial p}{\partial t}$$; where you have to approximate the partial derivatives numerically. Tips: if you're using scipy's ```gaussian_kde```, you might get an error if all the points have the same position (at initial condition); to address that, you can either add a very small random number to the position of each particle at $$t=0$$, or avoid the I.C. all together. 
 
 (d) Discretize the equation you obtained and solve it numerically using the finite difference method. Compare the solution with the PDF data you obtained in part (b).
 
@@ -77,7 +77,7 @@ where $$p$$ is the probability density function of the position of the particles
 
 (f) Bonus: Find the relationship between $$\gamma$$ and $$b$$ (the diffusion coefficient) by plotting them against each other and fitting a model through them.
 
-## Problem 4: Open Problem (20 points)
+## Problem 3: Open Problem (20 points)
 
 Go through the list of differential equations in different fields on this [Wikipedia page](https://en.wikipedia.org/wiki/List_of_named_differential_equations), and pick one that you find interesting. 
 
