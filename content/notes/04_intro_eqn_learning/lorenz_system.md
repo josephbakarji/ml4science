@@ -1,6 +1,6 @@
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1qb7e-KgSwbdt4W4Udry_mL7W3BwWPOM3?usp=sharing)
 
-Everything changes in time. This is why we often have to deal with time series data. In this notebook, we will look into the problem of discovering differential equations that describe the dynamics of a time series. This task has been a subject of research for millenia, and has changed faces throughout the years. In recent years, the rise of machine learning has opened many opportunities for tackling this problem using deep learning. Before we get there, in this article, we will look at the linear approach.
+Everything changes in time. This is why we often have to deal with time series data. In this notebook, we will look into the problem of discovering differential equations that describe the dynamics of a time series. This task has been a subject of research for millennia, and has changed faces throughout the years. In recent years, the rise of machine learning has opened many opportunities for tackling this problem using deep learning. Before we get there, in this article, we will look at the linear approach.
 
 Given discrete measurements $$\mathbf x = [x_1, x_2, x_3, \ldots, x_N]$$ with an associated vector of time stamps $$[t_1, t_2, t_3, \ldots, t_N]$$, the task at hand is to find $$\mathbf f$$ in the equation:
 
@@ -228,7 +228,7 @@ print('Train score: ', lr.score(X_train, dx_dt_train))
 
 Ideally, we would like to find these hyperplanes for all the variables, provided the axes can contain terms like $$x^2, y^2, z^2, xy, xz, yz$$ etc. To do that, we want our optimizer to find a function that fits the data with the fewest terms possible. The most brute force way to do that is to try all possible combinations of terms and see which one fits the best. If there are 10 possible terms in the equation, that would boil down to $$2^{10}-1$$ optimization problems. Minimizing the number of non-zero terms is more technically known as minimizing the $$L_0$$ norm of the weights $$\mathbf w$$. In other words, we would be minimizing the loss
 
-$$\mathcal L(\mathbf w) = \frac{1}{2} \sum_{i=1}^N \left( \mathbf{\dot x}^{(i)} - \phi(\mathbf x^{(i)}) \cdot \mathbf w \right)^2 + \lambda \| \mathbf w \|_0$$
+$$\mathcal L(\mathbf w) = \frac{1}{N} \sum_{i=1}^N \left( \mathbf{\dot x}^{(i)} - \phi(\mathbf x^{(i)}) \cdot \mathbf w \right)^2 + \lambda \| \mathbf w \|_0$$
 
 where $$\| \mathbf w \|_0$$ is simply the number of non-zero elements in $$\mathbf w$$. The parameter $$\lambda$$ is a hyperparameter that controls the tradeoff between the fit and the number of non-zero terms. In matrix form, the least squares problem is written as 
 
@@ -274,10 +274,6 @@ print('Train score: ', lasso.score(X_train, dx_dt_train))
      -1.19460598e-02 -1.04626338e-02]
     Test score:  0.9070187567115623
     Train score:  0.9110150051113849
-
-
-    /opt/anaconda3/lib/python3.9/site-packages/sklearn/linear_model/_coordinate_descent.py:647: ConvergenceWarning: Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 6.953e+05, tolerance: 1.620e+03
-      model = cd_fast.enet_coordinate_descent(
 
 
 Hyperparameters are often chosen by trial and error, but a more systematic way to do that is to use a grid search. This is a brute force way to find the best hyperparameters, but sometimes there are no alternatives. Since LASSO doesn't set small terms exactly to zero, it is always possible to define a threshold and set all terms below that threshold to zero. 
