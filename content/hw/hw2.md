@@ -42,6 +42,8 @@ where $$S$$ is the number of susceptible individuals, $$I$$ is the number of inf
 (d) Compare the solution of the discovered model with the solution of the original model. To do that, define a new polynomial differential equation that includes all the non-zero discovered terms. For example, you might have an extra term like $$S I$$ in the third equation.
 
 ## Problem 2: Brownian Motion and the Diffusion Equation (30 points)
+Relevant references:
+- [Everyone should see this experiment for themselves](https://www.youtube.com/watch?v=ZNzoTGv_XiQ&ab_channel=SteveMould)
 
 In 1827, botanist Robert Brown observed that pollen grains suspended in water moved in a random zig-zag motion. This phenomenon later came to be known as [Brownian motion](https://en.wikipedia.org/wiki/Brownian_motion). At the time, the atomistic nature of matter was not yet widely accepted, and Brownian motion provided some of the first evidence that matter was composed of atoms. 
 
