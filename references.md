@@ -82,6 +82,7 @@ permalink: references/
     - [Harvard's CS50](https://cs50.harvard.edu/)
     - [Deep Learning Specialization - Andrew Ng](https://www.coursera.org/specializations/deep-learning)
     - [Neural networks: zero to hero](https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ)
+    - [Andrej Karpathy](https://karpathy.ai/)
 
 ## Useful Python Packages
 - [Numpy](https://numpy.org/)
@@ -96,9 +97,6 @@ permalink: references/
 - [SciKit-learn](https://scikit-learn.org/stable/)
 - [Flux: A Julia ML Stack:](https://fluxml.ai/)
 
-## People
-
-- [Andrej Karpathy](https://karpathy.ai/)
 
 ## Python Tutorials
 - [CS231n: Convolutional Neural Networks for Visual Recognition](https://cs231n.github.io/python-numpy-tutorial/)
