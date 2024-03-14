@@ -57,7 +57,7 @@ $$
 u(x, t) \approx \sum_{k=1}^{n} a_k(t) \psi_k(x)
 $$
 
-where $$\phi_k(x)$$ are the spatial modes and $$a_k(t)$$ are the temporal modes. This eigenfunction expansion is the basic assumption behind the Proper Orthogonal Decomposition (POD). One possibility for choosing the spatial modes is to use the Fourier basis, i.e. $$\psi_k(x) = \exp(i 2\pi k x/L)$$. This reminiscent of the analytical solution of the heat equation, where the solution can be written as a sum of sines and cosines.
+where $$\psi_k(x)$$ are the spatial modes and $$a_k(t)$$ are the temporal modes. This eigenfunction expansion is the basic assumption behind the Proper Orthogonal Decomposition (POD). One possibility for choosing the spatial modes is to use the Fourier basis, i.e. $$\psi_k(x) = \exp(i 2\pi k x/L)$$. This is reminiscent of the analytical solution of the heat equation, where the solution can be written as a sum of sines and cosines.
 
 When solution data for $$u(x, t)$$ are given, the spatial modes can be obtained by performing a Singular Value Decomposition (SVD) of the data matrix (where each column is a snapshot of the solution at a given time): $$X = U \Sigma V^T$$. The spatial modes are then given by the left singular vectors $$U$$, and the temporal modes are given by the right singular vectors $$\Sigma V^T$$ (see section 12.6).
 
@@ -82,20 +82,24 @@ where $$\mathbf a_i$$ is the $$i$$-th snapshot of the original data over which t
 c) How many modes do you need to capture 95\% of the energy (variance) of the system? Plot the cumulative energy of the system as a function of the number of modes.
 
 d) Use the number of modes ($$p$$) discovered in the previous question to fit a neural network time-stepper that maps $$\mathbf a^{(p)}_k$$ to $$\mathbf a^{(p)}_{k+1}$$, where $$
-\mathbf a^{(p)}$$ indicates the first $$p$$ time-modes. For this question, use a fully connected neural network $$f_\theta$$ to fit the model:
+\mathbf a^{(p)}$$ indicates the first $$p$$ time-modes. For this question, use a fully connected neural network $$f_\mathbf{w}$$ to fit the model:
 
 $$
 \mathbf a^{(p)}_{k+1} = f_\mathbf{w}(\mathbf a^{(p)}_k)
 $$
 
-Use the first 60% of the frames as training data, the next 20% as validation data, and the last 20% as test data. Don't shuffle the data, to maintain its temporal structure. The following questions assume a non-shuffled dataset.
+Use the first 60% of the frames as training data, the next 20% as validation data, and the last 20% as test data. Be careful to maintain the temporal structure of the data if you shuffle it. Typically, you should only shuffle the data once.
 
-e) Having obtained the weights $$\mathbf{w}$$ of the neural network, evaluate your model on the validation data. Start with the last time step of your training data, and use the neural network to predict all the time steps in the validation data, by iterating through $$f_\mathbf{w}()$$. Once you obtain the predictions $$[\mathbf a_{r+1}, \mathbf a_{r+2}, \ldots, \mathbf a_{r+n}]$$, use the spatial modes to reconstruct the predicted frames. Plot the absolute difference between predicted frames and the actual frames for the last 5 frames of your validation set. Does your loss improve if you use more modes? Adjust your hyperparameters (network architecture, number of epochs etc.) to improve your results, and finally evaluate your model on the test data. Plot the mean square error between the predicted frames and the actual frames as a function of time for your test set.
+e) Having obtained the weights $$\mathbf{w}$$ of the neural network, evaluate your model on the validation data. Start with the last time step of your training data, and use the $p$ dominant singular vectors that you obtained in from the training set $U_p$. and the neural network to predict all the time steps in the validation data, by iterating through $$f_\mathbf{w}()$$. Once you obtain the predictions $$[\mathbf a_{r+1}, \mathbf a_{r+2}, \ldots, \mathbf a_{r+n}]$$, use the spatial modes to reconstruct the predicted frames. 
+    - Plot the absolute difference between predicted frames and the actual frames for the last 5 frames of your validation set. 
+    - Does your loss improve if you use more modes? 
+    - Adjust your hyperparameters (network architecture, number of epochs etc.) to improve your results, and finally evaluate your model on the test data. 
+    - Plot the mean square error between the predicted frames and the actual frames as a function of time for your test set, where the first frame of the test set is given.
 
 f) Extra credit: Repeat the same exercise using an LSTM network. Compare the results with the previous question.
 
 
-## Bonus Problem 3: Lorenz with neural networks (20 points)
+## Bonus Problem 3: Dynamical systems with Neural Networks (20 points)
 The Lorenz system is a system of ordinary differential equations (ODEs) that was developed by Edward Lorenz in the 1960s to describe the behavior of a simple climate model. The system is often used as an example of chaotic systems, or what is known in popular media as the ``butterfly effect''. It is given by the following set of ODEs:
 
 $$
@@ -106,7 +110,9 @@ $$
 \end{align*}
 $$
 
-where $$x$$, $$y$$, and $$z$$ are the state variables, and $$\sigma$$, $$\rho$$, and $$\beta$$ are parameters. For $$\rho = 28$$, $$\sigma = 10$$, $$\beta = 8/3$$, the state variable $$\mathbf x = [x, y, z]$$ is known to be chaotic. The equations relate the properties of a two-dimensional fluid layer warmed from below and cooled from above. $$x$$ is proportional to the rate of convection, $$y$$ to the horizontal temperature variation, and $$z$$ to the vertical temperature variation. The parameters $$\rho$$, $$\sigma$$ and $$\beta$$ are system parameters proportional to the Prandtl number, Rayleigh number, and certain physical dimensions of the layer itself.
+where $$x$$, $$y$$, and $$z$$ are the state variables, and $$\sigma$$, $$\rho$$, and $$\beta$$ are parameters. For $$\rho = 28$$, $$\sigma = 10$$, $$\beta = 8/3$$, the state variable $$\mathbf x = [x, y, z]$$ is known to be chaotic. 
+
+**NOTE:** If you've had enough of the Lorenz system, feel free to use any other system of ODEs or even PDEs that you find interesting.
 
 
 a) Solve the differential equation numerically using the initial conditions $$\mathbf x = [1, 1, 1]$$, a simulation time of $$t_{end}=100$$ seconds and $$dt = 0.01$$. 
