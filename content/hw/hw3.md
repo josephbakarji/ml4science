@@ -32,7 +32,7 @@ b) Now, suppose instead of using the sigmoid function for the activation functio
 $$
 f(x) = 
 \begin{cases}
-    1, & x\geq 1\\
+    1, & x\geq 0\\
     0,  & x < 0
 \end{cases}
 $$
