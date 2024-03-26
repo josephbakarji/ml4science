@@ -88,7 +88,7 @@ $$
 \mathbf a^{(p)}_{k+1} = f_\mathbf{w}(\mathbf a^{(p)}_k)
 $$
 
-Use the first 60% of the frames as training data, the next 20% as validation data, and the last 20% as test data. Be careful to maintain the temporal structure of the data if you shuffle it. Typically, you should only shuffle the data once.
+Use the first 60% of the frames as training data, the next 20% as validation data, and the last 20% as test data. Be careful to maintain the temporal structure of the data if you shuffle it. 
 
 e) Having obtained the weights $$\mathbf{w}$$ of the neural network, evaluate your model on the validation data. Start with the last time step of your training data, and use the $p$ dominant singular vectors that you obtained in from the training set $$U_p$$. Use the neural network to predict the frames for all the time steps in the validation data, by iterating through $$f_\mathbf{w}()$$. Once you obtain the predictions $$[\mathbf a_{r+1}, \mathbf a_{r+2}, \ldots, \mathbf a_{r+n}]$$, use the spatial modes to reconstruct the predicted frames. 
 * Plot the absolute difference between predicted frames and the actual frames for the last 5 frames of your validation set. 
