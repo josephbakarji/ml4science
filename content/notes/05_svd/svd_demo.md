@@ -1,3 +1,13 @@
+#### References:
+- Chapter 12 of CS229 Lecture Notes (Andrew Ng).
+- Chapter 1 of Data-driven Science and Engineering (Brunton, Kutz)
+- Simple fun [introduction to PCA by StatQuest](https://www.youtube.com/watch?v=FgakZw6K1QQ&ab_channel=StatQuestwithJoshStarmer)
+- SVD [Lectures by Steven Brunton](https://www.youtube.com/watch?v=nbBvuuNVfco&list=RDCMUCm5mt-A4w61lknZ9lCsZtBw&ab_channel=SteveBrunton)
+- PCA with a spring oscillation example [by Nathan Kutz](https://www.youtube.com/watch?v=a9jdQGybYmE&ab_channel=AMATH301)
+<!-- - https://www.youtube.com/watch?v=CpD9XlTu3ys&ab_channel=Stochastic -->
+
+
+
 ## Principal Component Analysis
 
 So far, we've been dealing with data whose underlying patterns can be found through a relationship between inputs $$x$$ and outputs $$y$$: $$y = f(x)$$. However, what happens if the data doesn't have a clear output, and we're merely interested in identifying intrinsic patterns within the data itself? This scenario is a prime domain for unsupervised learning methods.
@@ -76,35 +86,71 @@ To identify the principal components, we seek the directions (vectors) along whi
 
 $$
 \begin{align*}
-\frac{1}{m-1} \sum_{i=1}^{m} (\mathbf u^T\mathbf x_i)^2 &= \mathbf u^T\left(\frac{1}{m-1} \sum_{i=1}^{m} \mathbf x_i\mathbf x_i^T\right)\mathbf u \\
-&= \mathbf u^T\Sigma\mathbf u
+\frac{1}{m} \sum_{i=1}^{m} (\mathbf u^T\mathbf x_i)^2 &= \mathbf u^T\left(\frac{1}{m} \sum_{i=1}^{m} \mathbf x_i\mathbf x_i^T\right)\mathbf u \\
+&= \mathbf u^T\Sigma \mathbf u
 \end{align*}
 $$
 
 Or
 
 $$
-\max_{\|u\|=1} u^T\Sigma u
+\max_{\|\mathbf u\|=1}\mathbf u^T\Sigma \mathbf u
 $$
 
 This constrained optimization problem can be solved using Lagrange Multipliers which can be defined as:
+
 $$
-L(u, \lambda) = u^T\Sigma u - \lambda(u^Tu - 1) 
+L(\mathbf u, \lambda) = \mathbf u^T\Sigma \mathbf u - \lambda(\mathbf u^T\mathbf u - 1) 
 $$
 
-Since we're optimizing with respect to $$u$$, we can set the derivative of $$L$$ with respect to $$u$$ to zero:
+Since we're optimizing with respect to $$\mathbf u$$, we can set the derivative of $$L$$ with respect to $$\mathbf u$$ to zero:
+
 $$
 \begin{align*}
-\frac{\partial L}{\partial u} &= 2\Sigma u - 2\lambda u = 0 \\
-\Sigma u &= \lambda u
+\frac{\partial L}{\partial \mathbf u} &= 2\Sigma \mathbf u - 2\lambda \mathbf u = 0 \\
+\Sigma \mathbf u &= \lambda \mathbf u
 \end{align*}
 $$
 
 In other words, the principal components are the eigenvectors of the covariance matrix $$\Sigma$$. The eigenvalues of $$\Sigma$$ quantify the variance along each principal component, and the eigenvectors provide the directions of these principal components. The principal components are ordered by the magnitude of their corresponding eigenvalues, with the first principal component capturing the most variance, the second principal component capturing the second most variance, and so on. 
 
+N.B: the $m-1$ factor in the denominator is used instead of $m$ to correct for the bias of computing variances; but it doesn't affect the relative weight of the singular values.
+
+Once the principal components are identified, the original data can be projected onto these components to obtain a reduced representation of the data. For each input vector $$\mathbf x_i$$, the projection onto the principal components is given by:
+
+$$
+\mathbf t^{(i)} = 
+\begin{bmatrix}
+\mathbf u_1^T\mathbf x^{(i)} \\
+\mathbf u_2^T\mathbf x^{(i)} \\
+\vdots \\
+\mathbf u_r^T\mathbf x^{(i)}
+\end{bmatrix}
+$$
+
+where $$\mathbf u_1, \mathbf u_2, \ldots, \mathbf u_r$$ are the principal components, and $$r$$ is the number of principal components used for the reduction. The reduced representation of the data is given by the matrix $$T$$:
+
+$$
+T =
+\begin{bmatrix}
+\mathbf t^{(1)} \\
+\mathbf t^{(2)} \\
+\vdots \\
+\mathbf t^{(m)}
+\end{bmatrix}
+$$
+
+In matrix form, the projection of $$X$$ onto the principal components $$V$$ is given by:
+
+$$
+T = XV
+$$
+
+where $$T$$ is the transformed data matrix, and $$V$$ is the matrix of principal components. This transformation allows us to reduce the dimensionality of the data while preserving the most significant variance in the dataset.
+
 ### Relationship to Singular Value Decomposition
 
-While PCA fundamentally revolves around identifying the eigenvectors and eigenvalues of the covariance matrix, in practice, this process is commonly executed through Singular Value Decomposition (SVD) for better computational stability and efficiency, especially with large datasets. The use of SVD to perform PCA is motivated by the computational challenges and numerical instability that can arise when directly calculating the eigendecomposition of the covariance matrix, particularly for high-dimensional data.
+While PCA fundamentally revolves around identifying the eigenvectors and eigenvalues of the covariance matrix, in practice, this process is commonly executed through Singular Value Decomposition (SVD) for better computational stability and efficiency, especially with large datasets. The use of SVD to perform PCA is motivated by the computational challenges and numerical instability that can arise when directly calculating the eigen-decomposition of the covariance matrix, particularly for high-dimensional data.
 
 SVD decomposes any matrix $$X$$, which has been centered (zero mean for each feature), into three matrices:
 
@@ -113,9 +159,20 @@ X = U \Xi V^T
 $$
 
 Where:
-- $$U$$ is an $$m \times m$$ orthogonal matrix where the columns are the left singular vectors of $$X$$.
-- $$\Xi$$ is an $$m \times n$$ diagonal matrix with non-negative real numbers on the diagonal known as singular values, sorted in descending order.
-- $$V$$ is an $$n \times n$$ orthogonal matrix where the columns are the right singular vectors of $$X$$, and also corresponds to the eigenvectors of $$X^TX$$.
+- $$U$$ is an $$N \times N$$ orthogonal matrix where the columns are the left singular vectors of $$X$$.
+- $$\Xi$$ is an $$N \times M$$ diagonal matrix with non-negative real numbers on the diagonal known as singular values, sorted in descending order.
+- $$V$$ is an $$M \times M$$ orthogonal matrix where the columns are the right singular vectors of $$X$$, and also corresponds to the eigenvectors of $$X^TX$$.
+
+![SVD visualization](svd_demo_files/svd_viz.jpeg)
+
+An illustration of the SVD decomposition and its "economy" version is shown above. The economy version of SVD is when the summation $$ X = \sum_{i=1}^N \sigma_i \mathbf u_i \mathbf v_i^T$$ is truncated to only include the singular values that are greater than zero (i.e. $$i\le M$$), effectively reducing the size of the matrices to
+$$X = \tilde U \tilde \Sigma V^T$$ without any approximation, where $$\tilde U$$ is $$N \times M$$, $$\tilde \Sigma$$ is $$M \times M$$, and $$V$$ is $$M \times M$$.
+
+What happens if $$M > N$$? An illustration of that is shown below:
+
+![SVD visualization long](svd_demo_files/svd_viz_trans.jpeg)
+
+### PCA through SVD
 
 Now, to understand the relationship between SVD and PCA, we can analyze how these matrices relate to the covariance matrix $$\Sigma$$ of the dataset $$X$$. When you perform PCA, you are essentially computing the covariance matrix $$\Sigma = \frac{1}{m-1} X^T X$$. If we substitute the SVD of $$X$$ into this equation, we get:
 

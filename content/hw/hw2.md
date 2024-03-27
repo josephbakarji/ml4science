@@ -7,6 +7,8 @@ permalink: /content/hw/hw2/
 Submit your coding problems in separate folders. If you use notebooks, provide a brief explanation for each question using the markdown functionality. I encourage you to discuss the problems, but when you write down the solution please do it on your own. You can raise and answer each other’s questions on Moodle; but please don’t provide exact solutions. Submit Jupyter notebooks (or scripts) for all problems.
 
 ## Problem 0: The Logistic Map (10 points)
+Relevant references:
+- [This equation will change how you see the world](https://www.youtube.com/watch?v=ovJcsL7vyrk&ab_channel=Veritasium).
 
 The [logistic map](https://en.wikipedia.org/wiki/Logistic_map) is a simple mathematical model of population growth. It is defined by the following difference equation:
 

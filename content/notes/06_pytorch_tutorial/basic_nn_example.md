@@ -1,3 +1,13 @@
+#### References:
+
+<!-- - [Introduction to Neural Networks with PyTorch](https://www.youtube.com/watch?v=GIsg-ZUy0MY&ab_channel=PyTorch)  -->
+- Chapter 7 in CS229 [Notes](https://cs229.stanford.edu/main_notes.pdf)
+- [PyTorch Tutorials](https://pytorch.org/tutorials/)
+- Stanford's [Intro to Deep learning](https://www.youtube.com/playlist?list=PLoROMvodv4rOABXSygHTsbvUz4G_YQhOb)
+- Stanford's [Intro to CNN for visual recognition](https://www.youtube.com/playlist?list=PLC1qU-LWwrF64f4QKQT-Vg5Wr4qEE1Zxk)
+- Stanford's AI course [ML Lectures](https://www.youtube.com/watch?v=BRgKyNdD9qU&ab_channel=StanfordOnline)
+- [Website CNN Explainer](https://poloclub.github.io/cnn-explainer/)
+
 ## Introduction to Neural Networks with PyTorch
 
 Neural networks are nonlinear models that consist of a composition of linear and nonlinear functions. They are used to model complex relationships between inputs and outputs or to find patterns in data. In this notebook, we will introduce the basic concepts of neural networks and how to implement them using PyTorch.

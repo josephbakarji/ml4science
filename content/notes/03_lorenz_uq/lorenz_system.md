@@ -1,5 +1,11 @@
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/136TAjKKxtBCUHof50bJQEYc9IjpQsoRT?usp=sharing)
 
+#### References:
+- Engineering Math: [Differential Equations and Dynamical Systems by Steven Brunton](https://www.youtube.com/playlist?list=PLMrJAkhIeNNTYaOnVI3QpH7jgULnAmvPA).
+- Motivation to chaos and the butterfly effect: [Chaos Theory and the Lorenz Attractor](https://www.youtube.com/watch?v=fDek6cYijxI&ab_channel=Veritasium).
+- 
+
+## Nonlinear Systems and Uncertainty Quantification
 
 Nonlinear systems are everywhere. Whenever you need to model real complex systems, you will most probably run into non-linearities; and non-linearities present many mathematical challenges. For one, nonlinear differential equations can rarely be solved analytically. We mostly rely on numerical methods to study their solutions. In addition, if a differential equation admits two solutions, their superposition is not necessarily a solution. 
 
