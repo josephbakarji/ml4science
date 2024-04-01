@@ -2,8 +2,8 @@
 
 #### References:
 - Engineering Math: [Differential Equations and Dynamical Systems by Steven Brunton](https://www.youtube.com/playlist?list=PLMrJAkhIeNNTYaOnVI3QpH7jgULnAmvPA).
+- Introductory [notes on differential equations](https://www.ms.uky.edu/~ejwh226/Spring2018/Chasnov.pdf)
 - Motivation to chaos and the butterfly effect: [Chaos Theory and the Lorenz Attractor](https://www.youtube.com/watch?v=fDek6cYijxI&ab_channel=Veritasium).
-- 
 
 ## Nonlinear Systems and Uncertainty Quantification
 

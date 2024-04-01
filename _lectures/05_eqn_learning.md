@@ -8,4 +8,6 @@ hide_from_announcments: true
 links: 
     - url: /content/notes/04_intro_eqn_learning/lorenz_system
       name: Notes 
+    - url: /content/slides/data-driven-pde-symbolic-reg.pdf
+      name: PDE/Symbolic Reg 
 ---

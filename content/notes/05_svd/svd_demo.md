@@ -1,3 +1,5 @@
+## Principal Component Analysis
+
 #### References:
 - Chapter 12 of CS229 Lecture Notes (Andrew Ng).
 - Chapter 1 of Data-driven Science and Engineering (Brunton, Kutz)
@@ -6,9 +8,6 @@
 - PCA with a spring oscillation example [by Nathan Kutz](https://www.youtube.com/watch?v=a9jdQGybYmE&ab_channel=AMATH301)
 <!-- - https://www.youtube.com/watch?v=CpD9XlTu3ys&ab_channel=Stochastic -->
 
-
-
-## Principal Component Analysis
 
 So far, we've been dealing with data whose underlying patterns can be found through a relationship between inputs $$x$$ and outputs $$y$$: $$y = f(x)$$. However, what happens if the data doesn't have a clear output, and we're merely interested in identifying intrinsic patterns within the data itself? This scenario is a prime domain for unsupervised learning methods.
 
