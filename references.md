@@ -42,6 +42,7 @@ permalink: references/
 - My channel has a few useful videos: [Joseph Bakarji](https://www.youtube.com/@JosephBakarji)
 - Steven Brunton's [YouTube channel on data-driven fluid dynamics and control](https://www.youtube.com/c/eigensteve)
 - [Two Minute Papers](https://www.youtube.com/@TwoMinutePapers)
+- [StatQuest](https://www.youtube.com/@statquest)
 
 ## Useful articles
 - [Physics Informed Neural Networks (PINNs): An Intuitive Guide](https://towardsdatascience.com/physics-informed-neural-networks-pinns-an-intuitive-guide-fff138069563)
@@ -81,6 +82,7 @@ permalink: references/
     - [Deep Learning Specialization - Andrew Ng](https://www.coursera.org/specializations/deep-learning)
     - [Neural networks: zero to hero](https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ)
     - [Andrej Karpathy](https://karpathy.ai/)
+    - [Chris Olah's blog](http://colah.github.io/)
 
 # Coding Resources
 ## Useful Python Packages
@@ -99,7 +101,6 @@ permalink: references/
 - [Matplotlib](https://matplotlib.org/)
 - [Pandas](https://pandas.pydata.org/)
 
-
 ## Python Tutorials
 - [CS231n: Convolutional Neural Networks for Visual Recognition](https://cs231n.github.io/python-numpy-tutorial/)
 
@@ -108,9 +109,6 @@ permalink: references/
 ## Dimensionality Reduction and Modal Decomposition
 - [Understanding POD: the Proper Orthogonal Decomposition](https://www.youtube.com/watch?v=axfUYYNd-4Y&ab_channel=FernandoZigunov)
 - [Dynamic Mode Decomposition (Overview) - Steven Brunton](https://www.youtube.com/watch?v=sQvrK8AGCAo&ab_channel=SteveBrunton)
-
-### General Machine Learning
-- [StatQuest](https://www.youtube.com/@statquest)
 
 ## Reinforcement Learning
 - [AI Learns to Walk (deep reinforcement learning) ](https://www.youtube.com/watch?v=L_4BPjLBF4E&ab_channel=AIWarehouse)
@@ -147,9 +145,12 @@ permalink: references/
 - [Word Embedding by StatQuest](https://www.youtube.com/watch?v=viZrOnJclY0&ab_channel=StatQuestwithJoshStarmer)
 - [Introduction to Large Language Models by Andrei Karpathy](https://www.youtube.com/watch?v=zjkBMFhNj_g&ab_channel=AndrejKarpathy)
 - [Geoffrey Hinton's talk on Intelligence and LLMs (2024)](https://www.youtube.com/watch?v=N1TEjTeQeg0&ab_channel=UniversityofOxford)
+- [ChatGPT: 30 Year History | How AI Learned to Talk](https://www.youtube.com/watch?v=OFS90-FX6pg&ab_channel=ArtoftheProblem)
+- [But what is a GPT? Visual intro to transformers - 3Blue1Brown](https://www.youtube.com/watch?v=wjZofJX0v4M&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&index=5&ab_channel=3Blue1Brown)
+- [Transformer Neural Networks, ChatGPT's foundation, Clearly Explained - StatQuest](https://www.youtube.com/watch?v=zxQyTK8quyY&list=PLblh5JKOoLUIxGDQs4LFFD--41Vzf-ME1&index=20&ab_channel=StatQuestwithJoshStarmer)
+- [The Transformer, Attention is All You Need paper review - Yannic Kilcher](https://www.youtube.com/watch?v=iDulhoQ2pro&ab_channel=TheAISchool)
 
 ## Modeling and Simulation
-
 ### Differential Equations
 - [Introduction to Differential Equations by 3Blue1Brown](https://www.youtube.com/playlist?list=PLZHQObOWTQDNPOjrT6KVlfJuKtYTftqH6)
 - [Introduction to Differential Equations by MIT](https://www.youtube.com/watch?v=ZK3O402wf1c&ab_channel=MITOpenCourseWare)
