@@ -150,6 +150,13 @@ permalink: references/
 - [Transformer Neural Networks, ChatGPT's foundation, Clearly Explained - StatQuest](https://www.youtube.com/watch?v=zxQyTK8quyY&list=PLblh5JKOoLUIxGDQs4LFFD--41Vzf-ME1&index=20&ab_channel=StatQuestwithJoshStarmer)
 - [The Transformer, Attention is All You Need paper review - Yannic Kilcher](https://www.youtube.com/watch?v=iDulhoQ2pro&ab_channel=TheAISchool)
 
+### Variational Autoencoders
+- [Variational Autoencoders - Arxiv Insights](https://www.youtube.com/watch?v=9zKuYvjFFS8&ab_channel=ArxivInsights)
+
+### Graph Neural Networks
+- [Intro to Graph Neural Networks - Alex Foo](https://www.youtube.com/watch?v=GXhBEj1ZtE8&ab_channel=AlexFoo)
+- [Graph Representation Learning - Stanford (2019)](https://www.youtube.com/watch?v=YrhBZUtgG4E&ab_channel=MachineLearningTV)
+
 ## Modeling and Simulation
 ### Differential Equations
 - [Introduction to Differential Equations by 3Blue1Brown](https://www.youtube.com/playlist?list=PLZHQObOWTQDNPOjrT6KVlfJuKtYTftqH6)
