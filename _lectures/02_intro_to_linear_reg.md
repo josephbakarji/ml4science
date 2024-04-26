@@ -10,6 +10,8 @@ links:
       name: Notes 
     - url: /content/notes/01_intro_ml_code/ML_tutorial
       name: Code 
+    - url: /content/notes/01_intro_ml_code/ML_tutorial.ipynb
+      name: Notebook 
     - url: https://www.youtube.com/watch?v=UThuJRt9_N8&ab_channel=JosephBakarji
       name: Video
 ---
