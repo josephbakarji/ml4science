@@ -9,5 +9,7 @@ links:
     - url: /content/slides/deep-learning-lecture-2.pdf
       name: slides 
     - url: /content/notes/06_pytorch_tutorial/basic_nn_example
-      name: code
+      name: Code
+    - url: /content/notes/06_pytorch_tutorial/basic_nn_example.ipynb
+      name: Notebook 
 ---
