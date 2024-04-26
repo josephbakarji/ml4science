@@ -8,6 +8,8 @@ hide_from_announcments: true
 links: 
     - url: /content/notes/01_intro_ml/ml_intro_notes
       name: Notes 
+    - url: /content/notes/01_intro_ml_code/ML_tutorial
+      name: Code 
     - url: https://www.youtube.com/watch?v=UThuJRt9_N8&ab_channel=JosephBakarji
       name: Video
 ---
