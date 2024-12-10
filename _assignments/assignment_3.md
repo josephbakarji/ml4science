@@ -6,7 +6,7 @@ location: /content/hw/hw3/
 # pdf: /static_files/assignments/asg.pdf
 # attachment: /content/hw_files/hw1_files.zip
 # solutions: /static_files/assignments/asg_solutions.pdf
-# hide_from_announcments: true 
+hide_from_announcments: true 
 # hide_time: true 
 due_event: 
     type: due

@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "Problem Set #2 - Neural Networks for Numerical Integration"
+title: "Problem Set #3 - Neural Networks for Numerical Integration"
 permalink: /content/hw/hw3/
 ---
 
