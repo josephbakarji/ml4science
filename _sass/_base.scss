@@ -480,47 +480,118 @@ a.tosu {
     opacity: 0;
   }
 
-  .lecture-container {
-  
-    display: flex;
-    width: 100%;
-    padding-top: 10px;
-    padding-bottom: 10px;
+.lecture-container {
+    margin-bottom: 15px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     
-    .thumbnail {
-      width: 160px;
+    &.collapsed {
+        .lecture-content {
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            overflow: hidden;
+            visibility: hidden;
+        }
+    }
+}
+
+.lecture-header {
+    padding: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 8px;
+    position: relative;
+    
+    &:hover {
+        background-color: #f8f8f8;
+    }
+}
+
+.toggle-icon {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    transition: transform 0.3s ease;
+}
+
+.lecture-title {
+    margin: 0;
+    color: $clemson-purple;
+    font-size: 1.4em;
+    padding-right: 30px;
+}
+
+.lecture-subtitle {
+    margin: 5px 0 0;
+    color: #666;
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 1em;
+    font-weight: 300;
+    padding-right: 30px;
+}
+
+.lecture-content {
+    overflow: hidden;
+    transition: all 0.3s ease-out;
+    padding: 0 20px;
+    visibility: visible;
+}
+
+.lecture-sections {
+    padding: 20px 0;
+}
+
+.lecture-section {
+    margin-bottom: 20px;
+    
+    &:last-child {
+        margin-bottom: 0;
     }
     
-    .content {
-      flex: 1;
+    .section-title {
+        font-weight: bold;
+        color: #444;
+        margin-bottom: 10px;
+        font-size: 1.1em;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 5px;
     }
-  }
+}
 
-  .previous-offerings{
-    list-style-type: none;
+.lecture-links {
+    list-style: none;
+    margin-left: 15px;
+    margin-bottom: 0;
     
-
     li {
-        display: inline-block;
-        margin-right: 10px; 
+        margin: 8px 0;
+        line-height: 1.4;
+        
+        &:last-child {
+            margin-bottom: 0;
+        }
+        
+        a {
+            color: $text-color;
+            text-decoration: none;
+            transition: color 0.2s ease;
+            
+            &:hover {
+                color: $clemson-purple;
+                text-decoration: underline;
+            }
+        }
     }
+}
 
-    li::before {
-        content: "● ";
-        color:black;
-        padding-right: 5px;
-    } 
-  }
-
-  .lecture-links {
-      font-weight: bold;
-      font-family: 'Titillium Web', sans-serif;
-  }
-
-  .schedule-lecture-links {
+.schedule-lecture-links {
     font-weight: normal;
     font-family: inherit;
-  }
+}
 
 .markdown-content {
     p,ol {
@@ -531,5 +602,14 @@ a.tosu {
         padding: 0px;
         display: list-item !important;
         border-bottom: 0 !important;
+    }
+}
+
+// Remove hover transform since we now have expandable cards
+.archiveposturl {
+    transition: none;
+    
+    &:hover {
+        transform: none;
     }
 }

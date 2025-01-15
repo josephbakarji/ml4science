@@ -6,32 +6,64 @@ layout: page
 
 <ul id="archive">
 {% for lecture in site.lectures %}
-<li class="archiveposturl" style="background: transparent">
-<div class="lecture-container">
-    {% if lecture.thumbnail %}
-    <div class="thumbnail">
-      <div class="center-cropped" style="margin-top:5px;margin-bottom:5px;background-image: url('{{ lecture.thumbnail | prepend: site.baseurl }}');">
-        <img src="{{ lecture.thumbnail | prepend: site.baseurl }}"/>
-      </div>
-    </div>
-    {% endif %}
-    <div class="content">
-        <span style="font-weight: bold;">{{ lecture.title }}</span><br>
-
-        <strong>tl;dr:</strong> {{ lecture.tldr }}
-        <br/>
-        <strong>
-        {% include lecture_links.html lecture=lecture %}
-        </strong>
-
-        {% if lecture.content != '' %}
-        <br/>
-        <div class="markdown-content" style="margin-top: 3px;">
-        {{ lecture.content }}
+<li class="archiveposturl">
+    <div class="lecture-container collapsed">
+        <div class="lecture-header" onclick="toggleLecture(this)">
+            <h3 class="lecture-title">{{ lecture.title }}</h3>
+            <p class="lecture-subtitle">{{ lecture.tldr }}</p>
+            <span class="toggle-icon">▼</span>
         </div>
-        {% endif %}
+        
+        <div class="lecture-content">
+            {% if lecture.sections %}
+            <div class="lecture-sections">
+                {% for section in lecture.sections %}
+                <div class="lecture-section">
+                    <h4 class="section-title">{{ section.title }}</h4>
+                    <ul class="lecture-links">
+                    {% for link in section.links %}
+                        <li><a href="{% if link.url contains '://' %}{{ link.url }}{% else %}{{ site.baseurl }}{{ link.url }}{% endif %}">{{ link.name }}</a></li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if lecture.content != '' %}
+            <div class="markdown-content">
+                {{ lecture.content }}
+            </div>
+            {% endif %}
+        </div>
     </div>
-</div>
 </li>
 {% endfor %}
 </ul>
+
+<script>
+function toggleLecture(element) {
+    const container = element.parentElement;
+    const content = container.querySelector('.lecture-content');
+    const icon = container.querySelector('.toggle-icon');
+    
+    if (container.classList.contains('collapsed')) {
+        container.classList.remove('collapsed');
+        content.style.maxHeight = content.scrollHeight + "px";
+        icon.innerHTML = '▲';
+    } else {
+        container.classList.add('collapsed');
+        content.style.maxHeight = null;
+        icon.innerHTML = '▼';
+    }
+}
+
+// Ensure all cards start collapsed
+document.addEventListener('DOMContentLoaded', function() {
+    const containers = document.querySelectorAll('.lecture-container');
+    containers.forEach(container => {
+        const content = container.querySelector('.lecture-content');
+        content.style.maxHeight = null;
+    });
+});
+</script>

@@ -5,10 +5,10 @@ permalink: syllabus/
 ---
 
 ## Course Info 
-* Lectures: Mon, Wed - 5:00 - 6:15 PM @ SRB 413 
+* Lectures: Tue, Thu - 11:00 - 12:15 PM @ Bechtel 202
 * Instructor: [Joseph Bakarji](https://www.josephbakarji.com)
 * Office: Bechtel 418 
-* Office hours: Wed 10:00 AM - 12:00 PM
+* Office hours: Thu 1:30 PM - 3:30 PM
 
 ## Description
 How do we go from a high dimensional, noisy, nonlinear, complex, and multiscale universe to simple and predictive mathematical models? This course introduces modern machine learning techniques using a wide variety of examples in physical, social and biological sciences. Modern data-driven approaches that take advantage of recent advances in machine learning are introduced, including: sparse identification of differential equations, dynamics mode decomposition, and physics informed neural networks.
@@ -62,7 +62,7 @@ How do we go from a high dimensional, noisy, nonlinear, complex, and multiscale 
 - Graph neural networks.
 
 ### Project Description
-You will be provided with a list of suggested datasets to which they have to apply concepts learned in the course. A progress report is due on the 9th week. Graduate students are encouraged to use data collected from or related to their own research projects (i.e. BYOD). 
+You will be provided with a list of suggested datasets to which you have to apply concepts learned in the course. A progress report is due on the 9th week. Graduate students are encouraged to use data collected from or related to their own research projects (i.e. BYOD). 
 
 ## Assessment
 - Short Quizzes (10%)
@@ -75,7 +75,7 @@ You will be provided with a list of suggested datasets to which they have to app
 
 
 ## Course Learning Outcomes
-This course will provide a general overview of machine learning methods, with a focus on applications in engineering and science. The purpose of this course is such that students are able to
+This course will provide a brief overview of machine learning methods, with a focus on applications in engineering and science. The purpose of this course is such that students are able to
 - Collect, visualize, and clean data.
 - Master the basics of machine learning theory and implement them in Python.
 - Apply machine learning concepts to problems in science and engineering.
