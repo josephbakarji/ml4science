@@ -63,3 +63,8 @@ Let $ \lambda_i = \lambda_i(A) $ denote the $ i $th eigenvalue of $ A $.
 
 ## Problem 4: Explore Machine Learning in Science and Engineering
 
+How is machine learning being used in science and engineering? What are the challenges and opportunities? Do some research and write a short report (maximum of 2 pages). If you want to use an LLM (such as ChatGPT) to help you research and write the report, please include the conversation with the LLM as an appendix. Include the following in your report:
+
+- A list of 10 applications of machine learning in science and engineering with references.
+- Deduce what are the 3 most important questions in the field of machine learning for science and engineering.
+- Conclude with what you believe is a good research question that you'd like to tackle in this course. 

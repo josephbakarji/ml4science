@@ -32,15 +32,14 @@ The goal of the course is to put you in the mindset of a modern scientist/engine
 
 ### Reasons not to take this course
 
-If you're not interested in any of the following, this course might not be for you:
-- You need a solid foundation in linear algebra, differential equations, numerical methods, probability and statistics, and programming. If any of these subjects irritate you, this course might not be for you.
-- You should be comfortable with Python and Github, or be ready to learn them in a short period of time.
-- You should be comfortable with the basics of machine learning or be ready to learn it in a short period of time.
-- You should be ready to put in the work to learn the material. This is a senior undergraduate and graduate course, and it's not easy. There will be a lot of reading, writing, and coding. If you're expecting an easy A, this is not the course for you. 
-- This is a math course: you will see a lot of new and old theoretical concepts in a new context. If you don't like math, this course might not be for you.
-- This is a programming course: you will be required to write a lot of code. If you don't like programming, this course might not be for you.
-- This is a philosophy course: you will be encouraged to think big about the foundations of science and how machine learning will disrupt how we understand the world. If you don't like thinking, this course might irritate you.
-- This is a graduate course: you will have to read papers, and write a paper at the end of the term. You will also have to do a lot of exploration and research on your own. I will not spoon-feed you the material, but I will give you the tools to learn it on your own.
+This course might not be for you if:
+- You're uncomfortable with linear algebra, differential equations, numerical methods, probability and statistics, and programming. If any of these subjects irritate you, you might want to reconsider taking this course.
+- You're uncomfortable with Python, or you're not willing to put in the time to learn it.
+- You're uncomfortable with the basics of machine learning, or you're not willing to put in the time to learn it in a short period of time.
+- You're not willing to do lots of reading, writing, and coding. If you're expecting an easy A, this is not the course for you. 
+- You don't like math. You will see a lot of new and old theoretical concepts in a new context.
+- You don't like coding. Machine Learning and Scientific Computing are all about implementing solutions in code. 
+- You're unfomfortable with exploration and research beyond the lecture material. You should be ready to do a lot of research on your own. I will not spoon-feed you all the material in class. My job is to give you the tools you need to learn things on your own.
 
 ### General Learning Guidelines
 
@@ -48,7 +47,7 @@ The main purpose of this course is to get you into the mindset of a modern scien
 
 - **Code, code, code:** get comfortable with programming. Explore libraries or languages that can help you solve your problem. Machine learning is a quickly evolving field, and no matter how much theory you know, you will need to keep up with new tools. For that I'll give you coding assignments, and I'll try to make them as fun as possible. They might be challenging, but I expect you to know how to use online resources to solve them when needed. This is part of being a computational scientist in this age.(see footnote).
 
-- **Read and write:** the best way to continue learning after you complete this course is to keep up with the literature through reading, and to write about what you learn. Write down your project ideas and don't settle on the first idea that comes to mind. This is how you develop your creativity and your ability to communicate your ideas: these skills are always under-emphasized in STEM education, and you'll find that much of your job will turn into reading and writing. This is the purpose of the progress and final project reports.
+- **Read and write:** the best way to continue learning after you complete this course is to keep up with the literature through reading, and to write about what you learn and build. Write down your project ideas and don't settle on the first idea that comes to mind. This is how you develop your creativity and your ability to communicate your ideas: these skills are always under-emphasized in STEM education, and you'll find that much of your job will turn into reading and writing. This is the purpose of the progress and final project reports.
 
 - **Communicate and share:** the best way to learn is to teach. I encourage you to discuss the course material with your colleagues, and to ask questions. There will be a short final presentation of your project. This is a good opportunity to practice your presentation skills, and to learn from your colleagues.
 
@@ -56,7 +55,6 @@ Students will be provided with a list of suggested datasets to which they have t
 
 
 **Online Resources Policy**
-
 Large Language Models (such as ChatGPT) are not banned, but I recommend using them with *extreme* caution. I believe that you can only learn by getting exposed to as many problems as possible and deeply **thinking** about them. When you solve problems, your brain tries multiple routes, failing and learning through trial and error until it becomes good at connecting and building complex ideas. This is how your mind becomes both sharper and more creative. 
 
 If you always use a solution manual or an LLM (as a smart solution manual), you basically learn to become obsolete. So every time you use an LLM, I want you to notice who is serving who. Are you learning to become an assistant to the AI, or is the AI helping you become more intelligent? If it doesn't feel like you're putting in the effort, and there's no sweat involved, then it's probably the former.
@@ -77,14 +75,16 @@ So, my recommendation would be: read the question, try to solve it on your own a
 
 ### Course plan and logistics
 - Course website: I will use the website www.ml4science.com to post the course materials, assignments, and other resources. The purpose is to make it a reference for you that you can come back to even after the course is over.
-- Slack: we will use Slack for communication and discussions. Some of the assignments will be posted there.
+- Slack: we will use Slack for communication and discussions. Some assignments will be posted there.
 - Course materials: I will post the course materials on the reference page.
-- Office hours: Thursday 2:00pm - 4:00pm. You can also book a meeting with me on the website.
+- Office hours: Thursday 1:30pm - 3:30pm. 
 
 ### Project
 
-The project will be in group, where you will be asked to apply the concepts learned in the course to a dataset of your choice. If you want to propose an idea, you should try to work on something where you're trying to answer a question for understanding a complex system; typically one that changes in space and time. Unlike a typical machine learning course where you're only interested in increasing the accuracy of your model (often by trial and error), here you're trying to understand how the system works, what the results mean, and how it can be used to make predictions or build engineering solutions. So you should be able to explain your model, and what it means in the context of the system you're studying. 
+The project will be in groups of 2 to 3, where you will be asked to apply the concepts learned in the course to a dataset of your choice. If you want to propose an idea, you should try to work on something where you're trying to answer a question for understanding a complex physical system; typically one that changes in space and time. Unlike a typical machine learning course where you're only interested in increasing the accuracy of your model (often by trial and error), here you're trying to understand how the system works, what the results mean, why and when the model fails, and how it can be used to make predictions or build engineering solutions. So you should be able to explain your model, and what it means in the context of the system you're studying. 
 
-### Assignment
-
-- Find 10 applications of machine learning in science and engineering. And tell me which ones you're interested in pursuing.
+The project will be in 4 stages:
+1. Proposal: you will propose an idea for a project, and you will be asked to justify why it's a good idea.
+2. Progress Report: you will report on your progress. 
+3. Final Presentation: you will present your project to the class.
+4. Final Report: you will write a report (6 pages long) on your project.

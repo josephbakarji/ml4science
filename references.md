@@ -33,6 +33,8 @@ permalink: references/
 - [Discovering governing equations from data by sparse identification of nonlinear dynamical systems](https://www.pnas.org/doi/abs/10.1073/pnas.1517384113)
 - [Distilling free-form natural laws from experimental data](https://www.science.org/doi/pdf/10.1126/science.1165893)
 - [Physics-informed neural networks](https://www.sciencedirect.com/science/article/pii/S0021999118307125)
+- [Physics-informed machine learning](https://www.nature.com/articles/s42254-021-00314-5)
+- [Scientific Machine Learning Through Physics–Informed Neural Networks: Where we are and What’s Next](https://link.springer.com/article/10.1007/s10915-022-01939-z)
 - [Deep learning for universal linear embeddings of nonlinear dynamics](https://www.nature.com/articles/s41467-018-07210-0)
 - [Learning to Simulate Complex Physics with Graph Networks](https://proceedings.mlr.press/v119/sanchez-gonzalez20a.html)
 - [Modern Koopman Theory for Dynamical Systems](https://arxiv.org/abs/2102.12086)
@@ -40,6 +42,9 @@ permalink: references/
 - [Deep learning and process understanding for data-driven Earth system science](https://www.nature.com/articles/s41586-019-0912-1)
 - [Accelerating Eulerian Fluid Simulation With Convolutional Networks](https://proceedings.mlr.press/v70/tompson17a/tompson17a.pdf)
 - [Genesis Emboddied AI](https://github.com/Genesis-Embodied-AI/Genesis)
+
+- Historical book: [Rediscovering Chemistry with the Bacon System](https://link.springer.com/chapter/10.1007/978-3-662-12405-5_10)
+
 
 ### Talks & Lectures
 - [Science in the Age of Experience 2024 - George Karniadakis, Brown University](https://www.youtube.com/watch?v=Ybj9t-yAA-E)
@@ -116,7 +121,7 @@ permalink: references/
 - [Word Embedding by StatQuest](https://www.youtube.com/watch?v=viZrOnJclY0&ab_channel=StatQuestwithJoshStarmer)
 - [Introduction to Large Language Models by Andrei Karpathy](https://www.youtube.com/watch?v=zjkBMFhNj_g&ab_channel=AndrejKarpathy)
 - [Geoffrey Hinton's talk on Intelligence and LLMs (2024)](https://www.youtube.com/watch?v=N1TEjTeQeg0&ab_channel=UniversityofOxford)
-- [ChatGPT: 30 Year History | How AI Learned to Talk](https://www.youtube.com/watch?v=OFS90-FX6pg&ab_channel=ArtoftheProblem)
+- [ChatGPT: 30 Year History - How AI Learned to Talk](https://www.youtube.com/watch?v=OFS90-FX6pg&ab_channel=ArtoftheProblem)
 - [But what is a GPT? Visual intro to transformers - 3Blue1Brown](https://www.youtube.com/watch?v=wjZofJX0v4M&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&index=5&ab_channel=3Blue1Brown)
 - [Transformer Neural Networks, ChatGPT's foundation, Clearly Explained - StatQuest](https://www.youtube.com/watch?v=zxQyTK8quyY&list=PLblh5JKOoLUIxGDQs4LFFD--41Vzf-ME1&index=20&ab_channel=StatQuestwithJoshStarmer)
 - [The Transformer, Attention is All You Need paper review - Yannic Kilcher](https://www.youtube.com/watch?v=iDulhoQ2pro&ab_channel=TheAISchool)
