@@ -8,9 +8,9 @@ sections:
 - title: Lecture Materials
   links:
   - name: Course Description and Logistics
-    url: /static_files/lectures/00/0_course_description/
+    url: /static_files/lectures/00/0_course_description
   - name: Course Motivation
-    url: /static_files/lectures/00/1_the_questions/
+    url: /static_files/lectures/00/1_the_questions
   - name: My research on discovering physics from data
     url: https://www.josephbakarji.com/articles/on-discovering-physics-from-data
   - name: Lecture Slides
