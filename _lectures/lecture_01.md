@@ -12,12 +12,12 @@ sections:
   - name: Lecture Slides
     url: /static_files/lectures/01/learning examples and data.pdf
   - name: Linear Regression Code
-    url: /static_files/lectures/01/linear_fit_examples
+    url: https://colab.research.google.com/drive/1TUhFxFXiZixkASOsL65wXtR7_UpXcN2c#scrollTo=YAMk4z4bUVM5
 - title: Recommended Videos
   links:
   - name: Introduction to Linear Regression
     url: https://youtu.be/3zHWnd-7FkA
-  - name: CS229 Linear Regression and Gradient Descent (Lecture 1)
+  - name: CS229 Introduction to Machine Learning (Lecture 1)
     url: https://www.youtube.com/watch?v=jGwO_UgTS7I
   - name: CS229 Linear Regression and Gradient Descent (Lecture 2)
     url: https://www.youtube.com/watch?v=4b4MUYve_U8
