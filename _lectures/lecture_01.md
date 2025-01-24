@@ -9,8 +9,10 @@ sections:
   links:
   - name: A brief history of empirical modeling
     url: /static_files/lectures/01/1_brief_history
-  - name: Lecture Slides
+  - name: Background Lecture Slides
     url: /static_files/lectures/01/learning examples and data.pdf
+  - name: Regression Lecture Slides
+    url: /static_files/lectures/01/linear-regression-full.pdf
   - name: Linear Regression Code
     url: https://colab.research.google.com/drive/1TUhFxFXiZixkASOsL65wXtR7_UpXcN2c#scrollTo=YAMk4z4bUVM5
 - title: Recommended Videos
