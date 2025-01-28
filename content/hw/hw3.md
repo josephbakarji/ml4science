@@ -1,4 +1,4 @@
----
+<!-- ---
 layout: page
 title: "Problem Set #3 - Neural Networks for Numerical Integration"
 permalink: /content/hw/hw3/
@@ -8,12 +8,10 @@ permalink: /content/hw/hw3/
 Let $$X = \{ x^{(1)}, \ldots, x^{(m)} \}$$ be a dataset of $$m$$ samples with 2 features, i.e. $$x^{(i)} \in \mathbb R^2$$. The samples are classified into 2 categories with labels $$y^{(i)} \in \{0, 1\}$$. A scatter plot of the dataset is shown in Figure 1:
 
 ![Scatter plot of the dataset](p1-data.png){:width="40%"}
-<!-- <img src="p1-data.png" alt="drawing" width="400"/> -->
 
 The examples in class 1 are marked as $$\times$$ and examples in class 0 are marked as $$\circ$$. We want to perform a binary classification using a neural network with the architecture shown in Figure 2
 
 ![Neural network image](nn-image.png){:width="40%"}
-<!-- <img src="nn-image.png" alt="drawing" width="200"/> -->
 
 Denote the two features $$x_1$$ and $$x_2$$, the three neurons in the hidden layer $$a_1$$, $$a_2$$, and $$a_3$$, and the output neuron as $$\hat y$$. Let the weight from $$x_i$$ to $$a_j$$ be $$w_{ij}^{(1)}$$ for $$i \in \{1, 2\}$$, $$j \in \{1, 2, 3\}$$, and the weight from $$a_j$$ to $$\hat y$$ be $$w_j^{(2)}$$. Finally, denote the intercept weight (i.e. bias) for $$a_j$$ as $$w_{0j}^{(1)}$$, and the intercept weight for $$\hat y$$ as $$w_0^{(2)}$$. For the loss function, we'll use average squared loss:
 
@@ -127,4 +125,4 @@ c) Assume $$n=1$$. Use a fully connected neural network architecture to train yo
 
 d) Repeat the same exercise for $$n>1$$. How does your solution compare with the previous question? (Hint: in the first layer, use ```Flatten()``` to transform your $$n \times 3$$ input to a $$3n$$ dimensional input. You have to integrate the solution in a for loop: given the initial condition $$[\mathbf x_1, \mathbf x_2, \mathbf x_3, \mathbf x_4, \mathbf x_5]$$, predict $$\mathbf x_6$$, then given $$[\mathbf x_2, \mathbf x_3, \mathbf x_4, \mathbf x_5, \mathbf x_6]$$, predict $$\mathbf x_7$$, etc.).
 
-e) Solve the above problem with an LSTM network. You might find [this helpful](https://www.tensorflow.org/tutorials/structured_data/time_series)
+e) Solve the above problem with an LSTM network. You might find [this helpful](https://www.tensorflow.org/tutorials/structured_data/time_series) -->
