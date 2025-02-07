@@ -13,9 +13,11 @@ permalink: references/
 - Géron, A. (2022). Hands-on machine learning with Scikit-Learn, Keras, and TensorFlow. "O'Reilly Media, Inc."
 - Kutz, J. N. (2013). Data-driven modeling & scientific computation: methods for complex systems & big data. Oxford University Press.
 
-### Online Courses
-- Main Machine Learning Reference: [Stanford's Introduction to Machine Learning CS229](https://cs229.stanford.edu/main_notes.pdf)
-- [Parallel Computing and Scientific Machine Learning (SciML): Methods and Applications](https://book.sciml.ai/)
+### Relevant Online Courses
+- Main Reference for ML Basics: [Stanford's Introduction to Machine Learning CS229](https://cs229.stanford.edu/main_notes.pdf)
+- Deep Learning in Scientific Computing: [ETH Zurich Deep Learning in Scientific Computing (series) (2023)](https://www.youtube.com/playlist?list=PLJkYEExhe7rYY5HjpIJbgo-tDZ3bIAqAm)
+- Good foundation in CNNs: [CS231n: Convolutional Neural Networks for Visual Recognition](https://cs231n.github.io/)
+- A parallel computing take on scientific machine learning: [Parallel Computing and Scientific Machine Learning (SciML): Methods and Applications](https://book.sciml.ai/)
 - [MIT ML Courses](https://deeplearning.mit.edu/)
 - [FastAI](https://course.fast.ai/)
 - [Modern applications of machine learning in quantum sciences](https://arxiv.org/abs/2204.04198)
@@ -29,7 +31,7 @@ permalink: references/
 - [Artificial intelligence and illusions of understanding in scientific research](https://www.nature.com/articles/s41586-024-07146-0)
 - [Scientific discovery in the age of artificial intelligence](https://www.nature.com/articles/s41586-023-06221-2)
 
-#### Scientific Machine Learning Papers
+#### Scientific Machine Learning Papers and Projects
 - [Discovering governing equations from data by sparse identification of nonlinear dynamical systems](https://www.pnas.org/doi/abs/10.1073/pnas.1517384113)
 - [Distilling free-form natural laws from experimental data](https://www.science.org/doi/pdf/10.1126/science.1165893)
 - [Physics-informed neural networks](https://www.sciencedirect.com/science/article/pii/S0021999118307125)
@@ -69,6 +71,8 @@ permalink: references/
 
 ## 📊 Data Sources
 
+- [The Well: 15TB of Physics Simulations](https://polymathic-ai.org/the_well/)
+- [AWS backbone network traffic prediction](https://aws.amazon.com/blogs/machine-learning/mitigating-risk-aws-backbone-network-traffic-prediction-using-graphstorm/)
 - [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/index.php)
 - [Kaggle](https://www.kaggle.com/)
     - [Electrical grid data](https://www.kaggle.com/robikscube/hourly-energy-consumption)
@@ -111,7 +115,7 @@ permalink: references/
 - [Decoder-only foundation model](https://research.google/blog/a-decoder-only-foundation-model-for-time-series-forecasting/)
 
 ### Machine Learning for Scientific Computing
-- [ETH Zurich Deep Learning in Scientific Computing (series) (2023)](https://www.youtube.com/playlist?list=PLJkYEExhe7rYY5HjpIJbgo-tDZ3bIAqAm)
+
 - [How Well Can DeepMind's AI Learn Physics? (2021)](https://www.youtube.com/watch?v=2Bw5f4vYL98&ab_channel=TwoMinutePapers)
 - [Introduction to Physics Informed Neural Networks](https://benmoseley.blog/my-research/so-what-is-a-physics-informed-neural-network/)
 - [Physics informed machine learning - Steven Brunton](https://www.youtube.com/playlist?list=PLMrJAkhIeNNQ0BaKuBKY43k4xMo6NSbBa)
