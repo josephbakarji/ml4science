@@ -25,12 +25,12 @@ sections:
     url: https://www.youtube.com/watch?v=f-EFJXCzLsQ&ab_channel=JosephBakarji
   - name: Introduction to Linear Regression
     url: https://youtu.be/3zHWnd-7FkA
-  - name: Feature Engineering and Generalization - Coming Soon
-    url: '#'
+  - name: Feature Engineering and Generalization
+    url: https://www.youtube.com/watch?v=504PwSIr-DI&ab_channel=JosephBakarji
   - name: Introduction to Logistic Regression - Coming Soon
     url: '#'
-  - name: Why Ordinary Least Squares? Maximum Likelihood Estimation - Coming soon
-    url: '#'
+  - name: Why Ordinary Least Squares? Maximum Likelihood Estimation
+    url: https://www.youtube.com/watch?v=7pfHHlg5ouQ&ab_channel=JosephBakarji
 - title: Recommended Videos
   links:
   - name: CS229 Introduction to Machine Learning (Lecture 1)

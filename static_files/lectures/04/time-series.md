@@ -1,12 +1,12 @@
 # Time Series Analysis
 
-## 1. Context and Motivation
-
 Over the past two weeks, we focused on the fundamental paradigm of **supervised
 learning**. The central objective is to approximate a function
+
 $$
 y \;=\; f_{\mathbf{w}}(\mathbf{x}),
 $$
+
 where $$\mathbf{x}$$ denotes the input (or *independent*) variables and $$y$$
 the output (or *dependent*) variable. The model parameters $$\mathbf{w}$$ are
 typically fitted by **minimizing a loss function**, for example:
@@ -21,10 +21,12 @@ $$
 
 A *special* yet immensely important case is the **linear model**, where the
 function $$f_{\mathbf{w}}$$ can be expressed as
+
 $$
 f_{\mathbf{w}}(\mathbf{x}) 
 \;=\; \phi(\mathbf{x})^\top \mathbf{w}.
 $$
+
 Here, $$\phi(\mathbf{x})$$ is called a **feature vector** (or **feature map**),
 and $$\mathbf{w}$$ is the parameter vector. Crucially,
 
@@ -84,16 +86,19 @@ $$
 \;=\;
 \delta_{ij},
 $$
+
 where $$\delta_{ij}$$ is the Kronecker delta (or 1 if $$i=j$$, 0 otherwise).
 This is the generalization of a dot product being zero if the vectors are
 orthogonal.
 
 In general, we often seek an **approximation** $$x(t)$$ of the form:
+
 $$
 x(t) 
 \;\approx\;
 \sum_{k=1}^{K} a_k \,\phi_k(t),
 $$
+
 where $$a_k$$ are coefficients to be determined. If you have measurements
 $$\{x(t_i)\}$$ at discrete times $$\{t_i\}_{i=1}^N$$, you can fit the
 coefficients $$a_k$$ by **linear regression** (or least squares):
@@ -148,6 +153,7 @@ $$
 \arg\min_{\boldsymbol{\alpha}} 
 \bigl\|\mathbf{x} \;-\; \mathbf{\Phi}\,\boldsymbol{\alpha}\bigr\|^2,
 $$
+
 where $$\mathbf{x} = [\,x(t_1), \ldots, x(t_N)\,]^\top$$.
 
 ### 2.3 The Fast Fourier Transform (FFT)
@@ -165,6 +171,9 @@ feasible to:
 Even though our *linear regression* perspective is mathematically correct and
 instructive, the FFT is **much faster** than a naive $$\mathcal{O}(N \times K)$$
 regression when you use the *canonical* set of frequencies and uniform sampling.
+See Section 2.6 of
+[Algorithms](http://algorithmics.lsi.upc.edu/docs/Dasgupta-Papadimitriou-Vazirani.pdf)
+by Dasgupta, Papadimitriou, and Vazirani for more details.
 
 ### 2.4 Beyond Standard Fourier: Advanced Modal Techniques
 
@@ -176,7 +185,7 @@ in many advanced methods. For example:
 - **DeepONets (Deep Operator Networks)**: Learn operators (mappings from function spaces to function spaces), can be viewed as generalizing classical expansions into neural frameworks.  
 - **FNO (Fourier Neural Operator)**: A neural network approach that applies spectral (Fourier) transformations in intermediate layers to model PDE solutions.
 
-These methods **extend** the notion of “expanding into bases,” whether in a
+These methods **extend** the notion of ``expanding into bases,'' whether in a
 data-driven manner (like POD/DMD) or by mixing neural networks with Fourier-like
 transforms (like FNO). They rely on the same principle of constructing “modal
 expansions” to capture complex systems, but leverage **deep learning** to handle
@@ -230,7 +239,9 @@ x_i
 \;+\; w_0 
 \;+\; \varepsilon_i,
 $$
+
 where $$\varepsilon_i$$ is noise. For $$p=2$$ (AR(2)), the model reads:
+
 $$
 x_i 
 \;=\; w_2\,x_{i-2} 
@@ -252,6 +263,7 @@ $$
 x_i 
 \;=\; w_2\,x_{i-2} + w_1\,x_{i-1} + w_0.
 $$
+
 *(For simplicity, assume no noise $$\varepsilon_i$$.)*
 
 Below is a short **Python** snippet demonstrating how to **simulate** the data
@@ -305,6 +317,7 @@ frequency $$\omega$$).
 
 We can see why **AR(2)** can represent a sine wave by recalling a
 **trigonometric identity**. For $$x_i = \sin(\omega\, i)$$, we have
+
 $$
 \sin(\omega\, i)
 \;=\;
@@ -312,7 +325,9 @@ $$
 \;-\;
 \sin(\omega\, (i-2)).
 $$
+
 Hence, in the form $$x_i = w_2\,x_{i-2} + w_1\,x_{i-1}$$, we would identify
+
 $$
 w_1 \;=\; 2\,\cos(\omega),
 \quad
@@ -320,10 +335,12 @@ w_2 \;=\; -\,1,
 \quad
 w_0 = 0.
 $$
+
 Thus, the sinusoidal behavior is **encoded** by the specific values of $$(w_1,
 w_2)$$. 
 
 **Challenge**: From real (or simulated) data, can you **estimate** $$(w_1, w_2)$$ and then **infer** $$\omega$$? Notice that:
+
 $$
 w_1 = 2\,\cos(\omega)
 \quad\Longrightarrow\quad
@@ -331,7 +348,7 @@ w_1 = 2\,\cos(\omega)
 $$
 
 
-### Key Takeaways
+**Key Takeaways**:
 
 1. **Motivation**: Directly fitting $$x(t)$$ with chosen features may
 generalize poorly in time if the chosen basis is inaccurate.  
@@ -354,10 +371,12 @@ In the **next sections**, we will see how to extend these ideas to handle
 ### 4.1 Neural Networks for Sequence Data
 
 We already saw that a neural network can replace the linear function in:
+
 $$
 x_{i} 
 \;=\; f_{\mathbf{w}}(x_{i-1},\, x_{i-2},\, \dots),
 $$
+
 leading to **Nonlinear AutoRegressive** models. However, when the sequence is
 long (potentially thousands of steps), passing all past values $$\{x_{i-1},
 \dots, x_{i-p}\}$$ into a dense network becomes:
@@ -409,6 +428,7 @@ y_t
 w_j \; x_{t - j,d}
 \;+\; b,
 $$
+
 for each valid $$t$$. In a **causal** TCN, we only define $$y_t$$ for $$t \ge
 (k-1)\,d$$ to avoid referencing future samples (we might pad earlier values with
 zeros or replicate boundary conditions).
@@ -426,6 +446,7 @@ $$
 \mathrm{Conv1D}\bigl(\mathbf{y}_{t}^{(\ell-1)}\bigr)
 \Bigr),
 $$
+
 with appropriate **dilation** and **residual** connections. Summaries of these
 outputs can be fed to a **final layer** for prediction or classification.
 
@@ -456,7 +477,7 @@ Example **domains** include:
 - **Speech synthesis / audio generation**: TCN-like architectures (WaveNet) are used for high-quality audio.  
 - **Sensor networks**: If you have a large set of sensors measuring temperature/humidity, TCNs can learn spatiotemporal dependencies if you stack 1D time convolutions for each sensor channel (or combine with spatial graphs).
 
-### 4.5 Summary and Outlook
+**Key Takeaways**:
 
 - **TCN** layers use *dilated*, *causal* **1D convolutions** to capture **long-range time dependencies** without sequential recurrences.  
 - **Residual connections** and **parallelizable** operations allow TCNs to train efficiently and handle large time-series.  
@@ -479,6 +500,7 @@ arrays), each time step $$i$$ yields a **vector**:
 $$
 \mathbf{x}_i \;\in\; \mathbb{R}^d,
 $$
+
 possibly with **exogenous inputs** $$\mathbf{u}_i \in \mathbb{R}^r$$. The goal
 is still to predict or model how $$\mathbf{x}_{i+1}$$ (or some output
 $$\mathbf{y}_i$$) evolves over time, but now the dynamics are **matrix-based**
@@ -493,25 +515,21 @@ $$
 \begin{aligned}
 \mathbf{x}_{i+1} &= A\,\mathbf{x}_i \;+\; B\,\mathbf{u}_i \;+\;
 \boldsymbol{\varepsilon}_i, \\[6pt]
-\mathbf{y}_i     &= C\,\mathbf{x}_i \;+\; \mathbf{r}_i,
+\mathbf{y}_i &= C\,\mathbf{x}_i \;+\; \mathbf{r}_i,
 \end{aligned}
 $$
-where
 
+where
 - $$\mathbf{x}_i \in \mathbb{R}^d$$ is the (hidden) *state* at time $$i$$.  
 - $$\mathbf{u}_i \in \mathbb{R}^r$$ represents *known inputs* or controls.  
 - $$\mathbf{y}_i \in \mathbb{R}^m$$ is the *observed output* (e.g., sensor measurements).  
 - $$A \in \mathbb{R}^{d\times d},\,B \in \mathbb{R}^{d\times r},\,C \in \mathbb{R}^{m\times d}$$ are model matrices.  
 - $$\boldsymbol{\varepsilon}_i$$ and $$\mathbf{r}_i$$ are *noise* or *disturbances* in the process and measurements, respectively.
 
-#### 5.2.1 Known vs. Unknown Matrices
-
 In many engineering or physics settings, $$A$$, $$B$$, and $$C$$ might be
 **partially known** from first principles (e.g., linearized dynamics around an
 operating point). In other scenarios, these matrices (or some of their
 parameters) are **unknown** and must be **learned** from data.
-
-##### Parameter Estimation
 
 If $$\mathbf{x}_i$$ and $$\mathbf{u}_i$$ are fully observed, but
 $$\mathbf{y}_i$$ is not used, the simplest regression problem is:
@@ -527,6 +545,7 @@ A\,\mathbf{x}_i
 B\,\mathbf{u}_i
 \right\|^2.
 $$
+
 This yields a **least-squares** solution if the noise
 $$\boldsymbol{\varepsilon}_i$$ is assumed i.i.d. Gaussian. In matrix form, one
 can stack $$\mathbf{x}_{i+1}$$ and the corresponding $$\mathbf{x}_i,
@@ -544,6 +563,7 @@ C\,\mathbf{x}_i
 \;+\; 
 \mathbf{r}_i,
 $$
+
 where $$\mathbf{r}_i$$ is measurement noise. Estimating (or “filtering”)
 $$\mathbf{x}_i$$ from the **indirect** observations
 $$\{\mathbf{y}_1,\dots,\mathbf{y}_i\}$$ is the task of a **Kalman filter** (in
@@ -613,11 +633,6 @@ $$\mathbf{x}_i$$ given noisy measurements $$\mathbf{y}_i$$.
 4. This framework extends naturally to **nonlinear** dynamics and more
 **data-driven** methods that approximate $$f(\cdot)$$ or combine known physics
 with learned components.
-
-
-Below is the **Section 6** text with the **same numbering** as our previous
-sections. The content remains in a **narrative** style, but now includes
-**sub-section numbering** to be consistent with the earlier format.
 
 
 ## 6. Hidden Variables
@@ -896,5 +911,5 @@ synergy is increasingly essential in safety-critical or high-stakes domains
 (healthcare, finance, climate modeling, etc.) where purely deterministic
 approaches may understate the risks and variability inherent in the real world.
 
-NOTE: These lecture notes were based on two lectures of MECH 798K at AUB, and
-were partially edited using GPT-o1.
+NOTE: These lecture notes were based on two lectures of the Data-Driven
+Modeling Course at AUB, and were partially edited using GPT-o1.

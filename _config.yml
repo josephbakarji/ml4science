@@ -16,7 +16,7 @@ baseurl: "" # the subpath of your site, e.g. /blog/
 url: "https://ml4science.com" # the base hostname & protocol for your site
 
 schoolname: "American University of Beirut"
-schoolurl: "https://www.aub.edu.lb"
+schoolurl: "www.josephbakarji.com"
 twitter_username: josephbakarji 
 
 address: |
