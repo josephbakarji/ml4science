@@ -24,5 +24,7 @@ sections:
     url: https://youtu.be/3zHWnd-7FkA
   - name: Learning Deep Learning with GPT
     url: https://www.youtube.com/watch?v=sYrT1e-dYQU&ab_channel=JosephBakarji
+  - name: Neural Networks 3Blue1Brown Series
+    url: https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi
 hide_from_announcments: false
 ---
