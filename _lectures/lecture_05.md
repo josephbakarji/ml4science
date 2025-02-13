@@ -13,6 +13,8 @@ sections:
     url: /static_files/lectures/05/modeling-functions
   - name: Complex Systems and Differential Equations
     url: /static_files/lectures/05/1_complex_systems
+  - name: 'The story of the Lorenz System: Nonlinearity, Chaos, Uncertainty Quantification'
+    url: /static_files/lectures/05/diff-solve
 - title: Recommended Videos
   links:
   - name: Differential equations, a tourist's guide - 3Blue1Brown
