@@ -1,4 +1,4 @@
-<!-- ---
+---
 layout: page
 title: "Problem Set #2 - Differential Equations And Probabilistic Models"
 permalink: /content/hw/hw2/
@@ -93,4 +93,4 @@ Go through the list of differential equations in different fields on this [Wikip
 (c) Define the library of functions (feature vector) that you should use to discover the equation from data. Is there a larger set of functions that you can define in the absence of knowledge of the equation? (e.g. polynomials up to n-th degree, trigonometric functions, etc. In the Lorenz System example, we used general polynomials of degree 2 that contained the terms we're interested in.) 
 
 (d) Bonus: use the generated data to estimate the coefficients of the equation using the [PySINDy library](https://pysindy.readthedocs.io/en/latest/index.html) that sparsifies the equation using a sparsity regularization term (e.g. L1 norm).
- -->
+
