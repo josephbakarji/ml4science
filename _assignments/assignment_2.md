@@ -1,6 +1,6 @@
 ---
 type: assignment
-date: 2025-02-19T16:00:00+4:30
+date: 2025-02-12T16:00:00+4:30
 title: 'Problem Set #2 - Deep Learning and Time Series Analysis'
 location: /content/hw/hw2_25/
 # pdf: /static_files/assignments/asg.pdf

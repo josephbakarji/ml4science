@@ -1,6 +1,6 @@
 ---
 type: assignment
-date: 2025-02-28T16:00:00+4:30
+date: 2025-01-28T16:00:00+4:30
 title: 'Problem set #1 - Regression in Empirical Laws'
 location: /content/hw/hw1_1_25/
 # pdf: /static_files/assignments/asg.pdf
