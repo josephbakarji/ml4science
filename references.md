@@ -32,20 +32,20 @@ permalink: references/
 - [Scientific discovery in the age of artificial intelligence](https://www.nature.com/articles/s41586-023-06221-2)
 
 #### Scientific Machine Learning Papers and Projects
-- [Discovering governing equations from data by sparse identification of nonlinear dynamical systems](https://www.pnas.org/doi/abs/10.1073/pnas.1517384113)
-- [Distilling free-form natural laws from experimental data](https://www.science.org/doi/pdf/10.1126/science.1165893)
-- [Physics-informed neural networks](https://www.sciencedirect.com/science/article/pii/S0021999118307125)
-- [Physics-informed machine learning](https://www.nature.com/articles/s42254-021-00314-5)
-- [Scientific Machine Learning Through Physics–Informed Neural Networks: Where we are and What’s Next](https://link.springer.com/article/10.1007/s10915-022-01939-z)
-- [Deep learning for universal linear embeddings of nonlinear dynamics](https://www.nature.com/articles/s41467-018-07210-0)
-- [Learning to Simulate Complex Physics with Graph Networks](https://proceedings.mlr.press/v119/sanchez-gonzalez20a.html)
-- [Modern Koopman Theory for Dynamical Systems](https://arxiv.org/abs/2102.12086)
-- [Accelerating Eulerian Fluid Simulation With Convolutional Networks](https://proceedings.mlr.press/v70/tompson17a/tompson17a.pdf)
-- [Deep learning and process understanding for data-driven Earth system science](https://www.nature.com/articles/s41586-019-0912-1)
-- [Accelerating Eulerian Fluid Simulation With Convolutional Networks](https://proceedings.mlr.press/v70/tompson17a/tompson17a.pdf)
-- [Genesis Emboddied AI](https://github.com/Genesis-Embodied-AI/Genesis)
-
-- Historical book: [Rediscovering Chemistry with the Bacon System](https://link.springer.com/chapter/10.1007/978-3-662-12405-5_10)
+- [KAN 2.0: Kolmogorov-Arnold Networks Meet Science (2024)](https://arxiv.org/pdf/2408.10205)
+- [Discovering governing equations from data by sparse identification of nonlinear dynamical systems (2015)](https://www.pnas.org/doi/abs/10.1073/pnas.1517384113)
+- [Distilling free-form natural laws from experimental data (2011)](https://www.science.org/doi/pdf/10.1126/science.1165893)
+- [Physics-informed neural networks (2019)](https://www.sciencedirect.com/science/article/pii/S0021999118307125)
+- [Physics-informed machine learning (2021)](https://www.nature.com/articles/s42254-021-00314-5)
+- [Scientific Machine Learning Through Physics–Informed Neural Networks: Where we are and What’s Next (2022)](https://link.springer.com/article/10.1007/s10915-022-01939-z)
+- [Deep learning for universal linear embeddings of nonlinear dynamics (2018)](https://www.nature.com/articles/s41467-018-07210-0)
+- [Learning to Simulate Complex Physics with Graph Networks (2020)](https://proceedings.mlr.press/v119/sanchez-gonzalez20a.html)
+- [Modern Koopman Theory for Dynamical Systems (2021)](https://arxiv.org/abs/2102.12086)
+- [Accelerating Eulerian Fluid Simulation With Convolutional Networks (2017)](https://proceedings.mlr.press/v70/tompson17a/tompson17a.pdf)
+- [Deep learning and process understanding for data-driven Earth system science (2019)](https://www.nature.com/articles/s41586-019-0912-1)
+- [Accelerating Eulerian Fluid Simulation With Convolutional Networks (2017)](https://proceedings.mlr.press/v70/tompson17a/tompson17a.pdf)
+- [Genesis Emboddied AI (2024)](https://github.com/Genesis-Embodied-AI/Genesis)
+- Historical book: [Rediscovering Chemistry with the Bacon System (1999)](https://link.springer.com/chapter/10.1007/978-3-662-12405-5_10)
 
 
 ### Talks & Lectures
