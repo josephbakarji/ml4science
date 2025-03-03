@@ -13,8 +13,12 @@ sections:
     url: /static_files/lectures/05/modeling-functions
   - name: Complex Systems and Differential Equations
     url: /static_files/lectures/05/1_complex_systems
+  - name: Introduction to Numerical Integration
+    url: /static_files/lectures/05/1_numerical_computing_intro
   - name: 'The story of the Lorenz System: Nonlinearity, Chaos, Uncertainty Quantification'
     url: /static_files/lectures/05/diff-solve
+  - name: Introduction to Partial Differential Equations
+    url: /static_files/lectures/05/intro-to-pdes
 - title: Recommended Videos
   links:
   - name: Differential equations, a tourist's guide - 3Blue1Brown
