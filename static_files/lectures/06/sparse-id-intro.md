@@ -2,19 +2,24 @@
 
 ## 1. Introduction
 
-Many physical, biological, and engineering systems admit **differential
-equation** representations. For a **one-dimensional** system, we often write:
+Many physical, biological, and engineering systems admit differential equation
+representations. For a one-dimensional system, we often write:
+
 $$
 \dot{x} \;=\; f(x),
 $$
+
 where 
+
 $$
 \dot{x} \;=\; \frac{d x}{d t}.
 $$
-However, suppose you only have **time-series data** $$\{x^{(i)}, t_i\}$$,
-without knowing $$f$$. **Sparse Identification of Nonlinear Dynamics (SINDy)**
-addresses this scenario by assuming that $$f$$ lies in a **sparse** combination
-of candidate functions. Concretely, if 
+
+However, suppose you only have time-series data $$\{x^{(i)}, t_i\}$$, without
+knowing $$f$$. Sparse Identification of Nonlinear Dynamics (SINDy) is one way to
+address this scenario by assuming that $$f$$ is a sparse linear combination of
+candidate functions that are predefined as a feature library. Concretely, if 
+
 $$
 \Phi(x) \;=\; 
 \begin{bmatrix}
@@ -24,44 +29,39 @@ $$
 \phi_M(x)
 \end{bmatrix}
 $$
-is a **feature library**, we write:
+
+is a feature library, we write:
+
 $$
 \dot{x} \;=\; \Phi(x) \cdot \,\boldsymbol{w} \;=\; 
 \sum_{j=1}^M \phi_j(x)\, w_j,
 $$
+
 so that $$f(x)$$ is nonlinear in $$x$$ but **linear in** the parameters
 $$\boldsymbol{w}$$.
 
----
 
 ## 2. From Time Series to Derivative Approximation
 
-### 2.1 Discrete Measurements
-
 Suppose we measure 
+
 $$
 x^{(1)} = x(t_1),\; x^{(2)} = x(t_2),\;\dots,\; x^{(N)} = x(t_N).
 $$
+
 We thus have $$N$$ snapshots $$\bigl\{(x^{(i)},t_i)\bigr\}_{i=1}^{N}$$.
 
-### 2.2 Numerical Derivatives
-
 SINDy requires an estimate of $$\dot{x}(t_i)$$. A basic forward difference is
+
 $$
 \hat{\dot{x}}^{(i)} \;=\; \frac{x^{(i+1)} - x^{(i)}}{\,t_{i+1} - t_i\,}, 
 \quad i=1,\dots,(N-1).
 $$
+
 Here, $$\hat{\dot{x}}^{(i)}$$ approximates $$\dot{x}(t_i)$$. One may also use
 centered differences, polynomial fitting, or other techniques to improve
-accuracy.
+accuracy. A **feature library** $$\Phi$$ is a set of candidate functions:
 
----
-
-## 3. Constructing the Feature Library and Design Matrix
-
-### 3.1 Feature Library
-
-A **feature library** $$\Phi$$ is a set of candidate functions:
 $$
 \Phi(x) \;=\;
 \begin{bmatrix}
@@ -75,12 +75,12 @@ $$
 \quad
 \dot{x} \;=\; \Phi(x) \cdot \,\boldsymbol{w}.
 $$
+
 Common examples:
 1. **Polynomials**: $$1$$, $$x$$, $$x^2$$, $$x^3$$, $$\dots$$.
 2. **Trigonometric**: $$\sin(x)$$, $$\cos(x)$$.
 3. **Exponentials**: $$e^x$$, etc.
 
-### 3.2 Design Matrix
 
 For each measurement $$x^{(i)}$$ ($$i = 1,\dots,N-1$$), we evaluate every
 candidate function in $$\Phi$$. This yields a **design matrix** $$X \in
@@ -97,9 +97,9 @@ X \;=\;
 \end{bmatrix}.
 $$
 
-### 3.3 Regression Problem
+We arrange our time-derivative approximations $$\hat{\dot{x}}^{(i)}$$ into a
+vector
 
-We arrange our time-derivative approximations $$\xhat{}^{(i)}$$ into a vector
 $$
 \hat{\mathbf{\dot{x}}}
 \;=\;
@@ -110,12 +110,16 @@ $$
 \hat{\dot{x}}^{(N-1)}
 \end{bmatrix}.
 $$
+
 Then the SINDy problem in its simplest form is:
+
 $$
 \min_{\boldsymbol{w}} 
 \;\bigl\|\hat{\mathbf{\dot{x}}} - X\,\boldsymbol{w}\bigr\|_2^2.
 $$
+
 Equivalently, for each data row $$i$$, we want:
+
 $$
 \hat{\dot{x}}^{(i)} \;\approx\; 
 \underbrace{
@@ -129,9 +133,8 @@ $$
 
 ---
 
-## 4. Illustrative Matrix Form: Example with $$N=7$$ Data Points
 
-Let’s say $$N=7$$. We have 6 derivative approximations $$\hat{\dot{x}}^{(1)},
+Let’s say $$N=6$$. We have 6 derivative approximations $$\hat{\dot{x}}^{(1)},
 \dots, \hat{\dot{x}}^{(6)}$$. With 4 candidate features ($$1, x, x^2,
 \sin(x)$$), the design matrix $$X$$ is $$6\times4$$. In full:
 
@@ -167,6 +170,7 @@ w_4
 $$
 
 Hence,
+
 $$
 \hat{\mathbf{\dot{x}}} - X\,\boldsymbol{w}
 =
@@ -194,17 +198,19 @@ w_4
 \end{bmatrix}
 \;=\;\mathbf{0}.
 $$
+
 SINDy aims to **minimize** the norm of this residual to find the best
 $$\boldsymbol{w}$$.
 
 ---
 
-## 5. Enforcing Sparsity
+### 2.1 Enforcing Sparsity
 
 Real systems often have **only a few dominant terms** in $$f$$. Thus, we impose
-**sparsity** on $$\boldsymbol{w}$$. Common approaches:
+sparsity on $$\boldsymbol{w}$$. Common approaches:
 
 1. **LASSO (L1 penalty)**:
+
 $$
 \min_{\boldsymbol{w}} 
 \Bigl(
@@ -212,6 +218,7 @@ $$
 \;+\;\lambda \|\boldsymbol{w}\|_1
 \Bigr).
 $$
+
 2. **Sequential Thresholding**:
    1. Solve regular least squares $$\|\hat{\mathbf{\dot{x}}} -
 X\,\boldsymbol{w}\|_2^2$$.
@@ -219,14 +226,15 @@ X\,\boldsymbol{w}\|_2^2$$.
 $$\epsilon$$) to 0.
    3. Repeat until convergence.
 
-This isolates the **few** relevant terms, yielding a concise model.
+This isolates the few relevant terms, yielding a concise model.
 
 ---
 
-## 6. Multiple Variables $$(x,y,z)$$
+## 3. Multiple Variables $$(x,y,z)$$
 
 When the system has **multiple measurements** $$\bigl(x(t),y(t),z(t)\bigr)$$,
 each variable can obey a distinct equation:
+
 $$
 \dot{x} 
 \;=\; f_x\bigl(x,y,z\bigr), 
@@ -237,6 +245,7 @@ $$
 \dot{z} 
 \;=\; f_z\bigl(x,y,z\bigr).
 $$
+
 In matrix form, define a **combined** library $$\Phi(x,y,z)$$ for each data
 point. Then we can “stack” the equations. One approach is to solve three
 separate linear regressions:
@@ -248,6 +257,7 @@ $$
 \hat{\mathbf{z}} &\approx X\,\boldsymbol{w}_z,
 \end{aligned}
 $$
+
 where $$\boldsymbol{w}_x$$, $$\boldsymbol{w}_y$$, $$\boldsymbol{w}_z$$ are
 independent coefficient vectors. Each corresponds to one of the three equations
 ($$\dot{x}, \dot{y}, \dot{z}$$). Alternatively, one may form a larger matrix
@@ -256,12 +266,11 @@ linear regressions**.
 
 ---
 
-## 7. Extending SINDy to PDEs
-
-### 7.1 PDE Setup
+## 4. Extending SINDy to PDEs
 
 For a system described by a **partial differential equation** in one spatial
 dimension $$x$$ and time $$t$$:
+
 $$
 u_t 
 \;\;=\;\; f\bigl(u,\,u_x,\,u_{xx},\dots\bigr),
@@ -270,9 +279,8 @@ we have measurements
 $$
 u(x_j,\,t_k)\quad \text{for} \quad j=1,\dots,J;\; k=1,\dots,K.
 $$
-We want to discover the function $$f$$. 
 
-### 7.2 Numerical Approximation of Derivatives
+We want to discover the function $$f$$. 
 
 1. **Time Derivative $$\hat{u}_t$$**:  
    For fixed $$x_j$$, approximate the partial derivative $$\partial u/\partial
@@ -282,9 +290,11 @@ t$$ via a finite difference in $$t$$:
    \;\approx\;
    \frac{u(x_j,\,t_{k+1}) - u(x_j,\,t_k)}{t_{k+1} - t_k}.
    $$
+   
 2. **Spatial Derivatives**:  
    For fixed $$t_k$$, approximate $$u_x$$ or $$u_{xx}$$ using finite
 differences in $$x$$. For instance,
+
    $$
    \hat{u}_x(x_j,t_k)
    \;\approx\;
@@ -294,32 +304,32 @@ differences in $$x$$. For instance,
    \;\approx\;
    \frac{u(x_{j+1},t_k) - 2u(x_j,t_k) + u(x_{j-1},t_k)}{(\Delta x)^2}.
    $$
+
    Other variants (central differences, higher-order schemes, etc.) can improve
 accuracy.
-
-### 7.3 Building the PDE Library and Regression
 
 At each grid point $$(x_j,t_k)$$, we evaluate a **PDE feature library**
 $$\Phi$$ that might include
 $$\bigl\{u,\,u^2,\,u_x,\,u_{xx},\,u\,u_x,\dots\bigr\}$$. Then the PDE assumption
 is:
+
 $$
 \hat u_t(x_j,t_k) 
 \;\approx\; 
 \Phi\bigl(\hat u,\, \hat u_x,\, \hat u_{xx},\dots\bigr)
 \,\boldsymbol{w},
 $$
+
 which is **linear** in the parameters $$\boldsymbol{w}$$. Stacking all grid
 points (or a subset) gives a **large linear system**. Enforcing sparsity on
 $$\boldsymbol{w}$$ reveals which terms are truly present in the PDE.
 
-This extension, sometimes called **PDE-FIND**, can uncover PDEs—like
-advection-diffusion, Korteweg–de Vries, or wave equations—from spatio-temporal
-data.
+This extension can uncover PDEs—like advection-diffusion, Korteweg–de Vries, or
+wave equations—from spatio-temporal data.
 
 ---
 
-## 8. Pseudo-Code Example
+## 5. Pseudo-Code Example
 
 Below is a concise Python pseudo-code illustrating **SINDy for a single
 time-series**. The same logic extends to multiple variables or PDEs—only the
