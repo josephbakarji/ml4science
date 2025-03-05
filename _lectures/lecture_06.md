@@ -17,8 +17,7 @@ sections:
     url: https://www.science.org/doi/pdf/10.1126/science.1165893
 - title: Recommended Videos
   links:
-  - name: 'Sparse Identification of Nonlinear Dynamics (SINDy): Sparse Machine Learning
-      Models'
+  - name: Sparse Identification of Nonlinear Dynamics (SINDy)
     url: https://www.youtube.com/watch?v=NxAn0oglMVw&ab_channel=SteveBrunton
   - name: Python Symbolic Regression (PySR)
     url: https://www.youtube.com/watch?v=df43V4OjMVs&ab_channel=SteveBrunton
