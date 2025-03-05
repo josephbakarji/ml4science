@@ -27,6 +27,7 @@ permalink: references/
 ### Papers
 
 #### General AI for Science Papers and Articles
+- [Big data need big theory too](https://royalsocietypublishing.org/doi/full/10.1098/rsta.2016.0153)
 - [Is AI leading to a reproducibility crisis in science?](https://www.nature.com/articles/d41586-023-03817-6)
 - [Artificial intelligence and illusions of understanding in scientific research](https://www.nature.com/articles/s41586-024-07146-0)
 - [Scientific discovery in the age of artificial intelligence](https://www.nature.com/articles/s41586-023-06221-2)

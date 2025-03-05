@@ -1,5 +1,5 @@
 ---
-title: Sparse Identification of Differential Equations from Data
+title: Symbolic Identification of Differential Equations from Data
 date: '2025-03-01T8:00:00+4:30'
 type: lecture
 tldr: Given data in space and time, how can we find its corresponding equation using
@@ -22,5 +22,7 @@ sections:
   links:
   - name: Sprase Identification of Differential Equations Intro
     url: /static_files/lectures/06/sparse-id-intro
+  - name: Symbolic Regression with Genetic Algorithms
+    url: /static_files/lectures/06/symbolic-reg
 hide_from_announcments: false
 ---

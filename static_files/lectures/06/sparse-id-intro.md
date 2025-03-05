@@ -379,7 +379,7 @@ print("Identified sparse coefficients:", w_spar)
 
 ---
 
-## 9. Summary
+## 6. Summary
 
 1. **Formulate a Library**: List candidate functions of the system variables
 (e.g. $$\{1, x, x^2, \dots\}$$ for ODEs; $$\{u, u^2, u_x, u_{xx}, \dots\}$$ for
