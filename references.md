@@ -16,6 +16,7 @@ permalink: references/
 ### Relevant Online Courses
 - Main Reference for ML Basics: [Stanford's Introduction to Machine Learning CS229](https://cs229.stanford.edu/main_notes.pdf)
 - Deep Learning in Scientific Computing: [ETH Zurich Deep Learning in Scientific Computing (series) (2023)](https://www.youtube.com/playlist?list=PLJkYEExhe7rYY5HjpIJbgo-tDZ3bIAqAm)
+- ETH Zurich: [AI in the Sciences and Engineering at ETH Zurich (2024)](https://camlab.ethz.ch/teaching/ai-in-the-sciences-and-engineering-2024.html)
 - Good foundation in CNNs: [CS231n: Convolutional Neural Networks for Visual Recognition](https://cs231n.github.io/)
 - A parallel computing take on scientific machine learning: [Parallel Computing and Scientific Machine Learning (SciML): Methods and Applications](https://book.sciml.ai/)
 - [MIT ML Courses](https://deeplearning.mit.edu/)
