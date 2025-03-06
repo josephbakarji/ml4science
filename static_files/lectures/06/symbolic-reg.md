@@ -1,4 +1,4 @@
-Symbolic Regression with Genetic Algorithms
+# Symbolic Regression with Genetic Algorithms
 
 ## 1. Introduction and Motivation
 
