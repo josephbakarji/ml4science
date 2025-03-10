@@ -8,11 +8,13 @@ sections:
 - title: Recommended Readings
   links:
   - name: Physics Informed Neural Networks
-    url: '#'
+    url: https://www.sciencedirect.com/science/article/abs/pii/S0021999118307125
 - title: Recommended Videos
   links:
   - name: Intro to Physics Informed Neural Networks
-    url: '#'
+    url: https://www.youtube.com/watch?v=-zrY7P2dVC4&ab_channel=SteveBrunton
+  - name: Lagrangian Neural Networks
+    url: https://www.youtube.com/watch?v=HLUIx6FqAvg&ab_channel=SteveBrunton
 - title: Lecture Materials
   links:
   - name: Intro to PINNs Lecture Notes
