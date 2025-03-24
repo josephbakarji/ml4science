@@ -13,6 +13,8 @@ sections:
     url: https://databookuw.com/databookV2.pdf
   - name: Dynamic mode decomposition of numerical and experimental data
     url: https://polytechnique.hal.science/hal-01020654/file/DMS0022112010001217a.pdf
+  - name: Data-driven operator inference for nonintrusive projection-based model reduction
+    url: https://www.sciencedirect.com/science/article/pii/S0045782516301104
 - title: Recommended Videos
   links:
   - name: Introduction to Dynamic Mode Decomposition
