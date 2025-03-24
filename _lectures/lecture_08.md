@@ -27,6 +27,8 @@ sections:
     url: /static_files/lectures/08/gmm.pdf
   - name: PCA Intro Slides
     url: /static_files/lectures/08/pca.pdf
+  - name: 'Explanation with Code: SVD with Demo'
+    url: /static_files/lectures/08/svd_demo
   - name: Other unsupervised learning algorithms
     url: /static_files/lectures/08/unsupervised-learning-overview.pdf
 hide_from_announcments: false

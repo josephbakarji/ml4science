@@ -19,8 +19,6 @@ sections:
     url: https://www.youtube.com/watch?v=HLUIx6FqAvg&ab_channel=SteveBrunton
 - title: Lecture Materials
   links:
-  - name: SVD and PCA Intro
-    url: svd_demo.ipynb
   - name: Intro to PINNs Lecture Notes
     url: /static_files/lectures/07/pinns-intro
   - name: Simple Example Code
