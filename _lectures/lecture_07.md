@@ -9,6 +9,8 @@ sections:
   links:
   - name: Physics Informed Neural Networks
     url: https://www.sciencedirect.com/science/article/abs/pii/S0021999118307125
+  - name: So, what is a physics-informed neural network? - Ben Moseley
+    url: https://benmoseley.blog/my-research/so-what-is-a-physics-informed-neural-network/
 - title: Recommended Videos
   links:
   - name: Intro to Physics Informed Neural Networks
@@ -17,6 +19,8 @@ sections:
     url: https://www.youtube.com/watch?v=HLUIx6FqAvg&ab_channel=SteveBrunton
 - title: Lecture Materials
   links:
+  - name: SVD and PCA Intro
+    url: svd_demo.ipynb
   - name: Intro to PINNs Lecture Notes
     url: /static_files/lectures/07/pinns-intro
   - name: Simple Example Code
