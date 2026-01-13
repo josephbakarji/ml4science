@@ -16,7 +16,7 @@ preparation:
 material:
 - name: Lecture Slides - Complex Systems
   type: slides
-  url: slides/02_complex_systems.html
+  url: /static_files/slides/02_complex_systems.html
 - name: Complex Systems Notebook
   type: notebook
   url: /static_files/lectures/02/complex_systems_intro

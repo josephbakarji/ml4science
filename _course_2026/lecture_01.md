@@ -16,7 +16,7 @@ preparation:
 material:
 - name: Lecture Slides - Brief History
   type: slides
-  url: slides/brief_history.html
+  url: /static_files/slides/brief_history.html
 - name: Background Slides - Learning from Data
   type: slides
   url: /static_files/lectures/01/learning examples and data.pdf

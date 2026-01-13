@@ -58,7 +58,7 @@
   material:
   - name: Lecture Slides - Brief History
     type: slides
-    url: slides/brief_history.html
+    url: /static_files/slides/brief_history.html
   - name: Background Slides - Learning from Data
     type: slides
     url: /static_files/lectures/01/learning examples and data.pdf
@@ -90,7 +90,7 @@
   material:
   - name: Lecture Slides - Complex Systems
     type: slides
-    url: slides/02_complex_systems.html
+    url: /static_files/slides/02_complex_systems.html
   - name: Complex Systems Notebook
     type: notebook
     url: /static_files/lectures/02/complex_systems_intro
