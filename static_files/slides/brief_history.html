@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Brief History of Empirical Modeling</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/night.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/monokai.css">
+    <style>
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; }
+        .reveal blockquote {
+            font-style: italic;
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-left: 4px solid #42affa;
+        }
+        .reveal .slides section { text-align: left; }
+        .reveal ul { display: block; }
+        .reveal li { margin: 0.5em 0; }
+        .law-list { font-size: 0.8em; }
+        .center-text { text-align: center; }
+        .highlight-box {
+            background: rgba(66, 175, 250, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- Title Slide -->
+<section data-background-gradient="linear-gradient(to bottom, #1a1a2e, #16213e)">
+    <h1>A Brief History of Empirical Modeling</h1>
+    <h3>From Galileo to Machine Learning</h3>
+    <p style="margin-top: 2em; color: #888;">Data-Driven Modeling in Science & Engineering</p>
+</section>
+
+<!-- Einstein Quote -->
+<section>
+    <blockquote>
+        "The most incomprehensible thing about the world is that it is comprehensible. The fact that it is comprehensible is a miracle."
+        <footer style="text-align: right; margin-top: 1em;">-- Albert Einstein</footer>
+    </blockquote>
+</section>
+
+<!-- The Renaissance Revolution -->
+<section>
+    <h2>The Renaissance Revolution</h2>
+    <ul>
+        <li class="fragment">Language opened our eyes to abstract representations</li>
+        <li class="fragment">The Renaissance: space and time can be <strong>quantified</strong></li>
+        <li class="fragment">Simple mathematical forms predict behavior with surprising accuracy</li>
+    </ul>
+</section>
+
+<!-- Galileo -->
+<section>
+    <h2>Galileo Galilei</h2>
+    <ul>
+        <li>Dropped objects from the Leaning Tower of Pisa</li>
+        <li>Deduced relationships between <strong>time</strong> and <strong>displacement</strong></li>
+        <li>Newton later formalized: $F = ma$</li>
+    </ul>
+    <div class="fragment highlight-box">
+        <strong>Key insight:</strong> Controllable input measurements linearly affect output behavior
+    </div>
+</section>
+
+<!-- Paradigm Shifts -->
+<section>
+    <h2>20th Century Paradigm Shifts</h2>
+    <ul>
+        <li class="fragment">Relativity of time</li>
+        <li class="fragment">Quantum nature of matter</li>
+        <li class="fragment"><strong>The advent of computers</strong> (most revolutionary!)</li>
+    </ul>
+</section>
+
+<!-- Before Computers -->
+<section>
+    <h2>Before Computers</h2>
+    <p>Scientists discovered mathematical rules using:</p>
+    <ul>
+        <li>Pens and paper</li>
+        <li>Vivid imagination</li>
+        <li>Analytical techniques</li>
+    </ul>
+    <div class="fragment" style="margin-top: 1em;">
+        <p><strong>Strong bias towards:</strong></p>
+        <ul>
+            <li>Well-posed linear equations</li>
+            <li>Few variables as possible</li>
+            <li>Simple building blocks (atoms, cells, agents)</li>
+            <li>Systems where superposition applies</li>
+        </ul>
+    </div>
+</section>
+
+<!-- The Limitation -->
+<section data-background-color="#2d1b1b">
+    <h2>The Great Limitation</h2>
+    <p>These assumptions cannot capture the true complexity of:</p>
+    <ul>
+        <li class="fragment">Living things</li>
+        <li class="fragment">Ecosystems</li>
+        <li class="fragment">Self-organizing systems</li>
+        <li class="fragment">Turbulent flows</li>
+    </ul>
+    <p class="fragment" style="font-size: 1.2em; margin-top: 1em;"><strong>Almost everything that matters!</strong></p>
+</section>
+
+<!-- Computers Change Everything -->
+<section>
+    <h2>Computers Change Everything</h2>
+    <ul>
+        <li class="fragment">Crunch numbers at very high speeds</li>
+        <li class="fragment">Solve complicated nonlinear systems</li>
+        <li class="fragment">Numerical "experiments" / simulations</li>
+        <li class="fragment">Study complex, nonlinear, high-dimensional, multi-scale systems</li>
+    </ul>
+</section>
+
+<!-- The Modern Process -->
+<section>
+    <h2>The Modern Scientific Process</h2>
+    <ol>
+        <li class="fragment">Derive equations</li>
+        <li class="fragment">Design numerical solvers</li>
+        <li class="fragment">Simulate</li>
+        <li class="fragment">Analyze predictions</li>
+        <li class="fragment">Refine model until observations match</li>
+    </ol>
+</section>
+
+<!-- Three Factors -->
+<section>
+    <h2>The ML Revolution: Three Factors</h2>
+    <div class="fragment">
+        <h3>1. Moore's Law</h3>
+        <p>Transistors double every 2 years</p>
+    </div>
+    <div class="fragment">
+        <h3>2. Data Explosion</h3>
+        <p>Data generated online doubles every 2 years</p>
+    </div>
+    <div class="fragment">
+        <h3>3. Algorithmic Advances</h3>
+        <p>ML algorithms became efficient to train and scale</p>
+    </div>
+</section>
+
+<!-- The Question -->
+<section data-background-gradient="linear-gradient(to bottom, #1a2e1a, #162e16)">
+    <h2 class="center-text">The Big Question</h2>
+    <p class="center-text" style="font-size: 1.3em; margin-top: 2em;">
+        Can we automate the process of<br>
+        <strong>modeling complex systems</strong>?
+    </p>
+</section>
+
+<!-- Empirical Laws Section -->
+<section>
+    <h2>Empirical Laws</h2>
+    <p>Discovering physical laws = </p>
+    <ul>
+        <li class="fragment">Well-designed experiment</li>
+        <li class="fragment">Controlled input causes output to change</li>
+        <li class="fragment">Simple linear fit</li>
+        <li class="fragment">Proportionality constant gets physical meaning</li>
+    </ul>
+</section>
+
+<!-- Famous Laws -->
+<section>
+    <h2>Classical Empirical Laws</h2>
+    <div class="law-list">
+        <ul>
+            <li><strong>Pascal's Law</strong> (1653): $\Delta p = \rho g \Delta h$</li>
+            <li><strong>Hooke's Law</strong> (1678): $F = -kx$</li>
+            <li><strong>Newton's Viscosity</strong> (1701): $\tau = \mu \frac{du}{dy}$</li>
+            <li><strong>Ohm's Law</strong> (1781): $I = V/R$</li>
+            <li><strong>Fourier's Law</strong> (1822): $q = -k \frac{dT}{dx}$</li>
+            <li><strong>Fick's Law</strong> (1855): $J = -D \frac{dC}{dx}$</li>
+        </ul>
+    </div>
+</section>
+
+<!-- Ideal Gas Law -->
+<section>
+    <h2>The Ideal Gas Law</h2>
+    <p class="center-text" style="font-size: 1.5em;">$PV = k_B NT$</p>
+    <p>Combining 2 centuries of linear laws:</p>
+    <ul class="law-list">
+        <li><strong>Boyle</strong> (1662): $P \propto V$</li>
+        <li><strong>Charles</strong> (1787): $T \propto V$</li>
+        <li><strong>Amonton</strong> (1808): $P \propto T$</li>
+        <li><strong>Avogadro</strong> (1811): $N \propto V$</li>
+    </ul>
+</section>
+
+<!-- Least Squares -->
+<section>
+    <h2>The Birth of Curve Fitting</h2>
+    <ul>
+        <li>Linear relationships inferred geometrically (with a ruler!)</li>
+        <li class="fragment">Early 19th century: Legendre & Gauss use <strong>least-squares</strong></li>
+        <li class="fragment">1821: Gauss develops full theory of least-squares optimization</li>
+    </ul>
+    <div class="fragment highlight-box center-text">
+        The foundation of modern machine learning!
+    </div>
+</section>
+
+<!-- End Slide -->
+<section data-background-gradient="linear-gradient(to bottom, #1a1a2e, #16213e)">
+    <h2>Summary</h2>
+    <ul>
+        <li>From Galileo's experiments to automated discovery</li>
+        <li>Computers unlocked nonlinear, complex systems</li>
+        <li>ML + Data + Compute = New paradigm</li>
+    </ul>
+    <p style="margin-top: 2em; color: #42affa;">Next: Introduction to Machine Learning</p>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js"></script>
+<script>
+    Reveal.initialize({
+        hash: true,
+        slideNumber: true,
+        transition: 'slide',
+        plugins: [ RevealMath.KaTeX, RevealHighlight ]
+    });
+</script>
+</body>
+</html>

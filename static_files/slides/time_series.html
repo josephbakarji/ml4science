@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Series Analysis</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/night.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/monokai.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --r-main-font-size: 28px;
+            --r-heading1-size: 1.8em;
+            --r-heading2-size: 1.4em;
+            --r-heading3-size: 1.1em;
+        }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; }
+        .reveal { font-size: 24px; }
+        .reveal pre { font-size: 0.55em; width: 100%; }
+        .reveal code { font-size: 0.9em; }
+        .reveal pre code { max-height: 500px; }
+        .reveal ul, .reveal ol { font-size: 0.85em; }
+        .reveal li { margin: 0.3em 0; }
+        .reveal .slides section { text-align: left; }
+        .reveal blockquote { font-size: 0.8em; background: rgba(255,255,255,0.05); padding: 15px; border-left: 3px solid #42affa; }
+        .small { font-size: 0.75em; }
+        .tiny { font-size: 0.6em; }
+        .center { text-align: center; }
+        .highlight-box { background: rgba(66, 175, 250, 0.15); padding: 15px; border-radius: 6px; margin: 10px 0; }
+        .two-col { display: flex; gap: 20px; }
+        .two-col > * { flex: 1; }
+        .equation { text-align: center; margin: 20px 0; font-size: 1.1em; }
+        .interactive-plot { background: #1e2127; border-radius: 8px; padding: 10px; margin: 10px 0; }
+        .slider-container { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+        .slider-container input { flex: 1; }
+        .slider-container label { min-width: 80px; font-size: 0.8em; }
+        svg text { fill: #abb2bf; font-size: 12px; }
+        svg .axis path, svg .axis line { stroke: #555; }
+        svg .grid line { stroke: #333; }
+    </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ==================== TITLE ==================== -->
+<section data-background-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
+    <h1>Time Series Analysis</h1>
+    <h3>From Fourier to Deep Learning</h3>
+    <p class="small" style="margin-top: 2em; color: #888;">
+        Data-Driven Modeling in Science & Engineering
+    </p>
+</section>
+
+<!-- ==================== OVERVIEW ==================== -->
+<section>
+    <h2>Lecture Overview</h2>
+    <ol>
+        <li>Supervised Learning Recap</li>
+        <li>Fourier & Modal Decompositions</li>
+        <li>Auto-Regressive (AR) Models</li>
+        <li>Deep Learning: TCNs & RNNs</li>
+        <li>State-Space Models & Kalman Filter</li>
+        <li>Hidden Variables & Probabilistic Models</li>
+    </ol>
+</section>
+
+<!-- ==================== SUPERVISED LEARNING ==================== -->
+<section>
+    <h2>1. Supervised Learning Recap</h2>
+    <p>Approximate a function:</p>
+    <div class="equation">$y = f_{\mathbf{w}}(\mathbf{x})$</div>
+    <p>by minimizing a loss:</p>
+    <div class="equation">$\mathcal{L}(\mathbf{w}) = \sum_{i=1}^{N} \|y^{(i)} - f_{\mathbf{w}}(\mathbf{x}^{(i)})\|^{2}$</div>
+</section>
+
+<section>
+    <h2>Linear Models</h2>
+    <div class="equation">$f_{\mathbf{w}}(\mathbf{x}) = \phi(\mathbf{x})^\top \mathbf{w}$</div>
+    <ul>
+        <li>$\phi(\mathbf{x})$ = <strong>feature vector</strong> (feature map)</li>
+        <li>$\mathbf{w}$ = parameter vector</li>
+        <li>Linear in parameters → <strong>least-squares</strong></li>
+    </ul>
+    <div class="equation small">$\min_{\mathbf{w}} \sum_{i=1}^{N} (y^{(i)} - \phi(\mathbf{x}^{(i)})^\top \mathbf{w})^2$</div>
+</section>
+
+<section>
+    <h2>What is $\mathbf{x}$ in Time Series?</h2>
+    <div class="two-col">
+        <div>
+            <p><strong>Input $\mathbf{x}$:</strong></p>
+            <ul class="small">
+                <li>Time index $t$</li>
+                <li>Spatial coordinates</li>
+                <li>Previous measurements</li>
+                <li>Control inputs</li>
+            </ul>
+        </div>
+        <div>
+            <p><strong>Output $y$:</strong></p>
+            <ul class="small">
+                <li>Future predictions</li>
+                <li>Spatiotemporal fields</li>
+                <li>System states</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== FOURIER ==================== -->
+<section>
+    <h2>2. Fourier Decomposition</h2>
+    <p>Represent $x(t)$ as sum of basis functions:</p>
+    <div class="equation">$x(t) \approx \sum_{k=1}^{K} a_k \phi_k(t)$</div>
+    <p class="small">where $\{\phi_k\}$ are <strong>orthonormal</strong>: $\langle \phi_i, \phi_j \rangle = \delta_{ij}$</p>
+</section>
+
+<section>
+    <h2>Fourier = Linear Regression</h2>
+    <div class="equation small">$x(t) \approx \sum_{k=1}^{K} [w_k \sin(2\pi f_k t) + v_k \cos(2\pi f_k t)]$</div>
+    <p class="small">Design matrix $\Phi$ of size $N \times 2K$:</p>
+    <div class="equation tiny">$\Phi_{i,2k-1} = \sin(2\pi f_k t_i), \quad \Phi_{i,2k} = \cos(2\pi f_k t_i)$</div>
+    <p class="small">Solve: $\hat{\alpha} = \arg\min \|\mathbf{x} - \Phi\alpha\|^2$</p>
+</section>
+
+<section>
+    <h2>Interactive: Fourier Components</h2>
+    <div class="interactive-plot" id="fourier-plot"></div>
+    <div class="slider-container">
+        <label>Freq 1:</label><input type="range" id="freq1" min="0.5" max="5" step="0.1" value="1">
+        <label>Freq 2:</label><input type="range" id="freq2" min="1" max="10" step="0.1" value="3">
+    </div>
+</section>
+
+<section>
+    <h2>FFT: $O(N \log N)$</h2>
+    <ul>
+        <li>Standard equally-spaced samples + canonical frequencies</li>
+        <li>Revolutionized signal processing</li>
+    </ul>
+    <pre><code class="python">import numpy as np
+from scipy.fft import fft, fftfreq
+
+# Compute FFT
+X = fft(signal)
+freqs = fftfreq(len(signal), dt)
+
+# Power spectrum
+power = np.abs(X)**2</code></pre>
+</section>
+
+<section>
+    <h2>Beyond Fourier</h2>
+    <ul class="small">
+        <li><strong>POD</strong>: Data-driven orthonormal modes (variance)</li>
+        <li><strong>DMD</strong>: Spatiotemporal coherent structures</li>
+        <li><strong>FNO</strong>: Fourier Neural Operator for PDEs</li>
+        <li><strong>DeepONets</strong>: Learn operators between function spaces</li>
+    </ul>
+    <div class="highlight-box small">
+        All based on "modal expansion" thinking!
+    </div>
+</section>
+
+<!-- ==================== AR MODELS ==================== -->
+<section>
+    <h2>3. Auto-Regressive Models</h2>
+    <p>Problem with Fourier: need to <em>choose</em> frequencies</p>
+    <p class="fragment"><strong>AR approach:</strong> predict from <em>past values</em></p>
+    <div class="equation">$x_i = f(x_{i-1}, x_{i-2}, \dots, x_{i-p})$</div>
+</section>
+
+<section>
+    <h2>AR(p) Model</h2>
+    <div class="equation">$x_i = \sum_{\ell=1}^{p} w_\ell x_{i-\ell} + w_0 + \varepsilon_i$</div>
+    <p class="small">For AR(2):</p>
+    <div class="equation">$x_i = w_1 x_{i-1} + w_2 x_{i-2} + w_0$</div>
+    <p class="small">Fit via <strong>linear regression</strong> on lagged data!</p>
+</section>
+
+<section>
+    <h2>Interactive: AR(2) Sine Wave</h2>
+    <div class="interactive-plot" id="ar2-plot"></div>
+    <div class="slider-container">
+        <label>$\omega$:</label><input type="range" id="omega" min="0.1" max="0.8" step="0.01" value="0.3">
+        <span id="omega-val">0.30</span>
+    </div>
+    <p class="tiny">Theory: $w_1 = 2\cos(\omega)$, $w_2 = -1$</p>
+</section>
+
+<section>
+    <h2>AR(2) Code</h2>
+    <pre><code class="python">import numpy as np
+
+# Generate sine wave
+N, omega = 200, 0.3
+x = np.sin(omega * np.arange(N))
+
+# Build design matrix [x_{i-1}, x_{i-2}, 1]
+X = np.column_stack([x[1:-1], x[:-2], np.ones(N-2)])
+y = x[2:]
+
+# Fit via least squares
+w = np.linalg.lstsq(X, y, rcond=None)[0]
+print(f"w1={w[0]:.3f}, w2={w[1]:.3f}")
+# w1 ≈ 2*cos(omega), w2 ≈ -1</code></pre>
+</section>
+
+<section>
+    <h2>AR ↔ Frequency</h2>
+    <p>Trigonometric identity:</p>
+    <div class="equation small">$\sin(\omega i) = 2\cos(\omega)\sin(\omega(i-1)) - \sin(\omega(i-2))$</div>
+    <p class="small">So for $x_i = \sin(\omega i)$:</p>
+    <div class="equation">$w_1 = 2\cos(\omega) \implies \omega = \arccos(w_1/2)$</div>
+    <div class="highlight-box small">
+        Recover frequency from AR parameters!
+    </div>
+</section>
+
+<!-- ==================== DEEP LEARNING ==================== -->
+<section>
+    <h2>4. Deep Learning for Sequences</h2>
+    <p>Replace linear AR with neural network:</p>
+    <div class="equation">$x_i = f_\theta(x_{i-1}, \dots, x_{i-p})$</div>
+    <p class="fragment small">Problems with long sequences:</p>
+    <ul class="fragment small">
+        <li>Many parameters</li>
+        <li>No weight sharing across time</li>
+        <li>Hard to parallelize (RNNs)</li>
+    </ul>
+</section>
+
+<section>
+    <h2>TCN: Temporal Convolutional Network</h2>
+    <ul class="small">
+        <li><strong>1D convolutions</strong> over time</li>
+        <li><strong>Causal</strong>: only looks at past</li>
+        <li><strong>Dilated</strong>: exponential receptive field</li>
+        <li><strong>Parallelizable</strong>: unlike RNNs</li>
+    </ul>
+    <div class="equation small">$y_t = \sum_{j=0}^{k-1} w_j \cdot x_{t-j \cdot d} + b$</div>
+    <p class="tiny">$d$ = dilation factor</p>
+</section>
+
+<section>
+    <h2>TCN Architecture</h2>
+    <div class="interactive-plot" id="tcn-plot" style="height: 300px;"></div>
+    <p class="tiny center">Dilations: 1 → 2 → 4 → 8 (exponential growth)</p>
+</section>
+
+<section>
+    <h2>TCN in PyTorch</h2>
+    <pre><code class="python">import torch.nn as nn
+
+class TCNBlock(nn.Module):
+    def __init__(self, in_ch, out_ch, kernel=3, dilation=1):
+        super().__init__()
+        self.conv = nn.Conv1d(
+            in_ch, out_ch, kernel,
+            padding=(kernel-1)*dilation,  # causal padding
+            dilation=dilation
+        )
+        self.relu = nn.ReLU()
+
+    def forward(self, x):
+        out = self.conv(x)[:, :, :-self.conv.padding[0]]  # trim future
+        return self.relu(out)</code></pre>
+</section>
+
+<!-- ==================== STATE SPACE ==================== -->
+<section>
+    <h2>5. State-Space Models</h2>
+    <p>Vector-valued states $\mathbf{x}_i \in \mathbb{R}^d$:</p>
+    <div class="equation small">
+        $\mathbf{x}_{i+1} = A\mathbf{x}_i + B\mathbf{u}_i + \varepsilon_i$<br>
+        $\mathbf{y}_i = C\mathbf{x}_i + \mathbf{r}_i$
+    </div>
+    <ul class="tiny">
+        <li>$\mathbf{x}_i$ = hidden state</li>
+        <li>$\mathbf{u}_i$ = control input</li>
+        <li>$\mathbf{y}_i$ = observation</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Kalman Filter</h2>
+    <p class="small">Optimal state estimation under:</p>
+    <ul class="small">
+        <li>Linear dynamics & observation</li>
+        <li>Gaussian noise: $\varepsilon \sim \mathcal{N}(0,Q)$, $r \sim \mathcal{N}(0,R)$</li>
+    </ul>
+    <div class="two-col small">
+        <div>
+            <strong>Predict:</strong>
+            <div class="equation tiny">$\hat{x}_{i|i-1} = A\hat{x}_{i-1}$</div>
+        </div>
+        <div>
+            <strong>Update:</strong>
+            <div class="equation tiny">$\hat{x}_i = \hat{x}_{i|i-1} + K(y_i - C\hat{x}_{i|i-1})$</div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2>Interactive: Kalman Filter</h2>
+    <div class="interactive-plot" id="kalman-plot"></div>
+    <div class="slider-container">
+        <label>Obs Noise:</label><input type="range" id="obs-noise" min="0.5" max="3" step="0.1" value="1.5">
+    </div>
+</section>
+
+<!-- ==================== HIDDEN VARIABLES ==================== -->
+<section>
+    <h2>6. Hidden Variables</h2>
+    <p class="small">Instead of large lag $p$, use hidden state $\mathbf{h}_i$:</p>
+    <div class="equation">
+        $\mathbf{h}_{i+1} = g(\mathbf{h}_i, \mathbf{x}_i; \theta)$<br>
+        $\mathbf{x}_i = \ell(\mathbf{h}_i; \theta)$
+    </div>
+    <p class="small fragment">Hidden state = <strong>memory</strong> of the past</p>
+</section>
+
+<section>
+    <h2>RNN Update</h2>
+    <div class="equation small">
+        $\mathbf{h}_{i+1} = \tanh(W_{hh}\mathbf{h}_i + W_{hx}\mathbf{x}_i + \mathbf{b})$<br>
+        $\mathbf{x}_{i+1} = W_{xh}\mathbf{h}_{i+1}$
+    </div>
+    <pre><code class="python">class RNN(nn.Module):
+    def __init__(self, input_size, hidden_size):
+        super().__init__()
+        self.rnn = nn.RNN(input_size, hidden_size, batch_first=True)
+        self.fc = nn.Linear(hidden_size, input_size)
+
+    def forward(self, x, h=None):
+        out, h_new = self.rnn(x, h)
+        return self.fc(out), h_new</code></pre>
+</section>
+
+<section>
+    <h2>LSTM & GRU</h2>
+    <p class="small">Address vanishing gradients with <strong>gating</strong>:</p>
+    <ul class="small">
+        <li><strong>LSTM</strong>: forget gate, input gate, output gate</li>
+        <li><strong>GRU</strong>: reset gate, update gate (simpler)</li>
+    </ul>
+    <pre><code class="python"># Drop-in replacement
+self.lstm = nn.LSTM(input_size, hidden_size, batch_first=True)
+self.gru = nn.GRU(input_size, hidden_size, batch_first=True)</code></pre>
+</section>
+
+<!-- ==================== PROBABILISTIC ==================== -->
+<section>
+    <h2>7. Probabilistic Models</h2>
+    <p class="small">Instead of deterministic prediction:</p>
+    <div class="equation">$x_i \sim p(x_i | x_{i-1}, \dots)$</div>
+    <p class="small fragment">Get <strong>distributions</strong>, not just point estimates</p>
+</section>
+
+<section>
+    <h2>Hidden Markov Models</h2>
+    <div class="equation small">
+        $h_{i+1} \sim p(h_{i+1} | h_i)$<br>
+        $x_i \sim p(x_i | h_i)$
+    </div>
+    <ul class="small">
+        <li><strong>Discrete</strong> hidden states</li>
+        <li>Inference: Forward-Backward, Viterbi</li>
+        <li>Learning: EM algorithm</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Neural + Probabilistic</h2>
+    <p class="small">RNN/TCN with probabilistic output:</p>
+    <div class="equation small">$x_i \sim \mathcal{N}(\mu_\theta(h_i), \sigma^2_\theta(h_i))$</div>
+    <ul class="small">
+        <li>Variational Autoencoders (VAE) for sequences</li>
+        <li>Deep Markov Models</li>
+        <li>Neural ODEs with uncertainty</li>
+    </ul>
+</section>
+
+<!-- ==================== SUMMARY ==================== -->
+<section data-background-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
+    <h2>Summary</h2>
+    <table class="small">
+        <tr><td><strong>Fourier</strong></td><td>Fixed basis (sines/cosines)</td></tr>
+        <tr><td><strong>AR(p)</strong></td><td>Linear on past values</td></tr>
+        <tr><td><strong>TCN</strong></td><td>Dilated causal convolutions</td></tr>
+        <tr><td><strong>RNN/LSTM</strong></td><td>Hidden state as memory</td></tr>
+        <tr><td><strong>State-Space</strong></td><td>Linear dynamics + Kalman</td></tr>
+        <tr><td><strong>HMM</strong></td><td>Probabilistic hidden states</td></tr>
+    </table>
+</section>
+
+<section>
+    <h2>Key Takeaways</h2>
+    <ol class="small">
+        <li>Time series = supervised learning with <strong>temporal structure</strong></li>
+        <li>Fourier: linear regression on sinusoidal features</li>
+        <li>AR: predict from past (learn frequency implicitly)</li>
+        <li>Deep models: TCN (parallel), RNN (sequential)</li>
+        <li>State-space: hidden state + noise → Kalman filter</li>
+        <li>Probabilistic: uncertainty quantification</li>
+    </ol>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js"></script>
+<script>
+// Initialize Reveal
+Reveal.initialize({
+    hash: true,
+    slideNumber: true,
+    transition: 'slide',
+    width: 1200,
+    height: 700,
+    plugins: [ RevealMath.KaTeX, RevealHighlight ]
+});
+
+// ============ D3 INTERACTIVE PLOTS ============
+
+// Fourier Plot
+Reveal.on('slidechanged', event => {
+    if (event.currentSlide.querySelector('#fourier-plot')) {
+        initFourierPlot();
+    }
+    if (event.currentSlide.querySelector('#ar2-plot')) {
+        initAR2Plot();
+    }
+    if (event.currentSlide.querySelector('#tcn-plot')) {
+        initTCNPlot();
+    }
+    if (event.currentSlide.querySelector('#kalman-plot')) {
+        initKalmanPlot();
+    }
+});
+
+function initFourierPlot() {
+    const container = d3.select('#fourier-plot');
+    container.selectAll('*').remove();
+
+    const width = 700, height = 250;
+    const margin = {top: 20, right: 20, bottom: 30, left: 40};
+
+    const svg = container.append('svg').attr('width', width).attr('height', height);
+    const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+    const x = d3.scaleLinear().domain([0, 4*Math.PI]).range([0, width - margin.left - margin.right]);
+    const y = d3.scaleLinear().domain([-2.5, 2.5]).range([height - margin.top - margin.bottom, 0]);
+
+    g.append('g').attr('class', 'axis').attr('transform', `translate(0,${y(0)})`).call(d3.axisBottom(x).ticks(5));
+    g.append('g').attr('class', 'axis').call(d3.axisLeft(y).ticks(5));
+
+    const line = d3.line().x(d => x(d.t)).y(d => y(d.v));
+    const path = g.append('path').attr('fill', 'none').attr('stroke', '#61afef').attr('stroke-width', 2);
+
+    function update() {
+        const f1 = +document.getElementById('freq1').value;
+        const f2 = +document.getElementById('freq2').value;
+        const data = [];
+        for (let t = 0; t <= 4*Math.PI; t += 0.05) {
+            data.push({t, v: Math.sin(f1*t) + 0.5*Math.sin(f2*t)});
+        }
+        path.attr('d', line(data));
+    }
+
+    document.getElementById('freq1').oninput = update;
+    document.getElementById('freq2').oninput = update;
+    update();
+}
+
+function initAR2Plot() {
+    const container = d3.select('#ar2-plot');
+    container.selectAll('*').remove();
+
+    const width = 700, height = 250;
+    const margin = {top: 20, right: 20, bottom: 30, left: 40};
+
+    const svg = container.append('svg').attr('width', width).attr('height', height);
+    const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+    const x = d3.scaleLinear().domain([0, 100]).range([0, width - margin.left - margin.right]);
+    const y = d3.scaleLinear().domain([-1.5, 1.5]).range([height - margin.top - margin.bottom, 0]);
+
+    g.append('g').attr('class', 'axis').attr('transform', `translate(0,${y(0)})`).call(d3.axisBottom(x));
+    g.append('g').attr('class', 'axis').call(d3.axisLeft(y));
+
+    const line = d3.line().x(d => x(d.i)).y(d => y(d.v));
+    const truePath = g.append('path').attr('fill', 'none').attr('stroke', '#61afef').attr('stroke-width', 2);
+    const predPath = g.append('path').attr('fill', 'none').attr('stroke', '#e06c75').attr('stroke-width', 2).attr('stroke-dasharray', '5,5');
+
+    function update() {
+        const omega = +document.getElementById('omega').value;
+        document.getElementById('omega-val').textContent = omega.toFixed(2);
+
+        const N = 100;
+        const trueData = [], predData = [];
+        const xTrue = [];
+
+        for (let i = 0; i < N; i++) {
+            xTrue.push(Math.sin(omega * i));
+            trueData.push({i, v: xTrue[i]});
+        }
+
+        // Fit AR(2)
+        const w1 = 2 * Math.cos(omega);
+        const w2 = -1;
+
+        const xPred = [xTrue[0], xTrue[1]];
+        for (let i = 2; i < N; i++) {
+            xPred.push(w1 * xPred[i-1] + w2 * xPred[i-2]);
+        }
+        for (let i = 0; i < N; i++) {
+            predData.push({i, v: xPred[i]});
+        }
+
+        truePath.attr('d', line(trueData));
+        predPath.attr('d', line(predData));
+    }
+
+    document.getElementById('omega').oninput = update;
+    update();
+}
+
+function initTCNPlot() {
+    const container = d3.select('#tcn-plot');
+    container.selectAll('*').remove();
+
+    const width = 800, height = 280;
+    const svg = container.append('svg').attr('width', width).attr('height', height);
+
+    const layers = ['Input', 'd=1', 'd=2', 'd=4'];
+    const colors = ['#abb2bf', '#61afef', '#98c379', '#e5c07b'];
+    const nNodes = 16;
+    const nodeR = 8;
+    const layerGap = 60;
+    const nodeGap = 42;
+    const startX = 100, startY = 30;
+
+    // Draw nodes
+    layers.forEach((name, li) => {
+        const y = startY + li * layerGap;
+        svg.append('text').attr('x', 20).attr('y', y + 5).text(name).attr('fill', '#888').attr('font-size', '11px');
+
+        for (let t = 0; t < nNodes; t++) {
+            svg.append('circle')
+                .attr('cx', startX + t * nodeGap)
+                .attr('cy', y)
+                .attr('r', nodeR)
+                .attr('fill', colors[li])
+                .attr('opacity', 0.8);
+        }
+    });
+
+    // Draw connections for output node 15
+    const dilations = [1, 2, 4];
+    const targetT = 15;
+
+    dilations.forEach((d, li) => {
+        const y1 = startY + li * layerGap + nodeR;
+        const y2 = startY + (li + 1) * layerGap - nodeR;
+
+        for (let k = 0; k < 3; k++) {
+            const srcT = targetT - k * d;
+            if (srcT >= 0) {
+                svg.append('line')
+                    .attr('x1', startX + srcT * nodeGap)
+                    .attr('y1', y1)
+                    .attr('x2', startX + targetT * nodeGap)
+                    .attr('y2', y2)
+                    .attr('stroke', '#e06c75')
+                    .attr('stroke-width', 1.5)
+                    .attr('opacity', 0.6);
+            }
+        }
+    });
+}
+
+function initKalmanPlot() {
+    const container = d3.select('#kalman-plot');
+    container.selectAll('*').remove();
+
+    const width = 700, height = 250;
+    const margin = {top: 20, right: 20, bottom: 30, left: 40};
+
+    const svg = container.append('svg').attr('width', width).attr('height', height);
+    const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+    const T = 50;
+    const x = d3.scaleLinear().domain([0, T]).range([0, width - margin.left - margin.right]);
+    const y = d3.scaleLinear().domain([-5, 10]).range([height - margin.top - margin.bottom, 0]);
+
+    g.append('g').attr('class', 'axis').attr('transform', `translate(0,${height - margin.top - margin.bottom})`).call(d3.axisBottom(x));
+    g.append('g').attr('class', 'axis').call(d3.axisLeft(y));
+
+    const line = d3.line().x(d => x(d.t)).y(d => y(d.v));
+    const truePath = g.append('path').attr('fill', 'none').attr('stroke', '#98c379').attr('stroke-width', 2);
+    const estPath = g.append('path').attr('fill', 'none').attr('stroke', '#61afef').attr('stroke-width', 2);
+    const obsGroup = g.append('g');
+
+    // Seeded random
+    let seed = 42;
+    function random() { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
+    function randn() { return Math.sqrt(-2*Math.log(random()))*Math.cos(2*Math.PI*random()); }
+
+    function update() {
+        seed = 42;
+        const obsNoise = +document.getElementById('obs-noise').value;
+
+        // True state
+        const trueState = [], observations = [], estimate = [];
+        let cumsum = 0;
+        for (let t = 0; t < T; t++) {
+            cumsum += Math.sin(t * 0.25) * 0.5;
+            trueState.push(cumsum);
+            observations.push(cumsum + randn() * obsNoise);
+        }
+
+        // Kalman filter
+        let xEst = 0, P = 1;
+        const Q = 0.1, R = obsNoise * obsNoise;
+
+        for (let t = 0; t < T; t++) {
+            const xPred = xEst;
+            const PPred = P + Q;
+            const K = PPred / (PPred + R);
+            xEst = xPred + K * (observations[t] - xPred);
+            P = (1 - K) * PPred;
+            estimate.push(xEst);
+        }
+
+        truePath.attr('d', line(trueState.map((v, t) => ({t, v}))));
+        estPath.attr('d', line(estimate.map((v, t) => ({t, v}))));
+
+        obsGroup.selectAll('circle').remove();
+        observations.forEach((v, t) => {
+            obsGroup.append('circle').attr('cx', x(t)).attr('cy', y(v)).attr('r', 3).attr('fill', '#e06c75').attr('opacity', 0.5);
+        });
+    }
+
+    document.getElementById('obs-noise').oninput = update;
+    update();
+}
+
+// Initialize plots on first relevant slide
+setTimeout(() => {
+    if (document.getElementById('fourier-plot')) initFourierPlot();
+}, 500);
+</script>
+</body>
+</html>

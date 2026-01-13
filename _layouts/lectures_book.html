@@ -1,0 +1,94 @@
+---
+layout: page
+---
+
+{{ content }}
+
+<div class="book-toc">
+{% for lecture in site.lectures %}
+<div class="toc-chapter">
+    <h3 class="chapter-title">
+        <a href="#lecture-{{ forloop.index0 }}">{{ lecture.title }}</a>
+    </h3>
+    <p class="chapter-summary">{{ lecture.tldr }}</p>
+
+    {% if lecture.sections %}
+    <ul class="chapter-sections">
+        {% for section in lecture.sections %}
+        <li class="section-group">
+            <span class="section-label">{{ section.title }}:</span>
+            {% for link in section.links %}
+            <a href="{% if link.url contains '://' %}{{ link.url }}{% elsif link.url contains '/' %}{{ site.baseurl }}{{ link.url }}{% else %}{{ site.baseurl }}{{ link.url }}{% endif %}" class="content-link">{{ link.name }}</a>{% unless forloop.last %}, {% endunless %}
+            {% endfor %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+{% endfor %}
+</div>
+
+<style>
+.book-toc {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.toc-chapter {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.toc-chapter:last-child {
+    border-bottom: none;
+}
+
+.chapter-title {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.3rem;
+}
+
+.chapter-title a {
+    color: #2c3e50;
+    text-decoration: none;
+}
+
+.chapter-title a:hover {
+    color: #3498db;
+}
+
+.chapter-summary {
+    color: #666;
+    font-size: 0.95rem;
+    margin: 0 0 0.75rem 0;
+    font-style: italic;
+}
+
+.chapter-sections {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.section-group {
+    margin: 0.4rem 0;
+    padding-left: 1rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.section-label {
+    font-weight: 600;
+    color: #555;
+}
+
+.content-link {
+    color: #3498db;
+    text-decoration: none;
+}
+
+.content-link:hover {
+    text-decoration: underline;
+}
+</style>

@@ -4,11 +4,11 @@ title: Syllabus
 permalink: syllabus/ 
 ---
 
-## Course Info 
-* Lectures: Tue, Thu - 11:00 - 12:15 PM @ Bechtel 202
-* Instructor: [Joseph Bakarji](https://www.josephbakarji.com)
-* Office: Bechtel 418 
-* Office hours: Thu 1:30 PM - 3:30 PM
+## Course Info
+* **Semester:** Spring 2026
+* **Lectures:** Tue, Thu 2:00 - 3:15 PM @ SRB 413
+* **Instructor:** [Joseph Bakarji](https://www.josephbakarji.com)
+* **Office Hours:** Thu 3:30 - 5:00 PM, Mon 1:00 - 2:00 PM
 
 ## Description
 How do we go from a high dimensional, noisy, nonlinear, complex, and multiscale universe to simple and predictive mathematical models? This course introduces modern machine learning techniques using a wide variety of examples in physical, social and biological sciences. Modern data-driven approaches that take advantage of recent advances in machine learning are introduced, including: sparse identification of differential equations, dynamics mode decomposition, and physics informed neural networks.

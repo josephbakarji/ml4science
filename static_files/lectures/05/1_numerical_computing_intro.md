@@ -1,10 +1,11 @@
-# Introduction to Numerical Computing
+---
+title: "Introduction to Numerical Computing"
+layout: note
+permalink: /static_files/lectures/05/1_numerical_computing_intro/
+---
 
-After exploring the importance of differential equations in modeling complex
-systems, we now turn to the practical question: How do we actually solve these
-equations? While some simple differential equations have analytical solutions,
-most real-world problems require numerical methods. Let's start with a basic
-example that illustrates the key concepts.
+
+After exploring the importance of differential equations in modeling complex systems, we now turn to the practical question: How do we actually solve these equations? While some simple differential equations have analytical solutions, most real-world problems require numerical methods. Let's start with a basic example that illustrates the key concepts.
 
 ## A Simple Example: The Exponential Decay
 
@@ -12,13 +13,11 @@ Consider one of the simplest differential equations:
 
 $$\frac{dx}{dt} = -\lambda x$$
 
-This equation describes many natural phenomena, from radioactive decay to the
-cooling of a cup of coffee. The analytical solution is:
+This equation describes many natural phenomena, from radioactive decay to the cooling of a cup of coffee. The analytical solution is:
 
 $$x(t) = x_0e^{-\lambda t}$$
 
-where $$x_0$$ is the initial condition at $$t=0$$. While we can solve this
-equation analytically, let's use it to introduce numerical methods.
+where $x_0$ is the initial condition at $t=0$. While we can solve this equation analytically, let's use it to introduce numerical methods.
 
 
 ```python
@@ -72,7 +71,7 @@ plt.show()
 
 
     
-![png](1_numerical_computing_intro_files/output_1_0.png)
+![png](/static_files/lectures/05/1_numerical_computing_intro/output_1_0.png)
     
 
 
@@ -80,12 +79,9 @@ plt.show()
 
 The Euler method, while simple, introduces two types of errors:
 
-1. **Truncation Error**: This comes from approximating the continuous
-derivative with discrete steps. The error in each step is $$O(\Delta t^2)$$, and
-these errors accumulate over time.
+1. **Truncation Error**: This comes from approximating the continuous derivative with discrete steps. The error in each step is $O(\Delta t^2)$, and these errors accumulate over time.
 
-2. **Round-off Error**: This comes from the finite precision of computer
-arithmetic.
+2. **Round-off Error**: This comes from the finite precision of computer arithmetic.
 
 Let's visualize how the error changes with different time steps:
 
@@ -126,6 +122,6 @@ plt.show()
 
 
     
-![png](1_numerical_computing_intro_files/output_3_0.png)
+![png](/static_files/lectures/05/1_numerical_computing_intro/output_3_0.png)
     
 

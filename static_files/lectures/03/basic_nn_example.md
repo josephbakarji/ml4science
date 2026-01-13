@@ -1,74 +1,53 @@
+---
+title: "Introduction to Neural Networks with PyTorch"
+layout: note
+permalink: /static_files/lectures/03/basic_nn_example/
+---
+
 ## Introduction to Neural Networks with PyTorch
 
-Neural networks are nonlinear models that consist of a composition of linear
-and nonlinear functions. They are used to model complex relationships between
-inputs and outputs or to find patterns in data. In this notebook, we will
-introduce the basic concepts of neural networks and how to implement them using
-PyTorch.
+Neural networks are nonlinear models that consist of a composition of linear and nonlinear functions. They are used to model complex relationships between inputs and outputs or to find patterns in data. In this notebook, we will introduce the basic concepts of neural networks and how to implement them using PyTorch.
 
-A linear model with multiple inputs $$\mathbf x = (x_1, x_2, \ldots, x_n)$$ and
-multiple outputs $$\mathbf y = (y_1, y_2, \ldots, y_m)$$ can be written as:
+A linear model with multiple inputs $\mathbf x = (x_1, x_2, \ldots, x_n)$ and multiple outputs $\mathbf y = (y_1, y_2, \ldots, y_m)$ can be written as:
 
 $$
 \mathbf y = \mathbf W \mathbf x + \mathbf b,
 $$
 
-or $$y_i = \sum_{j=1}^n W_{ij} x_j + b_i$$, where $$W_{ij}$$ are the weights
-and $$b_i$$ are the biases of the model. The weights and biases are learned from
-data using an optimization algorithm such as gradient descent.
+or $y_i = \sum_{j=1}^n W_{ij} x_j + b_i$, where $W_{ij}$ are the weights and $b_i$ are the biases of the model. The weights and biases are learned from data using an optimization algorithm such as gradient descent.
 
-If the model is nonlinear (e.g. logistic regression), the model can be written
-as:
+If the model is nonlinear (e.g. logistic regression), the model can be written as:
 
 $$
 \mathbf y = f(\mathbf W \mathbf x + \mathbf b),
 $$
 
-where $$f$$ is a nonlinear function called the activation function. In the case
-of logistic regression in the context of multi-class classification, $$f$$ is
-the Softmax function. The activation function is applied element-wise to the
-output of the linear model.
+where $f$ is a nonlinear function called the activation function. In the case of logistic regression in the context of multi-class classification, $f$ is the Softmax function. The activation function is applied element-wise to the output of the linear model.
 
-Given an input vector $$\mathbf{x}$$, a neural network computes the output
-$$\mathbf{y}$$ as follows:
+Given an input vector $\mathbf{x}$, a neural network computes the output $\mathbf{y}$ as follows:
 
 $$
-\mathbf{y} = f(\mathbf{W}_L f(\mathbf{W}_{L-1} f(\ldots f(\mathbf{W}_1
-\mathbf{x} + \mathbf{b}_1) \ldots) + \mathbf{b}_{L-1}) + \mathbf{b}_L)
+\mathbf{y} = f(\mathbf{W}_L f(\mathbf{W}_{L-1} f(\ldots f(\mathbf{W}_1 \mathbf{x} + \mathbf{b}_1) \ldots) + \mathbf{b}_{L-1}) + \mathbf{b}_L)
 $$
 
-where $$\mathbf{W}_i$$ and $$\mathbf{b}_i$$ are the weights and biases of the
-$$i$$-th layer, and $$f$$ is a nonlinear function called the activation
-function. The number of layers and the number of neurons in each layer are
-hyperparameters of the model.
+where $\mathbf{W}_i$ and $\mathbf{b}_i$ are the weights and biases of the $i$-th layer, and $f$ is a nonlinear function called the activation function. The number of layers and the number of neurons in each layer are hyperparameters of the model.
 
-One can rewrite the above equation as a composition of linear and nonlinear
-functions as follows (assuming the biases are absorbed into the weights):
+One can rewrite the above equation as a composition of linear and nonlinear functions as follows (assuming the biases are absorbed into the weights):
 
 $$
-\mathbf{y} = f_L \circ \mathbf W_L \circ f_{L-1} \circ \mathbf W_{L-1} \circ
-\ldots \circ f_1 \circ \mathbf W_1 (\mathbf{x})
+\mathbf{y} = f_L \circ \mathbf W_L \circ f_{L-1} \circ \mathbf W_{L-1} \circ \ldots \circ f_1 \circ \mathbf W_1 (\mathbf{x})
 $$
 
-In other words, deep networks (i.e. networks with many layers) are a
-composition of linear and nonlinear functions.
+In other words, deep networks (i.e. networks with many layers) are a composition of linear and nonlinear functions.
 
 
 ## PyTorch
 
-PyTorch is a popular open-source machine learning library for Python. It is
-widely used for deep learning and is known for its flexibility and ease of use.
-PyTorch provides a set of tools for building and training neural networks. In
-this notebook, we will use PyTorch to implement a simple neural network for
-binary classification.
+PyTorch is a popular open-source machine learning library for Python. It is widely used for deep learning and is known for its flexibility and ease of use. PyTorch provides a set of tools for building and training neural networks. In this notebook, we will use PyTorch to implement a simple neural network for binary classification.
 
-For a complete introduction to PyTorch, it's always best to refer back to the
-original [PyTorch Tutorials](https://pytorch.org/tutorials/).
+For a complete introduction to PyTorch, it's always best to refer back to the original [PyTorch Tutorials](https://pytorch.org/tutorials/).
 
-PyTorch is essentially a library for computation using tensors, which are
-similar to NumPy arrays. However, PyTorch tensors can be used on a GPU to
-accelerate computing. PyTorch also provides a set of tools for automatic
-differentiation, which is essential for training neural networks.
+PyTorch is essentially a library for computation using tensors, which are similar to NumPy arrays. However, PyTorch tensors can be used on a GPU to accelerate computing. PyTorch also provides a set of tools for automatic differentiation, which is essential for training neural networks.
 
 
 ```python
@@ -81,17 +60,12 @@ import torch.nn.functional as F
 
 ```
 
-Let's first generate some synthetic data to illustrate the concepts. The input
-data is a one-dimensional vector between -3 and 3, and the output data is also
-one-dimensional with known map: $$\sin(\cos(x^2))$$.
+Let's first generate some synthetic data to illustrate the concepts. The input data is a one-dimensional vector between -3 and 3, and the output data is also one-dimensional with known map: $\sin(\cos(x^2))$.
 
 
 ```python
-# Generate synthetic data
-x = torch.unsqueeze(torch.linspace(-3, 3, 1000), dim=1)  # x data (tensor),
-shape=(1000, 1)
-y = torch.sin(torch.cos(x.pow(2))) + 0.1 * torch.randn(x.size())  # noisy y
-data (tensor), shape=(1000, 1)
+x = torch.unsqueeze(torch.linspace(-3, 3, 1000), dim=1)  # x data (tensor), shape=(1000, 1)
+y = torch.sin(torch.cos(x.pow(2))) + 0.1 * torch.randn(x.size())  # noisy y data (tensor), shape=(1000, 1)
 ```
 
 One generated, we will create our first neural network as follows:
@@ -117,8 +91,7 @@ net = Net()
 
 ```
 
-The next step is to define a the loss function we want to minimize, the
-optimizer (e.g. stochastic gradient descent), and the training loop. 
+The next step is to define a the loss function we want to minimize, the optimizer (e.g. stochastic gradient descent), and the training loop. 
 
 
 ```python
@@ -364,14 +337,12 @@ plt.show()
 
 
     
-![png](basic_nn_example_files/output_9_0.png)
+![png](/static_files/lectures/03/basic_nn_example/output_9_0.png)
     
 
 
 ### Split data in terms of test and training sets
-To make things in a little more general, we will split the data into test and
-training sets (a functionality pytorch provides). And we will define a training
-loop.
+To make things in a little more general, we will split the data into test and training sets (a functionality pytorch provides). And we will define a training loop.
 
 
 ```python
@@ -420,8 +391,7 @@ def train(net, criterion, optimizer, x_train, y_train, epochs):
 
 
 # Train the network
-eval_loss_list, train_loss_list = train(net, criterion, optimizer, x_train,
-y_train, epochs=epochs)
+eval_loss_list, train_loss_list = train(net, criterion, optimizer, x_train, y_train, epochs=epochs)
 
 # Test the network
 predictions = evaluate(net, x_test)
@@ -636,20 +606,17 @@ predictions_train = evaluate(net, x_train)
 ```python
 # Plot training data, test data, and the model prediction
 plt.figure(figsize=(7, 4))
-plt.plot(x_train.data.numpy(), y_train.data.numpy(), 'ro', label='Training
-data')
+plt.plot(x_train.data.numpy(), y_train.data.numpy(), 'ro', label='Training data')
 plt.plot(x_test.data.numpy(), y_test.data.numpy(), 'go', label='Test data')
-plt.plot(x_test.data.numpy(), predictions.data.numpy(), 'b-',
-label='Predictions Test')
-plt.plot(x_train.data.numpy(), predictions_train.data.numpy(), 'k-',
-label='Predictions Train')
+plt.plot(x_test.data.numpy(), predictions.data.numpy(), 'b-', label='Predictions Test')
+plt.plot(x_train.data.numpy(), predictions_train.data.numpy(), 'k-', label='Predictions Train')
 plt.legend()
 plt.show()
 ```
 
 
     
-![png](basic_nn_example_files/output_12_0.png)
+![png](/static_files/lectures/03/basic_nn_example/output_12_0.png)
     
 
 
@@ -669,12 +636,11 @@ plt.show()
 
 
     
-![png](basic_nn_example_files/output_13_0.png)
+![png](/static_files/lectures/03/basic_nn_example/output_13_0.png)
     
 
 
-One way to prevent overfitting is to add a regularization term. In Pytorch,
-that's as simple as adding a weight_decay argument to the optimizer.
+One way to prevent overfitting is to add a regularization term. In Pytorch, that's as simple as adding a weight_decay argument to the optimizer.
 
 
 ```python
@@ -684,8 +650,7 @@ optimizer = optim.Adam(net_reg.parameters(), lr=0.01, weight_decay=1e-3)
 criterion = nn.MSELoss()
 
 # Train the network
-eval_loss_list_reg, train_loss_list_reg = train(net_reg, criterion, optimizer,
-x_train, y_train, epochs=epochs)
+eval_loss_list_reg, train_loss_list_reg = train(net_reg, criterion, optimizer, x_train, y_train, epochs=epochs)
 
 # %matplotlib widget
 plt.figure(figsize=(6, 3))
@@ -904,7 +869,7 @@ plt.show()
 
 
     
-![png](basic_nn_example_files/output_15_1.png)
+![png](/static_files/lectures/03/basic_nn_example/output_15_1.png)
     
 
 
@@ -915,13 +880,10 @@ predictions_train_reg = evaluate(net_reg, x_train)
 
 # Plot training data, test data, and the model prediction
 plt.figure(figsize=(6, 3))
-plt.plot(x_train.data.numpy(), y_train.data.numpy(), 'ro', label='Training
-data')
+plt.plot(x_train.data.numpy(), y_train.data.numpy(), 'ro', label='Training data')
 plt.plot(x_test.data.numpy(), y_test.data.numpy(), 'go', label='Test data')
-plt.plot(x_test.data.numpy(), predictions_test_reg.data.numpy(), 'b-',
-label='Predictions Test')
-plt.plot(x_train.data.numpy(), predictions_train_reg.data.numpy(), 'k-',
-label='Predictions Train')
+plt.plot(x_test.data.numpy(), predictions_test_reg.data.numpy(), 'b-', label='Predictions Test')
+plt.plot(x_train.data.numpy(), predictions_train_reg.data.numpy(), 'k-', label='Predictions Train')
 plt.legend()
 
 ```
@@ -935,16 +897,13 @@ plt.legend()
 
 
     
-![png](basic_nn_example_files/output_16_1.png)
+![png](/static_files/lectures/03/basic_nn_example/output_16_1.png)
     
 
 
 ## Dataloaders, training and validation loops
 
-Finally, let's add a validation loop to our training loop. We will use the
-validation set to evaluate the model's performance and to prevent overfitting.
-We will also use PyTorch's DataLoader to load the data in batches and to shuffle
-the data to facilitate batch gradient descent.
+Finally, let's add a validation loop to our training loop. We will use the validation set to evaluate the model's performance and to prevent overfitting. We will also use PyTorch's DataLoader to load the data in batches and to shuffle the data to facilitate batch gradient descent.
 
 
 ```python
@@ -1020,8 +979,7 @@ def validation_step(model, criterion, x, y):
     return loss.item()
 
 # Training and evaluation loop with loss tracking
-def train_and_evaluate(model, criterion, optimizer, train_loader, test_loader,
-epochs):
+def train_and_evaluate(model, criterion, optimizer, train_loader, test_loader, epochs):
     train_losses = []
     val_losses = []
     for epoch in range(epochs):
@@ -1043,8 +1001,7 @@ epochs):
     return train_losses, val_losses
 
 # Run the training and evaluation
-train_losses, val_losses = train_and_evaluate(net, criterion, optimizer,
-train_loader, test_loader, epochs=2000)
+train_losses, val_losses = train_and_evaluate(net, criterion, optimizer, train_loader, test_loader, epochs=2000)
 
 
 ```
@@ -1087,7 +1044,7 @@ plt.show()
 
 
     
-![png](basic_nn_example_files/output_21_0.png)
+![png](/static_files/lectures/03/basic_nn_example/output_21_0.png)
     
 
 
@@ -1116,7 +1073,7 @@ plt.show()
 
 
     
-![png](basic_nn_example_files/output_22_1.png)
+![png](/static_files/lectures/03/basic_nn_example/output_22_1.png)
     
 
 
@@ -1156,8 +1113,7 @@ class SymmetricNet(nn.Module):
         # x = torch.cos(self.fc3(x))
         return x
 
-symnet = SymmetricNet(input_size=1, hidden_size=20, hidden_size2=15,
-output_size=1)
+symnet = SymmetricNet(input_size=1, hidden_size=20, hidden_size2=15, output_size=1)
 
 # Set the hyperparameters
 learning_rate = 0.003
@@ -1167,12 +1123,10 @@ num_epochs = 5000
 criterion = nn.MSELoss()
 
 # Define the optimizer
-optimizer = torch.optim.Adam(symnet.parameters(), lr=learning_rate,
-weight_decay=1e-5)
+optimizer = torch.optim.Adam(symnet.parameters(), lr=learning_rate, weight_decay=1e-5)
 
 # Run the training and evaluation
-train_losses, val_losses = train_and_evaluate(symnet, criterion, optimizer,
-train_loader, test_loader, epochs=num_epochs)
+train_losses, val_losses = train_and_evaluate(symnet, criterion, optimizer, train_loader, test_loader, epochs=num_epochs)
 
 ```
 
@@ -1241,8 +1195,7 @@ plt.figure(figsize=(10, 6))
 plt.scatter(x_test, y_test, color='red', label='True Values')
 plt.scatter(x_train, y_train, color='orange', label='True Values')
 plt.scatter(x_test, predictions_test, color='blue', label='test Predictions')
-plt.scatter(x_train, predictions_train, color='green', label='train
-Predictions')
+plt.scatter(x_train, predictions_train, color='green', label='train Predictions')
 plt.title('Comparison of Predictions and True Values')
 plt.xlabel('Input x')
 plt.ylabel('Output y')
@@ -1258,6 +1211,6 @@ plt.show()
 
 
     
-![png](basic_nn_example_files/output_24_1.png)
+![png](/static_files/lectures/03/basic_nn_example/output_24_1.png)
     
 

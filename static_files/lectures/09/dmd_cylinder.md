@@ -1,3 +1,9 @@
+---
+title: "Building on Reference from: Data-driven Science and Engineering - Brunton and Kutz"
+layout: note
+permalink: /static_files/lectures/09/dmd_cylinder/
+---
+
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,7 +23,6 @@ results = io.loadmat(os.path.join('cyl_flow_data.mat'))
 vortmean = np.mean(results['VORTALL'], axis=1)
 X = results['VORTALL'] - vortmean.reshape((-1,1))
 
-# VORTALL contains flow fields reshaped into column vectors
 ```
 
 
@@ -80,7 +85,7 @@ plt.show()
 
 
     
-![png](dmd_cylinder_files/output_4_0.png)
+![png](/static_files/lectures/09/dmd_cylinder/output_4_0.png)
     
 
 
@@ -121,7 +126,7 @@ plt.show()
 
 
     
-![png](dmd_cylinder_files/output_5_0.png)
+![png](/static_files/lectures/09/dmd_cylinder/output_5_0.png)
     
 
 

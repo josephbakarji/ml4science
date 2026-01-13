@@ -1,37 +1,29 @@
-# Symbolic Regression with Genetic Algorithms
+---
+title: "Symbolic Regression with Genetic Algorithms"
+layout: note
+permalink: /static_files/lectures/06/symbolic-reg/
+---
+
 
 ## 1. Introduction and Motivation
 
 ### 1.1 What is Symbolic Regression?
 
-In **symbolic regression**, we aim to discover a **mathematical expression**
-(symbolic function) that best fits observed data
-$$\{(x^{(i)},\,y^{(i)})\}_{i=1}^N$$. In contrast to conventional regression,
-which fits parameters to a predetermined functional form (e.g., a polynomial of
-fixed degree or a neural network architecture), **symbolic regression** searches
-over the space of possible **functional forms**—often an extremely large space.
+In **symbolic regression**, we aim to discover a **mathematical expression** (symbolic function) that best fits observed data \(\{(x^{(i)},\,y^{(i)})\}_{i=1}^N\). In contrast to conventional regression, which fits parameters to a predetermined functional form (e.g., a polynomial of fixed degree or a neural network architecture), **symbolic regression** searches over the space of possible **functional forms**—often an extremely large space.
 
-For example, suppose you have input $$x$$ and measured output $$y$$. A symbolic
-regression tool might propose:
+For example, suppose you have input \(x\) and measured output \(y\). A symbolic regression tool might propose:
 
-$$
+\[
 y \;\approx\; \sin(x) + \frac{1}{2}\log(x + 2),
-$$
+\]
 
-or more generally, any expression from a predefined set of operations (e.g.,
-$$+,\; -,\; \times,\; \div,\; \sin,\; \log,\; \exp,\dots$$).
+or more generally, any expression from a predefined set of operations (e.g., \(+,\; -,\; \times,\; \div,\; \sin,\; \log,\; \exp,\dots\)).
 
 ### 1.2 Why Use Symbolic Regression?
 
-1. **Interpretability**: The discovered expressions are explicit formulas that
-are often far more interpretable than a black-box model (like a random forest or
-deep neural network).
-2. **Compactness**: Symbolic regression can lead to **parsimonious** solutions,
-capturing the essence of relationships in a relatively small
-expression—potentially revealing underlying physics or domain insights.
-3. **Generalization**: If the derived formula is correct (or close to correct),
-it can extrapolate better to unseen data than purely data-driven methods that do
-not assume a structural form.
+1. **Interpretability**: The discovered expressions are explicit formulas that are often far more interpretable than a black-box model (like a random forest or deep neural network).
+2. **Compactness**: Symbolic regression can lead to **parsimonious** solutions, capturing the essence of relationships in a relatively small expression—potentially revealing underlying physics or domain insights.
+3. **Generalization**: If the derived formula is correct (or close to correct), it can extrapolate better to unseen data than purely data-driven methods that do not assume a structural form.
 
 
 ## 2. Genetic Algorithms for Symbolic Regression
@@ -40,20 +32,13 @@ not assume a structural form.
 
 Symbolic regression via **genetic programming** (GP) uses evolutionary concepts:
 
-1. **Representation**: Each candidate solution is typically represented as an
-**expression tree**. For instance, an expression like $$\sin(x) +
-0.5\,\log(x+2)$$ can be written as a tree with `+` at the root and two subtrees
-for $$\sin(x)$$ and $$0.5\,\log(x+2)$$.
-2. **Population**: Maintain a population (a set) of such candidate expression
-trees.
-3. **Fitness**: Evaluate how well each tree fits the data (e.g., mean squared
-error).
+1. **Representation**: Each candidate solution is typically represented as an **expression tree**. For instance, an expression like \(\sin(x) + 0.5\,\log(x+2)\) can be written as a tree with `+` at the root and two subtrees for \(\sin(x)\) and \(0.5\,\log(x+2)\).
+2. **Population**: Maintain a population (a set) of such candidate expression trees.
+3. **Fitness**: Evaluate how well each tree fits the data (e.g., mean squared error).
 4. **Selection**: Choose the better candidates for reproduction.
 5. **Crossover**: Randomly exchange subtrees between two parent trees.
-6. **Mutation**: Randomly alter parts of a tree (e.g., replace a function node
-or numeric constant).
-7. **Iteration**: Over many generations, the population evolves to (hopefully)
-produce simpler and more accurate expressions.
+6. **Mutation**: Randomly alter parts of a tree (e.g., replace a function node or numeric constant).
+7. **Iteration**: Over many generations, the population evolves to (hopefully) produce simpler and more accurate expressions.
 
 ### 2.2 Key Components
 
@@ -66,8 +51,7 @@ produce simpler and more accurate expressions.
 
 ## 3. Outline of a Genetic Algorithm for Symbolic Regression
 
-Below is **pseudo-code** capturing the main loop of a **genetic programming**
-approach to symbolic regression:
+Below is **pseudo-code** capturing the main loop of a **genetic programming** approach to symbolic regression:
 
 ```text
 Initialize population P with random expression trees 
@@ -102,11 +86,9 @@ best_solution = argmin_fitness_in(P)
 
 - **Initialization**: Start with random trees of a limited depth, using random functions and constants.
 - **Evaluation**:
-  - `evaluate_expression_tree(...)` interprets the tree to produce predictions
-$$\hat{y}$$.
+  - `evaluate_expression_tree(...)` interprets the tree to produce predictions \(\hat{y}\).
   - `compute_mse(...)` calculates mean squared error (or another error metric).
-  - `complexity_penalty(...)` can measure expression tree size to promote
-simpler solutions.
+  - `complexity_penalty(...)` can measure expression tree size to promote simpler solutions.
 - **Selection**: Based on fitness (lower error = better).
 - **Crossover**: Exchange random subtrees between parent expressions.
 - **Mutation**: Randomly change node types (e.g., replace `x` with `sin(x)`, or replace `-` with `+`, etc.).
@@ -115,10 +97,7 @@ simpler solutions.
 
 ## 4. Example Python-Like Code Snippet
 
-In Python, frameworks such as **[DEAP](https://deap.readthedocs.io/)** or
-**[PySR](https://github.com/MilesCranmer/PySR)** implement symbolic regression
-with a genetic or evolutionary approach. Below is a **minimal** illustrative
-code snippet (not fully functional but capturing essential steps).
+In Python, frameworks such as **[DEAP](https://deap.readthedocs.io/)** or **[PySR](https://github.com/MilesCranmer/PySR)** implement symbolic regression with a genetic or evolutionary approach. Below is a **minimal** illustrative code snippet (not fully functional but capturing essential steps).
 
 ```python
 import random
@@ -235,8 +214,8 @@ print("Best equation found by PySR:", best_equation)
 
 **Key arguments**:
 
-- `X_2D`: input features of shape $$(N,\; d)$$.
-- `Y`: target of shape $$(N,)$$.
+- `X_2D`: input features of shape \((N,\; d)\).
+- `Y`: target of shape \((N,)\).
 - `niterations`: number of evolutionary steps.
 - `unary_operators`, `binary_operators`: define the function set.
 - `procs`: parallelism for speed.
@@ -246,19 +225,11 @@ print("Best equation found by PySR:", best_equation)
 
 ## 6. Discussion and Practical Tips
 
-1. **Initialization**: The depth of initial trees strongly impacts performance.
-Deeper trees can explore more complex expressions early, but also risk higher
-initial complexity.
-2. **Premature Convergence**: Genetic algorithms can converge to suboptimal
-solutions. Including diversity-preserving strategies (e.g., random mutations)
-helps maintain exploration.
-3. **Regularization**: Add a penalty for large trees (complexity) to favor
-interpretable, simpler expressions.
-4. **Runtime**: Symbolic regression is computationally expensive.
-Parallelization or GPU acceleration can help.
-5. **Noise**: Real-world data may have noise/outliers. Consider robust fitness
-metrics (e.g., median error, or a combined cost function with an outlier
-penalty).
+1. **Initialization**: The depth of initial trees strongly impacts performance. Deeper trees can explore more complex expressions early, but also risk higher initial complexity.
+2. **Premature Convergence**: Genetic algorithms can converge to suboptimal solutions. Including diversity-preserving strategies (e.g., random mutations) helps maintain exploration.
+3. **Regularization**: Add a penalty for large trees (complexity) to favor interpretable, simpler expressions.
+4. **Runtime**: Symbolic regression is computationally expensive. Parallelization or GPU acceleration can help.
+5. **Noise**: Real-world data may have noise/outliers. Consider robust fitness metrics (e.g., median error, or a combined cost function with an outlier penalty).
 
 
 ## 7. Conclusion

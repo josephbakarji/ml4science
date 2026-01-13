@@ -1,0 +1,104 @@
+- title: Course Introduction and Logistics
+  date: '2026-01-13T08:00:00+03:00'
+  type: lecture
+  tldr: ''
+  thumbnail: null
+  sections: []
+  hide_from_announcments: false
+  folder: '00'
+- title: Modeling the World
+  date: '2026-01-15T08:00:00+03:00'
+  type: lecture
+  tldr: ''
+  thumbnail: null
+  sections: []
+  hide_from_announcments: false
+  folder: '01'
+- title: Complex Systems, Differential Equations, Nonlinearity, and Chaos
+  date: '2026-01-20T08:00:00+03:00'
+  type: lecture
+  tldr: ''
+  thumbnail: null
+  sections:
+  - title: Lecture Materials
+    links:
+    - name: 'Lecture Notes: Complex Systems Introduction'
+      url: /static_files/lectures/02/complex_systems_intro
+    - name: 'Notes: Complex Systems'
+      url: /static_files/lectures/02/notes_complex_systems
+    - name: 'Notes: Pondering on Complexity'
+      url: /static_files/lectures/02/notes_pondering_complexity
+  hide_from_announcments: false
+  folder: '02'
+- title: Forward Modeling and Numerical Computing
+  date: '2026-01-22T08:00:00+03:00'
+  type: lecture
+  tldr: ''
+  thumbnail: null
+  sections: []
+  hide_from_announcments: false
+  folder: '03'
+- title: 'Probabilistic Modeling: Uncertainty Quantification'
+  date: '2026-01-27T08:00:00+03:00'
+  type: lecture
+  tldr: ''
+  thumbnail: null
+  sections: []
+  hide_from_announcments: false
+  folder: '04'
+- title: 'Supervised Learning: Linear Regression and Logistic Regression'
+  date: '2026-01-29T08:00:00+03:00'
+  type: lecture
+  tldr: ''
+  thumbnail: null
+  sections: []
+  hide_from_announcments: false
+  folder: '05'
+- title: 'Supervised Learning: MLE, GLMs, Softmax Regression, and SVM'
+  date: '2026-02-03T08:00:00+03:00'
+  type: lecture
+  tldr: ''
+  thumbnail: null
+  sections: []
+  hide_from_announcments: false
+  folder: '06'
+- title: 'Supervised Learning: From Linear Regression to Deep Learning'
+  date: '2026-02-05T08:00:00+03:00'
+  type: lecture
+  tldr: ''
+  thumbnail: null
+  sections: []
+  hide_from_announcments: false
+  folder: '07'
+- title: 'Time Series Data: Fourier Transforms, Auto-Regression, and Discrete Equations'
+  date: '2026-02-10T08:00:00+03:00'
+  type: lecture
+  tldr: ''
+  thumbnail: null
+  sections: []
+  hide_from_announcments: false
+  folder: 08
+- title: 'System Identification: Coefficient Fitting'
+  date: '2026-02-12T08:00:00+03:00'
+  type: lecture
+  tldr: ''
+  thumbnail: null
+  sections: []
+  hide_from_announcments: false
+  folder: 09
+- title: Sparse Identification of Nonlinear Dynamics (SINDy)
+  date: '2026-02-17T08:00:00+03:00'
+  type: lecture
+  tldr: ''
+  thumbnail: null
+  sections: []
+  hide_from_announcments: false
+  folder: '10'
+- title: Quiz + Sparse Identification of PDEs
+  date: '2026-02-19T08:00:00+03:00'
+  type: lecture
+  tldr: ''
+  thumbnail: null
+  sections: []
+  hide_from_announcments: false
+  folder: '11'

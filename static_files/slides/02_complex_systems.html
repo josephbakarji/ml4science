@@ -1,0 +1,1103 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complex Systems, Nonlinearity, and Chaos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/night.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/monokai.css">
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        :root {
+            --era-analytical: #61afef;
+            --era-computational: #98c379;
+            --era-datadriven: #e5c07b;
+            --accent-red: #e06c75;
+            --accent-purple: #c678dd;
+        }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; }
+        .reveal h1 { font-size: 2.2em; }
+        .reveal h2 { font-size: 1.6em; }
+        .reveal h3 { font-size: 1.3em; }
+        .reveal blockquote {
+            font-style: italic;
+            background: rgba(255,255,255,0.05);
+            padding: 20px 30px;
+            border-left: 4px solid #42affa;
+            width: 90%;
+            margin: 0 auto;
+            border-radius: 0 8px 8px 0;
+        }
+        .reveal blockquote footer {
+            text-align: right;
+            margin-top: 0.8em;
+            font-size: 0.85em;
+            color: #888;
+        }
+        .reveal .slides section { text-align: left; }
+        .reveal ul { display: block; }
+        .reveal li { margin: 0.5em 0; font-size: 0.85em; }
+        .center-text { text-align: center; }
+        .highlight-box {
+            background: rgba(66, 175, 250, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(66, 175, 250, 0.3);
+        }
+        .warning-box {
+            background: rgba(224, 108, 117, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(224, 108, 117, 0.3);
+        }
+        .success-box {
+            background: rgba(152, 195, 121, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(152, 195, 121, 0.3);
+        }
+        .timeline { font-size: 0.7em; }
+        .timeline td { padding: 8px 12px; }
+        .timeline tr:nth-child(even) { background: rgba(255,255,255,0.03); }
+        .small-text { font-size: 0.75em; }
+        .tiny-text { font-size: 0.65em; }
+        .era-analytical { color: var(--era-analytical); }
+        .era-computational { color: var(--era-computational); }
+        .era-datadriven { color: var(--era-datadriven); }
+        pre code { font-size: 0.7em !important; }
+        .reveal pre { width: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .two-column { display: flex; gap: 30px; align-items: flex-start; }
+        .two-column > div { flex: 1; }
+        .three-column { display: flex; gap: 20px; }
+        .three-column > div { flex: 1; }
+        .person-card {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s ease;
+        }
+        .person-card:hover {
+            transform: translateY(-5px);
+        }
+        .person-card img {
+            width: 150px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        .person-card h4 {
+            margin: 5px 0;
+            color: #42affa;
+            font-size: 1em;
+        }
+        .person-card .dates {
+            font-size: 0.7em;
+            color: #888;
+            margin-bottom: 5px;
+        }
+        .person-card p {
+            font-size: 0.6em;
+            margin: 5px 0;
+            color: #aaa;
+        }
+        .equation-big {
+            font-size: 1.8em;
+            text-align: center;
+            margin: 0.5em 0;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+        .slide-number {
+            font-size: 0.5em !important;
+        }
+        .reveal section img {
+            border: none;
+            box-shadow: none;
+            background: transparent;
+        }
+        .portrait-large {
+            max-width: 250px;
+            border-radius: 10px;
+            border: 3px solid rgba(255,255,255,0.2);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+        }
+        .portrait-medium {
+            max-width: 180px;
+            border-radius: 8px;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        .math-inline {
+            background: rgba(66, 175, 250, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ==================== TITLE ==================== -->
+<section data-background-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)">
+    <h1 style="margin-bottom: 0.3em;">Complex Systems, Nonlinearity, and Chaos</h1>
+    <h3 style="color: #98c379;">From Empirical Laws to Computational Science</h3>
+    <div style="margin-top: 2em; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 10px;">
+        <p style="color: #888; margin: 0;">Data-Driven Modeling in Science & Engineering</p>
+        <p style="color: #666; font-size: 0.7em; margin: 0.5em 0 0 0;">Lecture 2 | January 20, 2026</p>
+    </div>
+</section>
+
+<!-- ==================== OPENING QUOTE ==================== -->
+<section>
+    <blockquote style="font-size: 1.3em;">
+        "The most incomprehensible thing about the world is that it is comprehensible."
+        <footer>— Albert Einstein</footer>
+    </blockquote>
+    <p class="fragment" style="margin-top: 2em; text-align: center;">
+        How did we discover that simple mathematical equations can predict nature?<br>
+        <span class="fragment" style="color: #e06c75;">And where do they fail?</span>
+    </p>
+</section>
+
+<!-- ==================== ROADMAP ==================== -->
+<section>
+    <h2>Today's Journey</h2>
+    <ol style="font-size: 0.9em;">
+        <li class="fragment"><span class="era-analytical">◆ Empirical Laws</span> — Galileo to Newton (1600s)</li>
+        <li class="fragment"><span class="era-analytical">◆ The Linear World</span> — Simple equations, analytical solutions</li>
+        <li class="fragment"><span style="color: #e06c75;">◆ The Nonlinear World</span> — Poincaré and the limits of prediction</li>
+        <li class="fragment"><span class="era-computational">◆ Computers Change Everything</span> — Richardson to ENIAC</li>
+        <li class="fragment"><span class="era-computational">◆ The Discovery of Chaos</span> — Lorenz and the butterfly effect</li>
+        <li class="fragment"><span class="era-datadriven">◆ Emergence & Looking Ahead</span> — Simple rules, complex behavior</li>
+    </ol>
+</section>
+
+<!-- ==================== PART 1: EMPIRICAL LAWS ==================== -->
+<section>
+    <section data-background-color="#1a2640">
+        <h2 class="era-analytical">Part 1: The Birth of Mathematical Physics</h2>
+        <p style="font-size: 1.2em;">When humans discovered that nature speaks mathematics</p>
+    </section>
+
+    <!-- Galileo -->
+    <section>
+        <h3>Galileo Galilei (1564–1642)</h3>
+        <div class="two-column">
+            <div>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Justus_Sustermans_-_Portrait_of_Galileo_Galilei%2C_1636.jpg/440px-Justus_Sustermans_-_Portrait_of_Galileo_Galilei%2C_1636.jpg"
+                     alt="Galileo" class="portrait-large">
+                <p class="tiny-text" style="color: #666; text-align: center;">Portrait by Justus Sustermans, 1636</p>
+            </div>
+            <div>
+                <ul style="font-size: 0.85em;">
+                    <li class="fragment">Rolled balls down inclined planes</li>
+                    <li class="fragment">Timed with water clocks</li>
+                    <li class="fragment">Discovered: <span class="math-inline">$d \propto t^2$</span></li>
+                </ul>
+                <div class="fragment highlight-box" style="margin-top: 1em;">
+                    $$d = \frac{1}{2}gt^2$$
+                </div>
+                <p class="fragment small-text" style="color: #888; margin-top: 1em;">
+                    <strong>Revolutionary:</strong> Nature follows precise mathematical relationships discoverable through experiment.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <blockquote>
+            "The book of nature is written in the language of mathematics."
+            <footer>— Galileo Galilei, <em>The Assayer</em> (1623)</footer>
+        </blockquote>
+        <div class="fragment" style="margin-top: 2em;">
+            <p>Two revolutionary ideas:</p>
+            <ol>
+                <li><strong>Quantitative prediction</strong> — Nature follows precise mathematical laws</li>
+                <li><strong>Experimental method</strong> — Truth comes from measurement, not authority</li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- Newton -->
+    <section>
+        <h3>Isaac Newton (1643–1727)</h3>
+        <div class="two-column">
+            <div>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Portrait_of_Sir_Isaac_Newton%2C_1689.jpg/440px-Portrait_of_Sir_Isaac_Newton%2C_1689.jpg"
+                     alt="Newton" class="portrait-large">
+                <p class="tiny-text" style="color: #666; text-align: center;">Portrait by Godfrey Kneller, 1689</p>
+            </div>
+            <div>
+                <p><em>Principia Mathematica</em> (1687):</p>
+                <div class="equation-big">
+                    $$\mathbf{F} = m\mathbf{a} = m\frac{d^2\mathbf{x}}{dt^2}$$
+                </div>
+                <p class="fragment" style="font-size: 0.85em;">
+                    <strong>This is a differential equation</strong>—it relates a quantity to its rates of change.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h3>The Power of Differential Equations</h3>
+        <div class="equation-big">
+            $$\dot{x} = f(x, t)$$
+        </div>
+        <p style="text-align: center;">where $\dot{x} = dx/dt$ is the rate of change</p>
+        <div class="fragment success-box">
+            <strong>Profound implication:</strong> If we know the forces and current state, we can predict the future.
+        </div>
+        <p class="fragment small-text" style="margin-top: 1em;">
+            This simple-looking equation is the foundation of: classical mechanics, electromagnetism, fluid dynamics, quantum mechanics, population biology, economics...
+        </p>
+    </section>
+</section>
+
+<!-- ==================== PART 2: LINEAR LAWS ==================== -->
+<section>
+    <section data-background-color="#1a2640">
+        <h2 class="era-analytical">Part 2: The Golden Age of Linear Laws</h2>
+        <p>17th–19th Century: A parade of simple relationships</p>
+    </section>
+
+    <section>
+        <h3>Classical Empirical Laws</h3>
+        <table class="timeline" style="width: 100%;">
+            <tr><td><strong>1678</strong></td><td>Hooke's Law</td><td>$F = -kx$</td><td>Springs</td></tr>
+            <tr><td><strong>1701</strong></td><td>Newton's Cooling</td><td>$\dot{T} = -k(T-T_{env})$</td><td>Heat transfer</td></tr>
+            <tr><td><strong>1822</strong></td><td>Fourier's Law</td><td>$q = -k\nabla T$</td><td>Heat conduction</td></tr>
+            <tr><td><strong>1827</strong></td><td>Ohm's Law</td><td>$V = IR$</td><td>Electricity</td></tr>
+            <tr><td><strong>1831</strong></td><td>Faraday's Law</td><td>$\mathcal{E} = -d\Phi_B/dt$</td><td>Induction</td></tr>
+            <tr><td><strong>1855</strong></td><td>Fick's Law</td><td>$J = -D\nabla C$</td><td>Diffusion</td></tr>
+        </table>
+        <p class="fragment highlight-box" style="margin-top: 1em; text-align: center;">
+            <strong>Common theme:</strong> All LINEAR — double the input, double the output.
+        </p>
+    </section>
+
+    <section>
+        <h3>The Heat Equation (Fourier, 1822)</h3>
+        <div class="equation-big">
+            $$\frac{\partial T}{\partial t} = \alpha \frac{\partial^2 T}{\partial x^2}$$
+        </div>
+        <ul>
+            <li class="fragment">Heat spreads smoothly, predictably</li>
+            <li class="fragment">Can solve analytically with pen and paper</li>
+            <li class="fragment">No surprises — linear systems are "well-behaved"</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Why Scientists Loved Linearity</h3>
+        <div class="three-column">
+            <div class="fragment highlight-box" style="text-align: center;">
+                <strong>Superposition</strong><br>
+                <span class="small-text">Solutions add together</span>
+            </div>
+            <div class="fragment highlight-box" style="text-align: center;">
+                <strong>Proportionality</strong><br>
+                <span class="small-text">Small cause → small effect</span>
+            </div>
+            <div class="fragment highlight-box" style="text-align: center;">
+                <strong>Analytical</strong><br>
+                <span class="small-text">Solvable with pen & paper</span>
+            </div>
+        </div>
+        <div class="fragment warning-box" style="margin-top: 1.5em; text-align: center;">
+            <strong>Problem:</strong> Most of nature is NOT linear.
+        </div>
+    </section>
+</section>
+
+<!-- ==================== PART 3: NONLINEAR WORLD ==================== -->
+<section>
+    <section data-background-color="#2d1b1b">
+        <h2 style="color: #e06c75;">Part 3: The Nonlinear World</h2>
+        <p>Where simple models fail</p>
+    </section>
+
+    <section>
+        <h3>What Linear Models Cannot Capture</h3>
+        <div class="three-column" style="font-size: 0.85em;">
+            <div>
+                <ul>
+                    <li>Turbulent flows</li>
+                    <li>Weather systems</li>
+                    <li>Ocean currents</li>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <li>Living organisms</li>
+                    <li>Ecosystems</li>
+                    <li>Neural networks</li>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <li>Economic markets</li>
+                    <li>Climate change</li>
+                    <li>Epidemics</li>
+                </ul>
+            </div>
+        </div>
+        <p class="fragment" style="font-size: 1.3em; text-align: center; margin-top: 1em; color: #e06c75;">
+            <strong>Almost everything that matters!</strong>
+        </p>
+    </section>
+
+    <section>
+        <h3>The Navier-Stokes Equations (1845)</h3>
+        <div class="equation-big" style="font-size: 1.2em;">
+            $$\rho\left(\frac{\partial \mathbf{v}}{\partial t} + \mathbf{v} \cdot \nabla\mathbf{v}\right) = -\nabla p + \mu\nabla^2\mathbf{v}$$
+        </div>
+        <p class="fragment" style="margin-top: 1em;">
+            The term <span class="math-inline">$\mathbf{v} \cdot \nabla\mathbf{v}$</span> is <strong style="color: #e06c75;">nonlinear</strong>.
+        </p>
+        <ul class="fragment small-text">
+            <li>Cannot solve analytically for turbulent flows</li>
+            <li>Small perturbations can cause dramatic effects</li>
+            <li><strong>Millennium Prize Problem</strong> — $1M prize, still unsolved!</li>
+        </ul>
+    </section>
+
+    <!-- Poincaré -->
+    <section>
+        <h3>Henri Poincaré (1854–1912)</h3>
+        <div class="two-column">
+            <div>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Henri_Poincar%C3%A9-2.jpg/440px-Henri_Poincar%C3%A9-2.jpg"
+                     alt="Poincaré" class="portrait-large">
+                <p class="tiny-text" style="color: #666; text-align: center;">"The last universalist mathematician"</p>
+            </div>
+            <div>
+                <p style="font-size: 0.9em;">Studied the <strong>three-body problem</strong> (Sun-Earth-Moon)</p>
+                <ul class="fragment" style="font-size: 0.8em;">
+                    <li>Newton solved two bodies exactly</li>
+                    <li>Add just ONE more body...</li>
+                    <li><strong>No general solution exists!</strong></li>
+                </ul>
+                <p class="fragment small-text" style="color: #888; margin-top: 1em;">
+                    Won King Oscar II of Sweden's prize (1889) — but found something more important than a solution.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h3>Poincaré's Prophetic Discovery</h3>
+        <blockquote>
+            "It may happen that small differences in the initial conditions produce very great ones in the final phenomena. A small error in the former will produce an enormous error in the latter. <strong>Prediction becomes impossible.</strong>"
+            <footer>— Henri Poincaré, <em>Science and Method</em> (1903)</footer>
+        </blockquote>
+        <p class="fragment" style="margin-top: 1.5em; color: #888;">
+            Poincaré discovered chaos theory <strong>60 years before Lorenz</strong> — but without computers, he couldn't fully explore it.
+        </p>
+    </section>
+
+    <!-- Double Pendulum -->
+    <section>
+        <h3>The Double Pendulum: Chaos from Simple Rules</h3>
+        <div class="two-column">
+            <div style="text-align: center;">
+                <svg width="200" height="200" viewBox="0 0 200 200">
+                    <circle cx="100" cy="20" r="5" fill="#666"/>
+                    <line x1="100" y1="20" x2="140" y2="80" stroke="#42affa" stroke-width="3"/>
+                    <circle cx="140" cy="80" r="8" fill="#42affa"/>
+                    <line x1="140" y1="80" x2="120" y2="150" stroke="#e06c75" stroke-width="3"/>
+                    <circle cx="120" cy="150" r="8" fill="#e06c75"/>
+                </svg>
+                <p class="small-text">Simple mechanics — just two pendulums joined together</p>
+            </div>
+            <div>
+                <p style="font-size: 0.85em;">Two nearly identical starts:</p>
+                <ul class="small-text">
+                    <li class="fragment">Pendulum A: $\theta = 90°$</li>
+                    <li class="fragment">Pendulum B: $\theta = 90.057°$</li>
+                    <li class="fragment" style="color: #e06c75;">Difference: <strong>0.001 radians</strong></li>
+                </ul>
+                <p class="fragment" style="margin-top: 1em; font-size: 0.85em;">
+                    After a few seconds: <strong>completely different trajectories!</strong>
+                </p>
+            </div>
+        </div>
+    </section>
+</section>
+
+<!-- ==================== PART 4: COMPUTERS ==================== -->
+<section>
+    <section data-background-color="#1a3020">
+        <h2 class="era-computational">Part 4: Computers Change Everything</h2>
+        <p>From 64,000 human computers to ENIAC</p>
+    </section>
+
+    <section>
+        <h3>The Pre-Computer Limitation</h3>
+        <p>Before ~1950, scientists were limited to:</p>
+        <ul>
+            <li class="fragment">Pen and paper calculations</li>
+            <li class="fragment">Analytical (closed-form) solutions</li>
+            <li class="fragment">Human "computers" doing tedious arithmetic</li>
+        </ul>
+        <div class="fragment warning-box" style="margin-top: 1em;">
+            <strong>Strong bias towards:</strong> linear equations, few variables, simple geometries
+        </div>
+    </section>
+
+    <!-- Richardson -->
+    <section>
+        <h3>Lewis Fry Richardson (1881–1953)</h3>
+        <div class="two-column">
+            <div>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Lewis_Fry_Richardson.png/440px-Lewis_Fry_Richardson.png"
+                     alt="Richardson" class="portrait-large">
+                <p class="tiny-text" style="color: #666; text-align: center;">Pioneer of numerical weather prediction</p>
+            </div>
+            <div>
+                <p style="font-size: 0.85em;"><strong>1922:</strong> <em>"Weather Prediction by Numerical Process"</em></p>
+                <ul class="fragment small-text">
+                    <li>Attempted 6-hour forecast by hand</li>
+                    <li>Calculation took <strong>6 weeks</strong></li>
+                    <li>Result: spectacularly wrong!</li>
+                    <li><em>(Numerical instabilities not yet understood)</em></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h3>Richardson's Forecast Factory (1922)</h3>
+        <blockquote style="font-size: 0.85em;">
+            "Imagine a large hall like a theatre... The walls of this chamber are painted to form a map of the globe... A myriad computers are at work upon the weather of the part of the map where each sits..."
+            <footer>— L.F. Richardson, imagining parallel computing</footer>
+        </blockquote>
+        <div class="fragment highlight-box" style="margin-top: 1em;">
+            Richardson estimated he would need <strong>64,000 human computers</strong> working in perfect synchronization to keep up with real-time weather.
+        </div>
+        <p class="fragment small-text" style="color: #888;">
+            This was essentially <strong>parallel computing</strong> — envisioned in 1922!
+        </p>
+    </section>
+
+    <!-- ENIAC -->
+    <section>
+        <h3>ENIAC (1946)</h3>
+        <div class="two-column">
+            <div>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Eniac.jpg/600px-Eniac.jpg"
+                     alt="ENIAC" style="max-width: 100%; border-radius: 8px;">
+                <p class="tiny-text" style="color: #666; text-align: center;">Electronic Numerical Integrator and Computer</p>
+            </div>
+            <div style="font-size: 0.85em;">
+                <ul>
+                    <li>18,000 vacuum tubes</li>
+                    <li>1,800 square feet</li>
+                    <li>150 kilowatts of power</li>
+                    <li class="fragment" style="color: #98c379;"><strong>5,000 additions per second</strong></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h3>The First Computer Weather Forecast (1950)</h3>
+        <p><strong>Jule Charney</strong> led a historic team at Aberdeen Proving Ground:</p>
+        <div class="three-column small-text" style="margin: 1em 0;">
+            <div class="person-card">
+                <h4>John von Neumann</h4>
+                <p>Mathematician, computer pioneer</p>
+            </div>
+            <div class="person-card">
+                <h4>Ragnar Fjörtoft</h4>
+                <p>Norwegian meteorologist</p>
+            </div>
+            <div class="person-card">
+                <h4>Klara von Neumann</h4>
+                <p>Programmer</p>
+            </div>
+        </div>
+        <div class="fragment success-box">
+            <strong>33 days and nights</strong> → Four 24-hour forecasts<br>
+            <span class="small-text">Imperfect, but proved numerical weather prediction was feasible!</span>
+        </div>
+    </section>
+
+    <section>
+        <h3>The Core Idea: Numerical Integration</h3>
+        <pre><code class="python"># Step forward in time using derivatives
+x_new = x_old + dt * f(x_old, t)</code></pre>
+        <p class="small-text" style="margin: 1em 0;">This simple idea — <strong>Euler's method</strong> — unlocked complex systems.</p>
+        <div class="fragment highlight-box">
+            Suddenly: numerical integration of nonlinear differential equations became feasible.
+        </div>
+    </section>
+</section>
+
+<!-- ==================== PART 5: CHAOS ==================== -->
+<section>
+    <section data-background-color="#1a3020">
+        <h2 class="era-computational">Part 5: The Discovery of Chaos</h2>
+        <p>How a rounding error changed science</p>
+    </section>
+
+    <!-- Lorenz -->
+    <section>
+        <h3>Edward Lorenz (1917–2008)</h3>
+        <div class="two-column">
+            <div>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Edward_lorenz.jpg/440px-Edward_lorenz.jpg"
+                     alt="Lorenz" class="portrait-large">
+                <p class="tiny-text" style="color: #666; text-align: center;">Father of chaos theory</p>
+            </div>
+            <div>
+                <ul style="font-size: 0.85em;">
+                    <li>MIT meteorologist</li>
+                    <li>Running weather simulations on a Royal McBee LGP-30</li>
+                    <li class="fragment"><strong>Winter 1961:</strong> The famous accident...</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h3>The Famous Accident</h3>
+        <div class="two-column">
+            <div>
+                <p style="font-size: 0.9em;">To repeat a simulation, Lorenz typed in numbers from a printout:</p>
+                <table class="timeline" style="margin-top: 1em;">
+                    <tr><td><strong>Computer memory:</strong></td><td>0.506127</td></tr>
+                    <tr><td><strong>Printout:</strong></td><td>0.506</td></tr>
+                </table>
+            </div>
+            <div class="fragment">
+                <div class="warning-box">
+                    <strong>Difference:</strong> 0.0001%<br><br>
+                    <strong>Result:</strong> Completely different weather!
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h3>The Butterfly Effect</h3>
+        <blockquote>
+            "The initial round-off errors were the culprits; they were steadily amplifying until they dominated the solution."
+            <footer>— Edward Lorenz</footer>
+        </blockquote>
+        <p class="fragment" style="margin-top: 1.5em; text-align: center; font-size: 1.1em;">
+            <strong>Sensitive dependence on initial conditions</strong>
+        </p>
+        <p class="fragment small-text" style="text-align: center; color: #888;">
+            "Does the flap of a butterfly's wings in Brazil set off a tornado in Texas?"
+        </p>
+    </section>
+
+    <section>
+        <h3>The Lorenz System (1963)</h3>
+        <p>Simplified weather model — just <strong>3 equations</strong>:</p>
+        <div class="highlight-box" style="font-size: 1.1em;">
+            $$\frac{dx}{dt} = \sigma(y - x)$$
+            $$\frac{dy}{dt} = x(\rho - z) - y$$
+            $$\frac{dz}{dt} = xy - \beta z$$
+        </div>
+        <p class="small-text fragment" style="margin-top: 1em;">
+            Parameters: $\sigma = 10$, $\rho = 28$, $\beta = 8/3$
+        </p>
+    </section>
+
+    <section>
+        <h3>The Lorenz Attractor</h3>
+        <div id="lorenz-plot" style="width:100%; height:450px;"></div>
+        <script>
+            // Generate Lorenz attractor data
+            function lorenzSystem(x, y, z, sigma=10, rho=28, beta=8/3) {
+                return {
+                    dx: sigma * (y - x),
+                    dy: x * (rho - z) - y,
+                    dz: x * y - beta * z
+                };
+            }
+
+            let x = 1, y = 1, z = 1;
+            const dt = 0.01;
+            const xs = [], ys = [], zs = [];
+
+            for (let i = 0; i < 10000; i++) {
+                const d = lorenzSystem(x, y, z);
+                x += d.dx * dt;
+                y += d.dy * dt;
+                z += d.dz * dt;
+                xs.push(x); ys.push(y); zs.push(z);
+            }
+
+            const trace = {
+                x: xs, y: ys, z: zs,
+                mode: 'lines',
+                type: 'scatter3d',
+                line: { color: xs, colorscale: 'Viridis', width: 1.5 }
+            };
+
+            const layout = {
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                scene: {
+                    xaxis: { title: 'X', color: '#888', gridcolor: '#333' },
+                    yaxis: { title: 'Y', color: '#888', gridcolor: '#333' },
+                    zaxis: { title: 'Z', color: '#888', gridcolor: '#333' },
+                    bgcolor: 'rgba(0,0,0,0)'
+                },
+                margin: { l: 0, r: 0, t: 0, b: 0 }
+            };
+
+            Plotly.newPlot('lorenz-plot', [trace], layout);
+        </script>
+        <p class="small-text center-text">The trajectory never repeats, yet stays bounded — a "strange attractor"</p>
+    </section>
+
+    <section>
+        <h3>Chaos: What It Means</h3>
+        <div class="highlight-box" style="text-align: center; font-size: 1.2em;">
+            <strong>Determinism ≠ Predictability</strong>
+        </div>
+        <ul style="margin-top: 1em;">
+            <li class="fragment">System follows exact rules (deterministic)</li>
+            <li class="fragment">Yet long-term prediction is impossible</li>
+            <li class="fragment">Small errors grow <strong>exponentially</strong>: $\epsilon(t) \approx \epsilon_0 \cdot e^{\lambda t}$</li>
+            <li class="fragment" style="color: #e06c75;">This is why weather forecasts fail after ~10-14 days</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Weather Forecast Limits</h3>
+        <div id="forecast-plot" style="width:100%; height:350px;"></div>
+        <script>
+            const days = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+            const skill2020 = [0.995,0.98,0.96,0.92,0.86,0.78,0.68,0.56,0.45,0.36,0.29,0.24,0.19,0.15,0.12];
+            const skill1980 = [0.98,0.95,0.88,0.78,0.65,0.50,0.38,0.28,0.20,0.15,0.12,0.10,0.08,0.06,0.05];
+
+            const trace1 = { x: days, y: skill2020, name: '2020s', mode: 'lines+markers', line: { color: '#98c379', width: 3 }, marker: { size: 8 } };
+            const trace2 = { x: days, y: skill1980, name: '1980s', mode: 'lines+markers', line: { color: '#61afef', width: 3 }, marker: { size: 8 } };
+            const threshold = { x: [1,15], y: [0.6,0.6], name: 'Useful threshold', mode: 'lines', line: { dash: 'dash', color: '#e06c75', width: 2 } };
+
+            Plotly.newPlot('forecast-plot', [trace1, trace2, threshold], {
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                xaxis: { title: 'Forecast Days', color: '#888', gridcolor: '#333' },
+                yaxis: { title: 'Forecast Skill', color: '#888', gridcolor: '#333', range: [0,1.05] },
+                legend: { x: 0.7, y: 0.95, bgcolor: 'rgba(0,0,0,0.5)' },
+                margin: { t: 20 }
+            });
+        </script>
+        <p class="small-text center-text">Better models extend the horizon, but chaos sets <strong>fundamental limits</strong></p>
+    </section>
+
+    <!-- Post-Lorenz Scientists -->
+    <section>
+        <h3>The Chaos Revolution (1960s–1980s)</h3>
+        <div class="three-column">
+            <div class="person-card fragment">
+                <h4>Stephen Smale</h4>
+                <p class="dates">1930–</p>
+                <p>Horseshoe map (1967)<br>Rigorous chaos theory</p>
+            </div>
+            <div class="person-card fragment">
+                <h4>Mitchell Feigenbaum</h4>
+                <p class="dates">1944–2019</p>
+                <p>Universal constants (1978)<br>Period-doubling route to chaos</p>
+            </div>
+            <div class="person-card fragment">
+                <h4>Benoit Mandelbrot</h4>
+                <p class="dates">1924–2010</p>
+                <p>Fractals (1982)<br><em>The Fractal Geometry of Nature</em></p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h3>Lorenz's Legacy</h3>
+        <ul style="font-size: 0.9em;">
+            <li><strong>1963:</strong> Paper published — only 3 citations outside meteorology in 10 years!</li>
+            <li class="fragment"><strong>1987:</strong> James Gleick's <em>Chaos</em> brings it to the public</li>
+            <li class="fragment"><strong>1991:</strong> Kyoto Prize</li>
+            <li class="fragment"><strong>Today:</strong> 20,000+ citations</li>
+        </ul>
+        <blockquote class="fragment small-text" style="margin-top: 1em;">
+            "His discovery of deterministic chaos brought about one of the most dramatic changes in mankind's view of nature since Sir Isaac Newton."
+            <footer>— Kyoto Prize Committee, 1991</footer>
+        </blockquote>
+    </section>
+</section>
+
+<!-- ==================== PART 6: EMERGENCE ==================== -->
+<section>
+    <section data-background-color="#2d2640">
+        <h2 style="color: #c678dd;">Part 6: Emergence</h2>
+        <p>The whole is greater than the sum of parts</p>
+    </section>
+
+    <section>
+        <h3>Complex Systems</h3>
+        <blockquote>
+            "The whole is greater than the sum of its parts."
+            <footer>— Aristotle (paraphrased)</footer>
+        </blockquote>
+        <div class="fragment" style="margin-top: 1.5em;">
+            <table class="timeline">
+                <tr><td><strong>Simple Rules</strong></td><td><strong>Emergent Behavior</strong></td></tr>
+                <tr><td>Neurons firing</td><td>Consciousness</td></tr>
+                <tr><td>Birds following neighbors</td><td>Murmuration</td></tr>
+                <tr><td>4 rules in Game of Life</td><td>Turing-complete computation</td></tr>
+            </table>
+        </div>
+    </section>
+
+    <section>
+        <h3>Conway's Game of Life (1970)</h3>
+        <p>Just <strong>4 rules</strong>:</p>
+        <ol class="small-text">
+            <li>Live cell with < 2 neighbors dies (underpopulation)</li>
+            <li>Live cell with 2-3 neighbors survives</li>
+            <li>Live cell with > 3 neighbors dies (overpopulation)</li>
+            <li>Dead cell with exactly 3 neighbors becomes alive</li>
+        </ol>
+        <div class="fragment success-box" style="margin-top: 1em;">
+            → Gliders, oscillators, guns, even <strong>computers</strong> emerge!
+        </div>
+    </section>
+
+    <section>
+        <h3>Multi-Scale Phenomena</h3>
+        <table class="timeline">
+            <tr><th>System</th><th>Scales</th></tr>
+            <tr><td>Climate</td><td>Molecules → Clouds → Weather → Global</td></tr>
+            <tr><td>Biology</td><td>Atoms → Molecules → Cells → Organs → Organisms</td></tr>
+            <tr><td>Materials</td><td>Electrons → Atoms → Grains → Bulk</td></tr>
+        </table>
+        <p class="fragment highlight-box" style="margin-top: 1em;">
+            We can't simulate every atom — we need <strong>approximations that bridge scales</strong>.
+        </p>
+    </section>
+</section>
+
+<!-- ==================== PART 7: LOOKING AHEAD ==================== -->
+<section>
+    <section data-background-color="#3d2e1a">
+        <h2 class="era-datadriven">Part 7: The Modern SciML Toolkit</h2>
+        <p>Where data meets physics</p>
+    </section>
+
+    <section>
+        <h3>Three Eras of Scientific Computing</h3>
+        <table style="font-size: 0.85em;">
+            <tr>
+                <td class="era-analytical"><strong>Pre-1950</strong></td>
+                <td>Analytical</td>
+                <td>Pen & paper, exact solutions</td>
+            </tr>
+            <tr>
+                <td class="era-computational"><strong>1950–2010</strong></td>
+                <td>Computational</td>
+                <td>Simulate known equations</td>
+            </tr>
+            <tr>
+                <td class="era-datadriven"><strong>2010–present</strong></td>
+                <td>Data-Driven</td>
+                <td>Learn from observations</td>
+            </tr>
+        </table>
+    </section>
+
+    <section>
+        <h3>The Forward vs. Inverse Problem</h3>
+        <p><strong class="era-computational">Forward:</strong> Known equations → Predictions</p>
+        <pre><code>Equations + Initial Conditions → Simulation → Predictions</code></pre>
+        <p class="fragment" style="margin-top: 1em;"><strong class="era-datadriven">Inverse:</strong> Data → ???</p>
+        <pre class="fragment"><code>Observations → ??? → Governing Equations</code></pre>
+        <div class="fragment highlight-box" style="margin-top: 1em;">
+            What if we don't know the equations? Or they're too expensive to solve?
+        </div>
+    </section>
+
+    <!-- PINNs -->
+    <section>
+        <h3>Physics-Informed Neural Networks (PINNs)</h3>
+        <p style="font-size: 0.85em;"><em>Raissi, Perdikaris, & Karniadakis (2019)</em></p>
+        <div class="highlight-box" style="text-align: center;">
+            $$\mathcal{L} = \underbrace{\mathcal{L}_{\text{data}}}_{\text{fit observations}} + \lambda \underbrace{\mathcal{L}_{\text{physics}}}_{\text{satisfy PDEs}}$$
+        </div>
+        <ul class="small-text fragment">
+            <li>Neural network approximates solution $u_\theta(x,t)$</li>
+            <li>Auto-diff computes $\partial u/\partial t$, $\partial^2 u/\partial x^2$, etc.</li>
+            <li>Penalize PDE violations in the loss function</li>
+        </ul>
+        <p class="fragment tiny-text" style="color: #888; margin-top: 0.5em;">
+            Recent: PIKANs (Kolmogorov-Arnold Networks), Separable PINNs (100× speedup)
+        </p>
+    </section>
+
+    <!-- SINDy -->
+    <section>
+        <h3>SINDy: Sparse Identification of Nonlinear Dynamics</h3>
+        <p style="font-size: 0.85em;"><em>Brunton, Proctor, & Kutz (2016)</em></p>
+        <div class="highlight-box" style="text-align: center;">
+            $$\dot{\mathbf{x}} = \mathbf{\Theta}(\mathbf{x}) \boldsymbol{\xi}$$
+        </div>
+        <ul class="small-text">
+            <li class="fragment">Build library: $\Theta = [1, x, y, z, x^2, xy, \sin(x), \ldots]$</li>
+            <li class="fragment">Use sparse regression (most $\xi$ are zero)</li>
+            <li class="fragment">Recover <strong>interpretable equations</strong>!</li>
+        </ul>
+        <p class="fragment success-box small-text" style="margin-top: 0.5em;">
+            Can recover the Lorenz equations from trajectory data alone!
+        </p>
+    </section>
+
+    <!-- Symbolic Regression -->
+    <section>
+        <h3>Symbolic Regression</h3>
+        <p style="font-size: 0.85em;">Discover formulas, not just predictions</p>
+        <div class="three-column small-text" style="margin-top: 1em;">
+            <div class="person-card fragment">
+                <h4>AI Feynman</h4>
+                <p>Tegmark (2020)</p>
+                <p>Physics-inspired,<br>100/100 Feynman eqns</p>
+            </div>
+            <div class="person-card fragment">
+                <h4>PySR</h4>
+                <p>Cranmer (2023)</p>
+                <p>Genetic programming,<br>most robust tool</p>
+            </div>
+            <div class="person-card fragment">
+                <h4>LLM-based</h4>
+                <p>2024-2025</p>
+                <p>IdeSearchFitter,<br>but may memorize!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Neural Operators -->
+    <section>
+        <h3>Neural Operators: Learning Solution Maps</h3>
+        <p style="font-size: 0.85em;">Learn the operator, not a single solution</p>
+        <div class="two-column" style="margin-top: 1em;">
+            <div class="fragment">
+                <div class="highlight-box" style="text-align: center;">
+                    <strong>DeepONet</strong><br>
+                    <span class="small-text">Lu et al. (2021)</span><br>
+                    <span class="tiny-text">Branch-trunk architecture</span>
+                </div>
+            </div>
+            <div class="fragment">
+                <div class="highlight-box" style="text-align: center;">
+                    <strong>Fourier Neural Operator</strong><br>
+                    <span class="small-text">Li et al. (2021)</span><br>
+                    <span class="tiny-text">Global convolutions in Fourier space</span>
+                </div>
+            </div>
+        </div>
+        <p class="fragment success-box small-text" style="margin-top: 1em;">
+            Once trained: <strong>orders of magnitude faster</strong> than traditional solvers
+        </p>
+    </section>
+
+    <!-- Structure-Preserving -->
+    <section>
+        <h3>Structure-Preserving Neural Networks</h3>
+        <p style="font-size: 0.85em;">Build physics into the architecture</p>
+        <div class="two-column small-text" style="margin-top: 1em;">
+            <div>
+                <strong style="color: #42affa;">Hamiltonian NNs</strong>
+                <ul class="tiny-text">
+                    <li>Learn $H(q,p)$ directly</li>
+                    <li>$\dot{q} = \frac{\partial H}{\partial p}$, $\dot{p} = -\frac{\partial H}{\partial q}$</li>
+                    <li>Energy conservation built-in!</li>
+                </ul>
+            </div>
+            <div class="fragment">
+                <strong style="color: #98c379;">Symplectic NNs</strong>
+                <ul class="tiny-text">
+                    <li>Preserve phase-space structure</li>
+                    <li>Critical for long-time stability</li>
+                    <li>Molecular dynamics, celestial mechanics</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Foundation Models -->
+    <section>
+        <h3>Foundation Models for Time Series</h3>
+        <p style="font-size: 0.85em;">Pre-trained models that work "out of the box"</p>
+        <table class="timeline small-text" style="margin-top: 0.5em;">
+            <tr><td><strong>Chronos</strong></td><td>Amazon</td><td>T5-based, tokenizes time series</td></tr>
+            <tr><td><strong>Chronos-2</strong></td><td>Amazon (2025)</td><td>250× faster, multivariate</td></tr>
+            <tr><td><strong>TimeGPT</strong></td><td>Nixtla</td><td>API-based transformer</td></tr>
+            <tr><td><strong>TimesFM</strong></td><td>Google</td><td>200M parameters</td></tr>
+        </table>
+        <p class="fragment tiny-text" style="color: #888; margin-top: 0.5em;">
+            Zero-shot forecasting on 100B+ observations across domains
+        </p>
+    </section>
+
+    <!-- Agentic AI -->
+    <section>
+        <h3>Agentic AI for Science</h3>
+        <p style="font-size: 0.85em;">Autonomous scientific discovery</p>
+        <div class="three-column tiny-text" style="margin-top: 1em;">
+            <div class="person-card fragment">
+                <h4>AI Scientist</h4>
+                <p>Sakana AI (2024)</p>
+                <p>First AI-generated<br>peer-reviewed paper!</p>
+            </div>
+            <div class="person-card fragment">
+                <h4>ChemCrow</h4>
+                <p>LLM + Lab Robots</p>
+                <p>Synthesized 29 compounds,<br>8 previously unknown</p>
+            </div>
+            <div class="person-card fragment">
+                <h4>AI-Researcher</h4>
+                <p>2025</p>
+                <p>Full pipeline:<br>lit review → paper</p>
+            </div>
+        </div>
+        <p class="fragment warning-box tiny-text" style="margin-top: 0.5em;">
+            Current limitation: LLMs summarize well, but creative leaps are rare
+        </p>
+    </section>
+
+    <!-- Summary Table -->
+    <section>
+        <h3>The SciML Landscape</h3>
+        <table class="timeline small-text">
+            <tr><th>Method</th><th>Input</th><th>Output</th><th>Strength</th></tr>
+            <tr><td><strong>PINNs</strong></td><td>Sparse data + PDEs</td><td>Solutions</td><td>Works with little data</td></tr>
+            <tr><td><strong>SINDy</strong></td><td>Time series</td><td>Equations</td><td>Interpretable</td></tr>
+            <tr><td><strong>Neural Operators</strong></td><td>IC/BC</td><td>Solutions</td><td>Fast inference</td></tr>
+            <tr><td><strong>HNNs</strong></td><td>Trajectories</td><td>Dynamics</td><td>Conservation laws</td></tr>
+            <tr><td><strong>Foundation Models</strong></td><td>Any time series</td><td>Forecasts</td><td>Zero-shot transfer</td></tr>
+        </table>
+    </section>
+</section>
+
+<!-- ==================== SUMMARY ==================== -->
+<section>
+    <section data-background-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)">
+        <h2>Summary</h2>
+        <ol class="small-text">
+            <li class="fragment"><span class="era-analytical">◆</span> <strong>Mathematical laws</strong> can describe nature (Galileo → Newton)</li>
+            <li class="fragment"><span style="color: #e06c75;">◆</span> <strong>Nonlinearity</strong> is the norm, not the exception</li>
+            <li class="fragment"><span class="era-computational">◆</span> <strong>Chaos</strong> = deterministic yet unpredictable (Poincaré → Lorenz)</li>
+            <li class="fragment"><span class="era-computational">◆</span> <strong>Computers</strong> unlocked complex systems</li>
+            <li class="fragment"><span style="color: #c678dd;">◆</span> <strong>Emergence</strong> — complex behavior from simple rules</li>
+            <li class="fragment"><span class="era-datadriven">◆</span> <strong>Data-driven methods</strong> offer new discovery tools</li>
+        </ol>
+    </section>
+
+    <section>
+        <h2>Key Scientists Timeline</h2>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; font-size: 0.65em;">
+            <div class="person-card" style="width: 120px;">
+                <h4>Galileo</h4>
+                <p>1638</p>
+            </div>
+            <div class="person-card" style="width: 120px;">
+                <h4>Newton</h4>
+                <p>1687</p>
+            </div>
+            <div class="person-card" style="width: 120px;">
+                <h4>Fourier</h4>
+                <p>1822</p>
+            </div>
+            <div class="person-card" style="width: 120px;">
+                <h4>Poincaré</h4>
+                <p>1890</p>
+            </div>
+            <div class="person-card" style="width: 120px;">
+                <h4>Richardson</h4>
+                <p>1922</p>
+            </div>
+            <div class="person-card" style="width: 120px;">
+                <h4>ENIAC</h4>
+                <p>1950</p>
+            </div>
+            <div class="person-card" style="width: 120px;">
+                <h4>Lorenz</h4>
+                <p>1963</p>
+            </div>
+            <div class="person-card" style="width: 120px;">
+                <h4>Mandelbrot</h4>
+                <p>1982</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Further Reading</h2>
+        <div class="two-column tiny-text">
+            <div>
+                <strong>Classics:</strong>
+                <ul>
+                    <li>Lorenz (1963). "Deterministic Nonperiodic Flow"</li>
+                    <li>Strogatz (2015). <em>Nonlinear Dynamics and Chaos</em></li>
+                    <li>Gleick (1987). <em>Chaos</em></li>
+                </ul>
+            </div>
+            <div>
+                <strong>Scientific ML:</strong>
+                <ul>
+                    <li>Brunton & Kutz (2019). <em>Data-Driven Science</em></li>
+                    <li>Raissi et al. (2019). "PINNs"</li>
+                    <li>Brunton et al. (2016). "SINDy"</li>
+                    <li>Lu et al. (2021). "DeepONet"</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Next Time</h2>
+        <h3 style="color: #98c379;">Forward Modeling and Numerical Computing</h3>
+        <ul>
+            <li>Euler's method, Runge-Kutta</li>
+            <li>Stability and convergence</li>
+            <li>Simulating chaotic systems</li>
+        </ul>
+    </section>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js"></script>
+<script>
+    Reveal.initialize({
+        hash: true,
+        slideNumber: 'c/t',
+        transition: 'slide',
+        transitionSpeed: 'default',
+        backgroundTransition: 'fade',
+        plugins: [ RevealMath.KaTeX, RevealHighlight ],
+        // Presentation settings
+        width: 1200,
+        height: 700,
+        margin: 0.1,
+        minScale: 0.2,
+        maxScale: 2.0
+    });
+</script>
+</body>
+</html>

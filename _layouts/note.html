@@ -1,0 +1,197 @@
+---
+layout: default
+---
+
+<article class="note-content">
+    <header class="note-header">
+        <h1>{{ page.title }}</h1>
+    </header>
+
+    <div class="note-body">
+        {{ content }}
+    </div>
+</article>
+
+<style>
+.note-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.note-header h1 {
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.note-body {
+    line-height: 1.7;
+}
+
+.note-body h2 {
+    color: #2c3e50;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.note-body h3 {
+    color: #34495e;
+    margin-top: 1.5rem;
+}
+
+/* Code block styling - One Dark Pro theme */
+.note-body pre {
+    background: #282c34;
+    padding: 1rem 1.25rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    border: none;
+    margin: 1.5rem 0;
+}
+
+.note-body pre code {
+    background: transparent !important;
+    color: #abb2bf;
+    padding: 0;
+    font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Monaco, 'Courier New', monospace;
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+.note-body code {
+    font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Monaco, 'Courier New', monospace;
+    font-size: 0.9em;
+}
+
+.note-body p code,
+.note-body li code {
+    background: #f1f3f5;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    color: #e45649;
+}
+
+/* Syntax highlighting - One Dark Pro */
+.note-body .highlight,
+.note-body .highlighter-rouge {
+    background: #282c34;
+    border-radius: 6px;
+}
+
+.note-body .highlight pre {
+    margin: 0;
+    background: transparent;
+}
+
+/* Keywords */
+.note-body .highlight .k,
+.note-body .highlight .kd,
+.note-body .highlight .kn,
+.note-body .highlight .kp,
+.note-body .highlight .kr,
+.note-body .highlight .kt { color: #c678dd; }
+
+/* Strings */
+.note-body .highlight .s,
+.note-body .highlight .s1,
+.note-body .highlight .s2,
+.note-body .highlight .sb,
+.note-body .highlight .sc,
+.note-body .highlight .sd,
+.note-body .highlight .se,
+.note-body .highlight .sh,
+.note-body .highlight .si,
+.note-body .highlight .sx,
+.note-body .highlight .sr,
+.note-body .highlight .ss { color: #98c379; }
+
+/* Numbers */
+.note-body .highlight .m,
+.note-body .highlight .mi,
+.note-body .highlight .mf,
+.note-body .highlight .mh,
+.note-body .highlight .mo,
+.note-body .highlight .il { color: #d19a66; }
+
+/* Comments */
+.note-body .highlight .c,
+.note-body .highlight .c1,
+.note-body .highlight .cm,
+.note-body .highlight .cp,
+.note-body .highlight .cs { color: #5c6370; font-style: italic; }
+
+/* Functions */
+.note-body .highlight .nf,
+.note-body .highlight .fm { color: #61afef; }
+
+/* Classes */
+.note-body .highlight .nc,
+.note-body .highlight .nn { color: #e5c07b; }
+
+/* Operators */
+.note-body .highlight .o,
+.note-body .highlight .ow { color: #56b6c2; }
+
+/* Built-ins */
+.note-body .highlight .nb,
+.note-body .highlight .bp { color: #e5c07b; }
+
+/* Variables - white/light gray */
+.note-body .highlight .n,
+.note-body .highlight .nv,
+.note-body .highlight .vi,
+.note-body .highlight .vg { color: #abb2bf; }
+
+/* Punctuation */
+.note-body .highlight .p { color: #abb2bf; }
+
+/* Names/Attributes */
+.note-body .highlight .na,
+.note-body .highlight .no { color: #d19a66; }
+
+/* Self */
+.note-body .highlight .bp { color: #e5c07b; }
+
+.note-body img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1.5rem auto;
+}
+
+.note-body blockquote {
+    border-left: 4px solid #3498db;
+    margin: 1.5rem 0;
+    padding: 0.5rem 1rem;
+    background: #f8f9fa;
+    font-style: italic;
+}
+
+.note-body blockquote p {
+    margin: 0;
+}
+
+/* MathJax styling */
+.note-body .MathJax {
+    font-size: 1.1em;
+}
+
+/* Center display math equations */
+.note-body .MathJax_Display {
+    text-align: center !important;
+    margin: 1.5rem 0 !important;
+}
+
+.note-body mjx-container[jax="CHTML"][display="true"] {
+    display: block !important;
+    text-align: center !important;
+    margin: 1.5rem 0 !important;
+}
+
+/* Ensure p tags containing only math are centered */
+.note-body p:has(> .MathJax_Display:only-child) {
+    text-align: center;
+}
+</style>

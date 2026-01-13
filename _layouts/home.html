@@ -6,8 +6,20 @@ layout: default
 
     <h1>{{ site.course_name }} <span style="font-size: 20px;color: #0006;">/ {{ site.course_semester }} </span></h1>
 
+    <!-- Course Logistics -->
+    <div class="logistics-box" style="background: #f8f9fa; padding: 1rem 1.5rem; border-radius: 6px; margin: 1rem 0 1.5rem 0; border-left: 4px solid #3498db;">
+        <p style="margin: 0.3rem 0;"><strong>Lectures:</strong> {{ site.lecture_time }} in {{ site.lecture_location }}</p>
+        <p style="margin: 0.3rem 0;"><strong>Office Hours:</strong>
+        {% for oh in site.office_hours %}
+            {{ oh.day }} {{ oh.time }}{% unless forloop.last %}, {% endunless %}
+        {% endfor %}
+        </p>
+    </div>
+
+    <!-- Updates section (commented out for new semester)
     {% include announcements.html %}
     <br />
+    -->
 
     <h2>Course Description</h2>
     <p>{{ site.course_description }}</p>

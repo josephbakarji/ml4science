@@ -1,8 +1,11 @@
-# The Lorenz System
+---
+title: "The Lorenz System"
+layout: note
+permalink: /static_files/lectures/05/diff-solve/
+---
 
-The Lorenz system is a set of three coupled nonlinear differential equations
-first studied by Edward Lorenz in 1963 while modeling atmospheric convection.
-The system is given by:
+
+The Lorenz system is a set of three coupled nonlinear differential equations first studied by Edward Lorenz in 1963 while modeling atmospheric convection. The system is given by:
 
 $$\begin{align*}
 \frac{dx}{dt} &= \sigma(y-x) \\
@@ -10,21 +13,11 @@ $$\begin{align*}
 \frac{dz}{dt} &= xy - \beta z
 \end{align*}$$
 
-where $$\sigma$$, $$\rho$$, and $$\beta$$ are parameters. The system exhibits
-chaotic behavior for certain parameter values, most famously when $$\sigma=10$$,
-$$\rho=28$$, and $$\beta=8/3$$.
+where $\sigma$, $\rho$, and $\beta$ are parameters. The system exhibits chaotic behavior for certain parameter values, most famously when $\sigma=10$, $\rho=28$, and $\beta=8/3$.
 
-The Lorenz system is one of the foundational examples in chaos theory. It
-demonstrates how simple deterministic systems can produce complex, unpredictable
-behavior - a phenomenon known as deterministic chaos. The system's sensitivity
-to initial conditions became popularly known as the "butterfly effect", where
-small changes in initial conditions can lead to vastly different outcomes over
-time.
+The Lorenz system is one of the foundational examples in chaos theory. It demonstrates how simple deterministic systems can produce complex, unpredictable behavior - a phenomenon known as deterministic chaos. The system's sensitivity to initial conditions became popularly known as the "butterfly effect", where small changes in initial conditions can lead to vastly different outcomes over time.
 
-Beyond meteorology, the Lorenz equations are used to model lasers, dynamos,
-electric circuits, chemical reactions, and population dynamics. The system
-continues to be an important testbed for studying nonlinear dynamics and chaos
-theory. Here are some useful references:
+Beyond meteorology, the Lorenz equations are used to model lasers, dynamos, electric circuits, chemical reactions, and population dynamics. The system continues to be an important testbed for studying nonlinear dynamics and chaos theory. Here are some useful references:
 - [Analysis on the Lorenz system](https://www.youtube.com/watch?v=0Rpy-xSsAo8&ab_channel=JasonBramburger).
 - [Chaotic Systems - The Butterfly Effect by Veritasium](https://www.youtube.com/watch?v=fDek6cYijxI&ab_channel=Veritasium)
 - [Another introduction to Chaotic Systems](https://www.youtube.com/watch?v=uzJXeluCKMs&ab_channel=Gonkee)
@@ -86,40 +79,29 @@ plt.show()
 
 
     
-![png](diff-solve_files/output_2_0.png)
+![png](/static_files/lectures/05/diff-solve/output_2_0.png)
     
 
 
-While we can often plot a time series as a function of time, using a phase
-portrait we can visualize the behavior of the system in the $$(x,y,z)$$ space.
-This is useful to understand the long term behavior of the system, and the
-correlations between the variables.
+While we can often plot a time series as a function of time, using a phase portrait we can visualize the behavior of the system in the $(x,y,z)$ space. This is useful to understand the long term behavior of the system, and the correlations between the variables.
 
-As a side note, thinking about properties of systems in phase spaces is very
-useful.
+As a side note, thinking about properties of systems in phase spaces is very useful.
 
-For example, for systems with many particles or high dimensions (e.g. N
-particles each with position and momentum in 3D), 
-the phase space becomes a 6N-dimensional space that tracks the complete state
-of the system. Each point
+For example, for systems with many particles or high dimensions (e.g. N particles each with position and momentum in 3D), 
+the phase space becomes a 6N-dimensional space that tracks the complete state of the system. Each point
 in this phase space represents a possible configuration of all particles.
 
-An important result in statistical mechanics is Liouville's theorem, which
-states that the volume
-occupied by a collection of initial conditions in phase space is preserved as
-the system evolves
-according to Hamilton's equations (the equivalent of Newton's laws for systems
-with many particles). 
-In other words, the volume of a region in phase space is conserved over time.
-This is like an incompressible fluid flowing; but in phase space!
+An important result in statistical mechanics is Liouville's theorem, which states that the volume
+occupied by a collection of initial conditions in phase space is preserved as the system evolves
+according to Hamilton's equations (the equivalent of Newton's laws for systems with many particles). 
+In other words, the volume of a region in phase space is conserved over time. This is like an incompressible fluid flowing; but in phase space!
 
 The theorem has important implications:
 1. It explains why we can treat certain statistical quantities as conserved
 2. It underlies the foundations of statistical mechanics and ergodic theory
 3. It helps us understand how uncertainty propagates in dynamical systems
 
-While we can't easily visualize high-dimensional phase spaces, we can project
-them onto lower
+While we can't easily visualize high-dimensional phase spaces, we can project them onto lower
 dimensions or track statistical properties of the phase space volume over time. 
 
 
@@ -139,33 +121,24 @@ plt.show()
 
 
     
-![png](diff-solve_files/output_4_0.png)
+![png](/static_files/lectures/05/diff-solve/output_4_0.png)
     
 
 
-For chaotic systems like this, we need to be careful about how we make
-predictions. 
-That's also true for machine learning models that attempt to describe and
-predict chaotic systems.
-Simply increasing numerical precision isn't enough, since errors grow
-exponentially with time due to the system's 
+For chaotic systems like this, we need to be careful about how we make predictions. 
+That's also true for machine learning models that attempt to describe and predict chaotic systems.
+Simply increasing numerical precision isn't enough, since errors grow exponentially with time due to the system's 
 sensitivity to initial conditions. 
 Instead, we need to account for how uncertainty propagates through the system.
 
-One way to visualize this is to look at how a small distribution of initial
-conditions evolves over 
-time. Even if we start with very similar initial states (differing only by tiny
-amounts), their 
+One way to visualize this is to look at how a small distribution of initial conditions evolves over 
+time. Even if we start with very similar initial states (differing only by tiny amounts), their 
 trajectories will diverge exponentially. 
-This divergence can be quantified by measuring the variance of the ensemble of
-trajectories at each time point.
+This divergence can be quantified by measuring the variance of the ensemble of trajectories at each time point.
 
-In the plots below, we'll see this effect directly - a tight cluster of initial
-conditions spreads 
-out over time, demonstrating why point predictions become increasingly
-unreliable. This growing 
-variance is a fundamental feature of chaotic systems and must be accounted for
-in any forecasting 
+In the plots below, we'll see this effect directly - a tight cluster of initial conditions spreads 
+out over time, demonstrating why point predictions become increasingly unreliable. This growing 
+variance is a fundamental feature of chaotic systems and must be accounted for in any forecasting 
 attempt.
 
 
@@ -219,12 +192,11 @@ plt.show()
 
 
     
-![png](diff-solve_files/output_6_1.png)
+![png](/static_files/lectures/05/diff-solve/output_6_1.png)
     
 
 
-Now we can plot a historgram for the values of x at different times; since
-$$x$$ can take on many values at a given time. It's now a random variable.
+Now we can plot a historgram for the values of x at different times; since $x$ can take on many values at a given time. It's now a random variable.
 
 
 ```python
@@ -269,17 +241,14 @@ plt.show()
 
 
     
-![png](diff-solve_files/output_9_0.png)
+![png](/static_files/lectures/05/diff-solve/output_9_0.png)
     
 
 
-The continuous version of this is the kernel density estimation. That's a sum
-of Gaussians for each of the points at a given point in time. A kernel density
-estimator for a set of points $$x_1, x_2, \ldots, x_n$$ is given by:
+The continuous version of this is the kernel density estimation. That's a sum of Gaussians for each of the points at a given point in time. A kernel density estimator for a set of points $x_1, x_2, \ldots, x_n$ is given by:
 
 $$
-p(x) = \frac{1}{n} \sum_{i=1}^n \frac{1}{\sqrt{2\pi\sigma^2}}
-e^{-\frac{(x-x_i)^2}{2\sigma^2}}
+p(x) = \frac{1}{n} \sum_{i=1}^n \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x-x_i)^2}{2\sigma^2}}
 $$
 
 
@@ -312,6 +281,6 @@ plt.show()
 
 
     
-![png](diff-solve_files/output_11_0.png)
+![png](/static_files/lectures/05/diff-solve/output_11_0.png)
     
 
