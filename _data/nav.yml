@@ -8,8 +8,12 @@ items:
   icon_class: fas fa-calendar-alt
 
 - url: /lectures/
-  name: Lectures
+  name: Lectures (Archive)
   icon_class: fas fa-book-reader
+
+- url: /course/
+  name: Course (Spring 2026)
+  icon_class: fas fa-chalkboard-teacher
 
 - url: /assignments/
   name: Assignments

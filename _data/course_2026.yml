@@ -1,0 +1,153 @@
+- lecture_num: '00'
+  title: Course Introduction and Logistics
+  date: '2026-01-13T08:00:00+03:00'
+  type: lecture
+  tldr: 'Introduction to the course structure, objectives, and logistics. Overview
+    of data-driven modeling paradigms and their role in modern science and engineering.
+
+    '
+  thumbnail: null
+  sections: []
+  hide_from_announcments: false
+  folder: 00_intro_logistics
+- lecture_num: '01'
+  title: Modeling the World
+  date: '2026-01-15T08:00:00+03:00'
+  type: lecture
+  tldr: 'A brief history of empirical modeling from Galileo to machine learning. Introduction
+    to types of data, complex systems, and the simple pendulum as a case study.
+
+    '
+  thumbnail: null
+  sections: []
+  hide_from_announcments: false
+  folder: 01_modeling_world
+- lecture_num: '02'
+  title: Complex Systems, Differential Equations, Nonlinearity, and Chaos
+  date: '2026-01-20T08:00:00+03:00'
+  type: lecture
+  tldr: 'Introduction to dynamical systems, differential equations, and nonlinear
+    phenomena. Exploration of chaos, strange attractors, and sensitivity to initial
+    conditions.
+
+    '
+  thumbnail: null
+  sections:
+  - title: Lecture Materials
+    links:
+    - name: 'Lecture Notes: Complex Systems Introduction'
+      url: /static_files/lectures/02/complex_systems_intro
+    - name: 'Notes: Complex Systems'
+      url: /static_files/lectures/02/notes_complex_systems
+    - name: 'Notes: Pondering on Complexity'
+      url: /static_files/lectures/02/notes_pondering_complexity
+  hide_from_announcments: false
+  folder: 02_complex_systems_chaos
+- lecture_num: '03'
+  title: Forward Modeling and Numerical Computing
+  date: '2026-01-22T08:00:00+03:00'
+  type: lecture
+  tldr: 'Introduction to numerical methods for solving differential equations. Forward
+    Euler, Runge-Kutta methods, and stability analysis.
+
+    '
+  thumbnail: null
+  sections: []
+  hide_from_announcments: false
+  folder: 03_forward_modeling_numerics
+- lecture_num: '04'
+  title: 'Probabilistic Modeling: Uncertainty Quantification'
+  date: '2026-01-27T08:00:00+03:00'
+  type: lecture
+  tldr: 'Introduction to probabilistic modeling and uncertainty quantification. Bayesian
+    inference, probability distributions, and Monte Carlo methods.
+
+    '
+  thumbnail: null
+  sections: []
+  hide_from_announcments: false
+  folder: 04_probabilistic_uq
+- lecture_num: '05'
+  title: 'Supervised Learning: Linear Regression and Logistic Regression'
+  date: '2026-01-29T08:00:00+03:00'
+  type: lecture
+  tldr: 'Introduction to supervised learning with linear and logistic regression.
+    Least squares, gradient descent, and classification fundamentals.
+
+    '
+  thumbnail: null
+  sections: []
+  hide_from_announcments: false
+  folder: 05_supervised_regression
+- lecture_num: '06'
+  title: 'Supervised Learning: MLE, GLMs, Softmax Regression, and SVM'
+  date: '2026-02-03T08:00:00+03:00'
+  type: lecture
+  tldr: 'Maximum likelihood estimation, generalized linear models, softmax regression
+    for multi-class classification, and support vector machines.
+
+    '
+  thumbnail: null
+  sections: []
+  hide_from_announcments: false
+  folder: 06_supervised_mle_glm
+- lecture_num: '07'
+  title: 'Supervised Learning: From Linear Regression to Deep Learning'
+  date: '2026-02-05T08:00:00+03:00'
+  type: lecture
+  tldr: 'Building intuition from linear regression to neural networks. Universal approximation,
+    backpropagation, and training deep networks.
+
+    '
+  thumbnail: null
+  sections: []
+  hide_from_announcments: false
+  folder: 07_deep_learning
+- lecture_num: 08
+  title: 'Time Series Data: Fourier Transforms, Auto-Regression, and Discrete Equations'
+  date: '2026-02-10T08:00:00+03:00'
+  type: lecture
+  tldr: 'Introduction to time series analysis including Fourier transforms, autoregressive
+    models, and discrete dynamical systems.
+
+    '
+  thumbnail: null
+  sections: []
+  hide_from_announcments: false
+  folder: 08_time_series
+- lecture_num: 09
+  title: 'System Identification: Coefficient Fitting'
+  date: '2026-02-12T08:00:00+03:00'
+  type: lecture
+  tldr: 'Introduction to system identification techniques. Fitting coefficients of
+    differential equations from time series data using regression.
+
+    '
+  thumbnail: null
+  sections: []
+  hide_from_announcments: false
+  folder: 09_system_identification
+- lecture_num: '10'
+  title: Sparse Identification of Nonlinear Dynamics (SINDy)
+  date: '2026-02-17T08:00:00+03:00'
+  type: lecture
+  tldr: 'Introduction to SINDy algorithm for discovering governing equations. Sparse
+    regression, library construction, and equation discovery.
+
+    '
+  thumbnail: null
+  sections: []
+  hide_from_announcments: false
+  folder: 10_sindy
+- lecture_num: '11'
+  title: Quiz + Sparse Identification of PDEs
+  date: '2026-02-19T08:00:00+03:00'
+  type: lecture
+  tldr: 'Quiz covering weeks 1-5 material. Introduction to extending sparse identification
+    methods to partial differential equations.
+
+    '
+  thumbnail: null
+  sections: []
+  hide_from_announcments: false
+  folder: 11_sindy_pdes

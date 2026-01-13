@@ -1,0 +1,203 @@
+---
+layout: page
+---
+
+{{ content }}
+
+<div class="course-lectures">
+{% for lecture in site.course_2026 %}
+<div class="lecture-card">
+    <div class="lecture-header" onclick="toggleLecture2026(this)">
+        <span class="lecture-number">{{ lecture.lecture_num }}</span>
+        <div class="lecture-info">
+            <h3 class="lecture-title">{{ lecture.title }}</h3>
+            {% if lecture.tldr and lecture.tldr != '' %}
+            <p class="lecture-tldr">{{ lecture.tldr }}</p>
+            {% endif %}
+            {% if lecture.date %}
+            <span class="lecture-date">{{ lecture.date | date: "%B %d, %Y" }}</span>
+            {% endif %}
+        </div>
+        <span class="toggle-icon">&#9660;</span>
+    </div>
+
+    <div class="lecture-content" style="display: none;">
+        {% if lecture.sections %}
+        {% for section in lecture.sections %}
+        <div class="lecture-section">
+            <h4 class="section-title">{{ section.title }}</h4>
+            <ul class="lecture-links">
+            {% for link in section.links %}
+                <li>
+                    <a href="{% if link.url contains '://' %}{{ link.url }}{% else %}{{ site.baseurl }}{{ link.url }}{% endif %}"
+                       {% if link.url contains '://' %}target="_blank"{% endif %}>
+                        {{ link.name }}
+                        {% if link.type == 'slides' %}<span class="link-badge slides">Slides</span>{% endif %}
+                        {% if link.type == 'notebook' %}<span class="link-badge notebook">Notebook</span>{% endif %}
+                        {% if link.type == 'video' %}<span class="link-badge video">Video</span>{% endif %}
+                    </a>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="no-materials">Materials coming soon...</p>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+</div>
+
+<style>
+.course-lectures {
+    margin-top: 2rem;
+}
+
+.lecture-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.lecture-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.lecture-header:hover {
+    background: #f8f9fa;
+}
+
+.lecture-number {
+    background: #3498db;
+    color: white;
+    font-weight: bold;
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    margin-right: 1rem;
+    min-width: 2.5rem;
+    text-align: center;
+}
+
+.lecture-info {
+    flex: 1;
+}
+
+.lecture-title {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #2c3e50;
+}
+
+.lecture-tldr {
+    margin: 0.25rem 0 0 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.lecture-date {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.toggle-icon {
+    font-size: 0.8rem;
+    color: #999;
+    transition: transform 0.2s;
+}
+
+.lecture-card.expanded .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.lecture-content {
+    padding: 0 1.5rem 1.5rem 1.5rem;
+    border-top: 1px solid #eee;
+    background: #fafafa;
+}
+
+.lecture-section {
+    margin-top: 1rem;
+}
+
+.section-title {
+    font-size: 0.95rem;
+    color: #555;
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+}
+
+.lecture-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.lecture-links li {
+    margin: 0.4rem 0;
+}
+
+.lecture-links a {
+    color: #3498db;
+    text-decoration: none;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.lecture-links a:hover {
+    text-decoration: underline;
+}
+
+.link-badge {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    font-weight: 500;
+}
+
+.link-badge.slides {
+    background: #e74c3c;
+    color: white;
+}
+
+.link-badge.notebook {
+    background: #f39c12;
+    color: white;
+}
+
+.link-badge.video {
+    background: #9b59b6;
+    color: white;
+}
+
+.no-materials {
+    color: #999;
+    font-style: italic;
+    margin: 1rem 0;
+}
+</style>
+
+<script>
+function toggleLecture2026(element) {
+    const card = element.parentElement;
+    const content = card.querySelector('.lecture-content');
+
+    if (card.classList.contains('expanded')) {
+        card.classList.remove('expanded');
+        content.style.display = 'none';
+    } else {
+        card.classList.add('expanded');
+        content.style.display = 'block';
+    }
+}
+</script>

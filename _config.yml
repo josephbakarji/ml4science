@@ -7,7 +7,7 @@ using a wide variety of examples in physical, social and biological sciences.
 Modern data-driven approaches that take advantage of recent advances in machine learning are introduced, 
 including: sparse identification of differential equations, dynamics mode decomposition, 
 and physics informed neural networks."
-course_semester: "Spring 2025"
+course_semester: "Spring 2026"
 
 # baseurl: "/ml4science/" # the subpath of your site, e.g. /blog/
 # url: "http://josephbakarji.github.io/" # the base hostname & protocol for your site
@@ -49,6 +49,9 @@ collections:
         output: true
     lectures:
         output: true
+    course_2026:
+        output: false
+        sort_by: lecture_num
     assignments:
         output: true
     announcements:
