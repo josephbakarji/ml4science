@@ -3,23 +3,6 @@
   date: '2026-01-13T08:00:00+03:00'
   type: lecture
   tldr: Overview of Data-Driven Modeling and Course Structure
-  preparation:
-  - name: Scientific discovery in the age of artificial intelligence
-    type: reading
-    label: recommended
-    url: https://www.nature.com/articles/s41586-023-06221-2
-  - name: Machine learning and big scientific data
-    type: reading
-    label: optional
-    url: https://royalsocietypublishing.org/doi/full/10.1098/rsta.2019.0054
-  - name: 'Physics Informed Machine Learning: High Level Overview - Steven Brunton'
-    type: video
-    label: recommended
-    url: https://www.youtube.com/watch?v=JoFW2uSd3Uo&list=PLMrJAkhIeNNQ0BaKuBKY43k4xMo6NSbBa
-  - name: Science in the Age of Experience 2024 - George Karniadakis
-    type: video
-    label: optional
-    url: https://www.youtube.com/watch?v=Ybj9t-yAA-E
   material:
   - name: Lecture Slides
     type: slides
@@ -37,6 +20,22 @@
     type: reference
     url: https://www.databookuw.com/
   assignments:
+  - name: Scientific discovery in the age of artificial intelligence
+    type: reading
+    label: recommended
+    url: https://www.nature.com/articles/s41586-023-06221-2
+  - name: Machine learning and big scientific data
+    type: reading
+    label: optional
+    url: https://royalsocietypublishing.org/doi/full/10.1098/rsta.2019.0054
+  - name: 'Physics Informed Machine Learning: High Level Overview - Steven Brunton'
+    type: video
+    label: recommended
+    url: https://www.youtube.com/watch?v=JoFW2uSd3Uo&list=PLMrJAkhIeNNQ0BaKuBKY43k4xMo6NSbBa
+  - name: Science in the Age of Experience 2024 - George Karniadakis
+    type: video
+    label: optional
+    url: https://www.youtube.com/watch?v=Ybj9t-yAA-E
   - name: 'Problem Set 0: Linear Algebra and Calculus Recap'
     type: homework
     url: /assignments/hw0
@@ -46,10 +45,32 @@
   title: Modeling the World
   date: '2026-01-15T08:00:00+03:00'
   type: lecture
-  tldr: 'A brief history of empirical modeling from Galileo to machine learning. Introduction
-    to types of data, complex systems, and the simple pendulum as a case study.
-
-    '
+  tldr: A brief history of empirical modeling from Galileo to machine learning
+  preparation:
+  - name: From Empirical Laws to Linear Regression
+    type: video
+    label: recommended
+    url: https://www.youtube.com/watch?v=UThuJRt9_N8
+  - name: An Introduction to Dynamics - from data to derivatives
+    type: video
+    label: optional
+    url: https://youtu.be/icrTzMozNgo
+  material:
+  - name: Lecture Slides - Brief History
+    type: slides
+    url: slides/brief_history.html
+  - name: Background Slides - Learning from Data
+    type: slides
+    url: /static_files/lectures/01/learning examples and data.pdf
+  - name: A Brief History of Empirical Modeling
+    type: notes
+    url: /static_files/lectures/01/notes_brief_history
+  - name: The Unreasonable Effectiveness of Mathematics
+    type: reference
+    url: https://www.dartmouth.edu/~matc/MathDrama/reading/Wigner.html
+  - name: Data-Driven Science and Engineering (Ch. 1)
+    type: reference
+    url: https://www.databookuw.com/
   hide_from_announcments: false
   folder: 01_modeling_world
 - lecture_num: '02'
