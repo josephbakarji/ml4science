@@ -4,22 +4,16 @@ layout: page
 
 {{ content }}
 
-<div class="view-toggle">
-    <button id="cards-btn" class="toggle-btn active" onclick="showView('cards')">Cards View</button>
-    <button id="book-btn" class="toggle-btn" onclick="showView('book')">Book View</button>
-</div>
-
-<!-- Cards View -->
-<ul id="archive" class="view-cards">
+<ul id="archive">
 {% for lecture in site.lectures %}
 <li class="archiveposturl">
     <div class="lecture-container collapsed">
         <div class="lecture-header" onclick="toggleLecture(this)">
             <h3 class="lecture-title">{{ lecture.title }}</h3>
             <p class="lecture-subtitle">{{ lecture.tldr }}</p>
-            <span class="toggle-icon">&#9660;</span>
+            <span class="toggle-icon">▼</span>
         </div>
-
+        
         <div class="lecture-content">
             {% if lecture.sections %}
             <div class="lecture-sections">
@@ -47,175 +41,29 @@ layout: page
 {% endfor %}
 </ul>
 
-<!-- Book View -->
-<div id="book-view" class="view-book" style="display: none;">
-{% for lecture in site.lectures %}
-<div class="toc-chapter">
-    <h3 class="chapter-title">{{ lecture.title }}</h3>
-    <p class="chapter-summary">{{ lecture.tldr }}</p>
-
-    {% if lecture.sections %}
-    <div class="chapter-sections">
-        {% for section in lecture.sections %}
-        <div class="section-group">
-            <span class="section-label">{{ section.title }}</span>
-            <ul class="section-links">
-            {% for link in section.links %}
-                <li><a href="{% if link.url contains '://' %}{{ link.url }}{% elsif link.url contains '/' %}{{ site.baseurl }}{{ link.url }}{% else %}{{ site.baseurl }}{{ link.url }}{% endif %}" class="content-link">{{ link.name }}</a></li>
-            {% endfor %}
-            </ul>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-</div>
-{% endfor %}
-</div>
-
-<style>
-.view-toggle {
-    margin-bottom: 1.5rem;
-    display: flex;
-    gap: 0.5rem;
-}
-
-.toggle-btn {
-    padding: 0.5rem 1rem;
-    border: 1px solid #ddd;
-    background: #f5f5f5;
-    cursor: pointer;
-    border-radius: 4px;
-    font-size: 0.9rem;
-}
-
-.toggle-btn.active {
-    background: #3498db;
-    color: white;
-    border-color: #3498db;
-}
-
-.toggle-btn:hover:not(.active) {
-    background: #e0e0e0;
-}
-
-/* Book view styles */
-.toc-chapter {
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid #eee;
-}
-
-.toc-chapter:last-child {
-    border-bottom: none;
-}
-
-.chapter-title {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.3rem;
-    color: #2c3e50;
-}
-
-.chapter-summary {
-    color: #666;
-    font-size: 0.95rem;
-    margin: 0 0 1rem 0;
-    font-style: italic;
-}
-
-.chapter-sections {
-    margin: 0;
-}
-
-.section-group {
-    margin: 0.75rem 0;
-}
-
-.section-label {
-    font-weight: 600;
-    color: #555;
-    font-size: 0.9rem;
-    display: block;
-    margin-bottom: 0.3rem;
-}
-
-.section-links {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 0 1rem;
-}
-
-.section-links li {
-    margin: 0.25rem 0;
-    font-size: 0.9rem;
-    line-height: 1.5;
-}
-
-.section-links li::before {
-    content: "→ ";
-    color: #999;
-}
-
-.content-link {
-    color: #3498db;
-    text-decoration: none;
-}
-
-.content-link:hover {
-    text-decoration: underline;
-}
-</style>
-
 <script>
 function toggleLecture(element) {
     const container = element.parentElement;
     const content = container.querySelector('.lecture-content');
     const icon = container.querySelector('.toggle-icon');
-
+    
     if (container.classList.contains('collapsed')) {
         container.classList.remove('collapsed');
         content.style.maxHeight = content.scrollHeight + "px";
-        icon.innerHTML = '&#9650;';
+        icon.innerHTML = '▲';
     } else {
         container.classList.add('collapsed');
         content.style.maxHeight = null;
-        icon.innerHTML = '&#9660;';
+        icon.innerHTML = '▼';
     }
 }
 
-function showView(view) {
-    const cardsView = document.getElementById('archive');
-    const bookView = document.getElementById('book-view');
-    const cardsBtn = document.getElementById('cards-btn');
-    const bookBtn = document.getElementById('book-btn');
-
-    if (view === 'cards') {
-        cardsView.style.display = 'block';
-        bookView.style.display = 'none';
-        cardsBtn.classList.add('active');
-        bookBtn.classList.remove('active');
-    } else {
-        cardsView.style.display = 'none';
-        bookView.style.display = 'block';
-        cardsBtn.classList.remove('active');
-        bookBtn.classList.add('active');
-    }
-
-    // Save preference
-    localStorage.setItem('lectureView', view);
-}
-
-// Restore preference and ensure cards start collapsed
+// Ensure all cards start collapsed
 document.addEventListener('DOMContentLoaded', function() {
     const containers = document.querySelectorAll('.lecture-container');
     containers.forEach(container => {
         const content = container.querySelector('.lecture-content');
         content.style.maxHeight = null;
     });
-
-    // Restore view preference
-    const savedView = localStorage.getItem('lectureView');
-    if (savedView) {
-        showView(savedView);
-    }
 });
 </script>

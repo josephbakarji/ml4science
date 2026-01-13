@@ -1,97 +1,113 @@
----
-title: "Physics-Informed Neural Networks (PINNs) and Residual Minimization"
-layout: note
-permalink: /static_files/lectures/07/pinns-intro/
----
-
 ## Physics-Informed Neural Networks (PINNs) and Residual Minimization
 
 ### Introduction: Residual Minimization from a Basis Function Expansion
 
-Consider the classical problem of finding a function \( u(x, t) \) that satisfies a partial differential equation (PDE). A common strategy is to propose a solution as a linear combination of known basis functions:
+Consider the classical problem of finding a function $$ u(x, t) $$ that
+satisfies a partial differential equation (PDE). A common strategy is to propose
+a solution as a linear combination of known basis functions:
 
-\[
+$$
 u(x, t) = \sum_{i=1}^N a_i \phi_i(x, t)
-\]
+$$
 
 where:
 
-- \( \phi_i(x, t) \) are known basis functions (often eigenfunctions or Fourier modes).
-- \( a_i \) are unknown coefficients to be determined from data.
+- $$ \phi_i(x, t) $$ are known basis functions (often eigenfunctions or Fourier modes).
+- $$ a_i $$ are unknown coefficients to be determined from data.
 
 Given a PDE, for example, the heat equation:
 
-\[
+$$
 u_t = \alpha \frac{\partial^2 u}{\partial x^2},
-\]
+$$
 
-we can substitute the hypothesis directly into the PDE, obtaining a **residual**:
+we can substitute the hypothesis directly into the PDE, obtaining a
+**residual**:
 
-\[
-\mathcal{R}(x, t; a_i) = \frac{\partial u}{\partial t} - \alpha \frac{\partial^2 u}{\partial x^2}
-\]
+$$
+\mathcal{R}(x, t; a_i) = \frac{\partial u}{\partial t} - \alpha
+\frac{\partial^2 u}{\partial x^2}
+$$
 
 Explicitly, using our decomposition:
 
-\[
-\mathcal{R}(x, t; a_i) = \sum_{i=1}^N a_i \frac{\partial \phi_i(x, t)}{\partial t} - \alpha \sum_{i=1}^N a_i \frac{\partial^2 \phi_i(x, t)}{\partial x^2}
-\]
+$$
+\mathcal{R}(x, t; a_i) = \sum_{i=1}^N a_i \frac{\partial \phi_i(x, t)}{\partial
+t} - \alpha \sum_{i=1}^N a_i \frac{\partial^2 \phi_i(x, t)}{\partial x^2}
+$$
 
 ### Residual Minimization with Data
 
-Given observed data points \((x_j, t_j, u_j^{\text{data}})\), we find the coefficients \( a_i \) by minimizing the following loss function:
+Given observed data points $$(x_j, t_j, u_j^{\text{data}})$$, we find the
+coefficients $$ a_i $$ by minimizing the following loss function:
 
-\[
+$$
 \mathcal{L}(a_i) = 
-\underbrace{\sum_{j=1}^{N_d} \left[ u^{\text{data}}_j - \sum_{i=1}^N a_i \phi_i(x_j, t_j) \right]^2}_{\text{Data-fitting term}} 
+\underbrace{\sum_{j=1}^{N_d} \left[ u^{\text{data}}_j - \sum_{i=1}^N a_i
+\phi_i(x_j, t_j) \right]^2}_{\text{Data-fitting term}} 
 + 
-\underbrace{\sum_{k=1}^{N_r} \mathcal{R}(x_k, t_k; a_i)^2}_{\text{Residual term}}
-\]
+\underbrace{\sum_{k=1}^{N_r} \mathcal{R}(x_k, t_k; a_i)^2}_{\text{Residual
+term}}
+$$
 
 - Minimizing the residual term ensures the solution respects the governing PDE.
 - Minimizing the data-fitting term ensures the solution matches observed data.
 
-This approach, known as **residual minimization** or **collocation methods**, has a long tradition in applied mathematics and numerical analysis, closely related to **spectral methods**, **Galerkin methods**, and **method of weighted residuals**.
+This approach, known as **residual minimization** or **collocation methods**,
+has a long tradition in applied mathematics and numerical analysis, closely
+related to **spectral methods**, **Galerkin methods**, and **method of weighted
+residuals**.
 
 
 
 ### Relationship to Physics-Informed Neural Networks (PINNs)
 
-PINNs generalize this concept by replacing the linear combination of basis functions with a **neural network** as a universal approximator for the solution \( u(x,t) \):
+PINNs generalize this concept by replacing the linear combination of basis
+functions with a **neural network** as a universal approximator for the solution
+$$ u(x,t) $$:
 
-\[
+$$
 u(x, t) \approx u_\theta(x, t)
-\]
+$$
 
-- Here, \(\theta\) are the parameters (weights and biases) of the neural network.
+- Here, $$\theta$$ are the parameters (weights and biases) of the neural network.
 - The neural network acts as a flexible hypothesis function without explicitly selecting basis functions.
 - **Automatic differentiation** computes derivatives efficiently, allowing easy evaluation of the PDE residual.
 
 Thus, the residual is now defined as:
 
-\[
-\mathcal{R}_\theta(x, t) = \frac{\partial u_\theta}{\partial t}(x,t) - \alpha \frac{\partial^2 u_\theta}{\partial x^2}(x, t)
-\]
+$$
+\mathcal{R}_\theta(x, t) = \frac{\partial u_\theta}{\partial t}(x,t) - \alpha
+\frac{\partial^2 u_\theta}{\partial x^2}(x, t)
+$$
 
 And the optimization problem becomes:
 
-\[
+$$
 \mathcal{L}(\theta) = 
-\underbrace{\sum_{j=1}^{N_d}\left[ u_\theta(x_j, t_j) - u_j^{\text{data}}\right]^2}_{\text{Data fitting term}}
+\underbrace{\sum_{j=1}^{N_d}\left[ u_\theta(x_j, t_j) -
+u_j^{\text{data}}\right]^2}_{\text{Data fitting term}}
 +
-\underbrace{\sum_{k=1}^{N_r}\left| \frac{\partial u_\theta}{\partial t}(x_k, t_k) - \alpha \frac{\partial^2 u_\theta}{\partial x^2}(x_k, t_k)\right|^2}_{\text{Residual minimization term}}
-\]
+\underbrace{\sum_{k=1}^{N_r}\left| \frac{\partial u_\theta}{\partial t}(x_k,
+t_k) - \alpha \frac{\partial^2 u_\theta}{\partial x^2}(x_k,
+t_k)\right|^2}_{\text{Residual minimization term}}
+$$
 
-The parameters \(\theta\) are then optimized through standard deep-learning techniques (gradient-based optimization, backpropagation, etc.).
+The parameters $$\theta$$ are then optimized through standard deep-learning
+techniques (gradient-based optimization, backpropagation, etc.).
 
 
 ### Literature Context
 
-This neural-network-based method, introduced prominently by Raissi et al. in their seminal work:
+This neural-network-based method, introduced prominently by Raissi et al. in
+their seminal work:
 
 - Raissi, M., Perdikaris, P., & Karniadakis, G. E. (2019). "Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations," *Journal of Computational Physics*.
 
-The general approach of using basis expansions and optimizing coefficients via residuals is classical and falls under the umbrella of **collocation methods** or **Galerkin methods**. The specific neural-network-based variant is precisely what is referred to today as **Physics-Informed Neural Networks (PINNs)**.
+The general approach of using basis expansions and optimizing coefficients via
+residuals is classical and falls under the umbrella of **collocation methods**
+or **Galerkin methods**. The specific neural-network-based variant is precisely
+what is referred to today as **Physics-Informed Neural Networks (PINNs)**.
 
 
 ### PyTorch Example (Pseudo-code):
@@ -103,6 +119,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
+# Neural network architecture
 class PINN(torch.nn.Module):
     def __init__(self):
         super().__init__()

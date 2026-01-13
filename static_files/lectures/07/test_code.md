@@ -1,15 +1,10 @@
----
-title: "------------------------------"
-layout: note
-permalink: /static_files/lectures/07/test_code/
----
-
 ```python
 import torch
 import torch.nn as nn
 import numpy as np
 import matplotlib.pyplot as plt
 
+# ------------------------------
 # 1. Define the Neural Network
 # ------------------------------
 class PINN(nn.Module):
@@ -154,12 +149,12 @@ plt.show()
 
 
     
-![png](/static_files/lectures/07/test_code/output_3_0.png)
+![png](test_code_files/output_3_0.png)
     
 
 
 
     
-![png](/static_files/lectures/07/test_code/output_3_1.png)
+![png](test_code_files/output_3_1.png)
     
 
