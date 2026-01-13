@@ -7,8 +7,6 @@ tldr: 'Introduction to time series analysis including Fourier transforms, autore
   models, and discrete dynamical systems.
 
   '
-thumbnail: null
-sections: []
 hide_from_announcments: false
 folder: 08_time_series
 ---

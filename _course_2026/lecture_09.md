@@ -7,8 +7,6 @@ tldr: 'Introduction to system identification techniques. Fitting coefficients of
   equations from time series data using regression.
 
   '
-thumbnail: null
-sections: []
 hide_from_announcments: false
 folder: 09_system_identification
 ---

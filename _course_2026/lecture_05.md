@@ -7,8 +7,6 @@ tldr: 'Introduction to supervised learning with linear and logistic regression. 
   squares, gradient descent, and classification fundamentals.
 
   '
-thumbnail: null
-sections: []
 hide_from_announcments: false
 folder: 05_supervised_regression
 ---

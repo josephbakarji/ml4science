@@ -7,8 +7,6 @@ tldr: 'A brief history of empirical modeling from Galileo to machine learning. I
   to types of data, complex systems, and the simple pendulum as a case study.
 
   '
-thumbnail: null
-sections: []
 hide_from_announcments: false
 folder: 01_modeling_world
 ---

@@ -7,8 +7,6 @@ tldr: 'Building intuition from linear regression to neural networks. Universal a
   backpropagation, and training deep networks.
 
   '
-thumbnail: null
-sections: []
 hide_from_announcments: false
 folder: 07_deep_learning
 ---

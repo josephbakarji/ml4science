@@ -7,8 +7,6 @@ tldr: 'Quiz covering weeks 1-5 material. Introduction to extending sparse identi
   methods to partial differential equations.
 
   '
-thumbnail: null
-sections: []
 hide_from_announcments: false
 folder: 11_sindy_pdes
 ---

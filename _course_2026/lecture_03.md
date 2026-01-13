@@ -7,8 +7,6 @@ tldr: 'Introduction to numerical methods for solving differential equations. For
   Euler, Runge-Kutta methods, and stability analysis.
 
   '
-thumbnail: null
-sections: []
 hide_from_announcments: false
 folder: 03_forward_modeling_numerics
 ---

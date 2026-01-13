@@ -7,8 +7,6 @@ tldr: 'Introduction to SINDy algorithm for discovering governing equations. Spar
   regression, library construction, and equation discovery.
 
   '
-thumbnail: null
-sections: []
 hide_from_announcments: false
 folder: 10_sindy
 ---

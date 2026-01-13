@@ -7,8 +7,6 @@ tldr: 'Maximum likelihood estimation, generalized linear models, softmax regress
   for multi-class classification, and support vector machines.
 
   '
-thumbnail: null
-sections: []
 hide_from_announcments: false
 folder: 06_supervised_mle_glm
 ---

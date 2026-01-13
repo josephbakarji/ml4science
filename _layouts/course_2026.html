@@ -22,25 +22,69 @@ layout: page
     </div>
 
     <div class="lecture-content" style="display: none;">
-        {% if lecture.sections %}
-        {% for section in lecture.sections %}
+        {% if lecture.preparation or lecture.material or lecture.assignments %}
+
+        {% if lecture.preparation %}
         <div class="lecture-section">
-            <h4 class="section-title">{{ section.title }}</h4>
+            <h4 class="section-title"><i class="fas fa-book-open"></i> Preparation</h4>
             <ul class="lecture-links">
-            {% for link in section.links %}
+            {% for item in lecture.preparation %}
                 <li>
-                    <a href="{% if link.url contains '://' %}{{ link.url }}{% else %}{{ site.baseurl }}{{ link.url }}{% endif %}"
-                       {% if link.url contains '://' %}target="_blank"{% endif %}>
-                        {{ link.name }}
-                        {% if link.type == 'slides' %}<span class="link-badge slides">Slides</span>{% endif %}
-                        {% if link.type == 'notebook' %}<span class="link-badge notebook">Notebook</span>{% endif %}
-                        {% if link.type == 'video' %}<span class="link-badge video">Video</span>{% endif %}
+                    <a href="{% if item.url contains '://' %}{{ item.url }}{% else %}{{ site.baseurl }}{{ item.url }}{% endif %}"
+                       {% if item.url contains '://' %}target="_blank"{% endif %}>
+                        {{ item.name }}
+                        {% if item.type == 'reading' %}<span class="link-badge reading">Reading</span>{% endif %}
+                        {% if item.type == 'video' %}<span class="link-badge video">Video</span>{% endif %}
+                        {% if item.type == 'file' %}<span class="link-badge file">File</span>{% endif %}
+                        {% if item.label == 'required' %}<span class="label-badge required">Required</span>{% endif %}
+                        {% if item.label == 'recommended' %}<span class="label-badge recommended">Recommended</span>{% endif %}
+                        {% if item.label == 'optional' %}<span class="label-badge optional">Optional</span>{% endif %}
                     </a>
                 </li>
             {% endfor %}
             </ul>
         </div>
-        {% endfor %}
+        {% endif %}
+
+        {% if lecture.material %}
+        <div class="lecture-section">
+            <h4 class="section-title"><i class="fas fa-folder-open"></i> Material</h4>
+            <ul class="lecture-links">
+            {% for item in lecture.material %}
+                <li>
+                    <a href="{% if item.url contains '://' %}{{ item.url }}{% else %}{{ site.baseurl }}{{ item.url }}{% endif %}"
+                       {% if item.url contains '://' %}target="_blank"{% endif %}>
+                        {{ item.name }}
+                        {% if item.type == 'slides' %}<span class="link-badge slides">Slides</span>{% endif %}
+                        {% if item.type == 'notes' %}<span class="link-badge notes">Notes</span>{% endif %}
+                        {% if item.type == 'reference' %}<span class="link-badge reference">Reference</span>{% endif %}
+                        {% if item.type == 'notebook' %}<span class="link-badge notebook">Notebook</span>{% endif %}
+                    </a>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if lecture.assignments %}
+        <div class="lecture-section">
+            <h4 class="section-title"><i class="fas fa-tasks"></i> Assignments</h4>
+            <ul class="lecture-links">
+            {% for item in lecture.assignments %}
+                <li>
+                    <a href="{% if item.url contains '://' %}{{ item.url }}{% else %}{{ site.baseurl }}{{ item.url }}{% endif %}"
+                       {% if item.url contains '://' %}target="_blank"{% endif %}>
+                        {{ item.name }}
+                        {% if item.type == 'homework' %}<span class="link-badge homework">Homework</span>{% endif %}
+                        {% if item.type == 'data' %}<span class="link-badge data">Data</span>{% endif %}
+                        {% if item.type == 'exploration' %}<span class="link-badge exploration">Explore</span>{% endif %}
+                    </a>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
         {% else %}
         <p class="no-materials">Materials coming soon...</p>
         {% endif %}
@@ -135,6 +179,11 @@ layout: page
     font-weight: 600;
 }
 
+.section-title i {
+    margin-right: 0.5rem;
+    color: #888;
+}
+
 .lecture-links {
     list-style: none;
     padding: 0;
@@ -152,21 +201,29 @@ layout: page
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
 .lecture-links a:hover {
     text-decoration: underline;
 }
 
+/* Type badges */
 .link-badge {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     padding: 0.15rem 0.4rem;
     border-radius: 3px;
     font-weight: 500;
+    text-transform: uppercase;
 }
 
 .link-badge.slides {
     background: #e74c3c;
+    color: white;
+}
+
+.link-badge.notes {
+    background: #3498db;
     color: white;
 }
 
@@ -178,6 +235,61 @@ layout: page
 .link-badge.video {
     background: #9b59b6;
     color: white;
+}
+
+.link-badge.reading {
+    background: #27ae60;
+    color: white;
+}
+
+.link-badge.file {
+    background: #95a5a6;
+    color: white;
+}
+
+.link-badge.reference {
+    background: #34495e;
+    color: white;
+}
+
+.link-badge.homework {
+    background: #e67e22;
+    color: white;
+}
+
+.link-badge.data {
+    background: #16a085;
+    color: white;
+}
+
+.link-badge.exploration {
+    background: #8e44ad;
+    color: white;
+}
+
+/* Label badges (required/recommended/optional) */
+.label-badge {
+    font-size: 0.6rem;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-left: 0.25rem;
+}
+
+.label-badge.required {
+    background: #c1272d;
+    color: white;
+}
+
+.label-badge.recommended {
+    background: #f39c12;
+    color: white;
+}
+
+.label-badge.optional {
+    background: #bdc3c7;
+    color: #555;
 }
 
 .no-materials {
