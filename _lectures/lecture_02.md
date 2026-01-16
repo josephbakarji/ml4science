@@ -1,6 +1,6 @@
 ---
 title: Introduction to Supervised Learning
-date: '2025-01-20T8:00:00+4:30'
+date: '2027-01-20T8:00:00+4:30'
 type: lecture
 tldr: Linear Regression, Logistic Regression, Feature Engineering, Generalized Linear
   Models, Maximum Likelihood Estimation, Multiclass Classification

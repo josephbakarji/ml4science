@@ -1,6 +1,6 @@
 ---
 title: Symbolic Identification of Differential Equations from Data
-date: '2025-03-01T8:00:00+4:30'
+date: '2027-03-01T8:00:00+4:30'
 type: lecture
 tldr: Given data in space and time, how can we find its corresponding equation using
   sparse linear regression?

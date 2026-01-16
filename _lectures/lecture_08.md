@@ -1,6 +1,6 @@
 ---
 title: Unsupservised Learning
-date: '2025-03-15T8:00:00+4:30'
+date: '2027-03-15T8:00:00+4:30'
 type: lecture
 tldr: How to deal with features without ground truth? It's a much harder problem.
 thumbnail: 0.jpg

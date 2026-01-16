@@ -1,5 +1,5 @@
 ---
-title: "A little about me"
+title: "Course Description and Logistics"
 layout: note
 permalink: /static_files/lectures/00/notes_course_description/
 ---

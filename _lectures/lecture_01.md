@@ -1,6 +1,6 @@
 ---
 title: Data, Modeling, and Inference
-date: '2025-01-20T8:00:00+4:30'
+date: '2027-01-20T8:00:00+4:30'
 type: lecture
 tldr: ' Empirical Laws and Linear Regression'
 thumbnail: 0.jpg

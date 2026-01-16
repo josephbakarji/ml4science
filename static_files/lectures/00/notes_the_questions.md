@@ -1,5 +1,5 @@
 ---
-title: "Notes The Questions"
+title: "The Big Questions"
 layout: note
 permalink: /static_files/lectures/00/notes_the_questions/
 ---

@@ -1,6 +1,6 @@
 ---
 title: Sparse Identification of Nonlinear Dynamics (SINDy)
-date: '2026-02-17T08:00:00+03:00'
+date: '2027-02-17T08:00:00+03:00'
 type: lecture
 tldr: ''
 thumbnail: null

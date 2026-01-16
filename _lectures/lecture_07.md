@@ -1,6 +1,6 @@
 ---
 title: Residual Minimization & Physics Informed Neural Networks
-date: '2025-03-06T8:00:00+4:30'
+date: '2027-03-06T8:00:00+4:30'
 type: lecture
 tldr: Including physical knowledge in a loss function
 thumbnail: 0.jpg

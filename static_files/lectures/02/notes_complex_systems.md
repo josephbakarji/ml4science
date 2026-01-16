@@ -1,5 +1,5 @@
 ---
-title: "Complex Systems in Nature and Society"
+title: "Notes: Complex Systems Introduction"
 layout: note
 permalink: /static_files/lectures/02/notes_complex_systems/
 ---

@@ -5,6 +5,8 @@ layout: page
 {{ content }}
 <ul id="archive">
 {% for asg in site.assignments %}
+      {% assign asg_year = asg.date | date: "%Y" | plus: 0 %}
+      {% if asg_year < 2027 %}
       <li class="archiveposturl" style="background: transparent">
         <!-- <span><a href="{{ asg.url | prepend: site.baseurl}}">{{ asg.title }}</a></span> -->
         <span><a href="{{ asg.location | prepend: site.baseurl}}">{{ asg.title }}</a></span>
@@ -13,7 +15,8 @@ layout: page
 {% if asg.attachment %}
 &nbsp; <a title="Download attachments (zip)" href="{{ asg.attachment | prepend: site.baseurl }}"><i class="fas fa-file-archive"></i></a>
 {% endif %}
-</strong> 
+</strong>
       </li>
+      {% endif %}
 {% endfor %}
 </ul>

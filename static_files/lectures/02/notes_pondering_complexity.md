@@ -1,5 +1,5 @@
 ---
-title: "Notes Pondering Complexity"
+title: "Notes: Pondering on Complexity"
 layout: note
 permalink: /static_files/lectures/02/notes_pondering_complexity/
 ---

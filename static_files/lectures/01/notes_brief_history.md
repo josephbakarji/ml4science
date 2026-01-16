@@ -1,5 +1,5 @@
 ---
-title: "Introduction"
+title: "A Brief History of Empirical Modeling"
 layout: note
 permalink: /static_files/lectures/01/notes_brief_history/
 ---

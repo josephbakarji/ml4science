@@ -8,5 +8,5 @@ tldr: 'Maximum likelihood estimation, generalized linear models, softmax regress
 
   '
 hide_from_announcments: false
-folder: 06_supervised_mle_glm
+folder: 06_supervised_case_studies
 ---

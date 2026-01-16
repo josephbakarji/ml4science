@@ -1,6 +1,6 @@
 ---
 title: Modeling the World with Differential Equations
-date: '2025-02-05T8:00:00+4:30'
+date: '2027-02-05T8:00:00+4:30'
 type: lecture
 tldr: ODEs, PDEs, Complexity and Uncertainty
 thumbnail: 0.jpg

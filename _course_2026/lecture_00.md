@@ -14,17 +14,14 @@ material:
 - name: The Big Questions
   type: notes
   url: /static_files/lectures/00/notes_the_questions
-- name: On Discovering Physics from Data
-  type: reference
-  url: https://www.josephbakarji.com/articles/on-discovering-physics-from-data
 - name: Data-Driven Science and Engineering (Textbook)
   type: reference
   url: https://www.databookuw.com/
 assignments:
-- name: Scientific discovery in the age of artificial intelligence
-  type: reading
+- name: On Discovering Physics from Data
+  type: reference
   label: recommended
-  url: https://www.nature.com/articles/s41586-023-06221-2
+  url: https://www.josephbakarji.com/articles/on-discovering-physics-from-data
 - name: Machine learning and big scientific data
   type: reading
   label: optional

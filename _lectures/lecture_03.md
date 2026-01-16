@@ -1,6 +1,6 @@
 ---
 title: Introduction to Deep Learning
-date: '2025-01-20T8:00:00+4:30'
+date: '2027-01-20T8:00:00+4:30'
 type: lecture
 tldr: Nonlinear Predictors, Neural Networks, Activation Functions, Backpropagation,
   etc

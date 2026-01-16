@@ -8,5 +8,5 @@ tldr: 'Building intuition from linear regression to neural networks. Universal a
 
   '
 hide_from_announcments: false
-folder: 07_deep_learning
+folder: 07_deep_learning_basics
 ---

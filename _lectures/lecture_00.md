@@ -1,6 +1,6 @@
 ---
 title: Course Introduction and Logistics
-date: '2025-01-13T8:00:00+4:30'
+date: '2027-01-13T8:00:00+4:30'
 type: lecture
 tldr: Overview of Scientific Machine Learning and Course Structure
 thumbnail: 0.jpg
