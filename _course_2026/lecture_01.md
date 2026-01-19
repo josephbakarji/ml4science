@@ -20,7 +20,7 @@ assignments:
   type: reading
   label: recommended
   url: https://cs229.stanford.edu/section/cs229-linalg.pdf
-- name: Revie material in Lecture 3 of Intro2ML
+- name: Review material in Lecture 3 of Intro2ML
   type: reading
   label: recommended
   url: https://intro2ml.com/schedule/
