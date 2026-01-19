@@ -28,7 +28,7 @@ assignments:
 - name: 'Problem Set 0: Linear Algebra and Calculus Recap'
   type: homework
   label: recommended
-  url: /assignments/hw0
+  url: /content/hw/hw0/
 hide_from_announcments: false
 folder: 01_modeling_world
 ---
