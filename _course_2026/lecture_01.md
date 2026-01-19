@@ -4,15 +4,6 @@ title: Modeling the World
 date: '2026-01-15T08:00:00+03:00'
 type: lecture
 tldr: A brief history of empirical modeling from Galileo to machine learning
-preparation:
-- name: From Empirical Laws to Linear Regression
-  type: video
-  label: recommended
-  url: https://www.youtube.com/watch?v=UThuJRt9_N8
-- name: An Introduction to Dynamics - from data to derivatives
-  type: video
-  label: optional
-  url: https://youtu.be/icrTzMozNgo
 material:
 - name: Lecture Slides - Brief History
   type: slides
@@ -29,6 +20,15 @@ material:
 - name: Data-Driven Science and Engineering (Ch. 1)
   type: reference
   url: https://www.databookuw.com/
+assignments:
+- name: Scientific discovery in the age of artificial intelligence
+  type: reading
+  label: recommended
+  url: https://www.nature.com/articles/s41586-023-06221-2
+- name: 'Problem Set 0: Linear Algebra and Calculus Recap'
+  type: homework
+  label: recommended
+  url: /assignments/hw0
 hide_from_announcments: false
 folder: 01_modeling_world
 ---

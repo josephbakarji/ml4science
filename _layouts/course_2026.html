@@ -59,6 +59,9 @@ layout: page
                         {% if item.type == 'notes' %}<span class="link-badge notes">Notes</span>{% endif %}
                         {% if item.type == 'reference' %}<span class="link-badge reference">Reference</span>{% endif %}
                         {% if item.type == 'notebook' %}<span class="link-badge notebook">Notebook</span>{% endif %}
+                        {% if item.label == 'required' %}<span class="label-badge required">Required</span>{% endif %}
+                        {% if item.label == 'recommended' %}<span class="label-badge recommended">Recommended</span>{% endif %}
+                        {% if item.label == 'optional' %}<span class="label-badge optional">Optional</span>{% endif %}
                     </a>
                 </li>
             {% endfor %}
@@ -78,6 +81,11 @@ layout: page
                         {% if item.type == 'homework' %}<span class="link-badge homework">Homework</span>{% endif %}
                         {% if item.type == 'data' %}<span class="link-badge data">Data</span>{% endif %}
                         {% if item.type == 'exploration' %}<span class="link-badge exploration">Explore</span>{% endif %}
+                        {% if item.type == 'reading' %}<span class="link-badge reading">Reading</span>{% endif %}
+                        {% if item.type == 'video' %}<span class="link-badge video">Video</span>{% endif %}
+                        {% if item.label == 'required' %}<span class="label-badge required">Required</span>{% endif %}
+                        {% if item.label == 'recommended' %}<span class="label-badge recommended">Recommended</span>{% endif %}
+                        {% if item.label == 'optional' %}<span class="label-badge optional">Optional</span>{% endif %}
                     </a>
                 </li>
             {% endfor %}

@@ -17,11 +17,11 @@ material:
 - name: Data-Driven Science and Engineering (Textbook)
   type: reference
   url: https://www.databookuw.com/
-assignments:
 - name: On Discovering Physics from Data
   type: reference
   label: recommended
   url: https://www.josephbakarji.com/articles/on-discovering-physics-from-data
+assignments:
 - name: Machine learning and big scientific data
   type: reading
   label: optional
@@ -34,9 +34,6 @@ assignments:
   type: video
   label: optional
   url: https://www.youtube.com/watch?v=Ybj9t-yAA-E
-- name: 'Problem Set 0: Linear Algebra and Calculus Recap'
-  type: homework
-  url: /assignments/hw0
 hide_from_announcments: false
 folder: 00_intro_logistics
 ---
