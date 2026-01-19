@@ -14,6 +14,13 @@ material:
   type: video
   label: recommended
   url: https://www.youtube.com/watch?v=UThuJRt9_N8
+- name: It Started with Empirical Laws
+  type: notes
+  url: /static_files/lectures/02/notes_brief_history
+- name: Introduction to Machine Learning (CS229) - Ch. 1
+  type: notes
+  label: recommended
+  url: https://cs229.stanford.edu/main_notes.pdf
 hide_from_announcments: false
 folder: 02_empirical_laws_to_linear_reg
 ---
