@@ -11,5 +11,5 @@ assignments:
   label: optional
   url: https://www.stevenstrogatz.com/books/nonlinear-dynamics-and-chaos-with-applications-to-physics-biology-chemistry-and-engineering
 hide_from_announcments: false
-folder: 04_forward_comp_modeling_numerics
+folder: 04_scientific_modeling_principles_diffeq
 ---

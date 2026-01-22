@@ -77,27 +77,36 @@
     label: recommended
     url: https://www.youtube.com/watch?v=3zHWnd-7FkA
   material:
+  - name: Learning from Data
+    type: slides
+    url: /static_files/lectures/02/from_empirical_laws_to_linreg.pdf
   - name: From Empirical Laws to Linear Regression
     type: video
     label: recommended
     url: https://www.youtube.com/watch?v=UThuJRt9_N8
-  - name: It Started with Empirical Laws
-    type: notes
-    url: /static_files/lectures/02/notes_brief_history
   - name: Introduction to Machine Learning (CS229) - Ch. 1
     type: notes
-    label: recommended
+    label: required
     url: https://cs229.stanford.edu/main_notes.pdf
+  - name: It Started with Empirical Laws
+    type: notes
+    label: optional
+    url: /static_files/lectures/02/notes_brief_history
   hide_from_announcments: false
   folder: 02_empirical_laws_to_linear_reg
 - lecture_num: '03'
-  title: Forward Modeling and Numerical Computing
+  title: Generalization and Deep Learning in Space and Time
   date: '2026-01-22T08:00:00+03:00'
   type: lecture
-  tldr: Introduction to numerical methods for solving differential equations. Forward
-    Euler, Runge-Kutta methods, and stability analysis.
+  tldr: Review of generalization, touching on deep learning, with a Python example
+    on extrapolation in time
+  preparation:
+  - name: Generalization
+    type: video
+    label: recommended
+    url: https://www.youtube.com/watch?v=504PwSIr-DI
   hide_from_announcments: false
-  folder: 03_scientific_modeling_principles_diffeq
+  folder: 03_generalization_deep_learning_and_others
 - lecture_num: '04'
   title: 'Probabilistic Modeling: Uncertainty Quantification'
   date: '2026-01-27T08:00:00+03:00'
@@ -110,7 +119,7 @@
     label: optional
     url: https://www.stevenstrogatz.com/books/nonlinear-dynamics-and-chaos-with-applications-to-physics-biology-chemistry-and-engineering
   hide_from_announcments: false
-  folder: 04_forward_comp_modeling_numerics
+  folder: 04_scientific_modeling_principles_diffeq
 - lecture_num: '05'
   title: 'Supervised Learning: Linear Regression and Logistic Regression'
   date: '2026-01-29T08:00:00+03:00'
@@ -118,7 +127,7 @@
   tldr: Introduction to supervised learning with linear and logistic regression. Least
     squares, gradient descent, and classification fundamentals.
   hide_from_announcments: false
-  folder: 05_complex_system_probabilistic_modeling
+  folder: 05_forward_comp_modeling_numerics
 - lecture_num: '06'
   title: 'Supervised Learning: MLE, GLMs, Softmax Regression, and SVM'
   date: '2026-02-03T08:00:00+03:00'
@@ -126,4 +135,4 @@
   tldr: Maximum likelihood estimation, generalized linear models, softmax regression
     for multi-class classification, and support vector machines.
   hide_from_announcments: false
-  folder: 06_supervised_case_studies
+  folder: 06_complex_system_probabilistic_modeling

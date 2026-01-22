@@ -184,14 +184,14 @@ blockquote {
 pre,
 code {
     font-size: 14px;
-    border: 1px solid #3f4451; // Subtle border color
+    border: 1px solid #3f4451;
     border-radius: 3px;
-    background-color: white;// #282c34; // Dark background for better contrast
+    background-color: #3f3f3f;
+    color: #fdce93;
 }
 
 code {
-    padding: 1px 5px;
-    color: #abb2bf; // Light grey text for better readability
+    padding: 2px 6px;
 }
 
 pre {

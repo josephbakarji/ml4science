@@ -6,5 +6,5 @@ type: lecture
 tldr: Introduction to supervised learning with linear and logistic regression. Least
   squares, gradient descent, and classification fundamentals.
 hide_from_announcments: false
-folder: 05_complex_system_probabilistic_modeling
+folder: 05_forward_comp_modeling_numerics
 ---

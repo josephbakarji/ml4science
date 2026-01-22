@@ -6,5 +6,5 @@ type: lecture
 tldr: Maximum likelihood estimation, generalized linear models, softmax regression
   for multi-class classification, and support vector machines.
 hide_from_announcments: false
-folder: 06_supervised_case_studies
+folder: 06_complex_system_probabilistic_modeling
 ---

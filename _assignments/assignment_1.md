@@ -1,16 +1,16 @@
 ---
 type: assignment
-date: 2027-01-28T16:00:00+4:30
+date: 2026-01-22T16:00:00+4:30
 title: 'Problem set #1 - Regression in Empirical Laws'
-location: /content/hw/hw1_1_25/
+location: /assignments/hw1/
 # pdf: /static_files/assignments/asg.pdf
 attachment: /content/hw_files/hw1_files_25.zip
 # solutions: /content/hw_sol/hw1_solution/
-hide_from_announcments: true 
-# hide_time: true 
-due_event: 
+hide_from_announcments: false
+# hide_time: true
+due_event:
     type: due
-    date: 2027-02-04T23:59:00+3:30
+    date: 2026-01-31T23:59:00+3:30
     description: 'Problem Set #1 due'
 ---
 

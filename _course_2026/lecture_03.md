@@ -1,10 +1,15 @@
 ---
 lecture_num: '03'
-title: Forward Modeling and Numerical Computing
+title: Generalization and Deep Learning in Space and Time
 date: '2026-01-22T08:00:00+03:00'
 type: lecture
-tldr: Introduction to numerical methods for solving differential equations. Forward
-  Euler, Runge-Kutta methods, and stability analysis.
+tldr: Review of generalization, touching on deep learning, with a Python example on
+  extrapolation in time
+preparation:
+- name: Generalization
+  type: video
+  label: recommended
+  url: https://www.youtube.com/watch?v=504PwSIr-DI
 hide_from_announcments: false
-folder: 03_scientific_modeling_principles_diffeq
+folder: 03_generalization_deep_learning_and_others
 ---
