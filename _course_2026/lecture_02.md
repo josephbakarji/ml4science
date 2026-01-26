@@ -25,6 +25,11 @@ material:
   type: notes
   label: optional
   url: /static_files/lectures/02/notes_brief_history
+assignments:
+- name: 'Problem Set 1: Linear Models and Empirical Laws'
+  type: homework
+  label: required
+  url: /assignments/hw1/
 hide_from_announcments: false
 folder: 02_empirical_laws_to_linear_reg
 ---

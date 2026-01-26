@@ -92,6 +92,11 @@
     type: notes
     label: optional
     url: /static_files/lectures/02/notes_brief_history
+  assignments:
+  - name: 'Problem Set 1: Linear Models and Empirical Laws'
+    type: homework
+    label: required
+    url: /assignments/hw1/
   hide_from_announcments: false
   folder: 02_empirical_laws_to_linear_reg
 - lecture_num: '03'
@@ -103,8 +108,13 @@
   preparation:
   - name: Generalization
     type: video
-    label: recommended
+    label: required
     url: https://www.youtube.com/watch?v=504PwSIr-DI
+  material:
+  - name: Generalization and Feature Engineering
+    type: slides
+    label: required
+    url: /static_files/lectures/03/generalization-and-features.pdf
   hide_from_announcments: false
   folder: 03_generalization_deep_learning_and_others
 - lecture_num: '04'
