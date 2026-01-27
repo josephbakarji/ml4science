@@ -207,6 +207,29 @@ pre {
     }
 }
 
+/**
+ * Tables (markdown)
+ */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: $spacing-unit / 2;
+
+    th, td {
+        border: 1px solid $grey-color-light;
+        padding: 8px 12px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f5f5f5;
+        font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+        background-color: #fafafa;
+    }
+}
 
 
 /**
