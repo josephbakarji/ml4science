@@ -1,6 +1,6 @@
 ---
 lecture_num: '03'
-title: Generalization and Deep Learning in Space and Time
+title: Generalization
 date: '2026-01-22T08:00:00+03:00'
 type: lecture
 tldr: Review of generalization, touching on deep learning, with a Python example on
@@ -15,6 +15,14 @@ material:
   type: slides
   label: required
   url: /static_files/lectures/03/generalization-and-features.pdf
+- name: Machine Learning with Python Sklearn - Live Coding Tutorial
+  type: Video
+  label: recommended
+  url: https://www.youtube.com/watch?v=f-EFJXCzLsQ
+- name: Machine Learning with Python Sklearn - Live Coding Tutorial
+  type: references
+  label: recommended
+  url: https://intro2ml.com/materials/notebooks/ML_tutorial/
 hide_from_announcments: false
 folder: 03_generalization_deep_learning_and_others
 ---

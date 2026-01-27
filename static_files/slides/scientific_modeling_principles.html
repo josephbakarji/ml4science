@@ -1,0 +1,1854 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scientific Modeling Principles and Differential Equations</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/night.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/monokai.css">
+    <style>
+        :root {
+            --accent-blue: #61afef;
+            --accent-green: #98c379;
+            --accent-yellow: #e5c07b;
+            --accent-red: #e06c75;
+            --accent-purple: #c678dd;
+        }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; }
+        .reveal h1 { font-size: 2.2em; }
+        .reveal h2 { font-size: 1.6em; }
+        .reveal h3 { font-size: 1.3em; }
+        .reveal blockquote {
+            font-style: italic;
+            background: rgba(255,255,255,0.05);
+            padding: 20px 30px;
+            border-left: 4px solid #42affa;
+            width: 90%;
+            margin: 0 auto;
+            border-radius: 0 8px 8px 0;
+        }
+        .reveal blockquote footer {
+            text-align: right;
+            margin-top: 0.8em;
+            font-size: 0.85em;
+            color: #888;
+        }
+        .reveal .slides section { text-align: left; }
+        .reveal ul { display: block; }
+        .reveal li { margin: 0.5em 0; font-size: 0.85em; }
+        .center-text { text-align: center; }
+        .highlight-box {
+            background: rgba(66, 175, 250, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(66, 175, 250, 0.3);
+        }
+        .warning-box {
+            background: rgba(224, 108, 117, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(224, 108, 117, 0.3);
+        }
+        .success-box {
+            background: rgba(152, 195, 121, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(152, 195, 121, 0.3);
+        }
+        .principle-box {
+            background: rgba(198, 120, 221, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(198, 120, 221, 0.3);
+        }
+        .small-text { font-size: 0.75em; }
+        .tiny-text { font-size: 0.65em; }
+        pre code { font-size: 0.7em !important; }
+        .reveal pre { width: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .two-column { display: flex; gap: 30px; align-items: flex-start; }
+        .two-column > div { flex: 1; }
+        .three-column { display: flex; gap: 20px; }
+        .three-column > div { flex: 1; }
+        .equation-box {
+            background: rgba(255,255,255,0.08);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 15px 0;
+            font-size: 1.1em;
+        }
+        .term-highlight {
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin: 0 2px;
+        }
+        .term-time { background: rgba(97, 175, 239, 0.3); }
+        .term-advection { background: rgba(224, 108, 117, 0.3); }
+        .term-pressure { background: rgba(229, 192, 123, 0.3); }
+        .term-viscous { background: rgba(152, 195, 121, 0.3); }
+        table.comparison {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8em;
+        }
+        table.comparison th, table.comparison td {
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        table.comparison th {
+            background: rgba(66, 175, 250, 0.2);
+        }
+        table.comparison tr:nth-child(even) {
+            background: rgba(255,255,255,0.03);
+        }
+    </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ============================================ -->
+<!-- TITLE SLIDE -->
+<!-- ============================================ -->
+<section class="center-text">
+    <h1>Scientific Modeling Principles</h1>
+    <h2>and Differential Equations</h2>
+    <p style="margin-top: 40px; color: #888;">ML for Science - Lecture 4</p>
+    <p class="small-text" style="color: #666;">Understanding why differential equations are the language of physics</p>
+</section>
+
+<!-- ============================================ -->
+<!-- MOTIVATION -->
+<!-- ============================================ -->
+<section>
+    <h2>Today's Goal</h2>
+    <p>Understand the <strong>principles</strong> behind scientific modeling:</p>
+    <ul>
+        <li class="fragment">Why do differential equations appear everywhere in physics?</li>
+        <li class="fragment">What are the <strong>inductive biases</strong> of scientific modeling?</li>
+        <li class="fragment">How do simple laws combine into complex equations?</li>
+    </ul>
+    <div class="fragment highlight-box" style="margin-top: 30px;">
+        <strong>Key insight:</strong> These principles will help you understand <em>scientific machine learning</em>&mdash;incorporating physical constraints into ML models.
+    </div>
+</section>
+
+<section>
+    <h2>Recap: From Empirical Laws to Models</h2>
+    <div class="two-column">
+        <div>
+            <h3 style="color: var(--accent-blue);">Lecture 2</h3>
+            <p>Fitting data to known functional forms</p>
+            <ul class="small-text">
+                <li>Hooke's law: $F = kx$</li>
+                <li>Ohm's law: $V = IR$</li>
+                <li>Mapping one variable to another</li>
+            </ul>
+        </div>
+        <div class="fragment">
+            <h3 style="color: var(--accent-green);">Today</h3>
+            <p>How do we <em>derive</em> those functional forms?</p>
+            <ul class="small-text">
+                <li>From first principles</li>
+                <li>Conservation laws</li>
+                <li>Functions of space and time</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2>Why Simple Models?</h2>
+    <p>A central theme in both ML and science: <strong>generalization</strong></p>
+    <ul>
+        <li class="fragment"><strong>Fast inference:</strong> Quick predictions are useful</li>
+        <li class="fragment"><strong>Generalize beyond training:</strong> Not just a lookup table</li>
+        <li class="fragment"><strong>Interpretable:</strong> Understand what the model is doing</li>
+    </ul>
+    <div class="fragment warning-box" style="margin-top: 20px;">
+        <strong>The tension:</strong> Simple enough to generalize, complex enough to capture reality
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- SPACE AND TIME -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Inductive Bias #1: Space and Time</h2>
+        <div class="principle-box">
+            Space and time are <strong>special variables</strong> in physics.
+        </div>
+        <p class="fragment">We're interested in functions that map positions in space and time to measured quantities:</p>
+        <div class="fragment equation-box">
+            $u: (x, y, z, t) \mapsto \text{measured quantity}$
+        </div>
+        <p class="fragment small-text">This is different from empirical laws like $V = IR$, which relate variables at a <em>single instant</em>.</p>
+    </section>
+
+    <section>
+        <h2>Coordinate Systems and Units</h2>
+        <ul>
+            <li><strong>Position:</strong> Requires a reference point (coordinate system)</li>
+            <li><strong>Time:</strong> Requires a clock</li>
+            <li><strong>Units:</strong> Meters, seconds, kilograms...</li>
+        </ul>
+        <div class="fragment highlight-box" style="margin-top: 20px;">
+            Units are often ignored in ML (we just normalize). But in physics, units encode <strong>physical meaning</strong> and reveal which effects dominate.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- CHANGE IS CONSTANT -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>The Only Constant is Change</h2>
+        <blockquote>
+            "Nothing stays the same in space and time. Everything changes."
+        </blockquote>
+        <p class="fragment" style="margin-top: 30px;">Yet we search for <strong>laws that remain constant</strong>.</p>
+        <p class="fragment">And these laws describe <em>how things change</em>.</p>
+    </section>
+
+    <section>
+        <h2>Quantifying Change: From Data</h2>
+        <p>Given measurements $u_i$ at times $t_i$:</p>
+        <div class="equation-box" style="margin-top: 15px;">
+            $\frac{\Delta u}{\Delta t} = \frac{u_i - u_{i-1}}{t_i - t_{i-1}}$
+        </div>
+        <div style="display: flex; justify-content: center; margin-top: 20px;">
+            <svg id="derivative-viz" width="700" height="280" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+        </div>
+        <div style="text-align: center; margin-top: 10px;">
+            <button onclick="addPoints()" style="padding: 8px 16px; margin: 0 5px; cursor: pointer; border-radius: 4px; border: none; background: #61afef; color: white;">Add Points</button>
+            <button onclick="resetPoints()" style="padding: 8px 16px; margin: 0 5px; cursor: pointer; border-radius: 4px; border: none; background: #e06c75; color: white;">Reset</button>
+            <span class="small-text" style="margin-left: 15px; color: #888;">As $\Delta t \to 0$, slope $\to$ derivative</span>
+        </div>
+    </section>
+
+    <section>
+        <h2>From Discrete to Continuous</h2>
+        <div class="two-column">
+            <div>
+                <h3 class="small-text" style="color: var(--accent-blue);">From Data (Discrete)</h3>
+                <div class="equation-box small-text">
+                    $\frac{u_i - u_{i-1}}{t_i - t_{i-1}}$
+                </div>
+                <p class="tiny-text">Finite differences between measurements</p>
+            </div>
+            <div class="fragment">
+                <h3 class="small-text" style="color: var(--accent-green);">Idealized (Continuous)</h3>
+                <div class="equation-box small-text">
+                    $\frac{\partial u}{\partial t} = \lim_{\Delta t \to 0} \frac{u(t+\Delta t) - u(t)}{\Delta t}$
+                </div>
+                <p class="tiny-text">Instantaneous rate of change</p>
+            </div>
+        </div>
+        <div class="fragment highlight-box small-text" style="margin-top: 25px;">
+            <strong>Key insight:</strong> We go discrete → continuous for mathematical convenience, then back to discrete for computation.
+        </div>
+    </section>
+
+    <section>
+        <h2>Continuous vs. Discrete</h2>
+        <table class="comparison">
+            <tr>
+                <th>Sciences</th>
+                <th>Computer Science</th>
+            </tr>
+            <tr>
+                <td>Continuous systems</td>
+                <td>Discrete systems</td>
+            </tr>
+            <tr>
+                <td>Smooth functions</td>
+                <td>States and transitions</td>
+            </tr>
+            <tr>
+                <td>Derivatives</td>
+                <td>Graphs</td>
+            </tr>
+        </table>
+        <p class="fragment small-text" style="margin-top: 20px;">These are connected: continuous emerges from taking limits of discrete. Both are idealizations.</p>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- GALILEO AND NEWTON -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Galileo's Discovery</h2>
+        <p>Dropping objects from the Tower of Pisa (allegedly):</p>
+        <ul>
+            <li class="fragment">Position $x(t)$ increases...</li>
+            <li class="fragment">Velocity $v = \frac{dx}{dt}$ also increases...</li>
+            <li class="fragment">But <strong>acceleration</strong> $a = \frac{d^2x}{dt^2}$ is <strong>constant</strong>!</li>
+        </ul>
+        <div class="fragment equation-box" style="margin-top: 20px;">
+            $g \approx 9.8 \text{ m/s}^2$
+        </div>
+        <p class="fragment small-text">The same for all objects, everywhere on Earth (approximately).</p>
+    </section>
+
+    <section>
+        <h2>Newton's Second Law</h2>
+        <div class="equation-box">
+            $F = ma = m\frac{d^2 x}{dt^2}$
+        </div>
+        <p>For free fall: $F = mg$, so:</p>
+        <div class="equation-box fragment">
+            $\frac{d^2 x}{dt^2} = g$
+        </div>
+        <p class="fragment" style="margin-top: 20px;">This is a <strong>differential equation</strong>&mdash;an equation involving derivatives.</p>
+    </section>
+
+    <section>
+        <h2>Solving the Equation</h2>
+        <div class="two-column">
+            <div>
+                <p><strong>Integrate once:</strong></p>
+                <div class="equation-box small-text">
+                    $\frac{dx}{dt} = gt + v_0$
+                </div>
+                <p class="small-text">(velocity)</p>
+            </div>
+            <div class="fragment">
+                <p><strong>Integrate twice:</strong></p>
+                <div class="equation-box small-text">
+                    $x = \frac{1}{2}gt^2 + v_0 t + x_0$
+                </div>
+                <p class="small-text">(position)</p>
+            </div>
+        </div>
+        <div class="fragment success-box" style="margin-top: 30px;">
+            A <strong>parabola</strong>! From a simple differential equation, we derived the shape of a projectile's trajectory.
+        </div>
+    </section>
+
+    <section>
+        <h2>Adding Complexity</h2>
+        <p>With air resistance (drag proportional to velocity):</p>
+        <div class="equation-box">
+            $m\frac{d^2x}{dt^2} = -mg - b\frac{dx}{dt}$
+        </div>
+        <ul class="fragment small-text" style="margin-top: 20px;">
+            <li>First derivative appears (drag term)</li>
+            <li>Solution involves exponentials</li>
+            <li>Pendulums, springs &rarr; sine waves</li>
+        </ul>
+        <p class="fragment small-text" style="margin-top: 20px;">This is what you learn in dynamics courses: finding differential equations from forces.</p>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- CONSERVATION LAWS -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Inductive Bias #2: Conservation Laws</h2>
+        <div class="principle-box">
+            Conservation laws are everywhere in physics.
+        </div>
+        <p class="fragment" style="margin-top: 20px;">The fundamental idea is simple:</p>
+        <div class="fragment equation-box">
+            <strong>Flux in</strong> $-$ <strong>Flux out</strong> $=$ <strong>Accumulation</strong>
+        </div>
+        <p class="fragment small-text">Think of people in a room: if 10 enter and 3 leave, the number increases by 7.</p>
+    </section>
+
+    <section>
+        <h2>Conservation: Interactive Demo</h2>
+        <div style="display: flex; justify-content: center;">
+            <svg id="conservation-viz" width="800" height="300" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+        </div>
+        <div style="text-align: center; margin-top: 15px;">
+            <button onclick="setFluxRate('in', 'increase')" style="padding: 6px 12px; margin: 0 3px; cursor: pointer; border-radius: 4px; border: none; background: #98c379; color: white;">+ In</button>
+            <button onclick="setFluxRate('in', 'decrease')" style="padding: 6px 12px; margin: 0 3px; cursor: pointer; border-radius: 4px; border: none; background: #e5c07b; color: black;">- In</button>
+            <span style="margin: 0 10px; color: #666;">|</span>
+            <button onclick="setFluxRate('out', 'increase')" style="padding: 6px 12px; margin: 0 3px; cursor: pointer; border-radius: 4px; border: none; background: #e06c75; color: white;">+ Out</button>
+            <button onclick="setFluxRate('out', 'decrease')" style="padding: 6px 12px; margin: 0 3px; cursor: pointer; border-radius: 4px; border: none; background: #c678dd; color: white;">- Out</button>
+            <span style="margin: 0 10px; color: #666;">|</span>
+            <button onclick="resetConservation()" style="padding: 6px 12px; margin: 0 3px; cursor: pointer; border-radius: 4px; border: none; background: #666; color: white;">Reset</button>
+        </div>
+        <div class="two-column small-text" style="margin-top: 15px; text-align: center;">
+            <div>Flux In: <span id="flux-in-display" style="color: #98c379; font-weight: bold;">2</span>/s</div>
+            <div>Inside: <span id="count-display" style="color: #61afef; font-weight: bold;">5</span></div>
+            <div>Flux Out: <span id="flux-out-display" style="color: #e06c75; font-weight: bold;">1</span>/s</div>
+        </div>
+    </section>
+
+    <section>
+        <h2>The Math: 1D Conservation</h2>
+        <p>Consider a quantity with density $\rho(x,t)$ in a region $[x, x+\Delta x]$:</p>
+        <div class="small-text" style="margin-top: 20px;">
+            <ul>
+                <li class="fragment"><strong>Accumulation:</strong> $\frac{\partial \rho}{\partial t} \Delta x$</li>
+                <li class="fragment"><strong>Flux in at $x$:</strong> $F(x,t)$</li>
+                <li class="fragment"><strong>Flux out at $x+\Delta x$:</strong> $F(x+\Delta x, t)$</li>
+            </ul>
+        </div>
+        <div class="fragment" style="margin-top: 20px;">
+            <p>Conservation requires:</p>
+            <div class="equation-box small-text">
+                $F(x) - F(x+\Delta x) = \frac{\partial \rho}{\partial t} \Delta x$
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>The Continuity Equation</h2>
+        <p>Divide by $\Delta x$ and take the limit $\Delta x \to 0$:</p>
+        <div class="equation-box">
+            $-\frac{\partial F}{\partial x} = \frac{\partial \rho}{\partial t}$
+        </div>
+        <p class="fragment">Or equivalently:</p>
+        <div class="fragment equation-box" style="background: rgba(152, 195, 121, 0.2);">
+            $\frac{\partial \rho}{\partial t} + \frac{\partial F}{\partial x} = 0$
+        </div>
+        <p class="fragment small-text">This is the <strong>conservation law form</strong> or <strong>continuity equation</strong>.</p>
+    </section>
+
+    <section>
+        <h2>Examples of Conservation</h2>
+        <table class="comparison small-text">
+            <tr>
+                <th>Conservation of...</th>
+                <th>Flux $F$</th>
+            </tr>
+            <tr>
+                <td>Mass</td>
+                <td>$F = \rho v$ (density $\times$ velocity)</td>
+            </tr>
+            <tr>
+                <td>Traffic (cars)</td>
+                <td>$F = \rho v(\rho)$ (speed depends on congestion)</td>
+            </tr>
+            <tr>
+                <td>Momentum</td>
+                <td>$F = \rho v^2 + p$ (includes pressure)</td>
+            </tr>
+            <tr>
+                <td>Energy</td>
+                <td>Heat flux, work done</td>
+            </tr>
+        </table>
+    </section>
+
+    <section>
+        <h2>Higher Dimensions</h2>
+        <p>In 3D with velocity field $\mathbf{v} = (u, v, w)$:</p>
+        <div class="equation-box">
+            $\frac{\partial \rho}{\partial t} + \nabla \cdot (\rho \mathbf{v}) = 0$
+        </div>
+        <p class="small-text">where the <strong>divergence</strong> is:</p>
+        <div class="equation-box small-text">
+            $\nabla \cdot (\rho \mathbf{v}) = \frac{\partial(\rho u)}{\partial x} + \frac{\partial(\rho v)}{\partial y} + \frac{\partial(\rho w)}{\partial z}$
+        </div>
+        <p class="fragment highlight-box small-text" style="margin-top: 20px;">
+            <strong>This is why we study calculus:</strong> to manipulate derivatives and combine them in powerful ways.
+        </p>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- LINEARITY -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Inductive Bias #3: Linearity</h2>
+        <div class="principle-box">
+            Linear systems allow <strong>superposition</strong>.
+        </div>
+        <p class="fragment" style="margin-top: 20px;">A function $L$ is <strong>linear</strong> if:</p>
+        <div class="fragment equation-box">
+            $L(aX + bY) = aL(X) + bL(Y)$
+        </div>
+    </section>
+
+    <section>
+        <h2>Why Linearity Matters</h2>
+        <p>If a system is linear, we can:</p>
+        <ol>
+            <li class="fragment">Break the problem into <strong>simpler parts</strong></li>
+            <li class="fragment">Solve each part <strong>separately</strong></li>
+            <li class="fragment"><strong>Add</strong> the solutions to get the whole</li>
+        </ol>
+        <div class="fragment success-box" style="margin-top: 20px;">
+            Instead of understanding the whole (complicated), understand the parts (simple) and combine them.
+        </div>
+    </section>
+
+    <section>
+        <h2>The Reality: Nonlinearity</h2>
+        <p>Most real systems are <strong>nonlinear</strong>.</p>
+        <p class="fragment">But whenever possible, we try to:</p>
+        <ul class="fragment">
+            <li><strong>Linearize:</strong> Approximate near an operating point</li>
+            <li><strong>Find linear subsystems:</strong> Isolate what we can</li>
+            <li><strong>Perturb about equilibria:</strong> Study small deviations</li>
+        </ul>
+        <div class="fragment warning-box" style="margin-top: 20px;">
+            Nonlinearity creates the hard problems: turbulence, chaos, no closed-form solutions.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- NAVIER-STOKES -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Case Study: Navier-Stokes Equations</h2>
+        <p>The equations that describe <strong>fluid motion</strong>.</p>
+        <p class="fragment">They combine:</p>
+        <div class="two-column fragment" style="margin-top: 20px;">
+            <div class="highlight-box small-text">
+                <strong>Newton's Law of Viscosity</strong><br>
+                (empirical law)<br>
+                $\tau = \mu \frac{\partial u}{\partial y}$
+            </div>
+            <div class="highlight-box small-text">
+                <strong>Conservation of Momentum</strong><br>
+                (Newton's 2nd law for fluids)<br>
+                $\frac{D(\rho \mathbf{v})}{Dt} = \text{forces}$
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>The Equations</h2>
+        <p>For an incompressible Newtonian fluid:</p>
+        <div class="equation-box" style="font-size: 0.9em;">
+            $\rho\left(\underbrace{\frac{\partial \mathbf{u}}{\partial t}}_{\text{local}} + \underbrace{\mathbf{u} \cdot \nabla \mathbf{u}}_{\text{convective}}\right) = \underbrace{-\nabla p}_{\text{pressure}} + \underbrace{\mu \nabla^2 \mathbf{u}}_{\text{viscous}} + \mathbf{f}$
+        </div>
+        <p class="fragment small-text" style="margin-top: 20px;">
+            Solve for: velocity field $\mathbf{u}(x,y,z,t)$<br>
+            Given: pressure $p$, viscosity $\mu$, body forces $\mathbf{f}$
+        </p>
+    </section>
+
+    <section>
+        <h2>Interpreting the Terms</h2>
+        <table class="comparison small-text">
+            <tr>
+                <th>Term</th>
+                <th>Physical Meaning</th>
+            </tr>
+            <tr>
+                <td><span class="term-highlight term-time">$\frac{\partial \mathbf{u}}{\partial t}$</span></td>
+                <td>Local acceleration (change at fixed point)</td>
+            </tr>
+            <tr>
+                <td><span class="term-highlight term-advection">$\mathbf{u} \cdot \nabla \mathbf{u}$</span></td>
+                <td>Convective acceleration <strong>(nonlinear!)</strong></td>
+            </tr>
+            <tr>
+                <td><span class="term-highlight term-pressure">$-\nabla p$</span></td>
+                <td>Pressure forces (compression)</td>
+            </tr>
+            <tr>
+                <td><span class="term-highlight term-viscous">$\mu \nabla^2 \mathbf{u}$</span></td>
+                <td>Viscous forces (shearing between layers)</td>
+            </tr>
+        </table>
+    </section>
+
+    <section>
+        <h2>The Lagrangian Derivative</h2>
+        <p>The combination:</p>
+        <div class="equation-box">
+            $\frac{D\mathbf{u}}{Dt} = \frac{\partial \mathbf{u}}{\partial t} + \mathbf{u} \cdot \nabla \mathbf{u}$
+        </div>
+        <p class="fragment" style="margin-top: 20px;">is the <strong>material derivative</strong>.</p>
+        <ul class="fragment small-text">
+            <li>$\frac{\partial \mathbf{u}}{\partial t}$: change at a <em>fixed point</em></li>
+            <li>$\frac{D\mathbf{u}}{Dt}$: change following a <em>moving particle</em></li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>The Nonlinearity Problem</h2>
+        <div class="warning-box">
+            The term $\mathbf{u} \cdot \nabla \mathbf{u}$ is <strong>nonlinear</strong> in $\mathbf{u}$.
+        </div>
+        <p class="fragment" style="margin-top: 20px;">This single term:</p>
+        <ul class="fragment">
+            <li>Makes analytical solutions nearly impossible</li>
+            <li>Prevents proof of existence/uniqueness (Millennium Prize!)</li>
+            <li>Gives rise to turbulence and chaos</li>
+        </ul>
+        <p class="fragment small-text" style="margin-top: 20px;">Yet we build planes and predict weather by solving these equations <strong>numerically</strong>.</p>
+    </section>
+
+    <section>
+        <h2>Why Study Navier-Stokes?</h2>
+        <p>It's an <strong>archetypal equation</strong> because:</p>
+        <ul>
+            <li class="fragment">Appears everywhere (weather, aerodynamics, blood flow)</li>
+            <li class="fragment">Contains all PDE challenges (nonlinearity, coupled fields)</li>
+            <li class="fragment">Full of open questions (basic math properties unproven)</li>
+        </ul>
+        <div class="fragment highlight-box small-text" style="margin-top: 20px;">
+            Companies like DeepMind spend millions making Navier-Stokes solvers faster.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- BUILDING BLOCK PDES -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Building Block PDEs</h2>
+        <p>Before tackling Navier-Stokes, understand simpler canonical PDEs.</p>
+        <div class="three-column fragment" style="margin-top: 30px;">
+            <div class="highlight-box small-text" style="text-align: center;">
+                <strong>Advection</strong><br>
+                Transport
+            </div>
+            <div class="highlight-box small-text" style="text-align: center;">
+                <strong>Diffusion</strong><br>
+                Spreading
+            </div>
+            <div class="highlight-box small-text" style="text-align: center;">
+                <strong>Wave</strong><br>
+                Oscillation
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>The Advection Equation</h2>
+        <div class="two-column">
+            <div>
+                <div class="equation-box small-text">
+                    $\frac{\partial u}{\partial t} + c\frac{\partial u}{\partial x} = 0$
+                </div>
+                <p class="small-text" style="margin-top: 15px;"><strong>Solution:</strong> $u(x,t) = u_0(x - ct)$</p>
+                <p class="tiny-text">The initial profile translates at speed $c$.</p>
+                <div class="success-box tiny-text" style="margin-top: 15px;">
+                    <strong>Physical:</strong> Quantity transported without changing shape (e.g., wave on a string)
+                </div>
+            </div>
+            <div>
+                <svg id="advection-viz" width="480" height="250" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+                <div style="text-align: center; margin-top: 8px;">
+                    <span class="tiny-text">t = </span><span id="advection-time" class="tiny-text" style="color: #61afef;">0.00</span>
+                    <input type="range" id="advection-slider" min="0" max="100" value="0" style="width: 200px; margin-left: 10px;" oninput="updateAdvection()">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>The Diffusion Equation</h2>
+        <div class="two-column">
+            <div>
+                <div class="equation-box small-text">
+                    $\frac{\partial u}{\partial t} = D\frac{\partial^2 u}{\partial x^2}$
+                </div>
+                <p class="small-text" style="margin-top: 15px;"><strong>Solution:</strong> Gaussian spreads as $\sigma(t) = \sqrt{\sigma_0^2 + 2Dt}$</p>
+                <div class="highlight-box tiny-text" style="margin-top: 15px;">
+                    <strong>Key insight:</strong> Second derivative = curvature<br>
+                    &bull; Local min &rarr; $u$ increases<br>
+                    &bull; Local max &rarr; $u$ decreases
+                </div>
+            </div>
+            <div>
+                <svg id="diffusion-viz" width="480" height="250" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+                <div style="text-align: center; margin-top: 8px;">
+                    <span class="tiny-text">t = </span><span id="diffusion-time" class="tiny-text" style="color: #98c379;">0.00</span>
+                    <input type="range" id="diffusion-slider" min="0" max="100" value="0" style="width: 200px; margin-left: 10px;" oninput="updateDiffusion()">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>The Wave Equation</h2>
+        <div class="equation-box">
+            $\frac{\partial^2 u}{\partial t^2} = v^2 \frac{\partial^2 u}{\partial x^2}$
+        </div>
+        <p class="fragment" style="margin-top: 20px;"><strong>Physical meaning:</strong> Oscillatory disturbances propagate at speed $v$.</p>
+        <ul class="fragment small-text">
+            <li>Vibrating strings (guitar)</li>
+            <li>Sound waves in air</li>
+            <li>Electromagnetic waves</li>
+        </ul>
+        <p class="fragment tiny-text" style="margin-top: 15px; color: #888;">Note: Wave equation splits initial pulse into two counter-propagating waves (d'Alembert's solution)</p>
+    </section>
+
+    <section>
+        <h2>Advection-Diffusion: Combined Effects</h2>
+        <div class="two-column">
+            <div>
+                <div class="equation-box small-text">
+                    $\frac{\partial u}{\partial t} + c\frac{\partial u}{\partial x} = D\frac{\partial^2 u}{\partial x^2}$
+                </div>
+                <p class="small-text" style="margin-top: 15px;"><strong>Solution:</strong> Translates AND spreads</p>
+                <div class="warning-box tiny-text" style="margin-top: 15px;">
+                    <strong>Example:</strong> Pollutant in a river<br>
+                    &bull; Carried downstream (advection)<br>
+                    &bull; Disperses over time (diffusion)
+                </div>
+                <p class="tiny-text" style="margin-top: 10px; color: #888;">Parameters: c = <span id="advdiff-c-display">1.0</span>, D = <span id="advdiff-d-display">0.5</span></p>
+            </div>
+            <div>
+                <svg id="advdiff-viz" width="480" height="250" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+                <div style="text-align: center; margin-top: 8px;">
+                    <span class="tiny-text">t = </span><span id="advdiff-time" class="tiny-text" style="color: #e5c07b;">0.00</span>
+                    <input type="range" id="advdiff-slider" min="0" max="100" value="0" style="width: 200px; margin-left: 10px;" oninput="updateAdvDiff()">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Comparing the Three</h2>
+        <svg id="comparison-viz" width="900" height="320" style="background: rgba(0,0,0,0.2); border-radius: 8px; display: block; margin: 0 auto;"></svg>
+        <div style="text-align: center; margin-top: 15px;">
+            <span class="small-text">Time: </span><span id="comparison-time" class="small-text" style="color: #ccc;">0.00</span>
+            <input type="range" id="comparison-slider" min="0" max="100" value="0" style="width: 400px; margin-left: 15px;" oninput="updateComparison()">
+            <button onclick="animateComparison()" id="comparison-play-btn" style="margin-left: 15px; padding: 5px 15px; cursor: pointer; border-radius: 4px; border: none; background: #61afef; color: white;">Play</button>
+        </div>
+        <div class="three-column small-text" style="margin-top: 10px; text-align: center;">
+            <div><span style="color: #61afef;">&#9632;</span> Advection (translates)</div>
+            <div><span style="color: #98c379;">&#9632;</span> Diffusion (spreads)</div>
+            <div><span style="color: #e5c07b;">&#9632;</span> Advection-Diffusion (both)</div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Reaction-Diffusion</h2>
+        <div class="equation-box">
+            $\frac{\partial u}{\partial t} = D\frac{\partial^2 u}{\partial x^2} + R(u)$
+        </div>
+        <p class="fragment" style="margin-top: 20px;"><strong>Physical meaning:</strong> Diffusion + local reactions/growth</p>
+        <ul class="fragment small-text">
+            <li>Chemical reactions spreading through a medium</li>
+            <li>Population dynamics with spatial spread</li>
+            <li><strong>Turing patterns:</strong> Spots and stripes in biology</li>
+        </ul>
+        <p class="fragment tiny-text" style="margin-top: 15px; color: #888;">The nonlinear reaction term $R(u)$ creates rich pattern-forming behavior.</p>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- ELECTRIC CIRCUITS -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Case Study: Electronic Circuits</h2>
+        <p>Another source of differential equations from simple laws.</p>
+        <table class="comparison small-text fragment" style="margin-top: 20px;">
+            <tr>
+                <th>Component</th>
+                <th>Law</th>
+                <th>Type</th>
+            </tr>
+            <tr>
+                <td>Resistor</td>
+                <td>$V = IR$</td>
+                <td>Algebraic</td>
+            </tr>
+            <tr>
+                <td>Capacitor</td>
+                <td>$I = C\frac{dV}{dt}$</td>
+                <td>Differential</td>
+            </tr>
+            <tr>
+                <td>Inductor</td>
+                <td>$V = L\frac{dI}{dt}$</td>
+                <td>Differential</td>
+            </tr>
+        </table>
+    </section>
+
+    <section>
+        <h2>RC and RLC Circuits</h2>
+        <p><strong>RC Circuit</strong> (first-order ODE):</p>
+        <div class="equation-box small-text">
+            $RC\frac{dV}{dt} + V = V_{\text{in}}$
+        </div>
+        <p class="small-text">Solution: exponential decay/growth</p>
+
+        <p class="fragment" style="margin-top: 20px;"><strong>RLC Circuit</strong> (second-order ODE):</p>
+        <div class="fragment equation-box small-text">
+            $LC\frac{d^2V}{dt^2} + RC\frac{dV}{dt} + V = V_{\text{in}}$
+        </div>
+        <p class="fragment small-text">Solutions: oscillations, damping, resonance</p>
+    </section>
+
+    <section>
+        <h2>Application: Synthesizers</h2>
+        <p>Combinations of R, L, C components can shape signals.</p>
+        <ul class="small-text">
+            <li class="fragment">Design circuits that produce specific waveforms</li>
+            <li class="fragment">Approximate sounds (violin, piano, etc.)</li>
+            <li class="fragment">Inverse problem: given a sound, what circuit produces it?</li>
+        </ul>
+        <div class="fragment highlight-box small-text" style="margin-top: 20px;">
+            Modern audio processing and voice transfer use similar principles&mdash;often modeled as differential equations.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- UNITS -->
+<!-- ============================================ -->
+<section>
+    <h2>Don't Forget: Units Matter</h2>
+    <p>Physical quantities have <strong>units</strong>.</p>
+    <div class="two-column" style="margin-top: 20px;">
+        <div class="small-text">
+            <p><strong>ML approach:</strong></p>
+            <ul>
+                <li>Normalize everything</li>
+                <li>Mean 0, variance 1</li>
+                <li>Units are lost</li>
+            </ul>
+        </div>
+        <div class="fragment small-text">
+            <p><strong>Science approach:</strong></p>
+            <ul>
+                <li>Units encode meaning</li>
+                <li>Dimensional consistency</li>
+                <li>Scale reveals dominance</li>
+            </ul>
+        </div>
+    </div>
+    <div class="fragment principle-box small-text" style="margin-top: 20px;">
+        <strong>Dimensional analysis:</strong> By checking units, you can catch errors, derive relationships, and identify which terms dominate at different scales.
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- SOLVING DIFFERENTIAL EQUATIONS -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Solving Differential Equations</h2>
+        <p>Once we have a differential equation, what do we do with it?</p>
+        <div class="two-column fragment" style="margin-top: 20px;">
+            <div class="success-box small-text">
+                <strong>Analytical</strong><br>
+                Closed-form solutions<br>
+                (linear, simple BCs)
+            </div>
+            <div class="highlight-box small-text">
+                <strong>Numerical</strong><br>
+                Discretize and compute<br>
+                (nonlinear, complex)
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>The Detour Through Continuity</h2>
+        <p>We started <strong>discrete</strong>: $\frac{\Delta u}{\Delta t}$</p>
+        <p class="fragment">Went to <strong>continuous</strong>: $\frac{\partial u}{\partial t}$</p>
+        <p class="fragment">Now go back to <strong>discrete</strong> for computation.</p>
+        <div class="fragment warning-box small-text" style="margin-top: 20px;">
+            <strong>Why the detour?</strong><br>
+            Continuous formulation eliminates dependence on grid size, reveals mathematical structure, and allows powerful manipulations.
+        </div>
+    </section>
+
+    <section>
+        <h2>Differential Equations as Generative Models</h2>
+        <p>Given initial conditions, predict the future:</p>
+        <ol class="small-text">
+            <li class="fragment">Know the state at time $t$</li>
+            <li class="fragment">Compute the change: $\frac{du}{dt} = f(u, t)$</li>
+            <li class="fragment">Update: $u(t + \Delta t) = u(t) + \frac{du}{dt} \cdot \Delta t$</li>
+            <li class="fragment">Repeat</li>
+        </ol>
+        <div class="fragment highlight-box small-text" style="margin-top: 20px;">
+            This is <strong>autoregressive</strong>&mdash;the output at each step becomes the input for the next. Like language models generating text token by token.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- ASSUMPTIONS -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>All Models Make Assumptions</h2>
+        <p>Every model simplifies reality. Common assumptions:</p>
+        <table class="comparison small-text" style="margin-top: 20px;">
+            <tr>
+                <th>Assumption</th>
+                <th>Reality</th>
+            </tr>
+            <tr>
+                <td>Newtonian fluid</td>
+                <td>Non-Newtonian (toothpaste, blood)</td>
+            </tr>
+            <tr>
+                <td>Linear response</td>
+                <td>Nonlinear at large amplitudes</td>
+            </tr>
+            <tr>
+                <td>Continuous medium</td>
+                <td>Discrete molecules</td>
+            </tr>
+            <tr>
+                <td>Deterministic</td>
+                <td>Stochastic/noisy</td>
+            </tr>
+        </table>
+    </section>
+
+    <section>
+        <h2>When Models Fail</h2>
+        <blockquote style="font-size: 0.9em;">
+            "If a model doesn't work, ask: <strong>What assumptions did I make?</strong>"
+        </blockquote>
+        <p class="fragment" style="margin-top: 20px;">Often we're not aware of our assumptions until we examine the building blocks.</p>
+        <p class="fragment">Identifying violated assumptions is key to improving models.</p>
+    </section>
+
+    <section>
+        <h2>"Assumption-Free" Models?</h2>
+        <p>Deep learning promises to learn directly from data.</p>
+        <p class="fragment">But there's no such thing as truly assumption-free:</p>
+        <ul class="fragment small-text">
+            <li>Architecture choices are assumptions</li>
+            <li>Training data is an assumption</li>
+            <li>Optimization is an assumption</li>
+        </ul>
+        <div class="fragment principle-box small-text" style="margin-top: 20px;">
+            The <strong>inductive biases</strong> we discussed (space-time, conservation, linearity) help models generalize. Scientific ML encodes these explicitly.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SUMMARY -->
+<!-- ============================================ -->
+<section>
+    <h2>Key Principles</h2>
+    <ol class="small-text">
+        <li class="fragment"><strong>Space and time are special:</strong> $u(x,t)$ is the natural language of physics</li>
+        <li class="fragment"><strong>Change is fundamental:</strong> Derivatives quantify local change</li>
+        <li class="fragment"><strong>Conservation laws:</strong> Flux in - flux out = accumulation</li>
+        <li class="fragment"><strong>Linearity enables superposition:</strong> Solve parts, combine for whole</li>
+        <li class="fragment"><strong>Simple laws &rarr; complex equations:</strong> Viscosity + momentum = Navier-Stokes</li>
+        <li class="fragment"><strong>Nonlinearity is the challenge:</strong> Turbulence, chaos, no closed forms</li>
+        <li class="fragment"><strong>Units matter:</strong> They encode meaning and reveal scales</li>
+        <li class="fragment"><strong>All models make assumptions:</strong> Know yours</li>
+    </ol>
+</section>
+
+<!-- ============================================ -->
+<!-- LOOKING AHEAD -->
+<!-- ============================================ -->
+<section>
+    <h2>Looking Ahead</h2>
+    <div class="three-column" style="margin-top: 30px;">
+        <div class="highlight-box small-text" style="text-align: center;">
+            <strong>Next Lecture</strong><br>
+            Numerical methods<br>
+            Discretization<br>
+            Stability
+        </div>
+        <div class="warning-box small-text" style="text-align: center;">
+            <strong>Later</strong><br>
+            Nonlinear dynamics<br>
+            Chaos<br>
+            Strange attractors
+        </div>
+        <div class="success-box small-text" style="text-align: center;">
+            <strong>Then</strong><br>
+            Deep learning for PDEs<br>
+            PINNs, SINDy<br>
+            Data-driven discovery
+        </div>
+    </div>
+    <p class="fragment center-text" style="margin-top: 30px;">
+        Building toward <strong>scientific machine learning</strong>
+    </p>
+</section>
+
+<section class="center-text">
+    <h2>Questions?</h2>
+    <p style="margin-top: 40px; color: #888;">See you next time!</p>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js"></script>
+<script>
+    Reveal.initialize({
+        hash: true,
+        slideNumber: 'c/t',
+        transition: 'slide',
+        transitionSpeed: 'default',
+        backgroundTransition: 'fade',
+        plugins: [ RevealMath.KaTeX, RevealHighlight ],
+        width: 1200,
+        height: 700,
+        margin: 0.1,
+        minScale: 0.2,
+        maxScale: 2.0
+    });
+
+    // ==========================================
+    // DERIVATIVE VISUALIZATION
+    // ==========================================
+    let derivPoints = [];
+    let numPointsLevel = 0;
+    const pointLevels = [3, 5, 9, 17, 33];
+
+    function initDerivativeViz() {
+        const svg = document.getElementById('derivative-viz');
+        if (!svg) return;
+        resetPoints();
+    }
+
+    function generatePoints(n) {
+        const points = [];
+        for (let i = 0; i < n; i++) {
+            const t = i / (n - 1);
+            const u = 0.3 + 0.5 * Math.sin(t * Math.PI * 0.8) + 0.1 * t;
+            points.push({ t: t, u: u });
+        }
+        return points;
+    }
+
+    function drawDerivativeViz() {
+        const svg = document.getElementById('derivative-viz');
+        if (!svg) return;
+
+        const width = 700, height = 280;
+        const margin = { top: 30, right: 30, bottom: 50, left: 60 };
+        const plotW = width - margin.left - margin.right;
+        const plotH = height - margin.top - margin.bottom;
+
+        // Clear SVG
+        svg.innerHTML = '';
+
+        // Create group for plot area
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('transform', `translate(${margin.left}, ${margin.top})`);
+        svg.appendChild(g);
+
+        // Axes
+        const axisColor = '#888';
+
+        // X-axis
+        const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxis.setAttribute('x1', 0); xAxis.setAttribute('y1', plotH);
+        xAxis.setAttribute('x2', plotW); xAxis.setAttribute('y2', plotH);
+        xAxis.setAttribute('stroke', axisColor); xAxis.setAttribute('stroke-width', 2);
+        g.appendChild(xAxis);
+
+        // Y-axis
+        const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        yAxis.setAttribute('x1', 0); yAxis.setAttribute('y1', 0);
+        yAxis.setAttribute('x2', 0); yAxis.setAttribute('y2', plotH);
+        yAxis.setAttribute('stroke', axisColor); yAxis.setAttribute('stroke-width', 2);
+        g.appendChild(yAxis);
+
+        // Labels
+        const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 40);
+        xLabel.setAttribute('fill', '#ccc'); xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('font-size', '14px');
+        xLabel.textContent = 't (time)';
+        g.appendChild(xLabel);
+
+        const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -40);
+        yLabel.setAttribute('fill', '#ccc'); yLabel.setAttribute('text-anchor', 'middle');
+        yLabel.setAttribute('transform', 'rotate(-90)');
+        yLabel.setAttribute('font-size', '14px');
+        yLabel.textContent = 'u (measured)';
+        g.appendChild(yLabel);
+
+        if (derivPoints.length === 0) return;
+
+        // Draw smooth curve (the "true" function)
+        const curvePts = generatePoints(100);
+        let pathD = '';
+        curvePts.forEach((p, i) => {
+            const x = p.t * plotW;
+            const y = plotH - p.u * plotH;
+            pathD += (i === 0 ? 'M' : 'L') + `${x},${y}`;
+        });
+        const curve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        curve.setAttribute('d', pathD);
+        curve.setAttribute('stroke', 'rgba(97, 175, 239, 0.3)');
+        curve.setAttribute('stroke-width', 2);
+        curve.setAttribute('fill', 'none');
+        g.appendChild(curve);
+
+        // Draw connecting lines between points
+        if (derivPoints.length > 1) {
+            let linePath = '';
+            derivPoints.forEach((p, i) => {
+                const x = p.t * plotW;
+                const y = plotH - p.u * plotH;
+                linePath += (i === 0 ? 'M' : 'L') + `${x},${y}`;
+            });
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            line.setAttribute('d', linePath);
+            line.setAttribute('stroke', '#e5c07b');
+            line.setAttribute('stroke-width', 2);
+            line.setAttribute('fill', 'none');
+            g.appendChild(line);
+        }
+
+        // Draw slope indicator for middle segment
+        if (derivPoints.length >= 2) {
+            const midIdx = Math.floor(derivPoints.length / 2);
+            const p1 = derivPoints[midIdx - 1];
+            const p2 = derivPoints[midIdx];
+
+            const x1 = p1.t * plotW, y1 = plotH - p1.u * plotH;
+            const x2 = p2.t * plotW, y2 = plotH - p2.u * plotH;
+
+            // Delta t bracket
+            const bracketY = plotH + 15;
+            const bracket = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+
+            const bLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            bLine.setAttribute('x1', x1); bLine.setAttribute('y1', bracketY);
+            bLine.setAttribute('x2', x2); bLine.setAttribute('y2', bracketY);
+            bLine.setAttribute('stroke', '#98c379'); bLine.setAttribute('stroke-width', 2);
+            bracket.appendChild(bLine);
+
+            const bText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            bText.setAttribute('x', (x1 + x2) / 2); bText.setAttribute('y', bracketY + 15);
+            bText.setAttribute('fill', '#98c379'); bText.setAttribute('text-anchor', 'middle');
+            bText.setAttribute('font-size', '12px');
+            bText.textContent = 'Δt';
+            bracket.appendChild(bText);
+            g.appendChild(bracket);
+
+            // Delta u bracket
+            const bracketX = x2 + 10;
+            const uBracket = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+
+            const ubLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            ubLine.setAttribute('x1', bracketX); ubLine.setAttribute('y1', y1);
+            ubLine.setAttribute('x2', bracketX); ubLine.setAttribute('y2', y2);
+            ubLine.setAttribute('stroke', '#c678dd'); ubLine.setAttribute('stroke-width', 2);
+            uBracket.appendChild(ubLine);
+
+            const ubText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            ubText.setAttribute('x', bracketX + 15); ubText.setAttribute('y', (y1 + y2) / 2 + 4);
+            ubText.setAttribute('fill', '#c678dd'); ubText.setAttribute('text-anchor', 'start');
+            ubText.setAttribute('font-size', '12px');
+            ubText.textContent = 'Δu';
+            uBracket.appendChild(ubText);
+            g.appendChild(uBracket);
+        }
+
+        // Draw points
+        derivPoints.forEach((p, i) => {
+            const x = p.t * plotW;
+            const y = plotH - p.u * plotH;
+
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', x);
+            circle.setAttribute('cy', y);
+            circle.setAttribute('r', 6);
+            circle.setAttribute('fill', '#61afef');
+            circle.setAttribute('stroke', 'white');
+            circle.setAttribute('stroke-width', 2);
+            g.appendChild(circle);
+
+            // Point label
+            if (derivPoints.length <= 5) {
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', x);
+                label.setAttribute('y', y - 12);
+                label.setAttribute('fill', '#ccc');
+                label.setAttribute('text-anchor', 'middle');
+                label.setAttribute('font-size', '11px');
+                label.textContent = `(t${i}, u${i})`;
+                g.appendChild(label);
+            }
+        });
+
+        // Info text
+        const infoText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        infoText.setAttribute('x', plotW - 10); infoText.setAttribute('y', 20);
+        infoText.setAttribute('fill', '#888'); infoText.setAttribute('text-anchor', 'end');
+        infoText.setAttribute('font-size', '12px');
+        infoText.textContent = `${derivPoints.length} points — Δt = ${(1/(derivPoints.length-1)).toFixed(3)}`;
+        g.appendChild(infoText);
+    }
+
+    function addPoints() {
+        numPointsLevel = Math.min(numPointsLevel + 1, pointLevels.length - 1);
+        derivPoints = generatePoints(pointLevels[numPointsLevel]);
+        drawDerivativeViz();
+    }
+
+    function resetPoints() {
+        numPointsLevel = 0;
+        derivPoints = generatePoints(pointLevels[0]);
+        drawDerivativeViz();
+    }
+
+    // ==========================================
+    // CONSERVATION LAW VISUALIZATION
+    // ==========================================
+    let particles = [];
+    let fluxIn = 2;
+    let fluxOut = 1;
+    let boxCount = 5;
+    let conservationAnimId = null;
+    let lastSpawnIn = 0;
+    let lastSpawnOut = 0;
+
+    const boxLeft = 250;
+    const boxRight = 550;
+    const boxTop = 80;
+    const boxBottom = 220;
+
+    function initConservationViz() {
+        const svg = document.getElementById('conservation-viz');
+        if (!svg) return;
+
+        // Initialize with some particles in the box
+        particles = [];
+        for (let i = 0; i < boxCount; i++) {
+            particles.push({
+                x: boxLeft + 50 + Math.random() * (boxRight - boxLeft - 100),
+                y: boxTop + 30 + Math.random() * (boxBottom - boxTop - 60),
+                vx: (Math.random() - 0.5) * 2,
+                vy: (Math.random() - 0.5) * 2,
+                inBox: true
+            });
+        }
+
+        if (conservationAnimId) cancelAnimationFrame(conservationAnimId);
+        animateConservation();
+    }
+
+    function animateConservation() {
+        const svg = document.getElementById('conservation-viz');
+        if (!svg) return;
+
+        const now = Date.now();
+
+        // Spawn incoming particles
+        if (fluxIn > 0 && now - lastSpawnIn > 1000 / fluxIn) {
+            particles.push({
+                x: 50,
+                y: (boxTop + boxBottom) / 2 + (Math.random() - 0.5) * 60,
+                vx: 2 + Math.random(),
+                vy: (Math.random() - 0.5) * 0.5,
+                inBox: false,
+                entering: true
+            });
+            lastSpawnIn = now;
+        }
+
+        // Spawn outgoing particles from box
+        const inBoxParticles = particles.filter(p => p.inBox);
+        if (fluxOut > 0 && inBoxParticles.length > 0 && now - lastSpawnOut > 1000 / fluxOut) {
+            const idx = particles.findIndex(p => p.inBox);
+            if (idx >= 0) {
+                particles[idx].vx = 2 + Math.random();
+                particles[idx].vy = (Math.random() - 0.5) * 0.5;
+                particles[idx].inBox = false;
+                particles[idx].exiting = true;
+            }
+            lastSpawnOut = now;
+        }
+
+        // Update particles
+        particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+
+            // Check if entering box
+            if (p.entering && p.x >= boxLeft) {
+                p.inBox = true;
+                p.entering = false;
+                p.vx = (Math.random() - 0.5) * 2;
+                p.vy = (Math.random() - 0.5) * 2;
+                boxCount++;
+            }
+
+            // Check if exited box
+            if (p.exiting && p.x >= boxRight) {
+                p.inBox = false;
+                p.exiting = false;
+                boxCount = Math.max(0, boxCount - 1);
+            }
+
+            // Bounce inside box
+            if (p.inBox) {
+                if (p.x <= boxLeft + 15 || p.x >= boxRight - 15) p.vx *= -1;
+                if (p.y <= boxTop + 15 || p.y >= boxBottom - 15) p.vy *= -1;
+                p.x = Math.max(boxLeft + 15, Math.min(boxRight - 15, p.x));
+                p.y = Math.max(boxTop + 15, Math.min(boxBottom - 15, p.y));
+            }
+        });
+
+        // Remove particles that left the screen
+        particles = particles.filter(p => p.x < 850 && p.x > -50);
+
+        // Update count
+        boxCount = particles.filter(p => p.inBox).length;
+
+        drawConservationViz();
+        conservationAnimId = requestAnimationFrame(animateConservation);
+    }
+
+    function drawConservationViz() {
+        const svg = document.getElementById('conservation-viz');
+        if (!svg) return;
+
+        svg.innerHTML = '';
+
+        // Draw box (control volume)
+        const box = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        box.setAttribute('x', boxLeft); box.setAttribute('y', boxTop);
+        box.setAttribute('width', boxRight - boxLeft);
+        box.setAttribute('height', boxBottom - boxTop);
+        box.setAttribute('fill', 'rgba(66, 175, 250, 0.1)');
+        box.setAttribute('stroke', '#61afef');
+        box.setAttribute('stroke-width', 3);
+        box.setAttribute('stroke-dasharray', '10,5');
+        svg.appendChild(box);
+
+        // Label
+        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        label.setAttribute('x', (boxLeft + boxRight) / 2);
+        label.setAttribute('y', boxTop - 15);
+        label.setAttribute('fill', '#61afef');
+        label.setAttribute('text-anchor', 'middle');
+        label.setAttribute('font-size', '14px');
+        label.textContent = 'Control Volume';
+        svg.appendChild(label);
+
+        // Flux arrows
+        // In arrow
+        const inArrow = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        const inLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        inLine.setAttribute('x1', 100); inLine.setAttribute('y1', (boxTop + boxBottom) / 2);
+        inLine.setAttribute('x2', boxLeft - 20); inLine.setAttribute('y2', (boxTop + boxBottom) / 2);
+        inLine.setAttribute('stroke', '#98c379'); inLine.setAttribute('stroke-width', 3);
+        inLine.setAttribute('marker-end', 'url(#arrowIn)');
+        inArrow.appendChild(inLine);
+        const inLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        inLabel.setAttribute('x', 150); inLabel.setAttribute('y', (boxTop + boxBottom) / 2 - 15);
+        inLabel.setAttribute('fill', '#98c379'); inLabel.setAttribute('font-size', '14px');
+        inLabel.textContent = 'Flux In';
+        inArrow.appendChild(inLabel);
+        svg.appendChild(inArrow);
+
+        // Out arrow
+        const outArrow = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        const outLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        outLine.setAttribute('x1', boxRight + 20); outLine.setAttribute('y1', (boxTop + boxBottom) / 2);
+        outLine.setAttribute('x2', 700); outLine.setAttribute('y2', (boxTop + boxBottom) / 2);
+        outLine.setAttribute('stroke', '#e06c75'); outLine.setAttribute('stroke-width', 3);
+        outLine.setAttribute('marker-end', 'url(#arrowOut)');
+        outArrow.appendChild(outLine);
+        const outLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        outLabel.setAttribute('x', 620); outLabel.setAttribute('y', (boxTop + boxBottom) / 2 - 15);
+        outLabel.setAttribute('fill', '#e06c75'); outLabel.setAttribute('font-size', '14px');
+        outLabel.textContent = 'Flux Out';
+        outArrow.appendChild(outLabel);
+        svg.appendChild(outArrow);
+
+        // Arrow markers
+        const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+
+        const markerIn = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+        markerIn.setAttribute('id', 'arrowIn');
+        markerIn.setAttribute('markerWidth', '10'); markerIn.setAttribute('markerHeight', '10');
+        markerIn.setAttribute('refX', '9'); markerIn.setAttribute('refY', '3');
+        markerIn.setAttribute('orient', 'auto');
+        const pathIn = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        pathIn.setAttribute('d', 'M0,0 L0,6 L9,3 z');
+        pathIn.setAttribute('fill', '#98c379');
+        markerIn.appendChild(pathIn);
+        defs.appendChild(markerIn);
+
+        const markerOut = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+        markerOut.setAttribute('id', 'arrowOut');
+        markerOut.setAttribute('markerWidth', '10'); markerOut.setAttribute('markerHeight', '10');
+        markerOut.setAttribute('refX', '9'); markerOut.setAttribute('refY', '3');
+        markerOut.setAttribute('orient', 'auto');
+        const pathOut = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        pathOut.setAttribute('d', 'M0,0 L0,6 L9,3 z');
+        pathOut.setAttribute('fill', '#e06c75');
+        markerOut.appendChild(pathOut);
+        defs.appendChild(markerOut);
+
+        svg.appendChild(defs);
+
+        // Draw particles
+        particles.forEach(p => {
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', p.x);
+            circle.setAttribute('cy', p.y);
+            circle.setAttribute('r', 10);
+
+            if (p.inBox) {
+                circle.setAttribute('fill', '#61afef');
+            } else if (p.entering) {
+                circle.setAttribute('fill', '#98c379');
+            } else {
+                circle.setAttribute('fill', '#e06c75');
+            }
+            circle.setAttribute('stroke', 'white');
+            circle.setAttribute('stroke-width', 2);
+            svg.appendChild(circle);
+        });
+
+        // Update displays
+        const fluxInDisplay = document.getElementById('flux-in-display');
+        const fluxOutDisplay = document.getElementById('flux-out-display');
+        const countDisplay = document.getElementById('count-display');
+
+        if (fluxInDisplay) fluxInDisplay.textContent = fluxIn;
+        if (fluxOutDisplay) fluxOutDisplay.textContent = fluxOut;
+        if (countDisplay) countDisplay.textContent = boxCount;
+
+        // Equation display
+        const eqText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        eqText.setAttribute('x', 400); eqText.setAttribute('y', 270);
+        eqText.setAttribute('fill', '#ccc'); eqText.setAttribute('text-anchor', 'middle');
+        eqText.setAttribute('font-size', '14px');
+        const accumulation = fluxIn - fluxOut;
+        const sign = accumulation >= 0 ? '+' : '';
+        eqText.textContent = `Accumulation rate: ${fluxIn} - ${fluxOut} = ${sign}${accumulation}/s`;
+        svg.appendChild(eqText);
+    }
+
+    function setFluxRate(direction, action) {
+        if (direction === 'in') {
+            if (action === 'increase') fluxIn = Math.min(fluxIn + 1, 5);
+            else fluxIn = Math.max(fluxIn - 1, 0);
+        } else {
+            if (action === 'increase') fluxOut = Math.min(fluxOut + 1, 5);
+            else fluxOut = Math.max(fluxOut - 1, 0);
+        }
+    }
+
+    function resetConservation() {
+        fluxIn = 2;
+        fluxOut = 1;
+        boxCount = 5;
+        particles = [];
+        for (let i = 0; i < boxCount; i++) {
+            particles.push({
+                x: boxLeft + 50 + Math.random() * (boxRight - boxLeft - 100),
+                y: boxTop + 30 + Math.random() * (boxBottom - boxTop - 60),
+                vx: (Math.random() - 0.5) * 2,
+                vy: (Math.random() - 0.5) * 2,
+                inBox: true
+            });
+        }
+    }
+
+    // Initialize visualizations when slides are shown
+    Reveal.on('slidechanged', event => {
+        // Check if we're on the derivative slide
+        const derivSvg = event.currentSlide.querySelector('#derivative-viz');
+        if (derivSvg) {
+            initDerivativeViz();
+        }
+
+        // Check if we're on the conservation slide
+        const consSvg = event.currentSlide.querySelector('#conservation-viz');
+        if (consSvg) {
+            initConservationViz();
+        } else if (conservationAnimId) {
+            cancelAnimationFrame(conservationAnimId);
+            conservationAnimId = null;
+        }
+
+        // Initialize PDE visualizations
+        initPDEViz(event.currentSlide);
+
+        // Stop comparison animation when leaving that slide
+        if (!event.currentSlide.querySelector('#comparison-viz') && comparisonPlaying) {
+            comparisonPlaying = false;
+            const btn = document.getElementById('comparison-play-btn');
+            if (btn) btn.textContent = 'Play';
+            if (comparisonAnimId) cancelAnimationFrame(comparisonAnimId);
+        }
+    });
+
+    // ==========================================
+    // PDE VISUALIZATIONS
+    // ==========================================
+
+    // PDE Parameters
+    const pdeParams = {
+        c: 1.5,        // advection speed
+        D: 0.3,        // diffusion coefficient
+        sigma0: 0.08,  // initial Gaussian width
+        mu0: 0.25,     // initial Gaussian center
+        tMax: 2.0      // maximum time
+    };
+
+    // Gaussian function for initial condition and solutions
+    function gaussian(x, mu, sigma) {
+        return Math.exp(-Math.pow(x - mu, 2) / (2 * sigma * sigma)) / (sigma * Math.sqrt(2 * Math.PI));
+    }
+
+    // Normalized Gaussian (peak = 1)
+    function gaussianNorm(x, mu, sigma) {
+        return Math.exp(-Math.pow(x - mu, 2) / (2 * sigma * sigma));
+    }
+
+    // Advection solution: u(x,t) = u0(x - ct)
+    function advectionSolution(x, t) {
+        const mu = pdeParams.mu0 + pdeParams.c * t;
+        return gaussianNorm(x, mu, pdeParams.sigma0);
+    }
+
+    // Diffusion solution: Gaussian spreads
+    function diffusionSolution(x, t) {
+        const sigma = Math.sqrt(pdeParams.sigma0 * pdeParams.sigma0 + 2 * pdeParams.D * t);
+        const amplitude = pdeParams.sigma0 / sigma; // conserve area
+        return amplitude * gaussianNorm(x, pdeParams.mu0, sigma);
+    }
+
+    // Advection-Diffusion solution: translates and spreads
+    function advDiffSolution(x, t) {
+        const mu = pdeParams.mu0 + pdeParams.c * t;
+        const sigma = Math.sqrt(pdeParams.sigma0 * pdeParams.sigma0 + 2 * pdeParams.D * t);
+        const amplitude = pdeParams.sigma0 / sigma;
+        return amplitude * gaussianNorm(x, mu, sigma);
+    }
+
+    // Generic PDE plot drawer
+    function drawPDEPlot(svgId, solutionFn, t, color, label) {
+        const svg = document.getElementById(svgId);
+        if (!svg) return;
+
+        const width = parseInt(svg.getAttribute('width'));
+        const height = parseInt(svg.getAttribute('height'));
+        const margin = { top: 20, right: 20, bottom: 35, left: 45 };
+        const plotW = width - margin.left - margin.right;
+        const plotH = height - margin.top - margin.bottom;
+
+        svg.innerHTML = '';
+
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('transform', `translate(${margin.left}, ${margin.top})`);
+        svg.appendChild(g);
+
+        // Axes
+        const axisColor = '#666';
+
+        // X-axis
+        const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxis.setAttribute('x1', 0); xAxis.setAttribute('y1', plotH);
+        xAxis.setAttribute('x2', plotW); xAxis.setAttribute('y2', plotH);
+        xAxis.setAttribute('stroke', axisColor); xAxis.setAttribute('stroke-width', 1.5);
+        g.appendChild(xAxis);
+
+        // Y-axis
+        const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        yAxis.setAttribute('x1', 0); yAxis.setAttribute('y1', 0);
+        yAxis.setAttribute('x2', 0); yAxis.setAttribute('y2', plotH);
+        yAxis.setAttribute('stroke', axisColor); yAxis.setAttribute('stroke-width', 1.5);
+        g.appendChild(yAxis);
+
+        // X label
+        const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 28);
+        xLabel.setAttribute('fill', '#888'); xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('font-size', '12px');
+        xLabel.textContent = 'x';
+        g.appendChild(xLabel);
+
+        // Y label
+        const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -30);
+        yLabel.setAttribute('fill', '#888'); yLabel.setAttribute('text-anchor', 'middle');
+        yLabel.setAttribute('transform', 'rotate(-90)');
+        yLabel.setAttribute('font-size', '12px');
+        yLabel.textContent = 'u(x,t)';
+        g.appendChild(yLabel);
+
+        // Draw initial condition (faint)
+        let initPath = '';
+        const nPoints = 200;
+        for (let i = 0; i <= nPoints; i++) {
+            const x = i / nPoints;
+            const u = solutionFn(x, 0);
+            const px = x * plotW;
+            const py = plotH - u * plotH * 0.9;
+            initPath += (i === 0 ? 'M' : 'L') + `${px},${py}`;
+        }
+        const initCurve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        initCurve.setAttribute('d', initPath);
+        initCurve.setAttribute('stroke', 'rgba(255,255,255,0.2)');
+        initCurve.setAttribute('stroke-width', 2);
+        initCurve.setAttribute('stroke-dasharray', '5,5');
+        initCurve.setAttribute('fill', 'none');
+        g.appendChild(initCurve);
+
+        // Draw current solution
+        let path = '';
+        for (let i = 0; i <= nPoints; i++) {
+            const x = i / nPoints;
+            const u = solutionFn(x, t);
+            const px = x * plotW;
+            const py = plotH - u * plotH * 0.9;
+            path += (i === 0 ? 'M' : 'L') + `${px},${py}`;
+        }
+        const curve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        curve.setAttribute('d', path);
+        curve.setAttribute('stroke', color);
+        curve.setAttribute('stroke-width', 3);
+        curve.setAttribute('fill', 'none');
+        g.appendChild(curve);
+
+        // Fill under curve
+        const fillPath = path + `L${plotW},${plotH}L0,${plotH}Z`;
+        const fill = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        fill.setAttribute('d', fillPath);
+        fill.setAttribute('fill', color);
+        fill.setAttribute('fill-opacity', '0.15');
+        g.appendChild(fill);
+
+        // Label
+        if (label) {
+            const labelText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            labelText.setAttribute('x', plotW - 5); labelText.setAttribute('y', 15);
+            labelText.setAttribute('fill', color); labelText.setAttribute('text-anchor', 'end');
+            labelText.setAttribute('font-size', '11px');
+            labelText.textContent = label;
+            g.appendChild(labelText);
+        }
+    }
+
+    // Update functions for each PDE
+    function updateAdvection() {
+        const slider = document.getElementById('advection-slider');
+        const timeDisplay = document.getElementById('advection-time');
+        if (!slider) return;
+
+        const t = (slider.value / 100) * pdeParams.tMax;
+        if (timeDisplay) timeDisplay.textContent = t.toFixed(2);
+        drawPDEPlot('advection-viz', advectionSolution, t, '#61afef', 'Advection');
+    }
+
+    function updateDiffusion() {
+        const slider = document.getElementById('diffusion-slider');
+        const timeDisplay = document.getElementById('diffusion-time');
+        if (!slider) return;
+
+        const t = (slider.value / 100) * pdeParams.tMax;
+        if (timeDisplay) timeDisplay.textContent = t.toFixed(2);
+        drawPDEPlot('diffusion-viz', diffusionSolution, t, '#98c379', 'Diffusion');
+    }
+
+    function updateAdvDiff() {
+        const slider = document.getElementById('advdiff-slider');
+        const timeDisplay = document.getElementById('advdiff-time');
+        if (!slider) return;
+
+        const t = (slider.value / 100) * pdeParams.tMax;
+        if (timeDisplay) timeDisplay.textContent = t.toFixed(2);
+        drawPDEPlot('advdiff-viz', advDiffSolution, t, '#e5c07b', 'Advection-Diffusion');
+    }
+
+    // Comparison plot showing all three
+    function updateComparison() {
+        const slider = document.getElementById('comparison-slider');
+        const timeDisplay = document.getElementById('comparison-time');
+        if (!slider) return;
+
+        const t = (slider.value / 100) * pdeParams.tMax;
+        if (timeDisplay) timeDisplay.textContent = t.toFixed(2);
+
+        const svg = document.getElementById('comparison-viz');
+        if (!svg) return;
+
+        const width = 900, height = 320;
+        const margin = { top: 25, right: 30, bottom: 40, left: 50 };
+        const plotW = width - margin.left - margin.right;
+        const plotH = height - margin.top - margin.bottom;
+
+        svg.innerHTML = '';
+
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('transform', `translate(${margin.left}, ${margin.top})`);
+        svg.appendChild(g);
+
+        // Axes
+        const axisColor = '#666';
+
+        const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxis.setAttribute('x1', 0); xAxis.setAttribute('y1', plotH);
+        xAxis.setAttribute('x2', plotW); xAxis.setAttribute('y2', plotH);
+        xAxis.setAttribute('stroke', axisColor); xAxis.setAttribute('stroke-width', 1.5);
+        g.appendChild(xAxis);
+
+        const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        yAxis.setAttribute('x1', 0); yAxis.setAttribute('y1', 0);
+        yAxis.setAttribute('x2', 0); yAxis.setAttribute('y2', plotH);
+        yAxis.setAttribute('stroke', axisColor); yAxis.setAttribute('stroke-width', 1.5);
+        g.appendChild(yAxis);
+
+        // Labels
+        const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 32);
+        xLabel.setAttribute('fill', '#888'); xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('font-size', '14px');
+        xLabel.textContent = 'x (position)';
+        g.appendChild(xLabel);
+
+        const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -35);
+        yLabel.setAttribute('fill', '#888'); yLabel.setAttribute('text-anchor', 'middle');
+        yLabel.setAttribute('transform', 'rotate(-90)');
+        yLabel.setAttribute('font-size', '14px');
+        yLabel.textContent = 'u(x, t)';
+        g.appendChild(yLabel);
+
+        // Draw initial condition
+        let initPath = '';
+        const nPoints = 300;
+        for (let i = 0; i <= nPoints; i++) {
+            const x = i / nPoints;
+            const u = advectionSolution(x, 0);
+            const px = x * plotW;
+            const py = plotH - u * plotH * 0.85;
+            initPath += (i === 0 ? 'M' : 'L') + `${px},${py}`;
+        }
+        const initCurve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        initCurve.setAttribute('d', initPath);
+        initCurve.setAttribute('stroke', 'rgba(255,255,255,0.25)');
+        initCurve.setAttribute('stroke-width', 2);
+        initCurve.setAttribute('stroke-dasharray', '8,4');
+        initCurve.setAttribute('fill', 'none');
+        g.appendChild(initCurve);
+
+        // Initial label
+        const initLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        initLabel.setAttribute('x', pdeParams.mu0 * plotW);
+        initLabel.setAttribute('y', plotH * 0.12);
+        initLabel.setAttribute('fill', 'rgba(255,255,255,0.4)');
+        initLabel.setAttribute('text-anchor', 'middle');
+        initLabel.setAttribute('font-size', '11px');
+        initLabel.textContent = 't = 0 (initial)';
+        g.appendChild(initLabel);
+
+        // Solutions and colors
+        const solutions = [
+            { fn: advectionSolution, color: '#61afef', name: 'Advection' },
+            { fn: diffusionSolution, color: '#98c379', name: 'Diffusion' },
+            { fn: advDiffSolution, color: '#e5c07b', name: 'Advection-Diffusion' }
+        ];
+
+        solutions.forEach(sol => {
+            let path = '';
+            for (let i = 0; i <= nPoints; i++) {
+                const x = i / nPoints;
+                const u = sol.fn(x, t);
+                const px = x * plotW;
+                const py = plotH - u * plotH * 0.85;
+                path += (i === 0 ? 'M' : 'L') + `${px},${py}`;
+            }
+
+            // Fill
+            const fillPath = path + `L${plotW},${plotH}L0,${plotH}Z`;
+            const fill = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            fill.setAttribute('d', fillPath);
+            fill.setAttribute('fill', sol.color);
+            fill.setAttribute('fill-opacity', '0.1');
+            g.appendChild(fill);
+
+            // Curve
+            const curve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            curve.setAttribute('d', path);
+            curve.setAttribute('stroke', sol.color);
+            curve.setAttribute('stroke-width', 3);
+            curve.setAttribute('fill', 'none');
+            g.appendChild(curve);
+        });
+    }
+
+    // Animation for comparison
+    let comparisonAnimId = null;
+    let comparisonPlaying = false;
+
+    function animateComparison() {
+        const btn = document.getElementById('comparison-play-btn');
+        const slider = document.getElementById('comparison-slider');
+        if (!slider || !btn) return;
+
+        if (comparisonPlaying) {
+            comparisonPlaying = false;
+            btn.textContent = 'Play';
+            if (comparisonAnimId) cancelAnimationFrame(comparisonAnimId);
+            return;
+        }
+
+        comparisonPlaying = true;
+        btn.textContent = 'Pause';
+
+        function step() {
+            if (!comparisonPlaying) return;
+
+            let val = parseInt(slider.value);
+            val = (val + 1) % 101;
+            slider.value = val;
+            updateComparison();
+
+            if (val === 0) {
+                // Pause briefly at start
+                setTimeout(() => {
+                    if (comparisonPlaying) comparisonAnimId = requestAnimationFrame(step);
+                }, 500);
+            } else {
+                comparisonAnimId = requestAnimationFrame(step);
+            }
+        }
+
+        comparisonAnimId = requestAnimationFrame(step);
+    }
+
+    // Initialize PDE visualizations
+    function initPDEViz(slideElement) {
+        if (slideElement.querySelector('#advection-viz')) {
+            updateAdvection();
+        }
+        if (slideElement.querySelector('#diffusion-viz')) {
+            updateDiffusion();
+        }
+        if (slideElement.querySelector('#advdiff-viz')) {
+            updateAdvDiff();
+        }
+        if (slideElement.querySelector('#comparison-viz')) {
+            updateComparison();
+        }
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+        initDerivativeViz();
+    });
+</script>
+</body>
+</html>
