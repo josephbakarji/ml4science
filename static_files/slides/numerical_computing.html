@@ -72,12 +72,14 @@
         .three-column > div { flex: 1; }
         .equation-box {
             background: rgba(255,255,255,0.08);
-            padding: 20px;
+            padding: 12px 15px;
             border-radius: 8px;
             text-align: center;
-            margin: 15px 0;
-            font-size: 1.1em;
+            margin: 10px 0;
+            font-size: 0.85em;
         }
+        .equation-box.large { font-size: 1em; }
+        .equation-box.small { font-size: 0.75em; }
         table.comparison {
             width: 100%;
             border-collapse: collapse;
@@ -109,18 +111,18 @@
         }
         .stencil-grid {
             display: inline-grid;
-            grid-template-columns: repeat(3, 55px);
+            grid-template-columns: repeat(3, 65px);
             gap: 4px;
         }
         .stencil-cell {
-            width: 55px;
-            height: 35px;
+            width: 65px;
+            height: 38px;
             border: 2px solid #444;
             border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.55em;
+            font-size: 0.48em;
         }
         .stencil-active { background: rgba(97, 175, 239, 0.5); border-color: #61afef; }
         .stencil-target { background: rgba(152, 195, 121, 0.5); border-color: #98c379; }
@@ -217,17 +219,17 @@
 <section>
     <section>
         <h2>Computing as Recursive Rule Application</h2>
-        <p>The most basic form of computing: <strong>apply a rule repeatedly</strong></p>
-        <div class="fragment" style="margin-top: 20px;">
-            <h3 class="small-text" style="color: var(--accent-purple);">Peano Axioms: Generating Natural Numbers</h3>
-            <div class="equation-box small-text">
+        <p class="small-text">The most basic form of computing: <strong>apply a rule repeatedly</strong></p>
+        <div class="fragment" style="margin-top: 10px;">
+            <p class="small-text" style="color: var(--accent-purple); margin-bottom: 5px;"><strong>Peano Axioms: Generating Natural Numbers</strong></p>
+            <div class="equation-box tiny-text" style="padding: 8px;">
                 $0, \; S(0), \; S(S(0)), \; S(S(S(0))), \; \ldots$
             </div>
-            <p class="tiny-text">Start with 0, apply successor function S repeatedly &rarr; all natural numbers</p>
+            <p class="tiny-text" style="margin-top: 5px;">Start with 0, apply successor function S repeatedly &rarr; all natural numbers</p>
         </div>
-        <div class="fragment" style="margin-top: 20px;">
+        <div class="fragment" style="margin-top: 10px;">
             <p class="small-text">This is just a <strong>for loop</strong>:</p>
-            <pre><code class="python">i = 0
+            <pre style="font-size: 0.55em;"><code class="python">i = 0
 for _ in range(n):
     i = i + 1  # successor</code></pre>
         </div>
@@ -279,6 +281,42 @@ for _ in range(n):
             This predicted the asteroid belt and helped discover Uranus!
         </div>
     </section>
+
+    <section>
+        <h2>Cellular Automata: Game of Life</h2>
+        <p class="tiny-text">Von Neumann's idea (1940s) + Conway's rules (1970): simple local rules → complex emergent behavior</p>
+        <div class="two-column" style="margin-top: 5px; align-items: flex-start;">
+            <div style="flex: 1.5;">
+                <canvas id="life-canvas" width="580" height="420" style="border-radius: 8px; background: #1a1a2e; cursor: crosshair;"></canvas>
+                <p class="tiny-text center-text" style="color: #888; margin-top: 3px;">Click cells to toggle | Generation: <span id="life-gen">0</span></p>
+            </div>
+            <div style="flex: 0.8;">
+                <div class="highlight-box tiny-text" style="padding: 8px;">
+                    <strong>Rules (each cell):</strong>
+                    <ul style="margin: 3px 0 0 12px; padding: 0; font-size: 0.9em;">
+                        <li>Alive + 2-3 neighbors → <span style="color: #98c379;">survives</span></li>
+                        <li>Alive + &lt;2 neighbors → <span style="color: #e06c75;">dies</span></li>
+                        <li>Alive + &gt;3 neighbors → <span style="color: #e06c75;">dies</span></li>
+                        <li>Dead + 3 neighbors → <span style="color: #98c379;">born</span></li>
+                    </ul>
+                </div>
+                <div style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;">
+                    <button id="life-step" style="padding: 4px 10px; font-size: 0.65em;">Step</button>
+                    <button id="life-play" style="padding: 4px 10px; font-size: 0.65em;">▶ Play</button>
+                    <button id="life-reset" style="padding: 4px 10px; font-size: 0.65em;">Reset</button>
+                    <select id="life-pattern" style="padding: 4px; font-size: 0.65em;">
+                        <option value="glider">Glider</option>
+                        <option value="blinker">Blinker</option>
+                        <option value="glider-gun">Glider Gun</option>
+                        <option value="random">Random</option>
+                    </select>
+                </div>
+                <div class="fragment principle-box tiny-text" style="margin-top: 10px; padding: 6px;">
+                    <strong>Turing complete!</strong> Can simulate any computation.
+                </div>
+            </div>
+        </div>
+    </section>
 </section>
 
 <!-- ============================================ -->
@@ -324,7 +362,7 @@ for _ in range(n):
                 <svg id="euler-plot" width="480" height="300" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
                 <div style="display: flex; gap: 15px; margin-top: 10px; flex-wrap: wrap;">
                     <div class="slider-container">
-                        <label>$\Delta t$:</label>
+                        <label>Δt</label>
                         <input type="range" id="euler-dt" min="0.05" max="0.5" step="0.05" value="0.2">
                         <span id="euler-dt-val">0.20</span>
                     </div>
@@ -370,20 +408,39 @@ for _ in range(n):
         <h2>Case Study: The Hudson Bay Fur Records</h2>
         <div class="two-column">
             <div>
-                <p class="small-text"><strong>Historical context:</strong></p>
+                <p class="small-text"><strong>The Fur Trade Business:</strong></p>
                 <ul class="tiny-text">
-                    <li><strong>1670-1920s:</strong> Hudson's Bay Company traded furs in Canada</li>
-                    <li>Kept meticulous records of pelts purchased each year</li>
-                    <li><strong>1924:</strong> Ecologist Charles Elton analyzed 90 years of data</li>
-                    <li>Discovered striking ~10-year cycles in lynx and hare populations</li>
+                    <li><strong>1670-1920s:</strong> Hudson's Bay Company was a fur trading giant</li>
+                    <li>Beaver and lynx pelts were highly prized for European fashion</li>
+                    <li>Company kept detailed ledgers of pelts purchased from trappers</li>
+                    <li><strong>Why track pelts?</strong> Inventory, pricing, trapper payments</li>
                 </ul>
                 <div class="fragment highlight-box tiny-text" style="margin-top: 10px;">
-                    <strong>The puzzle:</strong> Why do populations oscillate so regularly?<br>
-                    Can we build a mathematical model to explain this?
+                    <strong>1924:</strong> Ecologist Charles Elton analyzed 90 years of pelt records<br>
+                    Discovered striking ~10-year cycles in lynx and hare populations
+                </div>
+                <div class="fragment principle-box tiny-text" style="margin-top: 10px;">
+                    <strong>The puzzle:</strong> Why do populations oscillate so regularly?
                 </div>
             </div>
             <div>
-                <svg id="hudson-data-viz" width="420" height="280" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+                <div style="display: flex; gap: 20px; margin-bottom: 15px; justify-content: center;">
+                    <div style="text-align: center;">
+                        <svg width="120" height="80" style="border-radius: 8px; border: 2px solid #61afef; background: rgba(97,175,239,0.1);">
+                            <text x="60" y="35" text-anchor="middle" fill="#61afef" font-size="28">🐰</text>
+                            <text x="60" y="58" text-anchor="middle" fill="#61afef" font-size="10">Snowshoe</text>
+                            <text x="60" y="70" text-anchor="middle" fill="#61afef" font-size="10">Hare</text>
+                        </svg>
+                    </div>
+                    <div style="text-align: center;">
+                        <svg width="120" height="80" style="border-radius: 8px; border: 2px solid #e06c75; background: rgba(224,108,117,0.1);">
+                            <text x="60" y="35" text-anchor="middle" fill="#e06c75" font-size="28">🐱</text>
+                            <text x="60" y="58" text-anchor="middle" fill="#e06c75" font-size="10">Canadian</text>
+                            <text x="60" y="70" text-anchor="middle" fill="#e06c75" font-size="10">Lynx</text>
+                        </svg>
+                    </div>
+                </div>
+                <svg id="hudson-data-viz" width="420" height="220" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
                 <p class="tiny-text" style="text-align: center; color: #888;">
                     Hudson Bay Company records (1900-1920)<br>
                     <span style="color: #61afef;">■ Hare</span> | <span style="color: #e06c75;">■ Lynx</span> (thousands)
@@ -399,11 +456,11 @@ for _ in range(n):
             <div>
                 <p class="small-text"><strong>The logic:</strong></p>
                 <ul class="tiny-text">
-                    <li>More prey &rarr; predators thrive</li>
-                    <li>More predators &rarr; eat more prey</li>
-                    <li>Fewer prey &rarr; predators starve</li>
-                    <li>Fewer predators &rarr; prey recover</li>
-                    <li>&rarr; <strong>Oscillation!</strong></li>
+                    <li class="fragment">More prey &rarr; predators thrive</li>
+                    <li class="fragment">More predators &rarr; eat more prey</li>
+                    <li class="fragment">Fewer prey &rarr; predators starve</li>
+                    <li class="fragment">Fewer predators &rarr; prey recover</li>
+                    <li class="fragment">&rarr; <strong>Oscillation!</strong></li>
                 </ul>
             </div>
             <div>
@@ -413,10 +470,10 @@ for _ in range(n):
                 </div>
                 <p class="tiny-text" style="margin-top: 10px;">
                     $x$ = prey (hares), $y$ = predators (lynx)<br>
-                    <span style="color: #98c379;">α</span> = prey growth |
-                    <span style="color: #e5c07b;">β</span> = predation rate<br>
-                    <span style="color: #c678dd;">δ</span> = predator efficiency |
-                    <span style="color: #56b6c2;">γ</span> = predator death
+                    $\color{#98c379}{\alpha}$ = prey growth |
+                    $\color{#e5c07b}{\beta}$ = predation rate<br>
+                    $\color{#c678dd}{\delta}$ = predator efficiency |
+                    $\color{#56b6c2}{\gamma}$ = predator death
                 </p>
             </div>
         </div>
@@ -427,21 +484,21 @@ for _ in range(n):
         <p class="small-text">Apply Euler's method to each equation:</p>
         <div class="two-column" style="margin-top: 15px;">
             <div>
-                <div class="highlight-box small-text">
+                <div class="highlight-box tiny-text" style="padding: 12px;">
                     <strong>Continuous:</strong><br>
-                    $\displaystyle\frac{dx}{dt} = \alpha x - \beta xy$<br><br>
-                    $\displaystyle\frac{dy}{dt} = \delta xy - \gamma y$
+                    $\frac{dx}{dt} = \alpha x - \beta xy$<br><br>
+                    $\frac{dy}{dt} = \delta xy - \gamma y$
                 </div>
             </div>
             <div>
-                <div class="success-box small-text">
+                <div class="success-box tiny-text" style="padding: 12px;">
                     <strong>Discrete (Euler):</strong><br>
-                    $x_{n+1} = x_n + \Delta t \cdot (\alpha x_n - \beta x_n y_n)$<br><br>
-                    $y_{n+1} = y_n + \Delta t \cdot (\delta x_n y_n - \gamma y_n)$
+                    $x_{n+1} = x_n + \Delta t (\alpha x_n - \beta x_n y_n)$<br><br>
+                    $y_{n+1} = y_n + \Delta t (\delta x_n y_n - \gamma y_n)$
                 </div>
             </div>
         </div>
-        <div class="fragment principle-box small-text" style="margin-top: 20px;">
+        <div class="fragment principle-box tiny-text" style="margin-top: 20px;">
             <strong>The recipe:</strong> Given $(x_n, y_n)$ at time $t_n$, compute $(x_{n+1}, y_{n+1})$ at time $t_{n+1} = t_n + \Delta t$
         </div>
     </section>
@@ -557,8 +614,8 @@ for _ in range(n):
         <p class="small-text center-text" style="margin-top: 10px;">
             Multiple trajectories in phase space for different initial conditions
         </p>
-        <p class="tiny-text center-text" style="color: #888;">
-            Small $\theta_0$: circles | Large $\theta_0$: distorted "eye" shapes
+        <p class="tiny-text center-text" style="color: #7ee8f3;">
+            Small θ₀: circles | Large θ₀: distorted "eye" shapes
         </p>
     </section>
 </section>
@@ -569,19 +626,18 @@ for _ in range(n):
 <section>
     <section>
         <h2>Error Analysis: How Accurate?</h2>
-        <p>Unlike Fibonacci (exact), numerical solutions have <strong>error</strong></p>
-        <p class="fragment">Use <strong>Taylor expansion</strong> to estimate error:</p>
-        <div class="fragment equation-box tiny-text" style="padding: 15px;">
+        <p class="small-text">Unlike Fibonacci (exact), numerical solutions have <strong>error</strong>. Use <strong>Taylor expansion</strong>:</p>
+        <div class="fragment equation-box" style="padding: 10px; font-size: 0.75em;">
             $x(t + \Delta t) = x(t) + \Delta t \cdot \dot{x}(t) + \frac{(\Delta t)^2}{2}\ddot{x}(t) + O((\Delta t)^3)$
         </div>
-        <div class="fragment" style="margin-top: 15px;">
-            <p class="small-text">Rearranging for the derivative:</p>
-            <div class="equation-box tiny-text" style="padding: 15px;">
-                $\displaystyle\frac{x(t + \Delta t) - x(t)}{\Delta t} = \dot{x}(t) + \underbrace{\frac{\Delta t}{2}\ddot{x}(t) + O((\Delta t)^2)}_{\text{Error} = O(\Delta t)}$
+        <div class="fragment" style="margin-top: 10px;">
+            <p class="tiny-text">Rearranging for the derivative:</p>
+            <div class="equation-box" style="padding: 10px; font-size: 0.7em;">
+                $\frac{x(t + \Delta t) - x(t)}{\Delta t} = \dot{x}(t) + \underbrace{\frac{\Delta t}{2}\ddot{x}(t) + O((\Delta t)^2)}_{\text{Error} = O(\Delta t)}$
             </div>
         </div>
-        <p class="fragment tiny-text" style="margin-top: 10px; color: #888;">
-            The $(\Delta t)^2$ term becomes $O(\Delta t)$ after dividing by $\Delta t$
+        <p class="fragment tiny-text" style="margin-top: 8px; color: #98c379;">
+            <strong>Key insight:</strong> Euler method has error $O(\Delta t)$ — halving step size halves the error
         </p>
     </section>
 
@@ -646,24 +702,22 @@ for _ in range(n):
     <section>
         <h2>Discretizing Space and Time</h2>
         <p class="small-text">Define a grid with spacing $\Delta x$ in space and $\Delta t$ in time:</p>
-        <div class="equation-box small-text" style="margin-top: 15px;">
+        <div class="equation-box" style="margin-top: 10px; font-size: 0.8em; padding: 10px;">
             $u_i^n \equiv u(x_i, t_n)$ where $x_i = i \cdot \Delta x$ and $t_n = n \cdot \Delta t$
         </div>
-        <div class="fragment" style="margin-top: 20px;">
-            <p class="small-text">Apply finite differences to both derivatives:</p>
-            <div class="two-column tiny-text" style="margin-top: 10px;">
-                <div class="highlight-box" style="text-align: center;">
-                    <strong>Time derivative:</strong><br>
-                    $\displaystyle\frac{\partial u}{\partial t} \approx \frac{u_i^{n+1} - u_i^n}{\Delta t}$
+        <div class="fragment" style="margin-top: 15px;">
+            <p class="tiny-text">Apply finite differences to both derivatives:</p>
+            <div class="two-column" style="margin-top: 8px; font-size: 0.7em;">
+                <div class="highlight-box" style="text-align: center; padding: 10px;">
+                    <strong>Time:</strong> $\frac{\partial u}{\partial t} \approx \frac{u_i^{n+1} - u_i^n}{\Delta t}$
                 </div>
-                <div class="highlight-box" style="text-align: center;">
-                    <strong>Space derivative:</strong><br>
-                    $\displaystyle\frac{\partial^2 u}{\partial x^2} \approx \frac{u_{i+1}^n - 2u_i^n + u_{i-1}^n}{(\Delta x)^2}$
+                <div class="highlight-box" style="text-align: center; padding: 10px;">
+                    <strong>Space:</strong> $\frac{\partial^2 u}{\partial x^2} \approx \frac{u_{i+1}^n - 2u_i^n + u_{i-1}^n}{(\Delta x)^2}$
                 </div>
             </div>
         </div>
-        <div class="fragment success-box small-text" style="margin-top: 15px;">
-            <strong>Discrete update rule:</strong> $\quad u_i^{n+1} = u_i^n + D\frac{\Delta t}{(\Delta x)^2}(u_{i+1}^n - 2u_i^n + u_{i-1}^n)$
+        <div class="fragment success-box" style="margin-top: 12px; font-size: 0.7em; padding: 10px;">
+            <strong>Update rule:</strong> $u_i^{n+1} = u_i^n + r(u_{i+1}^n - 2u_i^n + u_{i-1}^n)$ &nbsp; where $r = D\frac{\Delta t}{(\Delta x)^2}$
         </div>
     </section>
 
@@ -701,7 +755,7 @@ for _ in range(n):
         <div class="three-column" style="margin-top: 20px; text-align: center;">
             <div>
                 <p class="tiny-text"><strong>FTCS</strong></p>
-                <p class="tiny-text" style="color: #888;">(Forward Time, Central Space)</p>
+                <p class="tiny-text" style="color: #888;">(Forward Time,<br>Central Space)</p>
                 <div class="stencil-grid">
                     <div class="stencil-cell stencil-inactive"></div>
                     <div class="stencil-cell stencil-target">$u_i^{n+1}$</div>
@@ -710,11 +764,11 @@ for _ in range(n):
                     <div class="stencil-cell stencil-active">$u_i^n$</div>
                     <div class="stencil-cell stencil-active">$u_{i+1}^n$</div>
                 </div>
-                <p class="tiny-text" style="margin-top: 8px;">$u_i^{n+1} = u_i^n + r(u_{i+1}^n - 2u_i^n + u_{i-1}^n)$</p>
+                <p class="tiny-text" style="margin-top: 8px; font-size: 0.55em;">$u_i^{n+1} = u_i^n + r(\Delta u)$</p>
             </div>
             <div class="fragment">
                 <p class="tiny-text"><strong>BTCS</strong></p>
-                <p class="tiny-text" style="color: #888;">(Backward Time, Central Space)</p>
+                <p class="tiny-text" style="color: #888;">(Backward Time,<br>Central Space)</p>
                 <div class="stencil-grid">
                     <div class="stencil-cell stencil-active">$u_{i-1}^{n+1}$</div>
                     <div class="stencil-cell stencil-active">$u_i^{n+1}$</div>
@@ -723,11 +777,11 @@ for _ in range(n):
                     <div class="stencil-cell stencil-target">$u_i^n$</div>
                     <div class="stencil-cell stencil-inactive"></div>
                 </div>
-                <p class="tiny-text" style="margin-top: 8px;">$u_i^{n+1} - r(u_{i+1}^{n+1} - 2u_i^{n+1} + u_{i-1}^{n+1}) = u_i^n$</p>
+                <p class="tiny-text" style="margin-top: 8px; font-size: 0.55em;">Solve: $Au^{n+1} = u^n$</p>
             </div>
             <div class="fragment">
                 <p class="tiny-text"><strong>Crank-Nicolson</strong></p>
-                <p class="tiny-text" style="color: #888;">(Average of FTCS + BTCS)</p>
+                <p class="tiny-text" style="color: #888;">(Average<br>FTCS + BTCS)</p>
                 <div class="stencil-grid">
                     <div class="stencil-cell stencil-active">●</div>
                     <div class="stencil-cell stencil-active">●</div>
@@ -744,8 +798,8 @@ for _ in range(n):
     <section>
         <h2>Stability: The CFL Condition</h2>
         <div class="two-column">
-            <div style="flex: 1;">
-                <svg id="cfl-demo-viz" width="400" height="280" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+            <div style="flex: 1.3;">
+                <svg id="cfl-demo-viz" width="500" height="320" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
                 <div class="slider-container" style="margin-top: 10px;">
                     <label>r =</label>
                     <input type="range" id="cfl-r" min="0.1" max="0.8" step="0.05" value="0.4">
@@ -767,6 +821,11 @@ for _ in range(n):
                 <p class="tiny-text" style="margin-top: 10px; color: #888;">
                     Try r > 0.5 to see instability!
                 </p>
+                <p class="tiny-text" style="margin-top: 15px;">
+                    <a href="https://en.wikipedia.org/wiki/Courant%E2%80%93Friedrichs%E2%80%93Lewy_condition" target="_blank" style="color: #61afef;">
+                        Courant-Friedrichs-Lewy condition →
+                    </a>
+                </p>
             </div>
         </div>
         <div class="fragment warning-box small-text" style="margin-top: 15px;">
@@ -776,21 +835,38 @@ for _ in range(n):
 </section>
 
 <!-- ============================================ -->
-<!-- RUNGE-KUTTA -->
+<!-- PHYSICS-INFORMED NUMERICAL SOLVERS -->
 <!-- ============================================ -->
 <section>
     <section>
+        <h2 style="color: var(--accent-purple);">Physics-Informed Numerical Solvers</h2>
+        <p class="small-text" style="margin-top: 30px;">How do we build numerical methods that respect physical laws?</p>
+        <ul class="small-text" style="margin-top: 20px;">
+            <li class="fragment">Better integrators (Runge-Kutta)</li>
+            <li class="fragment">Conservation laws (Finite Volume)</li>
+            <li class="fragment">Stability & incompressibility (Navier-Stokes)</li>
+        </ul>
+    </section>
+
+    <section>
         <h2>Better Integrators: Runge-Kutta</h2>
         <p class="small-text">The workhorse of scientific computing</p>
-        <div class="equation-box small-text">
-            <strong>RK4 (4th-order Runge-Kutta):</strong><br><br>
-            $x_{n+1} = x_n + \frac{\Delta t}{6}(k_1 + 2k_2 + 2k_3 + k_4)$<br><br>
-            <span style="color: #888;">where:</span><br>
-            $k_1 = f(t_n, x_n)$<br>
-            $k_2 = f(t_n + \frac{\Delta t}{2}, x_n + \frac{\Delta t}{2}k_1)$<br>
-            $k_3 = f(t_n + \frac{\Delta t}{2}, x_n + \frac{\Delta t}{2}k_2)$<br>
-            $k_4 = f(t_n + \Delta t, x_n + \Delta t \cdot k_3)$
+        <div class="equation-box" style="font-size: 0.9em; padding: 15px;">
+            <strong>RK4:</strong> &nbsp; $x_{n+1} = x_n + \frac{\Delta t}{6}(k_1 + 2k_2 + 2k_3 + k_4)$
         </div>
+        <div class="two-column" style="margin-top: 15px;">
+            <div class="highlight-box tiny-text" style="padding: 10px;">
+                $k_1 = f(t_n, x_n)$<br>
+                $k_2 = f(t_n + \frac{\Delta t}{2}, x_n + \frac{\Delta t}{2}k_1)$
+            </div>
+            <div class="highlight-box tiny-text" style="padding: 10px;">
+                $k_3 = f(t_n + \frac{\Delta t}{2}, x_n + \frac{\Delta t}{2}k_2)$<br>
+                $k_4 = f(t_n + \Delta t, x_n + \Delta t \cdot k_3)$
+            </div>
+        </div>
+        <p class="fragment tiny-text center-text" style="margin-top: 15px; color: #888;">
+            Sample the slope at 4 points, take a weighted average → 4th-order accuracy!
+        </p>
     </section>
 
     <section>
@@ -805,13 +881,10 @@ for _ in range(n):
             <strong>Adaptive methods:</strong> Automatically adjust $\Delta t$ based on estimated error
         </div>
     </section>
-</section>
 
-<!-- ============================================ -->
-<!-- FINITE VOLUME -->
-<!-- ============================================ -->
-<section>
-    <h2>Preserving Physics: Finite Volume Methods</h2>
+    <!-- FINITE VOLUME -->
+    <section>
+        <h2>Preserving Physics: Finite Volume Methods</h2>
     <p class="small-text">When equations have <strong>conservative form</strong>:</p>
     <div class="equation-box">
         $\frac{\partial \rho}{\partial t} + \frac{\partial F}{\partial x} = 0$
@@ -824,44 +897,105 @@ for _ in range(n):
     <p class="fragment small-text" style="margin-top: 15px;">
         Theme in Scientific ML: <strong>Encode physical knowledge into numerical schemes</strong>
     </p>
-</section>
+    </section>
 
-<!-- ============================================ -->
-<!-- 2D FLUID SIMULATOR -->
-<!-- ============================================ -->
-<section>
+    <section>
+        <h2>Finite Volume: The Flux Picture</h2>
+    <div class="two-column">
+        <div style="flex: 1.2;">
+            <div style="position: relative; width: 450px; height: 200px;">
+                <svg width="450" height="200" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
+                    <!-- Cell boxes -->
+                    <rect x="60" y="60" width="100" height="90" fill="rgba(97,175,239,0.2)" stroke="#61afef" stroke-width="2"/>
+                    <rect x="160" y="60" width="100" height="90" fill="rgba(152,195,121,0.3)" stroke="#98c379" stroke-width="3"/>
+                    <rect x="260" y="60" width="100" height="90" fill="rgba(97,175,239,0.2)" stroke="#61afef" stroke-width="2"/>
+                    <!-- Flux arrows -->
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#e5c07b"/>
+                        </marker>
+                    </defs>
+                    <line x1="110" y1="35" x2="160" y2="35" stroke="#e5c07b" stroke-width="3" marker-end="url(#arrowhead)"/>
+                    <line x1="210" y1="35" x2="260" y2="35" stroke="#e5c07b" stroke-width="3" marker-end="url(#arrowhead)"/>
+                    <!-- Interface lines -->
+                    <line x1="160" y1="55" x2="160" y2="155" stroke="#888" stroke-width="1" stroke-dasharray="5,5"/>
+                    <line x1="260" y1="55" x2="260" y2="155" stroke="#888" stroke-width="1" stroke-dasharray="5,5"/>
+                </svg>
+                <!-- Labels positioned absolutely to align with boxes -->
+                <div class="tiny-text" style="position: absolute; top: 105px; left: 110px; transform: translateX(-50%);">$\rho_{i-1}$</div>
+                <div class="tiny-text" style="position: absolute; top: 105px; left: 210px; transform: translateX(-50%);">$\rho_i$</div>
+                <div class="tiny-text" style="position: absolute; top: 105px; left: 310px; transform: translateX(-50%);">$\rho_{i+1}$</div>
+                <div class="tiny-text" style="position: absolute; top: -25px; left: 135px; transform: translateX(-50%); color: #e5c07b;">$F_{i-\frac{1}{2}}$</div>
+                <div class="tiny-text" style="position: absolute; top: -25px; left: 235px; transform: translateX(-50%); color: #e5c07b;">$F_{i+\frac{1}{2}}$</div>
+            </div>
+            <div class="equation-box tiny-text" style="margin-top: 10px; padding: 8px;">
+                $\rho_i^{n+1} = \rho_i^n - \frac{\Delta t}{\Delta x}(F_{i+\frac{1}{2}} - F_{i-\frac{1}{2}})$
+            </div>
+        </div>
+        <div style="flex: 1;">
+            <div class="highlight-box tiny-text" style="padding: 12px;">
+                <strong>Upwind Scheme:</strong><br>
+                If $u > 0$ (flow right):<br>
+                &nbsp;&nbsp;$F_{i+\frac{1}{2}} = u \cdot \rho_i$<br><br>
+                If $u < 0$ (flow left):<br>
+                &nbsp;&nbsp;$F_{i+\frac{1}{2}} = u \cdot \rho_{i+1}$
+            </div>
+            <div class="fragment success-box tiny-text" style="margin-top: 10px; padding: 10px;">
+                <strong>Why upwind?</strong><br>
+                Information travels <em>with</em> the flow.<br>
+                Using "downwind" values is unstable!
+            </div>
+        </div>
+    </div>
+    <p class="fragment tiny-text center-text" style="color: #888; margin-top: 10px;">
+        Conservation: What enters one cell exits the neighbor. No numerical mass loss.
+    </p>
+    </section>
+
+    <!-- 2D FLUID SIMULATOR (sub-slides) -->
     <section>
         <h2>Interactive: 2D Fluid Dynamics</h2>
-        <div class="equation-box tiny-text" style="margin-bottom: 10px; padding: 8px;">
-            <strong>Navier-Stokes:</strong> $\displaystyle\frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u} \cdot \nabla)\mathbf{u} = -\frac{1}{\rho}\nabla p + \nu \nabla^2 \mathbf{u}$
-            <span style="color: #888; margin-left: 15px;">+ $\nabla \cdot \mathbf{u} = 0$ (incompressible)</span>
+        <div class="equation-box tiny-text" style="margin-bottom: 8px; padding: 6px; font-size: 0.7em;">
+            <strong>Navier-Stokes:</strong> $\begin{aligned} \frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u} \cdot \nabla)\mathbf{u} &= -\frac{1}{\rho}\nabla p + \nu \nabla^2 \mathbf{u} \\ \nabla \cdot \mathbf{u} &= 0 \quad \text{(incompressible)} \end{aligned}$
         </div>
         <div class="two-column">
-            <div style="flex: 1.5;">
+            <div style="flex: 1.6;">
                 <canvas id="fluid-canvas" width="500" height="350" style="border-radius: 8px; cursor: crosshair;"></canvas>
             </div>
             <div style="flex: 0.8;">
-                <div class="highlight-box tiny-text" style="padding: 10px;">
-                    <strong>Solver steps:</strong>
-                    <ol style="margin: 5px 0; padding-left: 20px;">
-                        <li>Add source (top, red)</li>
-                        <li>Diffuse (viscosity ν)</li>
-                        <li>Project (∇·u = 0)</li>
-                        <li>Advect (transport)</li>
-                        <li>Project again</li>
-                    </ol>
+                <div style="display: flex; gap: 10px;">
+                    <div class="highlight-box tiny-text" style="padding: 8px; flex: 1;">
+                        <strong>Solver:</strong>
+                        <ol style="margin: 3px 0; padding-left: 15px; font-size: 0.9em;">
+                            <li>Add source</li>
+                            <li>Diffuse ($\nu$)</li>
+                            <li>Project</li>
+                            <li>Advect</li>
+                            <li>Project</li>
+                        </ol>
+                    </div>
+                    <div style="flex: 1;">
+                        <div class="slider-container">
+                            <label style="font-style: italic;">ν</label>
+                            <input type="range" id="fluid-visc" min="0.00001" max="0.001" step="0.00001" value="0.0001">
+                            <span id="fluid-visc-val">1e-4</span>
+                        </div>
+                        <div class="slider-container">
+                            <label style="font-style: italic;">D</label>
+                            <input type="range" id="fluid-diff" min="0.00001" max="0.001" step="0.00001" value="0.0001">
+                            <span id="fluid-diff-val">1e-4</span>
+                        </div>
+                        <div class="slider-container">
+                            <label>|u₀|</label>
+                            <input type="range" id="fluid-flow" min="5" max="40" step="5" value="15">
+                            <span id="fluid-flow-val">15</span>
+                        </div>
+                    </div>
                 </div>
-                <div style="margin-top: 10px;">
-                    <div class="slider-container">
-                        <label>ν:</label>
-                        <input type="range" id="fluid-visc" min="0.00001" max="0.001" step="0.00001" value="0.0001">
-                        <span id="fluid-visc-val">1e-4</span>
-                    </div>
-                    <div class="slider-container">
-                        <label>diff:</label>
-                        <input type="range" id="fluid-diff" min="0.00001" max="0.001" step="0.00001" value="0.0001">
-                        <span id="fluid-diff-val">1e-4</span>
-                    </div>
+                <div class="tiny-text" style="margin-top: 8px; color: #888; font-size: 0.6em; line-height: 1.4;">
+                    $\nu$ = viscosity (momentum diffusion)<br>
+                    $D$ = dye diffusion coefficient<br>
+                    $|u_0|$ = inlet velocity magnitude
                 </div>
             </div>
         </div>
@@ -874,29 +1008,27 @@ for _ in range(n):
         <h2>The Discretized Equations</h2>
         <p class="small-text">Each step solves part of Navier-Stokes numerically:</p>
         <div class="two-column small-text" style="margin-top: 15px;">
-            <div>
-                <div class="highlight-box" style="padding: 12px;">
-                    <strong>1. Diffusion</strong> (implicit, stable):<br>
+            <div class="fragment">
+                <div class="highlight-box" style="padding: 12px; text-align: center;">
+                    <strong>1. Diffusion</strong> (implicit, stable)<br><br>
                     $(I - \nu \Delta t \nabla^2) u^{n+1} = u^n$<br><br>
-                    Discretized with Gauss-Seidel iteration:<br>
-                    $u_{i,j}^{k+1} = \frac{u_{i,j}^n + a(u_{i\pm1,j}^k + u_{i,j\pm1}^k)}{1 + 4a}$<br>
-                    where $a = \nu \Delta t / (\Delta x)^2$
+                    <span class="tiny-text" style="color: #aaa;">Gauss-Seidel iteration:</span><br>
+                    $u_{i,j}^{k+1} = \frac{u_{i,j}^n + a \sum_{\text{neighbors}}}{1 + 4a}$
                 </div>
             </div>
-            <div>
-                <div class="highlight-box" style="padding: 12px;">
-                    <strong>2. Advection</strong> (semi-Lagrangian):<br>
+            <div class="fragment">
+                <div class="highlight-box" style="padding: 12px; text-align: center;">
+                    <strong>2. Advection</strong> (semi-Lagrangian)<br><br>
                     $q^{n+1}(\mathbf{x}) = q^n(\mathbf{x} - \mathbf{u}\Delta t)$<br><br>
-                    "Where did this particle come from?"<br>
-                    Trace backward, interpolate:<br>
-                    $q_{i,j}^{n+1} = \text{interp}(q^n, x_i - u\Delta t, y_j - v\Delta t)$
+                    <span class="tiny-text" style="color: #aaa;">"Where did this particle come from?"</span><br>
+                    Trace backward, interpolate
                 </div>
             </div>
         </div>
-        <div class="fragment success-box tiny-text" style="margin-top: 15px;">
-            <strong>Why this works:</strong> Implicit diffusion + semi-Lagrangian advection = unconditionally stable!
+        <div class="fragment success-box tiny-text" style="margin-top: 15px; text-align: center;">
+            <strong>Key insight:</strong> Implicit diffusion + semi-Lagrangian advection = unconditionally stable!
         </div>
-        <p class="tiny-text" style="margin-top: 10px;">
+        <p class="fragment tiny-text" style="margin-top: 10px;">
             Reference: <a href="https://www.dgp.toronto.edu/public_user/stam/reality/Research/pdf/ns.pdf" style="color: #61afef;">Jos Stam, "Stable Fluids" (SIGGRAPH 1999)</a>
         </p>
     </section>
@@ -924,45 +1056,96 @@ for _ in range(n):
 <!-- ============================================ -->
 <section>
     <section>
-        <h2>A Story: MIT, 1961</h2>
+        <h2>Rayleigh-Bénard Convection</h2>
         <div class="two-column">
-            <div>
-                <p class="small-text"><strong>Edward Lorenz</strong>, a meteorologist at MIT, was running computer simulations of weather.</p>
-                <p class="fragment small-text" style="margin-top: 15px;">He built a simplified model of atmospheric convection with just <strong>12 equations</strong>.</p>
-                <p class="fragment small-text" style="margin-top: 15px;">One day, he wanted to re-run a simulation from the middle instead of the start...</p>
+            <div style="flex: 1.2;">
+                <svg width="450" height="280" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
+                    <!-- Container -->
+                    <rect x="50" y="40" width="350" height="180" fill="none" stroke="#666" stroke-width="2"/>
+                    <!-- Hot plate (bottom) -->
+                    <rect x="50" y="220" width="350" height="25" fill="#e06c75"/>
+                    <text x="225" y="238" fill="white" text-anchor="middle" font-size="12">HOT</text>
+                    <!-- Cold plate (top) -->
+                    <rect x="50" y="15" width="350" height="25" fill="#61afef"/>
+                    <text x="225" y="32" fill="white" text-anchor="middle" font-size="12">COLD</text>
+                    <!-- Convection cells - arrows showing circulation -->
+                    <defs>
+                        <marker id="conv-arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                            <polygon points="0 0, 6 3, 0 6" fill="#e5c07b"/>
+                        </marker>
+                    </defs>
+                    <!-- Left cell -->
+                    <path d="M 100 180 Q 100 130 150 130 Q 200 130 200 80" stroke="#e5c07b" stroke-width="2" fill="none" marker-end="url(#conv-arrow)"/>
+                    <path d="M 200 80 Q 200 130 150 130 Q 100 130 100 180" stroke="#56b6c2" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+                    <!-- Right cell -->
+                    <path d="M 250 80 Q 250 130 300 130 Q 350 130 350 180" stroke="#56b6c2" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+                    <path d="M 350 180 Q 350 130 300 130 Q 250 130 250 80" stroke="#e5c07b" stroke-width="2" fill="none" marker-end="url(#conv-arrow)"/>
+                    <!-- Labels -->
+                    <text x="150" y="100" fill="#e5c07b" font-size="10">warm ↑</text>
+                    <text x="300" y="160" fill="#56b6c2" font-size="10">cool ↓</text>
+                </svg>
             </div>
-            <div class="fragment">
-                <div class="highlight-box tiny-text" style="padding: 15px;">
-                    <strong>Rayleigh-Bénard Convection:</strong><br><br>
-                    Imagine a fluid heated from below. Warm fluid rises, cools at the top, sinks back down.<br><br>
-                    This creates convection cells — the basic physics behind weather patterns.
+            <div style="flex: 1;">
+                <p class="small-text">
+                    <strong>The physics:</strong> Fluid heated from below, cooled from above.
+                </p>
+                <ul class="tiny-text" style="margin-top: 10px;">
+                    <li>Warm fluid rises (less dense)</li>
+                    <li>Cool fluid sinks (more dense)</li>
+                    <li>Creates convection cells</li>
+                    <li>Basic mechanism of weather!</li>
+                </ul>
+                <div class="fragment principle-box tiny-text" style="margin-top: 15px;">
+                    Many equations describe this: velocity, temperature, pressure fields in 3D...
                 </div>
             </div>
         </div>
     </section>
 
     <section>
-        <h2>The Lorenz Equations</h2>
-        <p class="small-text">Lorenz simplified the convection problem to just 3 variables:</p>
-        <div class="equation-box small-text" style="margin-top: 15px;">
-            $\displaystyle\frac{dx}{dt} = \sigma(y - x)$<br><br>
-            $\displaystyle\frac{dy}{dt} = x(\rho - z) - y$<br><br>
-            $\displaystyle\frac{dz}{dt} = xy - \beta z$
+        <h2>From 7 Equations to 3: The Saltzman-Lorenz Story</h2>
+        <div class="two-column">
+            <div>
+                <p class="small-text"><strong>Barry Saltzman</strong> (Yale, 1961) developed a 7-equation model for convection.</p>
+                <p class="fragment small-text" style="margin-top: 15px;">He showed it to <strong>Edward Lorenz</strong> at MIT — one solution "refused to settle down."</p>
+                <p class="fragment small-text" style="margin-top: 15px;">Lorenz noticed: <em>4 variables quickly became tiny. Only 3 were "keeping each other going."</em></p>
+            </div>
+            <div class="fragment">
+                <div class="highlight-box tiny-text" style="padding: 12px;">
+                    <strong>Lorenz's insight:</strong><br><br>
+                    "Barry gave me the go-ahead signal, and back at MIT the next morning I put the three equations on the computer..."<br><br>
+                    "...and sure enough, there was the same lack of periodicity."
+                </div>
+                <p class="tiny-text" style="margin-top: 10px; color: #888;">
+                    <a href="https://journals.ametsoc.org/view/journals/bams/105/7/BAMS-D-23-0157.1.xml" style="color: #61afef;">Saltzman-Lorenz Exchange, 1961 →</a>
+                </p>
+            </div>
         </div>
-        <div class="fragment two-column tiny-text" style="margin-top: 15px;">
+    </section>
+
+    <section>
+        <h2>The Lorenz Equations</h2>
+        <p class="small-text">Saltzman's 7 equations → Lorenz's 3 equations:</p>
+        <div class="equation-box" style="margin-top: 15px; font-size: 0.85em;">
+            $\dot{x} = \sigma(y - x)$ &emsp;&emsp;
+            $\dot{y} = x(\rho - z) - y$ &emsp;&emsp;
+            $\dot{z} = xy - \beta z$
+        </div>
+        <div class="fragment two-column tiny-text" style="margin-top: 20px;">
             <div>
                 <strong>Variables:</strong><br>
-                $x$ = intensity of convection (fluid velocity)<br>
-                $y$ = temperature difference (horizontal)<br>
-                $z$ = deviation from linear temperature profile
+                $x$ = intensity of convection<br>
+                $y$ = horizontal temperature diff<br>
+                $z$ = vertical temperature deviation
             </div>
             <div>
-                <strong>Parameters:</strong><br>
-                $\sigma = 10$ (Prandtl number, fluid property)<br>
-                $\rho = 28$ (Rayleigh number, heating strength)<br>
-                $\beta = 8/3$ (geometry of convection cells)
+                <strong>Parameters (chaotic regime):</strong><br>
+                $\sigma = 10$, $\rho = 28$, $\beta = 8/3$
             </div>
         </div>
+        <p class="fragment tiny-text" style="margin-top: 15px; color: #888;">
+            Just 3 coupled ODEs, yet the dynamics are incredibly complex
+        </p>
     </section>
 
     <section>
@@ -1038,15 +1221,15 @@ for _ in range(n):
             <svg id="lorenz-sensitivity-viz" width="800" height="320" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
         </div>
         <div class="slider-container" style="justify-content: center; margin-top: 10px;">
-            <label>Perturbation $\epsilon$:</label>
+            <label style="font-size: 0.9em;">Perturbation <span style="font-style: italic;">&#949;</span> =</label>
             <input type="range" id="lorenz-perturb" min="-6" max="-2" step="0.5" value="-4">
-            <span id="lorenz-perturb-val">$10^{-4}$</span>
+            <span id="lorenz-perturb-val" style="font-size: 1em; min-width: 60px;">10<sup>-4</sup></span>
         </div>
         <p class="small-text center-text" style="margin-top: 10px;">
-            <span style="color: #61afef;">■ Original</span> vs <span style="color: #e06c75;">■ Perturbed by $\epsilon$</span>
+            <span style="color: #61afef;">&#9632; Original</span> vs <span style="color: #e06c75;">&#9632; Perturbed by &#949;</span>
         </p>
         <p class="fragment tiny-text center-text" style="color: #888;">
-            No matter how small $\epsilon$ is, the trajectories <em>eventually</em> diverge completely.
+            No matter how small &#949; is, the trajectories <em>eventually</em> diverge completely.
         </p>
     </section>
 
@@ -1123,9 +1306,9 @@ for _ in range(n):
         transitionSpeed: 'default',
         backgroundTransition: 'fade',
         plugins: [ RevealMath.KaTeX, RevealHighlight ],
-        width: 1200,
-        height: 700,
-        margin: 0.1,
+        width: 1100,
+        height: 650,
+        margin: 0.15,
         minScale: 0.2,
         maxScale: 2.0
     });
@@ -1148,8 +1331,8 @@ for _ in range(n):
         const svg = document.getElementById('hudson-data-viz');
         if (!svg) return;
 
-        const width = 420, height = 280;
-        const margin = { top: 20, right: 20, bottom: 40, left: 45 };
+        const width = 420, height = 220;
+        const margin = { top: 15, right: 20, bottom: 35, left: 45 };
         const plotW = width - margin.left - margin.right;
         const plotH = height - margin.top - margin.bottom;
 
@@ -1175,16 +1358,16 @@ for _ in range(n):
         // Labels
         const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 30);
-        xLabel.setAttribute('fill', '#888'); xLabel.setAttribute('text-anchor', 'middle');
-        xLabel.setAttribute('font-size', '11px');
+        xLabel.setAttribute('fill', '#7ee8f3'); xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('font-size', '16px');
         xLabel.textContent = 'Year';
         g.appendChild(xLabel);
 
         const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -32);
-        yLabel.setAttribute('fill', '#888'); yLabel.setAttribute('text-anchor', 'middle');
+        yLabel.setAttribute('fill', '#f5d990'); yLabel.setAttribute('text-anchor', 'middle');
         yLabel.setAttribute('transform', 'rotate(-90)');
-        yLabel.setAttribute('font-size', '11px');
+        yLabel.setAttribute('font-size', '16px');
         yLabel.textContent = 'Population (thousands)';
         g.appendChild(yLabel);
 
@@ -1297,16 +1480,16 @@ for _ in range(n):
         // Labels
         const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 30);
-        xLabel.setAttribute('fill', '#888'); xLabel.setAttribute('text-anchor', 'middle');
-        xLabel.setAttribute('font-size', '11px');
+        xLabel.setAttribute('fill', '#7ee8f3'); xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('font-size', '16px');
         xLabel.textContent = 'Year';
         g.appendChild(xLabel);
 
         const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -35);
-        yLabel.setAttribute('fill', '#888'); yLabel.setAttribute('text-anchor', 'middle');
+        yLabel.setAttribute('fill', '#f5d990'); yLabel.setAttribute('text-anchor', 'middle');
         yLabel.setAttribute('transform', 'rotate(-90)');
-        yLabel.setAttribute('font-size', '11px');
+        yLabel.setAttribute('font-size', '16px');
         yLabel.textContent = 'Population (thousands)';
         g.appendChild(yLabel);
 
@@ -1430,6 +1613,186 @@ for _ in range(n):
     }
 
     // ==========================================
+    // GAME OF LIFE SIMULATION
+    // ==========================================
+    let lifeCanvas, lifeCtx;
+    let lifeGrid = [];
+    let lifeRows = 55, lifeCols = 75;
+    let lifeGeneration = 0;
+    let lifeAnimId = null;
+    let lifePlaying = false;
+
+    function initLife() {
+        lifeCanvas = document.getElementById('life-canvas');
+        if (!lifeCanvas) return;
+        lifeCtx = lifeCanvas.getContext('2d');
+
+        // Initialize grid
+        lifeGrid = Array(lifeRows).fill(null).map(() => Array(lifeCols).fill(0));
+        lifeGeneration = 0;
+        lifePlaying = false;
+        document.getElementById('life-gen').textContent = '0';
+        document.getElementById('life-play').textContent = '▶ Play';
+
+        // Load default pattern
+        loadLifePattern('glider');
+        drawLife();
+
+        // Button handlers
+        document.getElementById('life-step').onclick = () => {
+            stepLife();
+            drawLife();
+        };
+
+        document.getElementById('life-play').onclick = () => {
+            lifePlaying = !lifePlaying;
+            document.getElementById('life-play').textContent = lifePlaying ? '⏸ Pause' : '▶ Play';
+            if (lifePlaying) animateLife();
+        };
+
+        document.getElementById('life-reset').onclick = () => {
+            lifePlaying = false;
+            if (lifeAnimId) cancelAnimationFrame(lifeAnimId);
+            document.getElementById('life-play').textContent = '▶ Play';
+            lifeGeneration = 0;
+            document.getElementById('life-gen').textContent = '0';
+            loadLifePattern(document.getElementById('life-pattern').value);
+            drawLife();
+        };
+
+        document.getElementById('life-pattern').onchange = (e) => {
+            lifePlaying = false;
+            if (lifeAnimId) cancelAnimationFrame(lifeAnimId);
+            document.getElementById('life-play').textContent = '▶ Play';
+            lifeGeneration = 0;
+            document.getElementById('life-gen').textContent = '0';
+            loadLifePattern(e.target.value);
+            drawLife();
+        };
+
+        // Click to toggle cells (account for Reveal.js scaling)
+        lifeCanvas.onclick = (e) => {
+            const rect = lifeCanvas.getBoundingClientRect();
+            // Use rendered size to calculate position, not internal canvas size
+            const col = Math.floor((e.clientX - rect.left) / rect.width * lifeCols);
+            const row = Math.floor((e.clientY - rect.top) / rect.height * lifeRows);
+            if (row >= 0 && row < lifeRows && col >= 0 && col < lifeCols) {
+                lifeGrid[row][col] = 1 - lifeGrid[row][col];
+                drawLife();
+            }
+        };
+    }
+
+    function loadLifePattern(name) {
+        lifeGrid = Array(lifeRows).fill(null).map(() => Array(lifeCols).fill(0));
+        const midR = Math.floor(lifeRows / 2);
+        const midC = Math.floor(lifeCols / 2);
+
+        if (name === 'glider') {
+            // Glider at center
+            const pattern = [[0,1],[1,2],[2,0],[2,1],[2,2]];
+            pattern.forEach(([r,c]) => lifeGrid[midR+r][midC+c] = 1);
+        } else if (name === 'blinker') {
+            // Blinker (oscillator)
+            lifeGrid[midR][midC-1] = 1;
+            lifeGrid[midR][midC] = 1;
+            lifeGrid[midR][midC+1] = 1;
+        } else if (name === 'glider-gun') {
+            // Gosper Glider Gun (simplified position)
+            const gun = [
+                [5,1],[5,2],[6,1],[6,2],
+                [5,11],[6,11],[7,11],[4,12],[8,12],[3,13],[9,13],[3,14],[9,14],[6,15],
+                [4,16],[8,16],[5,17],[6,17],[7,17],[6,18],
+                [3,21],[4,21],[5,21],[3,22],[4,22],[5,22],[2,23],[6,23],[1,25],[2,25],[6,25],[7,25],
+                [3,35],[4,35],[3,36],[4,36]
+            ];
+            gun.forEach(([r,c]) => {
+                if (r < lifeRows && c < lifeCols) lifeGrid[r][c] = 1;
+            });
+        } else if (name === 'random') {
+            for (let r = 0; r < lifeRows; r++) {
+                for (let c = 0; c < lifeCols; c++) {
+                    lifeGrid[r][c] = Math.random() < 0.3 ? 1 : 0;
+                }
+            }
+        }
+    }
+
+    function stepLife() {
+        const newGrid = Array(lifeRows).fill(null).map(() => Array(lifeCols).fill(0));
+
+        for (let r = 0; r < lifeRows; r++) {
+            for (let c = 0; c < lifeCols; c++) {
+                let neighbors = 0;
+                for (let dr = -1; dr <= 1; dr++) {
+                    for (let dc = -1; dc <= 1; dc++) {
+                        if (dr === 0 && dc === 0) continue;
+                        const nr = (r + dr + lifeRows) % lifeRows;
+                        const nc = (c + dc + lifeCols) % lifeCols;
+                        neighbors += lifeGrid[nr][nc];
+                    }
+                }
+
+                if (lifeGrid[r][c] === 1) {
+                    // Alive: survives with 2-3 neighbors
+                    newGrid[r][c] = (neighbors === 2 || neighbors === 3) ? 1 : 0;
+                } else {
+                    // Dead: born with exactly 3 neighbors
+                    newGrid[r][c] = (neighbors === 3) ? 1 : 0;
+                }
+            }
+        }
+
+        lifeGrid = newGrid;
+        lifeGeneration++;
+        document.getElementById('life-gen').textContent = lifeGeneration;
+    }
+
+    function drawLife() {
+        if (!lifeCtx) return;
+        const w = lifeCanvas.width;
+        const h = lifeCanvas.height;
+        const cellW = w / lifeCols;
+        const cellH = h / lifeRows;
+
+        lifeCtx.fillStyle = '#1a1a2e';
+        lifeCtx.fillRect(0, 0, w, h);
+
+        // Draw grid lines (subtle)
+        lifeCtx.strokeStyle = 'rgba(255,255,255,0.05)';
+        lifeCtx.lineWidth = 0.5;
+        for (let r = 0; r <= lifeRows; r++) {
+            lifeCtx.beginPath();
+            lifeCtx.moveTo(0, r * cellH);
+            lifeCtx.lineTo(w, r * cellH);
+            lifeCtx.stroke();
+        }
+        for (let c = 0; c <= lifeCols; c++) {
+            lifeCtx.beginPath();
+            lifeCtx.moveTo(c * cellW, 0);
+            lifeCtx.lineTo(c * cellW, h);
+            lifeCtx.stroke();
+        }
+
+        // Draw cells
+        for (let r = 0; r < lifeRows; r++) {
+            for (let c = 0; c < lifeCols; c++) {
+                if (lifeGrid[r][c] === 1) {
+                    lifeCtx.fillStyle = '#61afef';
+                    lifeCtx.fillRect(c * cellW + 1, r * cellH + 1, cellW - 2, cellH - 2);
+                }
+            }
+        }
+    }
+
+    function animateLife() {
+        if (!lifePlaying) return;
+        stepLife();
+        drawLife();
+        lifeAnimId = setTimeout(() => requestAnimationFrame(animateLife), 100);
+    }
+
+    // ==========================================
     // PENDULUM SIMULATION
     // ==========================================
     let pendAnimId = null;
@@ -1531,14 +1894,14 @@ for _ in range(n):
         // Labels
         const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         xLabel.setAttribute('x', plotW); xLabel.setAttribute('y', plotH / 2 - 5);
-        xLabel.setAttribute('fill', '#888'); xLabel.setAttribute('text-anchor', 'end');
-        xLabel.setAttribute('font-size', '12px');
+        xLabel.setAttribute('fill', '#7ee8f3'); xLabel.setAttribute('text-anchor', 'end');
+        xLabel.setAttribute('font-size', '16px');
         xLabel.textContent = 'θ';
         g.appendChild(xLabel);
 
         const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         yLabel.setAttribute('x', plotW / 2 + 5); yLabel.setAttribute('y', 15);
-        yLabel.setAttribute('fill', '#888'); yLabel.setAttribute('font-size', '12px');
+        yLabel.setAttribute('fill', '#f5d990'); yLabel.setAttribute('font-size', '16px');
         yLabel.textContent = 'ω';
         g.appendChild(yLabel);
 
@@ -1602,14 +1965,14 @@ for _ in range(n):
         // Labels
         const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 30);
-        xLabel.setAttribute('fill', '#888'); xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('fill', '#7ee8f3'); xLabel.setAttribute('text-anchor', 'middle');
         xLabel.setAttribute('font-size', '14px');
         xLabel.textContent = 'θ';
         g.appendChild(xLabel);
 
         const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -35);
-        yLabel.setAttribute('fill', '#888'); yLabel.setAttribute('text-anchor', 'middle');
+        yLabel.setAttribute('fill', '#f5d990'); yLabel.setAttribute('text-anchor', 'middle');
         yLabel.setAttribute('transform', 'rotate(-90)');
         yLabel.setAttribute('font-size', '14px');
         yLabel.textContent = 'dθ/dt';
@@ -1767,16 +2130,17 @@ for _ in range(n):
                 <div style="margin-top: 10px; color: #61afef;">r = ${pdeR.toFixed(3)}</div>
             `;
         } else {
+            const Δu = (data.uNext - 2*data.uCurr + data.uPrev).toFixed(3);
             box.innerHTML = `
-                <div style="margin-bottom: 8px;"><strong>Computing $u_{${data.i}}^{${data.n+1}}$:</strong></div>
-                <div style="font-size: 0.85em;">
-                    $u_{${data.i}}^{${data.n+1}} = u_{${data.i}}^{${data.n}} + r(u_{${data.i+1}}^{${data.n}} - 2u_{${data.i}}^{${data.n}} + u_{${data.i-1}}^{${data.n}})$
+                <div style="margin-bottom: 5px;"><strong>u<sub>${data.i}</sub><sup>${data.n+1}</sup>:</strong></div>
+                <div style="font-size: 0.8em; white-space: nowrap;">
+                    = u<sub>${data.i}</sub><sup>${data.n}</sup> + r·Δ²u
                 </div>
-                <div style="margin-top: 8px; font-size: 0.85em;">
-                    $= ${data.uCurr.toFixed(3)} + ${pdeR.toFixed(2)}(${data.uNext.toFixed(3)} - 2 \\cdot ${data.uCurr.toFixed(3)} + ${data.uPrev.toFixed(3)})$
+                <div style="font-size: 0.75em; color: #aaa; margin-top: 5px;">
+                    = ${data.uCurr.toFixed(3)} + ${pdeR.toFixed(2)}·(${Δu})
                 </div>
-                <div style="margin-top: 8px; color: #98c379; font-size: 0.9em;">
-                    $= ${data.uNew.toFixed(4)}$
+                <div style="margin-top: 8px; color: #98c379; font-size: 1.1em; font-weight: bold;">
+                    = ${data.uNew.toFixed(4)}
                 </div>
             `;
         }
@@ -1851,8 +2215,8 @@ for _ in range(n):
             }
         }
 
-        // Draw current row being built
-        if (pdeCurrentRow.length > 0 && pdeTimeStep < pdeNt - 1) {
+        // Draw current row being built (only if we've computed at least one interior cell)
+        if (pdeCurrentRow.length > 1 && pdeTimeStep < pdeNt - 1) {
             const t = pdeGrid.length;
             for (let i = 0; i < pdeCurrentRow.length; i++) {
                 const val = pdeCurrentRow[i];
@@ -1864,8 +2228,13 @@ for _ in range(n):
 
                 const intensity = Math.min(255, Math.floor(val * 255));
                 rect.setAttribute('fill', `rgb(${intensity}, ${Math.floor(intensity * 0.7)}, ${255 - intensity})`);
-                rect.setAttribute('stroke', '#98c379');
-                rect.setAttribute('stroke-width', 2);
+                // Only show green border for computed interior cells, not the boundary
+                if (i > 0) {
+                    rect.setAttribute('stroke', '#98c379');
+                    rect.setAttribute('stroke-width', 2);
+                } else {
+                    rect.setAttribute('stroke', 'rgba(255,255,255,0.1)');
+                }
                 g.appendChild(rect);
             }
         }
@@ -1903,16 +2272,16 @@ for _ in range(n):
         // Axis labels
         const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 35);
-        xLabel.setAttribute('fill', '#888'); xLabel.setAttribute('text-anchor', 'middle');
-        xLabel.setAttribute('font-size', '12px');
+        xLabel.setAttribute('fill', '#7ee8f3'); xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('font-size', '16px');
         xLabel.textContent = 'Space index i';
         g.appendChild(xLabel);
 
         const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -35);
-        yLabel.setAttribute('fill', '#888'); yLabel.setAttribute('text-anchor', 'middle');
+        yLabel.setAttribute('fill', '#f5d990'); yLabel.setAttribute('text-anchor', 'middle');
         yLabel.setAttribute('transform', 'rotate(-90)');
-        yLabel.setAttribute('font-size', '12px');
+        yLabel.setAttribute('font-size', '16px');
         yLabel.textContent = 'Time step n';
         g.appendChild(yLabel);
 
@@ -1981,8 +2350,8 @@ for _ in range(n):
         const svg = document.getElementById('cfl-demo-viz');
         if (!svg) return;
 
-        const width = 400, height = 280;
-        const margin = { top: 20, right: 20, bottom: 40, left: 45 };
+        const width = 500, height = 320;
+        const margin = { top: 20, right: 100, bottom: 40, left: 50 };
         const plotW = width - margin.left - margin.right;
         const plotH = height - margin.top - margin.bottom;
 
@@ -2008,16 +2377,16 @@ for _ in range(n):
         // Labels
         const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 30);
-        xLabel.setAttribute('fill', '#888'); xLabel.setAttribute('text-anchor', 'middle');
-        xLabel.setAttribute('font-size', '11px');
+        xLabel.setAttribute('fill', '#7ee8f3'); xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('font-size', '16px');
         xLabel.textContent = 'Space (x)';
         g.appendChild(xLabel);
 
         const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -30);
-        yLabel.setAttribute('fill', '#888'); yLabel.setAttribute('text-anchor', 'middle');
+        yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -35);
+        yLabel.setAttribute('fill', '#f5d990'); yLabel.setAttribute('text-anchor', 'middle');
         yLabel.setAttribute('transform', 'rotate(-90)');
-        yLabel.setAttribute('font-size', '11px');
+        yLabel.setAttribute('font-size', '16px');
         yLabel.textContent = 'u(x,t)';
         g.appendChild(yLabel);
 
@@ -2027,8 +2396,9 @@ for _ in range(n):
         const yMax = r > 0.5 ? 5 : 1.2;
         const yMin = r > 0.5 ? -5 : -0.2;
 
-        // Draw several time slices
-        const colors = ['#61afef', '#98c379', '#e5c07b', '#e06c75', '#c678dd'];
+        // Brighter colors and time labels for legend
+        const colors = ['#8dd3ff', '#b8e994', '#ffd93d', '#ff6b6b', '#dda0dd'];
+        const timeLabels = ['t=0', 't=0.25T', 't=0.5T', 't=0.75T', 't=T'];
         const times = [0, Math.floor(history.length * 0.25), Math.floor(history.length * 0.5),
                        Math.floor(history.length * 0.75), history.length - 1];
 
@@ -2046,10 +2416,30 @@ for _ in range(n):
             const curve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             curve.setAttribute('d', path);
             curve.setAttribute('stroke', colors[idx]);
-            curve.setAttribute('stroke-width', 1.5);
+            curve.setAttribute('stroke-width', 2.5);
             curve.setAttribute('fill', 'none');
-            curve.setAttribute('opacity', idx === times.length - 1 ? 1 : 0.5);
+            curve.setAttribute('opacity', 0.9);
             g.appendChild(curve);
+        });
+
+        // Time legend
+        times.forEach((t, idx) => {
+            const legendY = 20 + idx * 22;
+            const legendX = plotW + 15;
+
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', legendX); line.setAttribute('y1', legendY);
+            line.setAttribute('x2', legendX + 25); line.setAttribute('y2', legendY);
+            line.setAttribute('stroke', colors[idx]);
+            line.setAttribute('stroke-width', 2.5);
+            g.appendChild(line);
+
+            const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            label.setAttribute('x', legendX + 30); label.setAttribute('y', legendY + 4);
+            label.setAttribute('fill', colors[idx]);
+            label.setAttribute('font-size', '11px');
+            label.textContent = timeLabels[idx];
+            g.appendChild(label);
         });
 
         // Zero line
@@ -2208,18 +2598,23 @@ for _ in range(n):
         // Read slider values
         fluidVisc = parseFloat(document.getElementById('fluid-visc')?.value || 0.0001);
         fluidDiff = parseFloat(document.getElementById('fluid-diff')?.value || 0.0001);
+        const flowRate = parseFloat(document.getElementById('fluid-flow')?.value || 15);
+
+        // Update flow display
+        if (document.getElementById('fluid-flow-val'))
+            document.getElementById('fluid-flow-val').textContent = flowRate;
 
         // Clear sources
         fluidU0.fill(0);
         fluidV0.fill(0);
         fluidDens0.fill(0);
 
-        // Add constant RED source at top (stronger)
-        const sourceWidth = Math.floor(fluidN / 3);
+        // Add constant RED source at top (controllable)
+        const sourceWidth = Math.floor(fluidN / 4);
         const sourceStart = Math.floor(fluidN / 2 - sourceWidth / 2);
         for (let ii = sourceStart; ii < sourceStart + sourceWidth; ii++) {
-            fluidDens0[IX(ii, 3)] += 30;  // Strong source
-            fluidV0[IX(ii, 3)] = 10;       // Push downward
+            fluidDens0[IX(ii, 3)] += flowRate;  // Controllable source
+            fluidV0[IX(ii, 3)] = flowRate * 0.5;  // Push downward
         }
 
         // Mouse acts as OBSTACLE (blocks flow by setting velocity to zero)
@@ -2269,10 +2664,40 @@ for _ in range(n):
                 for (let x = x0; x < x1; x++) {
                     for (let y = y0; y < y1; y++) {
                         const idx = (y * w + x) * 4;
-                        // RED color scheme
-                        imgData.data[idx] = Math.min(255, d + 20);      // Red
-                        imgData.data[idx + 1] = Math.floor(d * 0.2);    // Green (low)
-                        imgData.data[idx + 2] = Math.floor(d * 0.1);    // Blue (low)
+                        // Bright colormap: cyan → green → yellow → orange → white
+                        const t = Math.min(1, d / 90);  // normalize, 2x brighter
+                        let r, g, b;
+                        if (t < 0.02) {
+                            // Near-black background
+                            r = 15; g = 20; b = 30;
+                        } else if (t < 0.3) {
+                            // Cyan to green
+                            const s = (t - 0.02) / 0.28;
+                            r = 30 + s * 50;
+                            g = 180 + s * 75;
+                            b = 220 - s * 120;
+                        } else if (t < 0.6) {
+                            // Green to yellow
+                            const s = (t - 0.3) / 0.3;
+                            r = 80 + s * 175;
+                            g = 255;
+                            b = 100 - s * 70;
+                        } else if (t < 0.85) {
+                            // Yellow to orange
+                            const s = (t - 0.6) / 0.25;
+                            r = 255;
+                            g = 255 - s * 100;
+                            b = 30 + s * 20;
+                        } else {
+                            // Orange to white
+                            const s = (t - 0.85) / 0.15;
+                            r = 255;
+                            g = 155 + s * 100;
+                            b = 50 + s * 205;
+                        }
+                        imgData.data[idx] = Math.min(255, r);
+                        imgData.data[idx + 1] = Math.min(255, g);
+                        imgData.data[idx + 2] = Math.min(255, b);
                         imgData.data[idx + 3] = 255;
                     }
                 }
@@ -2413,11 +2838,53 @@ for _ in range(n):
         dot.setAttribute('fill', '#e5c07b');
         svg.appendChild(dot);
 
+        // Draw 3D-style axes
+        const axisOriginX = 60;
+        const axisOriginY = height - 50;
+        const axisLen = 50;
+
+        // X axis (pointing right)
+        const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxis.setAttribute('x1', axisOriginX); xAxis.setAttribute('y1', axisOriginY);
+        xAxis.setAttribute('x2', axisOriginX + axisLen); xAxis.setAttribute('y2', axisOriginY);
+        xAxis.setAttribute('stroke', '#e06c75'); xAxis.setAttribute('stroke-width', 2);
+        svg.appendChild(xAxis);
+        const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xLabel.setAttribute('x', axisOriginX + axisLen + 5); xLabel.setAttribute('y', axisOriginY + 4);
+        xLabel.setAttribute('fill', '#e06c75'); xLabel.setAttribute('font-size', '14px');
+        xLabel.textContent = 'x';
+        svg.appendChild(xLabel);
+
+        // Y axis (pointing into screen, angled)
+        const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        yAxis.setAttribute('x1', axisOriginX); yAxis.setAttribute('y1', axisOriginY);
+        yAxis.setAttribute('x2', axisOriginX + axisLen * 0.4); yAxis.setAttribute('y2', axisOriginY - axisLen * 0.4);
+        yAxis.setAttribute('stroke', '#98c379'); yAxis.setAttribute('stroke-width', 2);
+        svg.appendChild(yAxis);
+        const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        yLabel.setAttribute('x', axisOriginX + axisLen * 0.4 + 5); yLabel.setAttribute('y', axisOriginY - axisLen * 0.4);
+        yLabel.setAttribute('fill', '#98c379'); yLabel.setAttribute('font-size', '14px');
+        yLabel.textContent = 'y';
+        svg.appendChild(yLabel);
+
+        // Z axis (pointing up)
+        const zAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        zAxis.setAttribute('x1', axisOriginX); zAxis.setAttribute('y1', axisOriginY);
+        zAxis.setAttribute('x2', axisOriginX); zAxis.setAttribute('y2', axisOriginY - axisLen);
+        zAxis.setAttribute('stroke', '#61afef'); zAxis.setAttribute('stroke-width', 2);
+        svg.appendChild(zAxis);
+        const zLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        zLabel.setAttribute('x', axisOriginX - 5); zLabel.setAttribute('y', axisOriginY - axisLen - 5);
+        zLabel.setAttribute('fill', '#61afef'); zLabel.setAttribute('font-size', '14px');
+        zLabel.textContent = 'z';
+        svg.appendChild(zLabel);
+
         // Label
         const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        label.setAttribute('x', 10); label.setAttribute('y', 20);
-        label.setAttribute('fill', '#888'); label.setAttribute('font-size', '11px');
-        label.textContent = 'Lorenz Attractor (x-z projection)';
+        label.setAttribute('x', width / 2); label.setAttribute('y', 20);
+        label.setAttribute('fill', '#aaa'); label.setAttribute('font-size', '12px');
+        label.setAttribute('text-anchor', 'middle');
+        label.textContent = 'Lorenz Attractor';
         svg.appendChild(label);
     }
 
@@ -2494,16 +2961,16 @@ for _ in range(n):
         // Labels
         const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 30);
-        xLabel.setAttribute('fill', '#888'); xLabel.setAttribute('text-anchor', 'middle');
-        xLabel.setAttribute('font-size', '12px');
+        xLabel.setAttribute('fill', '#7ee8f3'); xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('font-size', '16px');
         xLabel.textContent = 'Time';
         g.appendChild(xLabel);
 
         const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -35);
-        yLabel.setAttribute('fill', '#888'); yLabel.setAttribute('text-anchor', 'middle');
+        yLabel.setAttribute('fill', '#f5d990'); yLabel.setAttribute('text-anchor', 'middle');
         yLabel.setAttribute('transform', 'rotate(-90)');
-        yLabel.setAttribute('font-size', '12px');
+        yLabel.setAttribute('font-size', '16px');
         yLabel.textContent = 'x(t) - "Temperature"';
         g.appendChild(yLabel);
 
@@ -2566,7 +3033,7 @@ for _ in range(n):
 
         const exp = parseFloat(document.getElementById('lorenz-perturb')?.value || -4);
         const eps = Math.pow(10, exp);
-        document.getElementById('lorenz-perturb-val').textContent = `10^{${exp}}`;
+        document.getElementById('lorenz-perturb-val').innerHTML = `10<sup>${exp}</sup>`;
 
         const width = 800, height = 350;
         const margin = { top: 20, right: 20, bottom: 40, left: 50 };
@@ -2625,16 +3092,16 @@ for _ in range(n):
         // Labels
         const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 30);
-        xLabel.setAttribute('fill', '#888'); xLabel.setAttribute('text-anchor', 'middle');
-        xLabel.setAttribute('font-size', '12px');
+        xLabel.setAttribute('fill', '#7ee8f3'); xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('font-size', '16px');
         xLabel.textContent = 'Time';
         g.appendChild(xLabel);
 
         const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -35);
-        yLabel.setAttribute('fill', '#888'); yLabel.setAttribute('text-anchor', 'middle');
+        yLabel.setAttribute('fill', '#f5d990'); yLabel.setAttribute('text-anchor', 'middle');
         yLabel.setAttribute('transform', 'rotate(-90)');
-        yLabel.setAttribute('font-size', '12px');
+        yLabel.setAttribute('font-size', '16px');
         yLabel.textContent = 'x(t)';
         g.appendChild(yLabel);
 
@@ -2683,15 +3150,23 @@ for _ in range(n):
         const prev = eulerHistory[n];
 
         // Euler update
-        const v_new = prev.v - eulerG * dt;
-        const x_new = prev.x + prev.v * dt;
+        let v_new = prev.v - eulerG * dt;
+        let x_new = prev.x + prev.v * dt;
         const t_new = prev.t + dt;
 
+        // Check for bounce (ball hits the floor)
+        let bounced = false;
+        if (x_new < 0) {
+            x_new = -x_new * 0.8;  // Reflect with some energy loss
+            v_new = -v_new * 0.8;  // Flip velocity with damping
+            bounced = true;
+        }
+
         eulerState = { x: x_new, v: v_new, t: t_new };
-        eulerHistory.push({ t: t_new, x: x_new, v: v_new });
+        eulerHistory.push({ t: t_new, x: x_new, v: v_new, bounced: bounced });
 
         drawEulerPlot();
-        updateEulerComputation({ n, prev, dt, v_new, x_new, t_new });
+        updateEulerComputation({ n, prev, dt, v_new, x_new, t_new, bounced });
     }
 
     function eulerReset() {
@@ -2711,7 +3186,12 @@ for _ in range(n):
                 <div style="margin-top: 15px; color: #888;">Click "Step" to begin...</div>
             `;
         } else {
-            const { n, prev, dt, v_new, x_new, t_new } = stepData;
+            const { n, prev, dt, v_new, x_new, t_new, bounced } = stepData;
+            let bounceMsg = '';
+            if (bounced) {
+                bounceMsg = `<div style="margin-top: 10px; color: #e06c75; font-weight: bold;">🏀 BOUNCE! Hits the floor!</div>
+                <div style="color: #e06c75; font-size: 0.9em;">$v \\rightarrow -0.8 \\cdot v$, $x \\rightarrow |x| \\cdot 0.8$</div>`;
+            }
             container.innerHTML = `
                 <div style="margin-bottom: 8px;"><strong>Step ${n} → ${n + 1}:</strong> ($\\Delta t = ${dt.toFixed(2)}$s)</div>
                 <div style="color: #e5c07b;">$v_{${n+1}} = v_{${n}} - g \\cdot \\Delta t$</div>
@@ -2720,6 +3200,7 @@ for _ in range(n):
                 <div style="margin-top: 10px; color: #e5c07b;">$x_{${n+1}} = x_{${n}} + v_{${n}} \\cdot \\Delta t$</div>
                 <div style="margin-left: 20px;">$= ${prev.x.toFixed(2)} + ${prev.v.toFixed(2)} \\times ${dt.toFixed(2)}$</div>
                 <div style="margin-left: 20px; color: var(--accent-green);">$= ${x_new.toFixed(2)}$ m</div>
+                ${bounceMsg}
                 <div style="margin-top: 10px; color: #888;">$t = ${t_new.toFixed(2)}$ s</div>
             `;
         }
@@ -2770,16 +3251,16 @@ for _ in range(n):
         // Labels
         const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 30);
-        xLabel.setAttribute('fill', '#888'); xLabel.setAttribute('text-anchor', 'middle');
-        xLabel.setAttribute('font-size', '12px');
+        xLabel.setAttribute('fill', '#7ee8f3'); xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('font-size', '16px');
         xLabel.textContent = 'Time (s)';
         g.appendChild(xLabel);
 
         const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -35);
-        yLabel.setAttribute('fill', '#888'); yLabel.setAttribute('text-anchor', 'middle');
+        yLabel.setAttribute('fill', '#f5d990'); yLabel.setAttribute('text-anchor', 'middle');
         yLabel.setAttribute('transform', 'rotate(-90)');
-        yLabel.setAttribute('font-size', '12px');
+        yLabel.setAttribute('font-size', '16px');
         yLabel.textContent = 'Height x(t) (m)';
         g.appendChild(yLabel);
 
@@ -2903,6 +3384,14 @@ for _ in range(n):
         // Predator-prey fitting
         if (event.currentSlide.querySelector('#predprey-fit-viz')) {
             initPredPreyFit();
+        }
+
+        // Game of Life
+        if (event.currentSlide.querySelector('#life-canvas')) {
+            initLife();
+        } else if (lifeAnimId) {
+            lifePlaying = false;
+            clearTimeout(lifeAnimId);
         }
 
         // Pendulum
