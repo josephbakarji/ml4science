@@ -871,58 +871,50 @@ for _ in range(n):
     </section>
 
     <section>
-        <h2>The Solver Code (Core Loop)</h2>
-        <pre><code class="javascript">// Simplified 2D Navier-Stokes solver
-function fluidStep() {
-    // 1. Add forces (from mouse input)
-    addForce(u, v, forceX, forceY);
-
-    // 2. Diffuse velocity (viscosity)
-    diffuse(u, u0, viscosity, dt);
-    diffuse(v, v0, viscosity, dt);
-
-    // 3. Project to make divergence-free
-    project(u, v, p, div);
-
-    // 4. Advect velocity field
-    advect(u, u0, u0, v0, dt);
-    advect(v, v0, u0, v0, dt);
-
-    // 5. Project again
-    project(u, v, p, div);
-
-    // 6. Advect density (for visualization)
-    advect(density, density0, u, v, dt);
-}</code></pre>
-        <p class="tiny-text" style="margin-top: 10px;">Based on Jos Stam's "Stable Fluids" (1999)</p>
+        <h2>The Discretized Equations</h2>
+        <p class="small-text">Each step solves part of Navier-Stokes numerically:</p>
+        <div class="two-column small-text" style="margin-top: 15px;">
+            <div>
+                <div class="highlight-box" style="padding: 12px;">
+                    <strong>1. Diffusion</strong> (implicit, stable):<br>
+                    $(I - \nu \Delta t \nabla^2) u^{n+1} = u^n$<br><br>
+                    Discretized with Gauss-Seidel iteration:<br>
+                    $u_{i,j}^{k+1} = \frac{u_{i,j}^n + a(u_{i\pm1,j}^k + u_{i,j\pm1}^k)}{1 + 4a}$<br>
+                    where $a = \nu \Delta t / (\Delta x)^2$
+                </div>
+            </div>
+            <div>
+                <div class="highlight-box" style="padding: 12px;">
+                    <strong>2. Advection</strong> (semi-Lagrangian):<br>
+                    $q^{n+1}(\mathbf{x}) = q^n(\mathbf{x} - \mathbf{u}\Delta t)$<br><br>
+                    "Where did this particle come from?"<br>
+                    Trace backward, interpolate:<br>
+                    $q_{i,j}^{n+1} = \text{interp}(q^n, x_i - u\Delta t, y_j - v\Delta t)$
+                </div>
+            </div>
+        </div>
+        <div class="fragment success-box tiny-text" style="margin-top: 15px;">
+            <strong>Why this works:</strong> Implicit diffusion + semi-Lagrangian advection = unconditionally stable!
+        </div>
+        <p class="tiny-text" style="margin-top: 10px;">
+            Reference: <a href="https://www.dgp.toronto.edu/public_user/stam/reality/Research/pdf/ns.pdf" style="color: #61afef;">Jos Stam, "Stable Fluids" (SIGGRAPH 1999)</a>
+        </p>
     </section>
 
     <section>
-        <h2>Key Steps Explained</h2>
-        <table class="comparison small-text">
-            <tr>
-                <th>Step</th>
-                <th>What it does</th>
-                <th>Physics</th>
-            </tr>
-            <tr>
-                <td><strong>Diffuse</strong></td>
-                <td>Spread velocity via Laplacian</td>
-                <td>Viscosity ($\mu\nabla^2\mathbf{u}$)</td>
-            </tr>
-            <tr>
-                <td><strong>Project</strong></td>
-                <td>Make velocity divergence-free</td>
-                <td>Incompressibility ($\nabla \cdot \mathbf{u} = 0$)</td>
-            </tr>
-            <tr>
-                <td><strong>Advect</strong></td>
-                <td>Move quantities along flow</td>
-                <td>Material transport ($\mathbf{u} \cdot \nabla$)</td>
-            </tr>
-        </table>
-        <div class="fragment highlight-box small-text" style="margin-top: 15px;">
-            Each step corresponds to a term in the Navier-Stokes equations!
+        <h2>Enforcing Incompressibility</h2>
+        <p class="small-text">After diffusion and advection, velocity may not satisfy $\nabla \cdot \mathbf{u} = 0$</p>
+        <div class="equation-box small-text" style="margin-top: 15px;">
+            <strong>Helmholtz decomposition:</strong> $\mathbf{u} = \mathbf{u}_{\text{div-free}} + \nabla p$
+        </div>
+        <div class="fragment" style="margin-top: 15px;">
+            <p class="small-text">Solve Poisson equation for pressure:</p>
+            <div class="highlight-box small-text">
+                $\nabla^2 p = \nabla \cdot \mathbf{u}$ &nbsp;&nbsp;→&nbsp;&nbsp; $\mathbf{u}_{\text{div-free}} = \mathbf{u} - \nabla p$
+            </div>
+        </div>
+        <div class="fragment principle-box small-text" style="margin-top: 15px;">
+            <strong>Algorithm:</strong> Add sources → Diffuse → Project → Advect → Project
         </div>
     </section>
 </section>
@@ -932,41 +924,129 @@ function fluidStep() {
 <!-- ============================================ -->
 <section>
     <section>
-        <h2>Chaos: The Lorenz System</h2>
-        <p class="small-text">Edward Lorenz (1963): Simplified weather model</p>
-        <div class="equation-box small-text">
-            $\dot{x} = \sigma(y - x)$<br>
-            $\dot{y} = x(\rho - z) - y$<br>
-            $\dot{z} = xy - \beta z$
+        <h2>A Story: MIT, 1961</h2>
+        <div class="two-column">
+            <div>
+                <p class="small-text"><strong>Edward Lorenz</strong>, a meteorologist at MIT, was running computer simulations of weather.</p>
+                <p class="fragment small-text" style="margin-top: 15px;">He built a simplified model of atmospheric convection with just <strong>12 equations</strong>.</p>
+                <p class="fragment small-text" style="margin-top: 15px;">One day, he wanted to re-run a simulation from the middle instead of the start...</p>
+            </div>
+            <div class="fragment">
+                <div class="highlight-box tiny-text" style="padding: 15px;">
+                    <strong>Rayleigh-Bénard Convection:</strong><br><br>
+                    Imagine a fluid heated from below. Warm fluid rises, cools at the top, sinks back down.<br><br>
+                    This creates convection cells — the basic physics behind weather patterns.
+                </div>
+            </div>
         </div>
-        <p class="fragment small-text" style="margin-top: 15px;">
-            Typical parameters: $\sigma = 10$, $\rho = 28$, $\beta = 8/3$
-        </p>
+    </section>
+
+    <section>
+        <h2>The Lorenz Equations</h2>
+        <p class="small-text">Lorenz simplified the convection problem to just 3 variables:</p>
+        <div class="equation-box small-text" style="margin-top: 15px;">
+            $\displaystyle\frac{dx}{dt} = \sigma(y - x)$<br><br>
+            $\displaystyle\frac{dy}{dt} = x(\rho - z) - y$<br><br>
+            $\displaystyle\frac{dz}{dt} = xy - \beta z$
+        </div>
+        <div class="fragment two-column tiny-text" style="margin-top: 15px;">
+            <div>
+                <strong>Variables:</strong><br>
+                $x$ = intensity of convection (fluid velocity)<br>
+                $y$ = temperature difference (horizontal)<br>
+                $z$ = deviation from linear temperature profile
+            </div>
+            <div>
+                <strong>Parameters:</strong><br>
+                $\sigma = 10$ (Prandtl number, fluid property)<br>
+                $\rho = 28$ (Rayleigh number, heating strength)<br>
+                $\beta = 8/3$ (geometry of convection cells)
+            </div>
+        </div>
     </section>
 
     <section>
         <h2>The Lorenz Attractor</h2>
-        <div style="display: flex; justify-content: center;">
-            <svg id="lorenz-viz" width="500" height="400" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+        <div class="two-column">
+            <div style="flex: 1.5;">
+                <svg id="lorenz-viz" width="500" height="380" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+            </div>
+            <div style="flex: 0.8;">
+                <div id="lorenz-coords" class="highlight-box tiny-text" style="font-family: monospace; padding: 10px;">
+                    x = 1.00<br>
+                    y = 1.00<br>
+                    z = 1.00
+                </div>
+                <div style="margin-top: 15px;">
+                    <div class="slider-container">
+                        <label>Speed:</label>
+                        <input type="range" id="lorenz-speed" min="1" max="10" step="1" value="3">
+                        <span id="lorenz-speed-val">3</span>
+                    </div>
+                    <div class="slider-container">
+                        <label>Trail:</label>
+                        <input type="range" id="lorenz-trail" min="500" max="3000" step="250" value="1500">
+                        <span id="lorenz-trail-val">1500</span>
+                    </div>
+                </div>
+                <button onclick="resetLorenz()" style="margin-top: 10px; padding: 5px 15px; cursor: pointer; border-radius: 4px; border: none; background: #61afef; color: white; width: 100%;">Reset</button>
+            </div>
         </div>
-        <div style="text-align: center; margin-top: 10px;">
-            <button onclick="resetLorenz()" style="padding: 5px 15px; cursor: pointer; border-radius: 4px; border: none; background: #61afef; color: white;">Reset</button>
-            <button onclick="perturbLorenz()" style="padding: 5px 15px; margin-left: 10px; cursor: pointer; border-radius: 4px; border: none; background: #e5c07b; color: black;">Add Perturbed Trajectory</button>
+        <p class="tiny-text center-text" style="margin-top: 5px; color: #888;">
+            The trajectory never repeats but stays on this strange "butterfly" shape
+        </p>
+    </section>
+
+    <section>
+        <h2>The Accident</h2>
+        <p class="small-text">Lorenz wanted to extend a simulation. Instead of starting over, he typed in the values from a printout:</p>
+        <div class="two-column" style="margin-top: 20px;">
+            <div class="highlight-box small-text" style="text-align: center;">
+                <strong>Printout showed:</strong><br><br>
+                <span style="font-family: monospace; font-size: 1.3em;">0.506</span>
+            </div>
+            <div class="highlight-box small-text" style="text-align: center;">
+                <strong>Computer stored:</strong><br><br>
+                <span style="font-family: monospace; font-size: 1.3em;">0.506127</span>
+            </div>
+        </div>
+        <p class="fragment small-text" style="margin-top: 20px; text-align: center;">
+            A difference of about <strong>0.0001</strong> — surely that can't matter?
+        </p>
+        <p class="fragment small-text" style="margin-top: 15px; text-align: center;">
+            He goes for a coffee, comes back, and...
+        </p>
+    </section>
+
+    <section>
+        <h2>The Weather is Completely Different!</h2>
+        <div style="display: flex; justify-content: center;">
+            <svg id="lorenz-diverge-viz" width="800" height="300" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+        </div>
+        <p class="small-text center-text" style="margin-top: 15px;">
+            The two simulations start nearly identical, then <strong>completely diverge</strong>.
+        </p>
+        <div class="fragment warning-box small-text" style="margin-top: 15px;">
+            <strong>Wait... what's happening here?</strong><br>
+            The equations are <em>deterministic</em>. Same input → same output, right?
         </div>
     </section>
 
     <section>
         <h2>Sensitivity to Initial Conditions</h2>
         <div style="display: flex; justify-content: center;">
-            <svg id="lorenz-sensitivity-viz" width="800" height="350" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+            <svg id="lorenz-sensitivity-viz" width="800" height="320" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
         </div>
         <div class="slider-container" style="justify-content: center; margin-top: 10px;">
-            <label>Perturbation:</label>
-            <input type="range" id="lorenz-perturb" min="-6" max="-1" step="0.5" value="-4">
+            <label>Perturbation $\epsilon$:</label>
+            <input type="range" id="lorenz-perturb" min="-6" max="-2" step="0.5" value="-4">
             <span id="lorenz-perturb-val">$10^{-4}$</span>
         </div>
-        <p class="tiny-text center-text" style="color: #888;">
-            <span style="color: #61afef;">Blue</span> vs <span style="color: #e06c75;">Red</span>: Trajectories starting $\epsilon$ apart
+        <p class="small-text center-text" style="margin-top: 10px;">
+            <span style="color: #61afef;">■ Original</span> vs <span style="color: #e06c75;">■ Perturbed by $\epsilon$</span>
+        </p>
+        <p class="fragment tiny-text center-text" style="color: #888;">
+            No matter how small $\epsilon$ is, the trajectories <em>eventually</em> diverge completely.
         </p>
     </section>
 
@@ -976,12 +1056,17 @@ function fluidStep() {
             "Does the flap of a butterfly's wings in Brazil set off a tornado in Texas?"
             <footer>— Edward Lorenz, 1972</footer>
         </blockquote>
-        <div class="fragment warning-box" style="margin-top: 20px;">
-            <strong>The challenge:</strong> If deterministic systems can be this sensitive, what are we actually predicting?
+        <div class="fragment" style="margin-top: 20px;">
+            <p class="small-text"><strong>Lorenz's discovery:</strong></p>
+            <ul class="small-text">
+                <li>Deterministic ≠ Predictable</li>
+                <li>Tiny errors grow <em>exponentially</em> fast</li>
+                <li>Long-term weather prediction has a <strong>fundamental limit</strong> (~2 weeks)</li>
+            </ul>
         </div>
-        <p class="fragment small-text" style="margin-top: 15px;">
-            Weather prediction has a fundamental limit (~2 weeks), not due to model errors, but due to <strong>chaos</strong>.
-        </p>
+        <div class="fragment principle-box small-text" style="margin-top: 15px;">
+            This is <strong>chaos</strong>: sensitivity to initial conditions in deterministic systems.
+        </div>
     </section>
 </section>
 
@@ -2221,33 +2306,56 @@ function fluidStep() {
     // ==========================================
     // LORENZ SYSTEM
     // ==========================================
-    let lorenzTrails = [];
+    let lorenzState = { x: 1, y: 1, z: 1 };
+    let lorenzTrail = [];
     let lorenzAnimId = null;
+    let lorenzTrailLength = 1500;
+    let lorenzSpeed = 3;
 
     function initLorenz() {
-        lorenzTrails = [{ x: 1, y: 1, z: 1, color: '#61afef', trail: [] }];
+        lorenzState = { x: 1, y: 1, z: 1 };
+        lorenzTrail = [];
+        lorenzTrailLength = parseInt(document.getElementById('lorenz-trail')?.value || 1500);
+        lorenzSpeed = parseInt(document.getElementById('lorenz-speed')?.value || 3);
         if (lorenzAnimId) cancelAnimationFrame(lorenzAnimId);
         animateLorenz();
     }
 
     function animateLorenz() {
         const sigma = 10, rho = 28, beta = 8/3;
-        const dt = 0.005;
+        const dt = 0.008;
 
-        lorenzTrails.forEach(traj => {
-            for (let step = 0; step < 5; step++) {
-                const dx = sigma * (traj.y - traj.x);
-                const dy = traj.x * (rho - traj.z) - traj.y;
-                const dz = traj.x * traj.y - beta * traj.z;
+        // Read parameters from sliders
+        lorenzTrailLength = parseInt(document.getElementById('lorenz-trail')?.value || 1500);
+        lorenzSpeed = parseInt(document.getElementById('lorenz-speed')?.value || 3);
 
-                traj.x += dx * dt;
-                traj.y += dy * dt;
-                traj.z += dz * dt;
+        // Update displays
+        if (document.getElementById('lorenz-speed-val'))
+            document.getElementById('lorenz-speed-val').textContent = lorenzSpeed;
+        if (document.getElementById('lorenz-trail-val'))
+            document.getElementById('lorenz-trail-val').textContent = lorenzTrailLength;
 
-                traj.trail.push({ x: traj.x, y: traj.y, z: traj.z });
-                if (traj.trail.length > 1000) traj.trail.shift();
-            }
-        });
+        // RK4 integration (slower, fewer steps per frame)
+        for (let step = 0; step < lorenzSpeed; step++) {
+            const f = (x, y, z) => [sigma * (y - x), x * (rho - z) - y, x * y - beta * z];
+            const k1 = f(lorenzState.x, lorenzState.y, lorenzState.z);
+            const k2 = f(lorenzState.x + dt/2 * k1[0], lorenzState.y + dt/2 * k1[1], lorenzState.z + dt/2 * k1[2]);
+            const k3 = f(lorenzState.x + dt/2 * k2[0], lorenzState.y + dt/2 * k2[1], lorenzState.z + dt/2 * k2[2]);
+            const k4 = f(lorenzState.x + dt * k3[0], lorenzState.y + dt * k3[1], lorenzState.z + dt * k3[2]);
+
+            lorenzState.x += dt/6 * (k1[0] + 2*k2[0] + 2*k3[0] + k4[0]);
+            lorenzState.y += dt/6 * (k1[1] + 2*k2[1] + 2*k3[1] + k4[1]);
+            lorenzState.z += dt/6 * (k1[2] + 2*k2[2] + 2*k3[2] + k4[2]);
+
+            lorenzTrail.push({ x: lorenzState.x, y: lorenzState.y, z: lorenzState.z });
+            if (lorenzTrail.length > lorenzTrailLength) lorenzTrail.shift();
+        }
+
+        // Update coordinate display
+        const coordsDiv = document.getElementById('lorenz-coords');
+        if (coordsDiv) {
+            coordsDiv.innerHTML = `x = ${lorenzState.x.toFixed(2)}<br>y = ${lorenzState.y.toFixed(2)}<br>z = ${lorenzState.z.toFixed(2)}`;
+        }
 
         drawLorenz();
         lorenzAnimId = requestAnimationFrame(animateLorenz);
@@ -2257,34 +2365,58 @@ function fluidStep() {
         const svg = document.getElementById('lorenz-viz');
         if (!svg) return;
 
-        const width = 500, height = 400;
+        const width = 500, height = 380;
         svg.innerHTML = '';
 
-        lorenzTrails.forEach(traj => {
-            if (traj.trail.length < 2) return;
+        if (lorenzTrail.length < 2) return;
+
+        // Draw trail with fading opacity
+        const segmentSize = 50;
+        const numSegments = Math.ceil(lorenzTrail.length / segmentSize);
+
+        for (let seg = 0; seg < numSegments; seg++) {
+            const startIdx = seg * segmentSize;
+            const endIdx = Math.min((seg + 1) * segmentSize + 1, lorenzTrail.length);
+            if (endIdx - startIdx < 2) continue;
 
             let path = '';
-            traj.trail.forEach((pt, i) => {
-                // Simple 3D to 2D projection
-                const scale = 6;
-                const x = width / 2 + pt.x * scale;
-                const y = height - 50 - pt.z * scale * 0.8;
-                path += (i === 0 ? 'M' : 'L') + `${x},${y}`;
-            });
+            for (let i = startIdx; i < endIdx; i++) {
+                const pt = lorenzTrail[i];
+                // 3D to 2D projection (x-z view with slight rotation)
+                const scale = 5.5;
+                const px = width / 2 + (pt.x + pt.y * 0.1) * scale;
+                const py = height - 40 - pt.z * scale * 0.75;
+                path += (i === startIdx ? 'M' : 'L') + `${px},${py}`;
+            }
 
+            // Fade based on position in trail
+            const opacity = 0.1 + 0.9 * (seg / numSegments);
             const curve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             curve.setAttribute('d', path);
-            curve.setAttribute('stroke', traj.color);
+            curve.setAttribute('stroke', '#61afef');
             curve.setAttribute('stroke-width', 1.5);
             curve.setAttribute('fill', 'none');
-            curve.setAttribute('opacity', '0.8');
+            curve.setAttribute('opacity', opacity.toFixed(2));
             svg.appendChild(curve);
-        });
+        }
+
+        // Draw current point
+        const last = lorenzTrail[lorenzTrail.length - 1];
+        const scale = 5.5;
+        const lastX = width / 2 + (last.x + last.y * 0.1) * scale;
+        const lastY = height - 40 - last.z * scale * 0.75;
+
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', lastX);
+        dot.setAttribute('cy', lastY);
+        dot.setAttribute('r', 4);
+        dot.setAttribute('fill', '#e5c07b');
+        svg.appendChild(dot);
 
         // Label
         const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        label.setAttribute('x', 10); label.setAttribute('y', 25);
-        label.setAttribute('fill', '#888'); label.setAttribute('font-size', '12px');
+        label.setAttribute('x', 10); label.setAttribute('y', 20);
+        label.setAttribute('fill', '#888'); label.setAttribute('font-size', '11px');
         label.textContent = 'Lorenz Attractor (x-z projection)';
         svg.appendChild(label);
     }
@@ -2294,16 +2426,131 @@ function fluidStep() {
         initLorenz();
     }
 
-    function perturbLorenz() {
-        const eps = Math.pow(10, parseFloat(document.getElementById('lorenz-perturb')?.value || -4));
-        const base = lorenzTrails[0];
-        lorenzTrails.push({
-            x: base.x + eps,
-            y: base.y,
-            z: base.z,
-            color: '#e06c75',
-            trail: []
+    // Divergence visualization (for the "accident" slide)
+    function initLorenzDiverge() {
+        drawLorenzDiverge();
+    }
+
+    function drawLorenzDiverge() {
+        const svg = document.getElementById('lorenz-diverge-viz');
+        if (!svg) return;
+
+        const width = 800, height = 300;
+        const margin = { top: 20, right: 20, bottom: 40, left: 50 };
+        const plotW = width - margin.left - margin.right;
+        const plotH = height - margin.top - margin.bottom;
+
+        svg.innerHTML = '';
+
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('transform', `translate(${margin.left}, ${margin.top})`);
+        svg.appendChild(g);
+
+        // Simulate two trajectories with Lorenz's actual error
+        const sigma = 10, rho = 28, beta = 8/3;
+        const dt = 0.01;
+        const steps = 2500;
+        const eps = 0.000127; // Lorenz's rounding error
+
+        let x1 = 1, y1 = 1, z1 = 1;
+        let x2 = 1 + eps, y2 = 1, z2 = 1;
+
+        const traj1 = [], traj2 = [];
+
+        for (let i = 0; i < steps; i++) {
+            if (i % 4 === 0) {
+                traj1.push({ t: i * dt, x: x1 });
+                traj2.push({ t: i * dt, x: x2 });
+            }
+
+            const f = (x, y, z) => [sigma * (y - x), x * (rho - z) - y, x * y - beta * z];
+
+            // RK4 for traj1
+            let k1 = f(x1, y1, z1);
+            let k2 = f(x1 + dt/2 * k1[0], y1 + dt/2 * k1[1], z1 + dt/2 * k1[2]);
+            let k3 = f(x1 + dt/2 * k2[0], y1 + dt/2 * k2[1], z1 + dt/2 * k2[2]);
+            let k4 = f(x1 + dt * k3[0], y1 + dt * k3[1], z1 + dt * k3[2]);
+            x1 += dt/6 * (k1[0] + 2*k2[0] + 2*k3[0] + k4[0]);
+            y1 += dt/6 * (k1[1] + 2*k2[1] + 2*k3[1] + k4[1]);
+            z1 += dt/6 * (k1[2] + 2*k2[2] + 2*k3[2] + k4[2]);
+
+            // RK4 for traj2
+            k1 = f(x2, y2, z2);
+            k2 = f(x2 + dt/2 * k1[0], y2 + dt/2 * k1[1], z2 + dt/2 * k1[2]);
+            k3 = f(x2 + dt/2 * k2[0], y2 + dt/2 * k2[1], z2 + dt/2 * k2[2]);
+            k4 = f(x2 + dt * k3[0], y2 + dt * k3[1], z2 + dt * k3[2]);
+            x2 += dt/6 * (k1[0] + 2*k2[0] + 2*k3[0] + k4[0]);
+            y2 += dt/6 * (k1[1] + 2*k2[1] + 2*k3[1] + k4[1]);
+            z2 += dt/6 * (k1[2] + 2*k2[2] + 2*k3[2] + k4[2]);
+        }
+
+        // Axes
+        const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxis.setAttribute('x1', 0); xAxis.setAttribute('y1', plotH / 2);
+        xAxis.setAttribute('x2', plotW); xAxis.setAttribute('y2', plotH / 2);
+        xAxis.setAttribute('stroke', '#666'); xAxis.setAttribute('stroke-width', 1);
+        g.appendChild(xAxis);
+
+        // Labels
+        const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 30);
+        xLabel.setAttribute('fill', '#888'); xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('font-size', '12px');
+        xLabel.textContent = 'Time';
+        g.appendChild(xLabel);
+
+        const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -35);
+        yLabel.setAttribute('fill', '#888'); yLabel.setAttribute('text-anchor', 'middle');
+        yLabel.setAttribute('transform', 'rotate(-90)');
+        yLabel.setAttribute('font-size', '12px');
+        yLabel.textContent = 'x(t) - "Temperature"';
+        g.appendChild(yLabel);
+
+        const tMax = traj1[traj1.length - 1].t;
+        const xScale = plotW / tMax;
+        const yScale = plotH / 50;
+
+        // Draw trajectories
+        [{ data: traj1, color: '#61afef', label: 'Original' },
+         { data: traj2, color: '#e06c75', label: 'Restarted (0.506 vs 0.506127)' }].forEach(({ data, color }) => {
+            let path = '';
+            data.forEach((pt, i) => {
+                const px = pt.t * xScale;
+                const py = plotH / 2 - pt.x * yScale;
+                path += (i === 0 ? 'M' : 'L') + `${px},${py}`;
+            });
+            const curve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            curve.setAttribute('d', path);
+            curve.setAttribute('stroke', color);
+            curve.setAttribute('stroke-width', 2);
+            curve.setAttribute('fill', 'none');
+            g.appendChild(curve);
         });
+
+        // Legend
+        const legend1 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        legend1.setAttribute('x', plotW - 10); legend1.setAttribute('y', 15);
+        legend1.setAttribute('fill', '#61afef'); legend1.setAttribute('text-anchor', 'end');
+        legend1.setAttribute('font-size', '11px');
+        legend1.textContent = '■ Original run';
+        g.appendChild(legend1);
+
+        const legend2 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        legend2.setAttribute('x', plotW - 10); legend2.setAttribute('y', 30);
+        legend2.setAttribute('fill', '#e06c75'); legend2.setAttribute('text-anchor', 'end');
+        legend2.setAttribute('font-size', '11px');
+        legend2.textContent = '■ Restarted (from printout)';
+        g.appendChild(legend2);
+
+        // Annotation for divergence
+        const divX = plotW * 0.5;
+        const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        arrow.setAttribute('x', divX); arrow.setAttribute('y', plotH - 10);
+        arrow.setAttribute('fill', '#e5c07b'); arrow.setAttribute('text-anchor', 'middle');
+        arrow.setAttribute('font-size', '11px');
+        arrow.textContent = '↑ Complete divergence!';
+        g.appendChild(arrow);
     }
 
     function initLorenzSensitivity() {
@@ -2694,6 +2941,11 @@ function fluidStep() {
             cancelAnimationFrame(lorenzAnimId);
         }
 
+        // Lorenz divergence (the accident)
+        if (event.currentSlide.querySelector('#lorenz-diverge-viz')) {
+            initLorenzDiverge();
+        }
+
         // Lorenz sensitivity
         if (event.currentSlide.querySelector('#lorenz-sensitivity-viz')) {
             initLorenzSensitivity();
@@ -2727,6 +2979,13 @@ function fluidStep() {
         document.getElementById('fluid-diff')?.addEventListener('input', () => {
             const val = parseFloat(document.getElementById('fluid-diff').value);
             document.getElementById('fluid-diff-val').textContent = val.toExponential(0);
+        });
+        // Lorenz sliders
+        document.getElementById('lorenz-speed')?.addEventListener('input', () => {
+            document.getElementById('lorenz-speed-val').textContent = document.getElementById('lorenz-speed').value;
+        });
+        document.getElementById('lorenz-trail')?.addEventListener('input', () => {
+            document.getElementById('lorenz-trail-val').textContent = document.getElementById('lorenz-trail').value;
         });
         document.getElementById('lorenz-perturb')?.addEventListener('input', updateLorenzSensitivity);
     });
