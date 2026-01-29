@@ -1,0 +1,1802 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Numerical Computing and Scientific Simulation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/night.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/monokai.css">
+    <style>
+        :root {
+            --accent-blue: #61afef;
+            --accent-green: #98c379;
+            --accent-yellow: #e5c07b;
+            --accent-red: #e06c75;
+            --accent-purple: #c678dd;
+            --accent-cyan: #56b6c2;
+        }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; }
+        .reveal h1 { font-size: 2.2em; }
+        .reveal h2 { font-size: 1.6em; }
+        .reveal h3 { font-size: 1.3em; }
+        .reveal blockquote {
+            font-style: italic;
+            background: rgba(255,255,255,0.05);
+            padding: 20px 30px;
+            border-left: 4px solid #42affa;
+            width: 90%;
+            margin: 0 auto;
+            border-radius: 0 8px 8px 0;
+        }
+        .reveal .slides section { text-align: left; }
+        .reveal ul { display: block; }
+        .reveal li { margin: 0.5em 0; font-size: 0.85em; }
+        .center-text { text-align: center; }
+        .highlight-box {
+            background: rgba(66, 175, 250, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(66, 175, 250, 0.3);
+        }
+        .warning-box {
+            background: rgba(224, 108, 117, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(224, 108, 117, 0.3);
+        }
+        .success-box {
+            background: rgba(152, 195, 121, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(152, 195, 121, 0.3);
+        }
+        .principle-box {
+            background: rgba(198, 120, 221, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(198, 120, 221, 0.3);
+        }
+        .small-text { font-size: 0.75em; }
+        .tiny-text { font-size: 0.65em; }
+        pre code { font-size: 0.65em !important; line-height: 1.4 !important; }
+        .reveal pre { width: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .two-column { display: flex; gap: 30px; align-items: flex-start; }
+        .two-column > div { flex: 1; }
+        .three-column { display: flex; gap: 20px; }
+        .three-column > div { flex: 1; }
+        .equation-box {
+            background: rgba(255,255,255,0.08);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 15px 0;
+            font-size: 1.1em;
+        }
+        table.comparison {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8em;
+        }
+        table.comparison th, table.comparison td {
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        table.comparison th {
+            background: rgba(66, 175, 250, 0.2);
+        }
+        .bowtie-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .bowtie-box {
+            padding: 15px 25px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .bowtie-arrow {
+            font-size: 2em;
+            color: #888;
+        }
+        .stencil-grid {
+            display: inline-grid;
+            grid-template-columns: repeat(3, 40px);
+            gap: 5px;
+        }
+        .stencil-cell {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #444;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7em;
+        }
+        .stencil-active { background: rgba(97, 175, 239, 0.5); border-color: #61afef; }
+        .stencil-target { background: rgba(152, 195, 121, 0.5); border-color: #98c379; }
+        .stencil-inactive { background: rgba(255,255,255,0.05); }
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 5px 0;
+        }
+        .slider-container label {
+            min-width: 80px;
+            font-size: 0.8em;
+        }
+        .slider-container input[type="range"] {
+            flex: 1;
+        }
+        .slider-container span {
+            min-width: 50px;
+            font-size: 0.8em;
+            color: var(--accent-blue);
+        }
+    </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ============================================ -->
+<!-- TITLE SLIDE -->
+<!-- ============================================ -->
+<section class="center-text">
+    <h1>Numerical Computing</h1>
+    <h2>and Scientific Simulation</h2>
+    <p style="margin-top: 40px; color: #888;">ML for Science - Lecture 5</p>
+    <p class="small-text" style="color: #666;">From differential equations to predictions on a computer</p>
+</section>
+
+<!-- ============================================ -->
+<!-- LEARNING VS INFERENCE -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>The Big Picture: Learning vs Inference</h2>
+        <div class="bowtie-diagram">
+            <div class="bowtie-box" style="background: rgba(97, 175, 239, 0.3);">
+                <div>Data</div>
+                <div class="tiny-text">(high complexity)</div>
+            </div>
+            <div class="bowtie-arrow">&rarr;</div>
+            <div class="bowtie-box" style="background: rgba(198, 120, 221, 0.3);">
+                <div>Model</div>
+                <div class="tiny-text">(low complexity)</div>
+            </div>
+            <div class="bowtie-arrow">&rarr;</div>
+            <div class="bowtie-box" style="background: rgba(152, 195, 121, 0.3);">
+                <div>Predictions</div>
+                <div class="tiny-text">(high complexity)</div>
+            </div>
+        </div>
+        <div class="two-column fragment" style="margin-top: 30px;">
+            <div class="highlight-box small-text" style="text-align: center;">
+                <strong style="color: var(--accent-blue);">Learning</strong><br>
+                Data &rarr; Model<br>
+                Compression / Distillation<br>
+                Statistical
+            </div>
+            <div class="success-box small-text" style="text-align: center;">
+                <strong style="color: var(--accent-green);">Inference</strong><br>
+                Model &rarr; Predictions<br>
+                Reconstruction / Generation<br>
+                Computational / Recursive
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Today: From Models to Predictions</h2>
+        <p>We've seen how to extract models from data (learning/fitting).</p>
+        <p class="fragment">Now: <strong>How do we use models to make predictions?</strong></p>
+        <div class="fragment principle-box" style="margin-top: 20px;">
+            <strong>Key insight:</strong> Both learning and inference require computing, but they're fundamentally different:
+            <ul class="small-text" style="margin-top: 10px;">
+                <li><strong>Learning:</strong> Compress many observations into simple rules</li>
+                <li><strong>Inference:</strong> Apply rules recursively to generate predictions</li>
+            </ul>
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- COMPUTING AS RECURSION -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Computing as Recursive Rule Application</h2>
+        <p>The most basic form of computing: <strong>apply a rule repeatedly</strong></p>
+        <div class="fragment" style="margin-top: 20px;">
+            <h3 class="small-text" style="color: var(--accent-purple);">Peano Axioms: Generating Natural Numbers</h3>
+            <div class="equation-box small-text">
+                $0, \; S(0), \; S(S(0)), \; S(S(S(0))), \; \ldots$
+            </div>
+            <p class="tiny-text">Start with 0, apply successor function S repeatedly &rarr; all natural numbers</p>
+        </div>
+        <div class="fragment" style="margin-top: 20px;">
+            <p class="small-text">This is just a <strong>for loop</strong>:</p>
+            <pre><code class="python">i = 0
+for _ in range(n):
+    i = i + 1  # successor</code></pre>
+        </div>
+    </section>
+
+    <section>
+        <h2>Example: Fibonacci Sequence</h2>
+        <div class="equation-box">
+            $F_n = F_{n-1} + F_{n-2}$
+        </div>
+        <p class="small-text">Simple rule &rarr; Complex, interesting sequence</p>
+        <div class="two-column" style="margin-top: 20px;">
+            <div>
+                <pre><code class="python">def fib(n):
+    a, b = 0, 1
+    for _ in range(n):
+        a, b = b, a + b
+    return a</code></pre>
+            </div>
+            <div class="fragment">
+                <p class="small-text">Properties emerge:</p>
+                <ul class="tiny-text">
+                    <li>Ratios converge to golden ratio $\phi$</li>
+                    <li>Which are prime? Even?</li>
+                    <li>Open questions in number theory!</li>
+                </ul>
+            </div>
+        </div>
+        <div class="fragment highlight-box small-text" style="margin-top: 15px;">
+            <strong>Pattern:</strong> Simple recursive rule &rarr; Generate sequence &rarr; Ask questions about properties
+        </div>
+    </section>
+
+    <section>
+        <h2>Historical Example: Titius-Bode Law</h2>
+        <p class="small-text">Planetary distances follow a pattern:</p>
+        <div class="equation-box small-text">
+            $a_n = 0.4 + 0.3 \times 2^n$ (in AU)
+        </div>
+        <div class="fragment" style="margin-top: 15px;">
+            <p class="small-text">The process:</p>
+            <ol class="small-text">
+                <li>Observe data (planetary distances)</li>
+                <li>Find the rule (the formula)</li>
+                <li><strong>Use the rule to predict</strong> &rarr; missing planet?</li>
+            </ol>
+        </div>
+        <div class="fragment success-box small-text" style="margin-top: 15px;">
+            This predicted the asteroid belt and helped discover Uranus!
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- DIFFERENTIAL EQUATIONS TO DISCRETE -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>From Differential Equations to Discrete</h2>
+        <p>Recall Galileo's projectile: $\ddot{x} = g$</p>
+        <p class="fragment">We integrated analytically: $x(t) = \frac{1}{2}gt^2 + v_0 t + x_0$</p>
+        <div class="fragment warning-box" style="margin-top: 20px;">
+            <strong>Problem:</strong> Most equations can't be integrated analytically!
+        </div>
+        <p class="fragment" style="margin-top: 15px;"><strong>Solution:</strong> Solve on a computer by going back to discrete</p>
+    </section>
+
+    <section>
+        <h2>Discretization</h2>
+        <p>Turn derivatives back into differences:</p>
+        <div class="equation-box">
+            $\frac{dx}{dt} \approx \frac{x_{n+1} - x_n}{\Delta t}$
+        </div>
+        <div class="fragment" style="margin-top: 20px;">
+            <p>For $\ddot{x} = g$, introduce velocity $v = \dot{x}$:</p>
+            <div class="two-column small-text">
+                <div class="equation-box">
+                    $v_{n+1} = v_n + g \cdot \Delta t$
+                </div>
+                <div class="equation-box">
+                    $x_{n+1} = x_n + v_n \cdot \Delta t$
+                </div>
+            </div>
+        </div>
+        <div class="fragment highlight-box small-text" style="margin-top: 15px;">
+            Like Fibonacci: given previous values, compute the next one recursively!
+        </div>
+    </section>
+
+    <section>
+        <h2>The Role of $\Delta t$</h2>
+        <p>$\Delta t$ controls the <strong>accuracy</strong> of the approximation</p>
+        <ul class="small-text">
+            <li class="fragment">Smaller $\Delta t$ &rarr; more accurate, but slower</li>
+            <li class="fragment">Larger $\Delta t$ &rarr; faster, but less accurate</li>
+            <li class="fragment">Too large &rarr; solution can become <strong>unstable</strong>!</li>
+        </ul>
+        <div class="fragment principle-box small-text" style="margin-top: 20px;">
+            <strong>Key trade-off:</strong> Speed vs Accuracy
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- PREDATOR-PREY -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Case Study: Predator-Prey Model</h2>
+        <p class="small-text">Lotka (1925) and Volterra (1926) independently discovered this model</p>
+        <div class="two-column" style="margin-top: 15px;">
+            <div>
+                <p class="small-text"><strong>The logic:</strong></p>
+                <ul class="tiny-text">
+                    <li>More predators &rarr; eat more prey</li>
+                    <li>Fewer prey &rarr; predators starve</li>
+                    <li>Fewer predators &rarr; prey recover</li>
+                    <li>More prey &rarr; predators thrive</li>
+                    <li>&rarr; <strong>Oscillation!</strong></li>
+                </ul>
+            </div>
+            <div class="fragment">
+                <div class="equation-box small-text">
+                    $\frac{dx}{dt} = \alpha x - \beta xy$<br><br>
+                    $\frac{dy}{dt} = \delta xy - \gamma y$
+                </div>
+                <p class="tiny-text" style="text-align: center;">$x$ = prey, $y$ = predators</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Predator-Prey Simulation</h2>
+        <div style="display: flex; justify-content: center;">
+            <svg id="predprey-viz" width="750" height="320" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+        </div>
+        <div style="display: flex; justify-content: center; gap: 30px; margin-top: 10px;">
+            <div class="slider-container">
+                <label>$\alpha$:</label>
+                <input type="range" id="pp-alpha" min="0.5" max="2" step="0.1" value="1.1">
+                <span id="pp-alpha-val">1.1</span>
+            </div>
+            <div class="slider-container">
+                <label>$\beta$:</label>
+                <input type="range" id="pp-beta" min="0.1" max="1" step="0.05" value="0.4">
+                <span id="pp-beta-val">0.4</span>
+            </div>
+            <button onclick="resetPredPrey()" style="padding: 5px 15px; cursor: pointer; border-radius: 4px; border: none; background: #61afef; color: white;">Reset</button>
+        </div>
+        <p class="tiny-text center-text" style="margin-top: 5px; color: #888;">
+            <span style="color: #61afef;">Blue = Prey</span> | <span style="color: #e06c75;">Red = Predators</span>
+        </p>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- PENDULUM -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Case Study: The Pendulum</h2>
+        <p>The equation of motion:</p>
+        <div class="equation-box">
+            $\ddot{\theta} = -\frac{g}{L}\sin\theta$
+        </div>
+        <div class="fragment" style="margin-top: 20px;">
+            <p class="small-text">For small angles: $\sin\theta \approx \theta$ &rarr; simple harmonic motion</p>
+            <p class="small-text">For large angles: <strong>nonlinear!</strong> Must solve numerically.</p>
+        </div>
+    </section>
+
+    <section>
+        <h2>Pendulum Phase Space</h2>
+        <div class="two-column">
+            <div>
+                <svg id="pendulum-viz" width="250" height="250" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+                <div class="slider-container" style="margin-top: 10px;">
+                    <label>$\theta_0$:</label>
+                    <input type="range" id="pend-theta0" min="0.1" max="3.0" step="0.1" value="0.5">
+                    <span id="pend-theta0-val">0.5</span>
+                </div>
+            </div>
+            <div>
+                <svg id="phase-viz" width="400" height="300" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+            </div>
+        </div>
+        <p class="tiny-text center-text" style="margin-top: 10px;">
+            Left: Pendulum animation | Right: Phase space $(\theta, \dot{\theta})$
+        </p>
+    </section>
+
+    <section>
+        <h2>Phase Space: The Full Picture</h2>
+        <div style="display: flex; justify-content: center;">
+            <svg id="phase-flow-viz" width="700" height="350" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+        </div>
+        <p class="small-text center-text" style="margin-top: 10px;">
+            Multiple trajectories in phase space for different initial conditions
+        </p>
+        <p class="tiny-text center-text" style="color: #888;">
+            Small $\theta_0$: circles | Large $\theta_0$: distorted "eye" shapes
+        </p>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- ERROR ANALYSIS -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Error Analysis: How Accurate?</h2>
+        <p>Unlike Fibonacci (exact), numerical solutions have <strong>error</strong></p>
+        <p class="fragment">Use <strong>Taylor expansion</strong> to estimate error:</p>
+        <div class="fragment equation-box small-text">
+            $x(t + \Delta t) = x(t) + \Delta t \cdot \dot{x}(t) + \frac{(\Delta t)^2}{2}\ddot{x}(t) + O((\Delta t)^3)$
+        </div>
+    </section>
+
+    <section>
+        <h2>Finite Difference Schemes</h2>
+        <div class="three-column small-text">
+            <div class="highlight-box" style="text-align: center;">
+                <strong>Forward</strong><br>
+                $\frac{x_{n+1} - x_n}{\Delta t}$<br><br>
+                Error: $O(\Delta t)$
+            </div>
+            <div class="highlight-box" style="text-align: center;">
+                <strong>Backward</strong><br>
+                $\frac{x_n - x_{n-1}}{\Delta t}$<br><br>
+                Error: $O(\Delta t)$
+            </div>
+            <div class="success-box" style="text-align: center;">
+                <strong>Central</strong><br>
+                $\frac{x_{n+1} - x_{n-1}}{2\Delta t}$<br><br>
+                Error: $O((\Delta t)^2)$
+            </div>
+        </div>
+        <p class="fragment small-text" style="margin-top: 20px; text-align: center;">
+            Central difference is more accurate for the same $\Delta t$!
+        </p>
+    </section>
+
+    <section>
+        <h2>Second Derivative</h2>
+        <div class="equation-box">
+            $\frac{d^2 x}{dt^2} \approx \frac{x_{n+1} - 2x_n + x_{n-1}}{(\Delta t)^2}$
+        </div>
+        <p class="small-text" style="margin-top: 15px;">Error: $O((\Delta t)^2)$</p>
+        <div class="fragment highlight-box small-text" style="margin-top: 20px;">
+            <strong>The pattern:</strong> Higher-order schemes = more neighbors used = better accuracy = more computation
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- PDEs: DIFFUSION -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>PDEs: Functions of Space AND Time</h2>
+        <p>Now $u(x, t)$ depends on both space and time</p>
+        <div class="equation-box">
+            <strong>Diffusion Equation:</strong> $\frac{\partial u}{\partial t} = D\frac{\partial^2 u}{\partial x^2}$
+        </div>
+        <p class="fragment small-text" style="margin-top: 15px;">Must discretize in <strong>both</strong> space and time:</p>
+        <div class="fragment equation-box small-text">
+            $u_i^{n+1} = u_i^n + D\frac{\Delta t}{(\Delta x)^2}(u_{i+1}^n - 2u_i^n + u_{i-1}^n)$
+        </div>
+    </section>
+
+    <section>
+        <h2>PDE Discretization: Step by Step</h2>
+        <div style="display: flex; justify-content: center;">
+            <svg id="pde-grid-viz" width="800" height="350" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+        </div>
+        <div style="text-align: center; margin-top: 10px;">
+            <button onclick="pdeStepBack()" style="padding: 5px 15px; margin: 0 5px; cursor: pointer; border-radius: 4px; border: none; background: #666; color: white;">&larr; Back</button>
+            <button onclick="pdeStepForward()" style="padding: 5px 15px; margin: 0 5px; cursor: pointer; border-radius: 4px; border: none; background: #61afef; color: white;">Step &rarr;</button>
+            <button onclick="pdeReset()" style="padding: 5px 15px; margin: 0 5px; cursor: pointer; border-radius: 4px; border: none; background: #e06c75; color: white;">Reset</button>
+            <button onclick="pdeAnimate()" id="pde-animate-btn" style="padding: 5px 15px; margin: 0 5px; cursor: pointer; border-radius: 4px; border: none; background: #98c379; color: white;">Animate</button>
+        </div>
+        <p class="tiny-text center-text" style="margin-top: 5px; color: #888;">
+            Click "Step" to see how each point is computed from its neighbors
+        </p>
+    </section>
+
+    <section>
+        <h2>The Stencil</h2>
+        <p class="small-text">Each new value depends on neighboring values:</p>
+        <div class="three-column" style="margin-top: 20px; text-align: center;">
+            <div>
+                <p class="tiny-text"><strong>Explicit (FTCS)</strong></p>
+                <div class="stencil-grid">
+                    <div class="stencil-cell stencil-inactive"></div>
+                    <div class="stencil-cell stencil-target">?</div>
+                    <div class="stencil-cell stencil-inactive"></div>
+                    <div class="stencil-cell stencil-active">&#9679;</div>
+                    <div class="stencil-cell stencil-active">&#9679;</div>
+                    <div class="stencil-cell stencil-active">&#9679;</div>
+                </div>
+                <p class="tiny-text" style="margin-top: 5px;">$u_i^{n+1}$ from $u_{i-1}^n, u_i^n, u_{i+1}^n$</p>
+            </div>
+            <div class="fragment">
+                <p class="tiny-text"><strong>Implicit (BTCS)</strong></p>
+                <div class="stencil-grid">
+                    <div class="stencil-cell stencil-active">&#9679;</div>
+                    <div class="stencil-cell stencil-active">&#9679;</div>
+                    <div class="stencil-cell stencil-active">&#9679;</div>
+                    <div class="stencil-cell stencil-inactive"></div>
+                    <div class="stencil-cell stencil-target">&#9679;</div>
+                    <div class="stencil-cell stencil-inactive"></div>
+                </div>
+                <p class="tiny-text" style="margin-top: 5px;">Solve system of equations</p>
+            </div>
+            <div class="fragment">
+                <p class="tiny-text"><strong>Crank-Nicolson</strong></p>
+                <div class="stencil-grid">
+                    <div class="stencil-cell stencil-active">&#9679;</div>
+                    <div class="stencil-cell stencil-active">&#9679;</div>
+                    <div class="stencil-cell stencil-active">&#9679;</div>
+                    <div class="stencil-cell stencil-active">&#9679;</div>
+                    <div class="stencil-cell stencil-active">&#9679;</div>
+                    <div class="stencil-cell stencil-active">&#9679;</div>
+                </div>
+                <p class="tiny-text" style="margin-top: 5px;">Average of explicit/implicit</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Stability: Not All $\Delta t$ Work!</h2>
+        <p class="small-text">For the explicit diffusion scheme:</p>
+        <div class="equation-box">
+            $r = \frac{D \cdot \Delta t}{(\Delta x)^2} \leq \frac{1}{2}$
+        </div>
+        <p class="fragment small-text" style="margin-top: 15px;">If $r > 0.5$, the solution <strong>blows up</strong>!</p>
+        <div class="fragment warning-box small-text" style="margin-top: 15px;">
+            <strong>Implicit schemes</strong> are unconditionally stable but require solving linear systems.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- RUNGE-KUTTA -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Better Integrators: Runge-Kutta</h2>
+        <p class="small-text">The workhorse of scientific computing</p>
+        <div class="equation-box small-text">
+            <strong>RK4 (4th-order Runge-Kutta):</strong><br><br>
+            $k_1 = f(t_n, y_n)$<br>
+            $k_2 = f(t_n + \frac{\Delta t}{2}, y_n + \frac{\Delta t}{2}k_1)$<br>
+            $k_3 = f(t_n + \frac{\Delta t}{2}, y_n + \frac{\Delta t}{2}k_2)$<br>
+            $k_4 = f(t_n + \Delta t, y_n + \Delta t \cdot k_3)$<br><br>
+            $y_{n+1} = y_n + \frac{\Delta t}{6}(k_1 + 2k_2 + 2k_3 + k_4)$
+        </div>
+    </section>
+
+    <section>
+        <h2>Why RK4?</h2>
+        <ul>
+            <li class="fragment">Error: $O((\Delta t)^4)$ — much better than Euler!</li>
+            <li class="fragment">Evaluates $f$ at multiple points per step</li>
+            <li class="fragment">Good balance of accuracy and efficiency</li>
+            <li class="fragment">Used in most ODE solvers (MATLAB's <code>ode45</code>, SciPy's <code>solve_ivp</code>)</li>
+        </ul>
+        <div class="fragment highlight-box small-text" style="margin-top: 20px;">
+            <strong>Adaptive methods:</strong> Automatically adjust $\Delta t$ based on estimated error
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- FINITE VOLUME -->
+<!-- ============================================ -->
+<section>
+    <h2>Preserving Physics: Finite Volume Methods</h2>
+    <p class="small-text">When equations have <strong>conservative form</strong>:</p>
+    <div class="equation-box">
+        $\frac{\partial \rho}{\partial t} + \frac{\partial F}{\partial x} = 0$
+    </div>
+    <p class="fragment small-text" style="margin-top: 15px;">Finite volume methods ensure <strong>conservation is preserved</strong> in the discretization.</p>
+    <div class="fragment principle-box small-text" style="margin-top: 15px;">
+        <strong>Key idea:</strong> What flows out of one cell flows into the next.<br>
+        No mass/energy is created or destroyed numerically.
+    </div>
+    <p class="fragment small-text" style="margin-top: 15px;">
+        Theme in Scientific ML: <strong>Encode physical knowledge into numerical schemes</strong>
+    </p>
+</section>
+
+<!-- ============================================ -->
+<!-- 2D FLUID SIMULATOR -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Interactive: 2D Fluid Dynamics</h2>
+        <div style="display: flex; justify-content: center;">
+            <canvas id="fluid-canvas" width="600" height="400" style="border-radius: 8px; cursor: crosshair;"></canvas>
+        </div>
+        <p class="tiny-text center-text" style="margin-top: 10px; color: #888;">
+            Move mouse to add forcing | This is a real Navier-Stokes solver running in your browser!
+        </p>
+    </section>
+
+    <section>
+        <h2>The Solver Code (Core Loop)</h2>
+        <pre><code class="javascript">// Simplified 2D Navier-Stokes solver
+function fluidStep() {
+    // 1. Add forces (from mouse input)
+    addForce(u, v, forceX, forceY);
+
+    // 2. Diffuse velocity (viscosity)
+    diffuse(u, u0, viscosity, dt);
+    diffuse(v, v0, viscosity, dt);
+
+    // 3. Project to make divergence-free
+    project(u, v, p, div);
+
+    // 4. Advect velocity field
+    advect(u, u0, u0, v0, dt);
+    advect(v, v0, u0, v0, dt);
+
+    // 5. Project again
+    project(u, v, p, div);
+
+    // 6. Advect density (for visualization)
+    advect(density, density0, u, v, dt);
+}</code></pre>
+        <p class="tiny-text" style="margin-top: 10px;">Based on Jos Stam's "Stable Fluids" (1999)</p>
+    </section>
+
+    <section>
+        <h2>Key Steps Explained</h2>
+        <table class="comparison small-text">
+            <tr>
+                <th>Step</th>
+                <th>What it does</th>
+                <th>Physics</th>
+            </tr>
+            <tr>
+                <td><strong>Diffuse</strong></td>
+                <td>Spread velocity via Laplacian</td>
+                <td>Viscosity ($\mu\nabla^2\mathbf{u}$)</td>
+            </tr>
+            <tr>
+                <td><strong>Project</strong></td>
+                <td>Make velocity divergence-free</td>
+                <td>Incompressibility ($\nabla \cdot \mathbf{u} = 0$)</td>
+            </tr>
+            <tr>
+                <td><strong>Advect</strong></td>
+                <td>Move quantities along flow</td>
+                <td>Material transport ($\mathbf{u} \cdot \nabla$)</td>
+            </tr>
+        </table>
+        <div class="fragment highlight-box small-text" style="margin-top: 15px;">
+            Each step corresponds to a term in the Navier-Stokes equations!
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- LORENZ SYSTEM -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Chaos: The Lorenz System</h2>
+        <p class="small-text">Edward Lorenz (1963): Simplified weather model</p>
+        <div class="equation-box small-text">
+            $\dot{x} = \sigma(y - x)$<br>
+            $\dot{y} = x(\rho - z) - y$<br>
+            $\dot{z} = xy - \beta z$
+        </div>
+        <p class="fragment small-text" style="margin-top: 15px;">
+            Typical parameters: $\sigma = 10$, $\rho = 28$, $\beta = 8/3$
+        </p>
+    </section>
+
+    <section>
+        <h2>The Lorenz Attractor</h2>
+        <div style="display: flex; justify-content: center;">
+            <svg id="lorenz-viz" width="500" height="400" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+        </div>
+        <div style="text-align: center; margin-top: 10px;">
+            <button onclick="resetLorenz()" style="padding: 5px 15px; cursor: pointer; border-radius: 4px; border: none; background: #61afef; color: white;">Reset</button>
+            <button onclick="perturbLorenz()" style="padding: 5px 15px; margin-left: 10px; cursor: pointer; border-radius: 4px; border: none; background: #e5c07b; color: black;">Add Perturbed Trajectory</button>
+        </div>
+    </section>
+
+    <section>
+        <h2>Sensitivity to Initial Conditions</h2>
+        <div style="display: flex; justify-content: center;">
+            <svg id="lorenz-sensitivity-viz" width="800" height="350" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+        </div>
+        <div class="slider-container" style="justify-content: center; margin-top: 10px;">
+            <label>Perturbation:</label>
+            <input type="range" id="lorenz-perturb" min="-6" max="-1" step="0.5" value="-4">
+            <span id="lorenz-perturb-val">$10^{-4}$</span>
+        </div>
+        <p class="tiny-text center-text" style="color: #888;">
+            <span style="color: #61afef;">Blue</span> vs <span style="color: #e06c75;">Red</span>: Trajectories starting $\epsilon$ apart
+        </p>
+    </section>
+
+    <section>
+        <h2>The Butterfly Effect</h2>
+        <blockquote style="font-size: 0.85em;">
+            "Does the flap of a butterfly's wings in Brazil set off a tornado in Texas?"
+            <footer>— Edward Lorenz, 1972</footer>
+        </blockquote>
+        <div class="fragment warning-box" style="margin-top: 20px;">
+            <strong>The challenge:</strong> If deterministic systems can be this sensitive, what are we actually predicting?
+        </div>
+        <p class="fragment small-text" style="margin-top: 15px;">
+            Weather prediction has a fundamental limit (~2 weeks), not due to model errors, but due to <strong>chaos</strong>.
+        </p>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SUMMARY -->
+<!-- ============================================ -->
+<section>
+    <h2>Summary</h2>
+    <ol class="small-text">
+        <li class="fragment"><strong>Computing = recursive rule application</strong> (from Peano to PDEs)</li>
+        <li class="fragment"><strong>Discretization:</strong> Turn differential equations into algebraic ones</li>
+        <li class="fragment"><strong>Error analysis:</strong> Taylor expansion tells us accuracy ($O(\Delta t)$, $O(\Delta t^2)$, ...)</li>
+        <li class="fragment"><strong>Stability:</strong> Not all $\Delta t$ work; implicit vs explicit schemes</li>
+        <li class="fragment"><strong>Runge-Kutta:</strong> The workhorse of ODE solving</li>
+        <li class="fragment"><strong>Finite volume:</strong> Preserve physics (conservation) in numerics</li>
+        <li class="fragment"><strong>Chaos:</strong> Sensitivity to initial conditions limits predictability</li>
+    </ol>
+</section>
+
+<!-- ============================================ -->
+<!-- LOOKING AHEAD -->
+<!-- ============================================ -->
+<section>
+    <h2>Looking Ahead</h2>
+    <p>If systems are chaotic and sensitive...</p>
+    <p class="fragment"><strong>How do we account for uncertainty?</strong></p>
+    <div class="fragment highlight-box" style="margin-top: 20px;">
+        <strong>Next lecture:</strong> Probabilistic Modeling and Uncertainty Quantification
+        <ul class="small-text" style="margin-top: 10px;">
+            <li>Probability distributions over predictions</li>
+            <li>Bayesian inference</li>
+            <li>Monte Carlo methods</li>
+            <li>Connecting uncertainty in ML and scientific computing</li>
+        </ul>
+    </div>
+</section>
+
+<section class="center-text">
+    <h2>Questions?</h2>
+    <p style="margin-top: 40px; color: #888;">See you next time!</p>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js"></script>
+<script>
+    Reveal.initialize({
+        hash: true,
+        slideNumber: 'c/t',
+        transition: 'slide',
+        transitionSpeed: 'default',
+        backgroundTransition: 'fade',
+        plugins: [ RevealMath.KaTeX, RevealHighlight ],
+        width: 1200,
+        height: 700,
+        margin: 0.1,
+        minScale: 0.2,
+        maxScale: 2.0
+    });
+
+    // ==========================================
+    // PREDATOR-PREY SIMULATION
+    // ==========================================
+    let ppAnimId = null;
+    let ppData = { prey: [], predators: [], t: [] };
+    let ppState = { x: 10, y: 5 };
+
+    function initPredPrey() {
+        ppState = { x: 10, y: 5 };
+        ppData = { prey: [10], predators: [5], t: [0] };
+        if (ppAnimId) cancelAnimationFrame(ppAnimId);
+        animatePredPrey();
+    }
+
+    function animatePredPrey() {
+        const alpha = parseFloat(document.getElementById('pp-alpha')?.value || 1.1);
+        const beta = parseFloat(document.getElementById('pp-beta')?.value || 0.4);
+        const gamma = 0.4;
+        const delta = 0.1;
+        const dt = 0.02;
+
+        document.getElementById('pp-alpha-val').textContent = alpha.toFixed(1);
+        document.getElementById('pp-beta-val').textContent = beta.toFixed(2);
+
+        // RK4 step
+        const f = (x, y) => [alpha * x - beta * x * y, delta * x * y - gamma * y];
+
+        const k1 = f(ppState.x, ppState.y);
+        const k2 = f(ppState.x + dt/2 * k1[0], ppState.y + dt/2 * k1[1]);
+        const k3 = f(ppState.x + dt/2 * k2[0], ppState.y + dt/2 * k2[1]);
+        const k4 = f(ppState.x + dt * k3[0], ppState.y + dt * k3[1]);
+
+        ppState.x += dt/6 * (k1[0] + 2*k2[0] + 2*k3[0] + k4[0]);
+        ppState.y += dt/6 * (k1[1] + 2*k2[1] + 2*k3[1] + k4[1]);
+
+        ppState.x = Math.max(0.1, ppState.x);
+        ppState.y = Math.max(0.1, ppState.y);
+
+        const t = ppData.t[ppData.t.length - 1] + dt;
+        ppData.t.push(t);
+        ppData.prey.push(ppState.x);
+        ppData.predators.push(ppState.y);
+
+        // Keep last 500 points
+        if (ppData.t.length > 500) {
+            ppData.t.shift();
+            ppData.prey.shift();
+            ppData.predators.shift();
+        }
+
+        drawPredPrey();
+        ppAnimId = requestAnimationFrame(animatePredPrey);
+    }
+
+    function drawPredPrey() {
+        const svg = document.getElementById('predprey-viz');
+        if (!svg) return;
+
+        const width = 750, height = 320;
+        const margin = { top: 20, right: 30, bottom: 40, left: 50 };
+        const plotW = width - margin.left - margin.right;
+        const plotH = height - margin.top - margin.bottom;
+
+        svg.innerHTML = '';
+
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('transform', `translate(${margin.left}, ${margin.top})`);
+        svg.appendChild(g);
+
+        // Axes
+        const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxis.setAttribute('x1', 0); xAxis.setAttribute('y1', plotH);
+        xAxis.setAttribute('x2', plotW); xAxis.setAttribute('y2', plotH);
+        xAxis.setAttribute('stroke', '#666'); xAxis.setAttribute('stroke-width', 1.5);
+        g.appendChild(xAxis);
+
+        const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        yAxis.setAttribute('x1', 0); yAxis.setAttribute('y1', 0);
+        yAxis.setAttribute('x2', 0); yAxis.setAttribute('y2', plotH);
+        yAxis.setAttribute('stroke', '#666'); yAxis.setAttribute('stroke-width', 1.5);
+        g.appendChild(yAxis);
+
+        // Labels
+        const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 35);
+        xLabel.setAttribute('fill', '#888'); xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('font-size', '12px');
+        xLabel.textContent = 'Time';
+        g.appendChild(xLabel);
+
+        const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -35);
+        yLabel.setAttribute('fill', '#888'); yLabel.setAttribute('text-anchor', 'middle');
+        yLabel.setAttribute('transform', 'rotate(-90)');
+        yLabel.setAttribute('font-size', '12px');
+        yLabel.textContent = 'Population';
+        g.appendChild(yLabel);
+
+        if (ppData.t.length < 2) return;
+
+        const tMin = ppData.t[0], tMax = ppData.t[ppData.t.length - 1];
+        const maxPop = Math.max(...ppData.prey, ...ppData.predators) * 1.1;
+
+        // Draw prey
+        let preyPath = '';
+        ppData.prey.forEach((p, i) => {
+            const x = ((ppData.t[i] - tMin) / (tMax - tMin)) * plotW;
+            const y = plotH - (p / maxPop) * plotH;
+            preyPath += (i === 0 ? 'M' : 'L') + `${x},${y}`;
+        });
+        const preyCurve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        preyCurve.setAttribute('d', preyPath);
+        preyCurve.setAttribute('stroke', '#61afef');
+        preyCurve.setAttribute('stroke-width', 2);
+        preyCurve.setAttribute('fill', 'none');
+        g.appendChild(preyCurve);
+
+        // Draw predators
+        let predPath = '';
+        ppData.predators.forEach((p, i) => {
+            const x = ((ppData.t[i] - tMin) / (tMax - tMin)) * plotW;
+            const y = plotH - (p / maxPop) * plotH;
+            predPath += (i === 0 ? 'M' : 'L') + `${x},${y}`;
+        });
+        const predCurve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        predCurve.setAttribute('d', predPath);
+        predCurve.setAttribute('stroke', '#e06c75');
+        predCurve.setAttribute('stroke-width', 2);
+        predCurve.setAttribute('fill', 'none');
+        g.appendChild(predCurve);
+    }
+
+    function resetPredPrey() {
+        if (ppAnimId) cancelAnimationFrame(ppAnimId);
+        initPredPrey();
+    }
+
+    // ==========================================
+    // PENDULUM SIMULATION
+    // ==========================================
+    let pendAnimId = null;
+    let pendState = { theta: 0.5, omega: 0 };
+    let pendTrail = [];
+
+    function initPendulum() {
+        const theta0 = parseFloat(document.getElementById('pend-theta0')?.value || 0.5);
+        document.getElementById('pend-theta0-val').textContent = theta0.toFixed(1);
+        pendState = { theta: theta0, omega: 0 };
+        pendTrail = [];
+        if (pendAnimId) cancelAnimationFrame(pendAnimId);
+        animatePendulum();
+    }
+
+    function animatePendulum() {
+        const g = 9.8, L = 1;
+        const dt = 0.02;
+
+        // RK4
+        const f = (th, om) => [om, -(g/L) * Math.sin(th)];
+        const k1 = f(pendState.theta, pendState.omega);
+        const k2 = f(pendState.theta + dt/2 * k1[0], pendState.omega + dt/2 * k1[1]);
+        const k3 = f(pendState.theta + dt/2 * k2[0], pendState.omega + dt/2 * k2[1]);
+        const k4 = f(pendState.theta + dt * k3[0], pendState.omega + dt * k3[1]);
+
+        pendState.theta += dt/6 * (k1[0] + 2*k2[0] + 2*k3[0] + k4[0]);
+        pendState.omega += dt/6 * (k1[1] + 2*k2[1] + 2*k3[1] + k4[1]);
+
+        pendTrail.push({ theta: pendState.theta, omega: pendState.omega });
+        if (pendTrail.length > 300) pendTrail.shift();
+
+        drawPendulum();
+        drawPhaseSpace();
+        pendAnimId = requestAnimationFrame(animatePendulum);
+    }
+
+    function drawPendulum() {
+        const svg = document.getElementById('pendulum-viz');
+        if (!svg) return;
+
+        const size = 250;
+        const cx = size / 2, cy = size / 2 - 20;
+        const L = 80;
+
+        svg.innerHTML = '';
+
+        // Pivot
+        const pivot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        pivot.setAttribute('cx', cx); pivot.setAttribute('cy', cy);
+        pivot.setAttribute('r', 5); pivot.setAttribute('fill', '#888');
+        svg.appendChild(pivot);
+
+        // Rod
+        const bobX = cx + L * Math.sin(pendState.theta);
+        const bobY = cy + L * Math.cos(pendState.theta);
+
+        const rod = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        rod.setAttribute('x1', cx); rod.setAttribute('y1', cy);
+        rod.setAttribute('x2', bobX); rod.setAttribute('y2', bobY);
+        rod.setAttribute('stroke', '#ccc'); rod.setAttribute('stroke-width', 3);
+        svg.appendChild(rod);
+
+        // Bob
+        const bob = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        bob.setAttribute('cx', bobX); bob.setAttribute('cy', bobY);
+        bob.setAttribute('r', 15); bob.setAttribute('fill', '#61afef');
+        svg.appendChild(bob);
+    }
+
+    function drawPhaseSpace() {
+        const svg = document.getElementById('phase-viz');
+        if (!svg) return;
+
+        const width = 400, height = 300;
+        const margin = { top: 20, right: 20, bottom: 35, left: 45 };
+        const plotW = width - margin.left - margin.right;
+        const plotH = height - margin.top - margin.bottom;
+
+        svg.innerHTML = '';
+
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('transform', `translate(${margin.left}, ${margin.top})`);
+        svg.appendChild(g);
+
+        // Axes
+        const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxis.setAttribute('x1', 0); xAxis.setAttribute('y1', plotH / 2);
+        xAxis.setAttribute('x2', plotW); xAxis.setAttribute('y2', plotH / 2);
+        xAxis.setAttribute('stroke', '#666'); xAxis.setAttribute('stroke-width', 1);
+        g.appendChild(xAxis);
+
+        const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        yAxis.setAttribute('x1', plotW / 2); yAxis.setAttribute('y1', 0);
+        yAxis.setAttribute('x2', plotW / 2); yAxis.setAttribute('y2', plotH);
+        yAxis.setAttribute('stroke', '#666'); yAxis.setAttribute('stroke-width', 1);
+        g.appendChild(yAxis);
+
+        // Labels
+        const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xLabel.setAttribute('x', plotW); xLabel.setAttribute('y', plotH / 2 - 5);
+        xLabel.setAttribute('fill', '#888'); xLabel.setAttribute('text-anchor', 'end');
+        xLabel.setAttribute('font-size', '12px');
+        xLabel.textContent = 'θ';
+        g.appendChild(xLabel);
+
+        const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        yLabel.setAttribute('x', plotW / 2 + 5); yLabel.setAttribute('y', 15);
+        yLabel.setAttribute('fill', '#888'); yLabel.setAttribute('font-size', '12px');
+        yLabel.textContent = 'ω';
+        g.appendChild(yLabel);
+
+        if (pendTrail.length < 2) return;
+
+        const scale = plotW / (2 * Math.PI);
+        const omegaScale = plotH / 20;
+
+        // Trail
+        let path = '';
+        pendTrail.forEach((pt, i) => {
+            const x = plotW / 2 + pt.theta * scale;
+            const y = plotH / 2 - pt.omega * omegaScale;
+            path += (i === 0 ? 'M' : 'L') + `${x},${y}`;
+        });
+        const curve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        curve.setAttribute('d', path);
+        curve.setAttribute('stroke', '#98c379');
+        curve.setAttribute('stroke-width', 2);
+        curve.setAttribute('fill', 'none');
+        g.appendChild(curve);
+
+        // Current point
+        const last = pendTrail[pendTrail.length - 1];
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', plotW / 2 + last.theta * scale);
+        dot.setAttribute('cy', plotH / 2 - last.omega * omegaScale);
+        dot.setAttribute('r', 5);
+        dot.setAttribute('fill', '#e5c07b');
+        g.appendChild(dot);
+    }
+
+    function drawPhaseFlow() {
+        const svg = document.getElementById('phase-flow-viz');
+        if (!svg) return;
+
+        const width = 700, height = 350;
+        const margin = { top: 20, right: 20, bottom: 40, left: 50 };
+        const plotW = width - margin.left - margin.right;
+        const plotH = height - margin.top - margin.bottom;
+
+        svg.innerHTML = '';
+
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('transform', `translate(${margin.left}, ${margin.top})`);
+        svg.appendChild(g);
+
+        // Axes
+        const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxis.setAttribute('x1', 0); xAxis.setAttribute('y1', plotH / 2);
+        xAxis.setAttribute('x2', plotW); xAxis.setAttribute('y2', plotH / 2);
+        xAxis.setAttribute('stroke', '#666'); xAxis.setAttribute('stroke-width', 1.5);
+        g.appendChild(xAxis);
+
+        const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        yAxis.setAttribute('x1', plotW / 2); yAxis.setAttribute('y1', 0);
+        yAxis.setAttribute('x2', plotW / 2); yAxis.setAttribute('y2', plotH);
+        yAxis.setAttribute('stroke', '#666'); yAxis.setAttribute('stroke-width', 1.5);
+        g.appendChild(yAxis);
+
+        // Labels
+        const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 30);
+        xLabel.setAttribute('fill', '#888'); xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('font-size', '14px');
+        xLabel.textContent = 'θ';
+        g.appendChild(xLabel);
+
+        const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -35);
+        yLabel.setAttribute('fill', '#888'); yLabel.setAttribute('text-anchor', 'middle');
+        yLabel.setAttribute('transform', 'rotate(-90)');
+        yLabel.setAttribute('font-size', '14px');
+        yLabel.textContent = 'dθ/dt';
+        g.appendChild(yLabel);
+
+        // Draw multiple trajectories
+        const grav = 9.8, L = 1;
+        const theta0s = [0.3, 0.6, 1.0, 1.5, 2.0, 2.5, 2.9];
+        const colors = ['#61afef', '#98c379', '#e5c07b', '#e06c75', '#c678dd', '#56b6c2', '#abb2bf'];
+
+        theta0s.forEach((th0, idx) => {
+            let theta = th0, omega = 0;
+            const dt = 0.02;
+            let path = '';
+
+            for (let i = 0; i < 500; i++) {
+                const x = plotW / 2 + theta * (plotW / (2 * Math.PI));
+                const y = plotH / 2 - omega * (plotH / 20);
+                path += (i === 0 ? 'M' : 'L') + `${x},${y}`;
+
+                // RK4 step
+                const f = (th, om) => [om, -(grav/L) * Math.sin(th)];
+                const k1 = f(theta, omega);
+                const k2 = f(theta + dt/2 * k1[0], omega + dt/2 * k1[1]);
+                const k3 = f(theta + dt/2 * k2[0], omega + dt/2 * k2[1]);
+                const k4 = f(theta + dt * k3[0], omega + dt * k3[1]);
+                theta += dt/6 * (k1[0] + 2*k2[0] + 2*k3[0] + k4[0]);
+                omega += dt/6 * (k1[1] + 2*k2[1] + 2*k3[1] + k4[1]);
+            }
+
+            const curve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            curve.setAttribute('d', path);
+            curve.setAttribute('stroke', colors[idx]);
+            curve.setAttribute('stroke-width', 2);
+            curve.setAttribute('fill', 'none');
+            curve.setAttribute('opacity', '0.7');
+            g.appendChild(curve);
+        });
+    }
+
+    // ==========================================
+    // PDE GRID VISUALIZATION
+    // ==========================================
+    let pdeGrid = [];
+    let pdeTimeStep = 0;
+    let pdeAnimating = false;
+    let pdeAnimId = null;
+    const pdeNx = 25;
+    const pdeNt = 40;
+
+    function initPDEGrid() {
+        pdeGrid = [];
+        pdeTimeStep = 0;
+
+        // Initial condition: Gaussian
+        const row = [];
+        for (let i = 0; i < pdeNx; i++) {
+            const x = i / (pdeNx - 1);
+            row.push(Math.exp(-Math.pow((x - 0.5) * 5, 2)));
+        }
+        pdeGrid.push(row);
+
+        drawPDEGrid();
+    }
+
+    function pdeStepForward() {
+        if (pdeTimeStep >= pdeNt - 1) return;
+
+        const D = 0.4;
+        const dx = 1 / (pdeNx - 1);
+        const dt = 0.4 * dx * dx / D; // Stability
+        const r = D * dt / (dx * dx);
+
+        const prev = pdeGrid[pdeGrid.length - 1];
+        const next = [];
+
+        for (let i = 0; i < pdeNx; i++) {
+            if (i === 0 || i === pdeNx - 1) {
+                next.push(0); // Dirichlet BC
+            } else {
+                next.push(prev[i] + r * (prev[i+1] - 2*prev[i] + prev[i-1]));
+            }
+        }
+
+        pdeGrid.push(next);
+        pdeTimeStep++;
+        drawPDEGrid();
+    }
+
+    function pdeStepBack() {
+        if (pdeGrid.length <= 1) return;
+        pdeGrid.pop();
+        pdeTimeStep--;
+        drawPDEGrid();
+    }
+
+    function pdeReset() {
+        pdeAnimating = false;
+        if (pdeAnimId) cancelAnimationFrame(pdeAnimId);
+        document.getElementById('pde-animate-btn').textContent = 'Animate';
+        initPDEGrid();
+    }
+
+    function pdeAnimate() {
+        const btn = document.getElementById('pde-animate-btn');
+        if (pdeAnimating) {
+            pdeAnimating = false;
+            btn.textContent = 'Animate';
+            return;
+        }
+
+        pdeAnimating = true;
+        btn.textContent = 'Stop';
+
+        function step() {
+            if (!pdeAnimating || pdeTimeStep >= pdeNt - 1) {
+                pdeAnimating = false;
+                btn.textContent = 'Animate';
+                return;
+            }
+            pdeStepForward();
+            pdeAnimId = setTimeout(step, 100);
+        }
+        step();
+    }
+
+    function drawPDEGrid() {
+        const svg = document.getElementById('pde-grid-viz');
+        if (!svg) return;
+
+        const width = 800, height = 350;
+        const margin = { top: 30, right: 30, bottom: 50, left: 60 };
+        const plotW = width - margin.left - margin.right;
+        const plotH = height - margin.top - margin.bottom;
+
+        svg.innerHTML = '';
+
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('transform', `translate(${margin.left}, ${margin.top})`);
+        svg.appendChild(g);
+
+        const cellW = plotW / pdeNx;
+        const cellH = plotH / pdeNt;
+
+        // Draw grid cells
+        for (let t = 0; t < pdeGrid.length; t++) {
+            for (let i = 0; i < pdeNx; i++) {
+                const val = pdeGrid[t][i];
+                const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                rect.setAttribute('x', i * cellW);
+                rect.setAttribute('y', plotH - (t + 1) * cellH);
+                rect.setAttribute('width', cellW - 1);
+                rect.setAttribute('height', cellH - 1);
+
+                // Color based on value
+                const intensity = Math.min(255, Math.floor(val * 255));
+                rect.setAttribute('fill', `rgb(${intensity}, ${Math.floor(intensity * 0.7)}, ${255 - intensity})`);
+                rect.setAttribute('stroke', 'rgba(255,255,255,0.1)');
+                g.appendChild(rect);
+            }
+        }
+
+        // Highlight stencil for next computation
+        if (pdeGrid.length < pdeNt && pdeGrid.length > 0) {
+            const t = pdeGrid.length - 1;
+            for (let i = 1; i < pdeNx - 1; i++) {
+                // Source cells
+                [-1, 0, 1].forEach(di => {
+                    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    rect.setAttribute('x', (i + di) * cellW);
+                    rect.setAttribute('y', plotH - (t + 1) * cellH);
+                    rect.setAttribute('width', cellW - 1);
+                    rect.setAttribute('height', cellH - 1);
+                    rect.setAttribute('fill', 'none');
+                    rect.setAttribute('stroke', '#61afef');
+                    rect.setAttribute('stroke-width', 2);
+                    g.appendChild(rect);
+                });
+                break; // Just show for first interior point
+            }
+
+            // Target cell
+            const targetRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            targetRect.setAttribute('x', 1 * cellW);
+            targetRect.setAttribute('y', plotH - (t + 2) * cellH);
+            targetRect.setAttribute('width', cellW - 1);
+            targetRect.setAttribute('height', cellH - 1);
+            targetRect.setAttribute('fill', 'rgba(152, 195, 121, 0.3)');
+            targetRect.setAttribute('stroke', '#98c379');
+            targetRect.setAttribute('stroke-width', 2);
+            g.appendChild(targetRect);
+        }
+
+        // Labels
+        const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 35);
+        xLabel.setAttribute('fill', '#888'); xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('font-size', '14px');
+        xLabel.textContent = 'Space (x)';
+        g.appendChild(xLabel);
+
+        const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -40);
+        yLabel.setAttribute('fill', '#888'); yLabel.setAttribute('text-anchor', 'middle');
+        yLabel.setAttribute('transform', 'rotate(-90)');
+        yLabel.setAttribute('font-size', '14px');
+        yLabel.textContent = 'Time (t)';
+        g.appendChild(yLabel);
+
+        // Time step indicator
+        const stepText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        stepText.setAttribute('x', plotW - 10); stepText.setAttribute('y', -10);
+        stepText.setAttribute('fill', '#ccc'); stepText.setAttribute('text-anchor', 'end');
+        stepText.setAttribute('font-size', '12px');
+        stepText.textContent = `Time step: ${pdeTimeStep}`;
+        g.appendChild(stepText);
+    }
+
+    // ==========================================
+    // 2D FLUID SIMULATOR
+    // ==========================================
+    let fluidCanvas, fluidCtx;
+    let fluidN = 64;
+    let fluidDt = 0.1;
+    let fluidDiff = 0.0001;
+    let fluidVisc = 0.0001;
+    let fluidU, fluidV, fluidU0, fluidV0;
+    let fluidDens, fluidDens0;
+    let fluidMouseX = 0, fluidMouseY = 0, fluidPMouseX = 0, fluidPMouseY = 0;
+    let fluidAnimId = null;
+
+    function IX(i, j) { return i + (fluidN + 2) * j; }
+
+    function initFluid() {
+        fluidCanvas = document.getElementById('fluid-canvas');
+        if (!fluidCanvas) return;
+        fluidCtx = fluidCanvas.getContext('2d');
+
+        const size = (fluidN + 2) * (fluidN + 2);
+        fluidU = new Float32Array(size);
+        fluidV = new Float32Array(size);
+        fluidU0 = new Float32Array(size);
+        fluidV0 = new Float32Array(size);
+        fluidDens = new Float32Array(size);
+        fluidDens0 = new Float32Array(size);
+
+        fluidCanvas.addEventListener('mousemove', (e) => {
+            const rect = fluidCanvas.getBoundingClientRect();
+            fluidPMouseX = fluidMouseX;
+            fluidPMouseY = fluidMouseY;
+            fluidMouseX = (e.clientX - rect.left) / rect.width;
+            fluidMouseY = (e.clientY - rect.top) / rect.height;
+        });
+
+        if (fluidAnimId) cancelAnimationFrame(fluidAnimId);
+        animateFluid();
+    }
+
+    function addSource(x, s, dt) {
+        for (let i = 0; i < x.length; i++) x[i] += dt * s[i];
+    }
+
+    function setBnd(b, x) {
+        for (let i = 1; i <= fluidN; i++) {
+            x[IX(0, i)] = b === 1 ? -x[IX(1, i)] : x[IX(1, i)];
+            x[IX(fluidN + 1, i)] = b === 1 ? -x[IX(fluidN, i)] : x[IX(fluidN, i)];
+            x[IX(i, 0)] = b === 2 ? -x[IX(i, 1)] : x[IX(i, 1)];
+            x[IX(i, fluidN + 1)] = b === 2 ? -x[IX(i, fluidN)] : x[IX(i, fluidN)];
+        }
+        x[IX(0, 0)] = 0.5 * (x[IX(1, 0)] + x[IX(0, 1)]);
+        x[IX(0, fluidN + 1)] = 0.5 * (x[IX(1, fluidN + 1)] + x[IX(0, fluidN)]);
+        x[IX(fluidN + 1, 0)] = 0.5 * (x[IX(fluidN, 0)] + x[IX(fluidN + 1, 1)]);
+        x[IX(fluidN + 1, fluidN + 1)] = 0.5 * (x[IX(fluidN, fluidN + 1)] + x[IX(fluidN + 1, fluidN)]);
+    }
+
+    function linSolve(b, x, x0, a, c) {
+        for (let k = 0; k < 4; k++) {
+            for (let i = 1; i <= fluidN; i++) {
+                for (let j = 1; j <= fluidN; j++) {
+                    x[IX(i, j)] = (x0[IX(i, j)] + a * (x[IX(i - 1, j)] + x[IX(i + 1, j)] + x[IX(i, j - 1)] + x[IX(i, j + 1)])) / c;
+                }
+            }
+            setBnd(b, x);
+        }
+    }
+
+    function diffuse(b, x, x0, diff, dt) {
+        const a = dt * diff * fluidN * fluidN;
+        linSolve(b, x, x0, a, 1 + 4 * a);
+    }
+
+    function advect(b, d, d0, u, v, dt) {
+        const dt0 = dt * fluidN;
+        for (let i = 1; i <= fluidN; i++) {
+            for (let j = 1; j <= fluidN; j++) {
+                let x = i - dt0 * u[IX(i, j)];
+                let y = j - dt0 * v[IX(i, j)];
+                x = Math.max(0.5, Math.min(fluidN + 0.5, x));
+                y = Math.max(0.5, Math.min(fluidN + 0.5, y));
+                const i0 = Math.floor(x), i1 = i0 + 1;
+                const j0 = Math.floor(y), j1 = j0 + 1;
+                const s1 = x - i0, s0 = 1 - s1;
+                const t1 = y - j0, t0 = 1 - t1;
+                d[IX(i, j)] = s0 * (t0 * d0[IX(i0, j0)] + t1 * d0[IX(i0, j1)]) + s1 * (t0 * d0[IX(i1, j0)] + t1 * d0[IX(i1, j1)]);
+            }
+        }
+        setBnd(b, d);
+    }
+
+    function project(u, v, p, div) {
+        for (let i = 1; i <= fluidN; i++) {
+            for (let j = 1; j <= fluidN; j++) {
+                div[IX(i, j)] = -0.5 * (u[IX(i + 1, j)] - u[IX(i - 1, j)] + v[IX(i, j + 1)] - v[IX(i, j - 1)]) / fluidN;
+                p[IX(i, j)] = 0;
+            }
+        }
+        setBnd(0, div);
+        setBnd(0, p);
+        linSolve(0, p, div, 1, 4);
+        for (let i = 1; i <= fluidN; i++) {
+            for (let j = 1; j <= fluidN; j++) {
+                u[IX(i, j)] -= 0.5 * fluidN * (p[IX(i + 1, j)] - p[IX(i - 1, j)]);
+                v[IX(i, j)] -= 0.5 * fluidN * (p[IX(i, j + 1)] - p[IX(i, j - 1)]);
+            }
+        }
+        setBnd(1, u);
+        setBnd(2, v);
+    }
+
+    function velStep(u, v, u0, v0, visc, dt) {
+        addSource(u, u0, dt);
+        addSource(v, v0, dt);
+        [u0, u] = [u, u0];
+        diffuse(1, u, u0, visc, dt);
+        [v0, v] = [v, v0];
+        diffuse(2, v, v0, visc, dt);
+        project(u, v, u0, v0);
+        [u0, u] = [u, u0];
+        [v0, v] = [v, v0];
+        advect(1, u, u0, u0, v0, dt);
+        advect(2, v, v0, u0, v0, dt);
+        project(u, v, u0, v0);
+    }
+
+    function densStep(x, x0, u, v, diff, dt) {
+        addSource(x, x0, dt);
+        [x0, x] = [x, x0];
+        diffuse(0, x, x0, diff, dt);
+        [x0, x] = [x, x0];
+        advect(0, x, x0, u, v, dt);
+    }
+
+    function animateFluid() {
+        // Clear sources
+        fluidU0.fill(0);
+        fluidV0.fill(0);
+        fluidDens0.fill(0);
+
+        // Add mouse force
+        const i = Math.floor(fluidMouseX * fluidN) + 1;
+        const j = Math.floor(fluidMouseY * fluidN) + 1;
+        if (i > 0 && i <= fluidN && j > 0 && j <= fluidN) {
+            fluidU0[IX(i, j)] = (fluidMouseX - fluidPMouseX) * 1000;
+            fluidV0[IX(i, j)] = (fluidMouseY - fluidPMouseY) * 1000;
+            fluidDens0[IX(i, j)] = 50;
+        }
+
+        // Add constant source at top
+        for (let ii = fluidN / 4; ii < 3 * fluidN / 4; ii++) {
+            fluidDens0[IX(ii, fluidN - 2)] += 5;
+            fluidV0[IX(ii, fluidN - 2)] = -5;
+        }
+
+        velStep(fluidU, fluidV, fluidU0, fluidV0, fluidVisc, fluidDt);
+        densStep(fluidDens, fluidDens0, fluidU, fluidV, fluidDiff, fluidDt);
+
+        drawFluid();
+        fluidAnimId = requestAnimationFrame(animateFluid);
+    }
+
+    function drawFluid() {
+        if (!fluidCtx) return;
+
+        const w = fluidCanvas.width;
+        const h = fluidCanvas.height;
+        const cellW = w / fluidN;
+        const cellH = h / fluidN;
+
+        const imgData = fluidCtx.createImageData(w, h);
+
+        for (let i = 0; i < fluidN; i++) {
+            for (let j = 0; j < fluidN; j++) {
+                const d = Math.min(255, fluidDens[IX(i + 1, j + 1)] * 5);
+
+                const x0 = Math.floor(i * cellW);
+                const y0 = Math.floor(j * cellH);
+                const x1 = Math.floor((i + 1) * cellW);
+                const y1 = Math.floor((j + 1) * cellH);
+
+                for (let x = x0; x < x1; x++) {
+                    for (let y = y0; y < y1; y++) {
+                        const idx = (y * w + x) * 4;
+                        imgData.data[idx] = d * 0.4;
+                        imgData.data[idx + 1] = d * 0.6;
+                        imgData.data[idx + 2] = d;
+                        imgData.data[idx + 3] = 255;
+                    }
+                }
+            }
+        }
+
+        fluidCtx.putImageData(imgData, 0, 0);
+    }
+
+    // ==========================================
+    // LORENZ SYSTEM
+    // ==========================================
+    let lorenzTrails = [];
+    let lorenzAnimId = null;
+
+    function initLorenz() {
+        lorenzTrails = [{ x: 1, y: 1, z: 1, color: '#61afef', trail: [] }];
+        if (lorenzAnimId) cancelAnimationFrame(lorenzAnimId);
+        animateLorenz();
+    }
+
+    function animateLorenz() {
+        const sigma = 10, rho = 28, beta = 8/3;
+        const dt = 0.005;
+
+        lorenzTrails.forEach(traj => {
+            for (let step = 0; step < 5; step++) {
+                const dx = sigma * (traj.y - traj.x);
+                const dy = traj.x * (rho - traj.z) - traj.y;
+                const dz = traj.x * traj.y - beta * traj.z;
+
+                traj.x += dx * dt;
+                traj.y += dy * dt;
+                traj.z += dz * dt;
+
+                traj.trail.push({ x: traj.x, y: traj.y, z: traj.z });
+                if (traj.trail.length > 1000) traj.trail.shift();
+            }
+        });
+
+        drawLorenz();
+        lorenzAnimId = requestAnimationFrame(animateLorenz);
+    }
+
+    function drawLorenz() {
+        const svg = document.getElementById('lorenz-viz');
+        if (!svg) return;
+
+        const width = 500, height = 400;
+        svg.innerHTML = '';
+
+        lorenzTrails.forEach(traj => {
+            if (traj.trail.length < 2) return;
+
+            let path = '';
+            traj.trail.forEach((pt, i) => {
+                // Simple 3D to 2D projection
+                const scale = 6;
+                const x = width / 2 + pt.x * scale;
+                const y = height - 50 - pt.z * scale * 0.8;
+                path += (i === 0 ? 'M' : 'L') + `${x},${y}`;
+            });
+
+            const curve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            curve.setAttribute('d', path);
+            curve.setAttribute('stroke', traj.color);
+            curve.setAttribute('stroke-width', 1.5);
+            curve.setAttribute('fill', 'none');
+            curve.setAttribute('opacity', '0.8');
+            svg.appendChild(curve);
+        });
+
+        // Label
+        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        label.setAttribute('x', 10); label.setAttribute('y', 25);
+        label.setAttribute('fill', '#888'); label.setAttribute('font-size', '12px');
+        label.textContent = 'Lorenz Attractor (x-z projection)';
+        svg.appendChild(label);
+    }
+
+    function resetLorenz() {
+        if (lorenzAnimId) cancelAnimationFrame(lorenzAnimId);
+        initLorenz();
+    }
+
+    function perturbLorenz() {
+        const eps = Math.pow(10, parseFloat(document.getElementById('lorenz-perturb')?.value || -4));
+        const base = lorenzTrails[0];
+        lorenzTrails.push({
+            x: base.x + eps,
+            y: base.y,
+            z: base.z,
+            color: '#e06c75',
+            trail: []
+        });
+    }
+
+    function initLorenzSensitivity() {
+        const svg = document.getElementById('lorenz-sensitivity-viz');
+        if (!svg) return;
+
+        updateLorenzSensitivity();
+    }
+
+    function updateLorenzSensitivity() {
+        const svg = document.getElementById('lorenz-sensitivity-viz');
+        if (!svg) return;
+
+        const exp = parseFloat(document.getElementById('lorenz-perturb')?.value || -4);
+        const eps = Math.pow(10, exp);
+        document.getElementById('lorenz-perturb-val').textContent = `10^{${exp}}`;
+
+        const width = 800, height = 350;
+        const margin = { top: 20, right: 20, bottom: 40, left: 50 };
+        const plotW = width - margin.left - margin.right;
+        const plotH = height - margin.top - margin.bottom;
+
+        svg.innerHTML = '';
+
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('transform', `translate(${margin.left}, ${margin.top})`);
+        svg.appendChild(g);
+
+        // Simulate two trajectories
+        const sigma = 10, rho = 28, beta = 8/3;
+        const dt = 0.01;
+        const steps = 3000;
+
+        let x1 = 1, y1 = 1, z1 = 1;
+        let x2 = 1 + eps, y2 = 1, z2 = 1;
+
+        const traj1 = [], traj2 = [];
+
+        for (let i = 0; i < steps; i++) {
+            if (i % 5 === 0) {
+                traj1.push({ t: i * dt, x: x1 });
+                traj2.push({ t: i * dt, x: x2 });
+            }
+
+            // RK4 for traj1
+            const f1 = (x, y, z) => [sigma * (y - x), x * (rho - z) - y, x * y - beta * z];
+            let k1 = f1(x1, y1, z1);
+            let k2 = f1(x1 + dt/2 * k1[0], y1 + dt/2 * k1[1], z1 + dt/2 * k1[2]);
+            let k3 = f1(x1 + dt/2 * k2[0], y1 + dt/2 * k2[1], z1 + dt/2 * k2[2]);
+            let k4 = f1(x1 + dt * k3[0], y1 + dt * k3[1], z1 + dt * k3[2]);
+            x1 += dt/6 * (k1[0] + 2*k2[0] + 2*k3[0] + k4[0]);
+            y1 += dt/6 * (k1[1] + 2*k2[1] + 2*k3[1] + k4[1]);
+            z1 += dt/6 * (k1[2] + 2*k2[2] + 2*k3[2] + k4[2]);
+
+            // RK4 for traj2
+            k1 = f1(x2, y2, z2);
+            k2 = f1(x2 + dt/2 * k1[0], y2 + dt/2 * k1[1], z2 + dt/2 * k1[2]);
+            k3 = f1(x2 + dt/2 * k2[0], y2 + dt/2 * k2[1], z2 + dt/2 * k2[2]);
+            k4 = f1(x2 + dt * k3[0], y2 + dt * k3[1], z2 + dt * k3[2]);
+            x2 += dt/6 * (k1[0] + 2*k2[0] + 2*k3[0] + k4[0]);
+            y2 += dt/6 * (k1[1] + 2*k2[1] + 2*k3[1] + k4[1]);
+            z2 += dt/6 * (k1[2] + 2*k2[2] + 2*k3[2] + k4[2]);
+        }
+
+        // Axes
+        const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxis.setAttribute('x1', 0); xAxis.setAttribute('y1', plotH / 2);
+        xAxis.setAttribute('x2', plotW); xAxis.setAttribute('y2', plotH / 2);
+        xAxis.setAttribute('stroke', '#666'); xAxis.setAttribute('stroke-width', 1);
+        g.appendChild(xAxis);
+
+        // Labels
+        const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 30);
+        xLabel.setAttribute('fill', '#888'); xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('font-size', '12px');
+        xLabel.textContent = 'Time';
+        g.appendChild(xLabel);
+
+        const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -35);
+        yLabel.setAttribute('fill', '#888'); yLabel.setAttribute('text-anchor', 'middle');
+        yLabel.setAttribute('transform', 'rotate(-90)');
+        yLabel.setAttribute('font-size', '12px');
+        yLabel.textContent = 'x(t)';
+        g.appendChild(yLabel);
+
+        const tMax = traj1[traj1.length - 1].t;
+        const xScale = plotW / tMax;
+        const yScale = plotH / 50;
+
+        // Draw trajectories
+        [{ data: traj1, color: '#61afef' }, { data: traj2, color: '#e06c75' }].forEach(({ data, color }) => {
+            let path = '';
+            data.forEach((pt, i) => {
+                const px = pt.t * xScale;
+                const py = plotH / 2 - pt.x * yScale;
+                path += (i === 0 ? 'M' : 'L') + `${px},${py}`;
+            });
+            const curve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            curve.setAttribute('d', path);
+            curve.setAttribute('stroke', color);
+            curve.setAttribute('stroke-width', 1.5);
+            curve.setAttribute('fill', 'none');
+            g.appendChild(curve);
+        });
+    }
+
+    // ==========================================
+    // INITIALIZATION
+    // ==========================================
+    Reveal.on('slidechanged', event => {
+        // Predator-prey
+        if (event.currentSlide.querySelector('#predprey-viz')) {
+            initPredPrey();
+        } else if (ppAnimId) {
+            cancelAnimationFrame(ppAnimId);
+        }
+
+        // Pendulum
+        if (event.currentSlide.querySelector('#pendulum-viz')) {
+            initPendulum();
+        } else if (pendAnimId) {
+            cancelAnimationFrame(pendAnimId);
+        }
+
+        // Phase flow
+        if (event.currentSlide.querySelector('#phase-flow-viz')) {
+            drawPhaseFlow();
+        }
+
+        // PDE Grid
+        if (event.currentSlide.querySelector('#pde-grid-viz')) {
+            initPDEGrid();
+        }
+
+        // Fluid
+        if (event.currentSlide.querySelector('#fluid-canvas')) {
+            initFluid();
+        } else if (fluidAnimId) {
+            cancelAnimationFrame(fluidAnimId);
+        }
+
+        // Lorenz
+        if (event.currentSlide.querySelector('#lorenz-viz')) {
+            initLorenz();
+        } else if (lorenzAnimId) {
+            cancelAnimationFrame(lorenzAnimId);
+        }
+
+        // Lorenz sensitivity
+        if (event.currentSlide.querySelector('#lorenz-sensitivity-viz')) {
+            initLorenzSensitivity();
+        }
+    });
+
+    // Slider listeners
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('pp-alpha')?.addEventListener('input', () => {
+            document.getElementById('pp-alpha-val').textContent = document.getElementById('pp-alpha').value;
+        });
+        document.getElementById('pp-beta')?.addEventListener('input', () => {
+            document.getElementById('pp-beta-val').textContent = document.getElementById('pp-beta').value;
+        });
+        document.getElementById('pend-theta0')?.addEventListener('input', () => {
+            if (pendAnimId) cancelAnimationFrame(pendAnimId);
+            initPendulum();
+        });
+        document.getElementById('lorenz-perturb')?.addEventListener('input', updateLorenzSensitivity);
+    });
+</script>
+</body>
+</html>
