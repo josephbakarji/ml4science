@@ -784,11 +784,12 @@ for _ in range(n):
         <p class="small-text">The workhorse of scientific computing</p>
         <div class="equation-box small-text">
             <strong>RK4 (4th-order Runge-Kutta):</strong><br><br>
-            $k_1 = f(t_n, y_n)$<br>
-            $k_2 = f(t_n + \frac{\Delta t}{2}, y_n + \frac{\Delta t}{2}k_1)$<br>
-            $k_3 = f(t_n + \frac{\Delta t}{2}, y_n + \frac{\Delta t}{2}k_2)$<br>
-            $k_4 = f(t_n + \Delta t, y_n + \Delta t \cdot k_3)$<br><br>
-            $y_{n+1} = y_n + \frac{\Delta t}{6}(k_1 + 2k_2 + 2k_3 + k_4)$
+            $x_{n+1} = x_n + \frac{\Delta t}{6}(k_1 + 2k_2 + 2k_3 + k_4)$<br><br>
+            <span style="color: #888;">where:</span><br>
+            $k_1 = f(t_n, x_n)$<br>
+            $k_2 = f(t_n + \frac{\Delta t}{2}, x_n + \frac{\Delta t}{2}k_1)$<br>
+            $k_3 = f(t_n + \frac{\Delta t}{2}, x_n + \frac{\Delta t}{2}k_2)$<br>
+            $k_4 = f(t_n + \Delta t, x_n + \Delta t \cdot k_3)$
         </div>
     </section>
 
@@ -831,11 +832,41 @@ for _ in range(n):
 <section>
     <section>
         <h2>Interactive: 2D Fluid Dynamics</h2>
-        <div style="display: flex; justify-content: center;">
-            <canvas id="fluid-canvas" width="600" height="400" style="border-radius: 8px; cursor: crosshair;"></canvas>
+        <div class="equation-box tiny-text" style="margin-bottom: 10px; padding: 8px;">
+            <strong>Navier-Stokes:</strong> $\displaystyle\frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u} \cdot \nabla)\mathbf{u} = -\frac{1}{\rho}\nabla p + \nu \nabla^2 \mathbf{u}$
+            <span style="color: #888; margin-left: 15px;">+ $\nabla \cdot \mathbf{u} = 0$ (incompressible)</span>
         </div>
-        <p class="tiny-text center-text" style="margin-top: 10px; color: #888;">
-            Move mouse to add forcing | This is a real Navier-Stokes solver running in your browser!
+        <div class="two-column">
+            <div style="flex: 1.5;">
+                <canvas id="fluid-canvas" width="500" height="350" style="border-radius: 8px; cursor: crosshair;"></canvas>
+            </div>
+            <div style="flex: 0.8;">
+                <div class="highlight-box tiny-text" style="padding: 10px;">
+                    <strong>Solver steps:</strong>
+                    <ol style="margin: 5px 0; padding-left: 20px;">
+                        <li>Add source (top, red)</li>
+                        <li>Diffuse (viscosity ν)</li>
+                        <li>Project (∇·u = 0)</li>
+                        <li>Advect (transport)</li>
+                        <li>Project again</li>
+                    </ol>
+                </div>
+                <div style="margin-top: 10px;">
+                    <div class="slider-container">
+                        <label>ν:</label>
+                        <input type="range" id="fluid-visc" min="0.00001" max="0.001" step="0.00001" value="0.0001">
+                        <span id="fluid-visc-val">1e-4</span>
+                    </div>
+                    <div class="slider-container">
+                        <label>diff:</label>
+                        <input type="range" id="fluid-diff" min="0.00001" max="0.001" step="0.00001" value="0.0001">
+                        <span id="fluid-diff-val">1e-4</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p class="tiny-text center-text" style="margin-top: 5px; color: #888;">
+            <span style="color: #e06c75;">Red = source</span> | Mouse = obstacle (blocks flow) | Real Navier-Stokes in browser!
         </p>
     </section>
 
@@ -1953,11 +1984,12 @@ function fluidStep() {
     let fluidCanvas, fluidCtx;
     let fluidN = 64;
     let fluidDt = 0.1;
-    let fluidDiff = 0.0001;
-    let fluidVisc = 0.0001;
+    let fluidDiff = 0.00005;
+    let fluidVisc = 0.00005;
     let fluidU, fluidV, fluidU0, fluidV0;
     let fluidDens, fluidDens0;
-    let fluidMouseX = 0, fluidMouseY = 0, fluidPMouseX = 0, fluidPMouseY = 0;
+    let fluidMouseX = -1, fluidMouseY = -1;
+    let fluidMouseDown = false;
     let fluidAnimId = null;
 
     function IX(i, j) { return i + (fluidN + 2) * j; }
@@ -1966,6 +1998,10 @@ function fluidStep() {
         fluidCanvas = document.getElementById('fluid-canvas');
         if (!fluidCanvas) return;
         fluidCtx = fluidCanvas.getContext('2d');
+
+        // Read initial slider values
+        fluidVisc = parseFloat(document.getElementById('fluid-visc')?.value || 0.0001);
+        fluidDiff = parseFloat(document.getElementById('fluid-diff')?.value || 0.0001);
 
         const size = (fluidN + 2) * (fluidN + 2);
         fluidU = new Float32Array(size);
@@ -1977,11 +2013,13 @@ function fluidStep() {
 
         fluidCanvas.addEventListener('mousemove', (e) => {
             const rect = fluidCanvas.getBoundingClientRect();
-            fluidPMouseX = fluidMouseX;
-            fluidPMouseY = fluidMouseY;
             fluidMouseX = (e.clientX - rect.left) / rect.width;
             fluidMouseY = (e.clientY - rect.top) / rect.height;
         });
+
+        fluidCanvas.addEventListener('mousedown', () => { fluidMouseDown = true; });
+        fluidCanvas.addEventListener('mouseup', () => { fluidMouseDown = false; });
+        fluidCanvas.addEventListener('mouseleave', () => { fluidMouseX = -1; fluidMouseY = -1; });
 
         if (fluidAnimId) cancelAnimationFrame(fluidAnimId);
         animateFluid();
@@ -2082,24 +2120,39 @@ function fluidStep() {
     }
 
     function animateFluid() {
+        // Read slider values
+        fluidVisc = parseFloat(document.getElementById('fluid-visc')?.value || 0.0001);
+        fluidDiff = parseFloat(document.getElementById('fluid-diff')?.value || 0.0001);
+
         // Clear sources
         fluidU0.fill(0);
         fluidV0.fill(0);
         fluidDens0.fill(0);
 
-        // Add mouse force
-        const i = Math.floor(fluidMouseX * fluidN) + 1;
-        const j = Math.floor(fluidMouseY * fluidN) + 1;
-        if (i > 0 && i <= fluidN && j > 0 && j <= fluidN) {
-            fluidU0[IX(i, j)] = (fluidMouseX - fluidPMouseX) * 1000;
-            fluidV0[IX(i, j)] = (fluidMouseY - fluidPMouseY) * 1000;
-            fluidDens0[IX(i, j)] = 50;
+        // Add constant RED source at top (stronger)
+        const sourceWidth = Math.floor(fluidN / 3);
+        const sourceStart = Math.floor(fluidN / 2 - sourceWidth / 2);
+        for (let ii = sourceStart; ii < sourceStart + sourceWidth; ii++) {
+            fluidDens0[IX(ii, 3)] += 30;  // Strong source
+            fluidV0[IX(ii, 3)] = 10;       // Push downward
         }
 
-        // Add constant source at top
-        for (let ii = fluidN / 4; ii < 3 * fluidN / 4; ii++) {
-            fluidDens0[IX(ii, fluidN - 2)] += 5;
-            fluidV0[IX(ii, fluidN - 2)] = -5;
+        // Mouse acts as OBSTACLE (blocks flow by setting velocity to zero)
+        if (fluidMouseX >= 0 && fluidMouseX <= 1 && fluidMouseY >= 0 && fluidMouseY <= 1) {
+            const mi = Math.floor(fluidMouseX * fluidN) + 1;
+            const mj = Math.floor((1 - fluidMouseY) * fluidN) + 1;  // Flip Y for screen coords
+            // Set velocity to zero in a small region around mouse
+            for (let di = -2; di <= 2; di++) {
+                for (let dj = -2; dj <= 2; dj++) {
+                    const ii = mi + di;
+                    const jj = mj + dj;
+                    if (ii > 0 && ii <= fluidN && jj > 0 && jj <= fluidN) {
+                        fluidU[IX(ii, jj)] = 0;
+                        fluidV[IX(ii, jj)] = 0;
+                        fluidDens[IX(ii, jj)] *= 0.5;  // Reduce density too
+                    }
+                }
+            }
         }
 
         velStep(fluidU, fluidV, fluidU0, fluidV0, fluidVisc, fluidDt);
@@ -2121,7 +2174,7 @@ function fluidStep() {
 
         for (let i = 0; i < fluidN; i++) {
             for (let j = 0; j < fluidN; j++) {
-                const d = Math.min(255, fluidDens[IX(i + 1, j + 1)] * 5);
+                const d = Math.min(255, fluidDens[IX(i + 1, fluidN + 1 - j)] * 8);  // Flip Y
 
                 const x0 = Math.floor(i * cellW);
                 const y0 = Math.floor(j * cellH);
@@ -2131,10 +2184,32 @@ function fluidStep() {
                 for (let x = x0; x < x1; x++) {
                     for (let y = y0; y < y1; y++) {
                         const idx = (y * w + x) * 4;
-                        imgData.data[idx] = d * 0.4;
-                        imgData.data[idx + 1] = d * 0.6;
-                        imgData.data[idx + 2] = d;
+                        // RED color scheme
+                        imgData.data[idx] = Math.min(255, d + 20);      // Red
+                        imgData.data[idx + 1] = Math.floor(d * 0.2);    // Green (low)
+                        imgData.data[idx + 2] = Math.floor(d * 0.1);    // Blue (low)
                         imgData.data[idx + 3] = 255;
+                    }
+                }
+            }
+        }
+
+        // Draw obstacle indicator if mouse is on canvas
+        if (fluidMouseX >= 0 && fluidMouseX <= 1 && fluidMouseY >= 0 && fluidMouseY <= 1) {
+            const mx = Math.floor(fluidMouseX * w);
+            const my = Math.floor(fluidMouseY * h);
+            // Draw a small white circle at mouse position
+            for (let dx = -8; dx <= 8; dx++) {
+                for (let dy = -8; dy <= 8; dy++) {
+                    if (dx*dx + dy*dy <= 64) {
+                        const px = mx + dx;
+                        const py = my + dy;
+                        if (px >= 0 && px < w && py >= 0 && py < h) {
+                            const idx = (py * w + px) * 4;
+                            imgData.data[idx] = 255;
+                            imgData.data[idx + 1] = 255;
+                            imgData.data[idx + 2] = 255;
+                        }
                     }
                 }
             }
@@ -2643,6 +2718,15 @@ function fluidStep() {
         // CFL slider
         document.getElementById('cfl-r')?.addEventListener('input', () => {
             document.getElementById('cfl-r-val').textContent = parseFloat(document.getElementById('cfl-r').value).toFixed(2);
+        });
+        // Fluid sliders
+        document.getElementById('fluid-visc')?.addEventListener('input', () => {
+            const val = parseFloat(document.getElementById('fluid-visc').value);
+            document.getElementById('fluid-visc-val').textContent = val.toExponential(0);
+        });
+        document.getElementById('fluid-diff')?.addEventListener('input', () => {
+            const val = parseFloat(document.getElementById('fluid-diff').value);
+            document.getElementById('fluid-diff-val').textContent = val.toExponential(0);
         });
         document.getElementById('lorenz-perturb')?.addEventListener('input', updateLorenzSensitivity);
     });
