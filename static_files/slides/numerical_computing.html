@@ -287,8 +287,8 @@ for _ in range(n):
 <section>
     <section>
         <h2>From Differential Equations to Discrete</h2>
-        <p>Recall Galileo's projectile: $\ddot{x} = g$</p>
-        <p class="fragment">We integrated analytically: $x(t) = \frac{1}{2}gt^2 + v_0 t + x_0$</p>
+        <p>Recall Galileo's projectile: $\displaystyle\frac{d^2x}{dt^2} = -g$</p>
+        <p class="fragment">We integrated analytically: $x(t) = -\frac{1}{2}gt^2 + v_0 t + x_0$</p>
         <div class="fragment warning-box" style="margin-top: 20px;">
             <strong>Problem:</strong> Most equations can't be integrated analytically!
         </div>
@@ -302,10 +302,10 @@ for _ in range(n):
             $\frac{dx}{dt} \approx \frac{x_{n+1} - x_n}{\Delta t}$
         </div>
         <div class="fragment" style="margin-top: 20px;">
-            <p>For $\ddot{x} = g$, introduce velocity $v = \dot{x}$:</p>
+            <p>For $\frac{d^2x}{dt^2} = -g$, introduce velocity $v = \frac{dx}{dt}$:</p>
             <div class="two-column small-text">
                 <div class="equation-box">
-                    $v_{n+1} = v_n + g \cdot \Delta t$
+                    $v_{n+1} = v_n - g \cdot \Delta t$
                 </div>
                 <div class="equation-box">
                     $x_{n+1} = x_n + v_n \cdot \Delta t$
@@ -315,6 +315,37 @@ for _ in range(n):
         <div class="fragment highlight-box small-text" style="margin-top: 15px;">
             Like Fibonacci: given previous values, compute the next one recursively!
         </div>
+    </section>
+
+    <section>
+        <h2>Interactive: Step-by-Step Integration</h2>
+        <div class="two-column">
+            <div style="flex: 1.2;">
+                <svg id="euler-plot" width="480" height="300" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+                <div style="display: flex; gap: 15px; margin-top: 10px; flex-wrap: wrap;">
+                    <div class="slider-container">
+                        <label>$\Delta t$:</label>
+                        <input type="range" id="euler-dt" min="0.05" max="0.5" step="0.05" value="0.2">
+                        <span id="euler-dt-val">0.20</span>
+                    </div>
+                    <button onclick="eulerStep()" id="euler-step-btn" style="padding: 5px 15px; cursor: pointer; border-radius: 4px; border: none; background: #61afef; color: white;">Step</button>
+                    <button onclick="eulerReset()" style="padding: 5px 15px; cursor: pointer; border-radius: 4px; border: none; background: #e06c75; color: white;">Reset</button>
+                </div>
+            </div>
+            <div style="flex: 1;">
+                <div id="euler-computation" class="highlight-box small-text" style="min-height: 200px; font-family: monospace;">
+                    <div style="margin-bottom: 10px;"><strong>Initial conditions:</strong></div>
+                    <div>$x_0 = 0$ m</div>
+                    <div>$v_0 = 15$ m/s (upward)</div>
+                    <div>$g = 9.8$ m/s²</div>
+                    <div style="margin-top: 15px; color: #888;">Click "Step" to begin...</div>
+                </div>
+            </div>
+        </div>
+        <p class="tiny-text center-text" style="margin-top: 10px; color: #888;">
+            <span style="color: #61afef;">Blue dots</span> = Numerical (Euler) |
+            <span style="color: #98c379;">Green dashed</span> = Analytical solution
+        </p>
     </section>
 
     <section>
@@ -1736,9 +1767,241 @@ function fluidStep() {
     }
 
     // ==========================================
+    // EULER STEP-BY-STEP INTEGRATION
+    // ==========================================
+    let eulerState = { x: 0, v: 15, t: 0 };
+    let eulerHistory = [];
+    const eulerG = 9.8;
+    const eulerX0 = 0;
+    const eulerV0 = 15;
+
+    function initEuler() {
+        eulerState = { x: eulerX0, v: eulerV0, t: 0 };
+        eulerHistory = [{ t: 0, x: eulerX0, v: eulerV0 }];
+        drawEulerPlot();
+        updateEulerComputation(null);
+    }
+
+    function eulerStep() {
+        const dt = parseFloat(document.getElementById('euler-dt')?.value || 0.2);
+        document.getElementById('euler-dt-val').textContent = dt.toFixed(2);
+
+        const n = eulerHistory.length - 1;
+        const prev = eulerHistory[n];
+
+        // Euler update
+        const v_new = prev.v - eulerG * dt;
+        const x_new = prev.x + prev.v * dt;
+        const t_new = prev.t + dt;
+
+        eulerState = { x: x_new, v: v_new, t: t_new };
+        eulerHistory.push({ t: t_new, x: x_new, v: v_new });
+
+        drawEulerPlot();
+        updateEulerComputation({ n, prev, dt, v_new, x_new, t_new });
+    }
+
+    function eulerReset() {
+        initEuler();
+    }
+
+    function updateEulerComputation(stepData) {
+        const container = document.getElementById('euler-computation');
+        if (!container) return;
+
+        if (!stepData) {
+            container.innerHTML = `
+                <div style="margin-bottom: 10px;"><strong>Initial conditions:</strong></div>
+                <div>$x_0 = 0$ m</div>
+                <div>$v_0 = 15$ m/s (upward)</div>
+                <div>$g = 9.8$ m/s²</div>
+                <div style="margin-top: 15px; color: #888;">Click "Step" to begin...</div>
+            `;
+        } else {
+            const { n, prev, dt, v_new, x_new, t_new } = stepData;
+            container.innerHTML = `
+                <div style="margin-bottom: 8px;"><strong>Step ${n} → ${n + 1}:</strong> ($\\Delta t = ${dt.toFixed(2)}$s)</div>
+                <div style="color: #e5c07b;">$v_{${n+1}} = v_{${n}} - g \\cdot \\Delta t$</div>
+                <div style="margin-left: 20px;">$= ${prev.v.toFixed(2)} - 9.8 \\times ${dt.toFixed(2)}$</div>
+                <div style="margin-left: 20px; color: var(--accent-cyan);">$= ${v_new.toFixed(2)}$ m/s</div>
+                <div style="margin-top: 10px; color: #e5c07b;">$x_{${n+1}} = x_{${n}} + v_{${n}} \\cdot \\Delta t$</div>
+                <div style="margin-left: 20px;">$= ${prev.x.toFixed(2)} + ${prev.v.toFixed(2)} \\times ${dt.toFixed(2)}$</div>
+                <div style="margin-left: 20px; color: var(--accent-green);">$= ${x_new.toFixed(2)}$ m</div>
+                <div style="margin-top: 10px; color: #888;">$t = ${t_new.toFixed(2)}$ s</div>
+            `;
+        }
+        // Re-render KaTeX
+        if (typeof renderMathInElement !== 'undefined') {
+            renderMathInElement(container, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false}
+                ]
+            });
+        }
+    }
+
+    function drawEulerPlot() {
+        const svg = document.getElementById('euler-plot');
+        if (!svg) return;
+
+        const width = 480, height = 300;
+        const margin = { top: 20, right: 20, bottom: 40, left: 50 };
+        const plotW = width - margin.left - margin.right;
+        const plotH = height - margin.top - margin.bottom;
+
+        svg.innerHTML = '';
+
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('transform', `translate(${margin.left}, ${margin.top})`);
+        svg.appendChild(g);
+
+        // Calculate time range for the ball trajectory (time to return to ground)
+        const tFlight = 2 * eulerV0 / eulerG; // Total flight time analytically
+        const tMax = Math.max(tFlight * 1.1, eulerHistory[eulerHistory.length - 1]?.t || tFlight);
+        const xMax = eulerV0 * eulerV0 / (2 * eulerG) * 1.3; // Max height + margin
+
+        // Axes
+        const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxis.setAttribute('x1', 0); xAxis.setAttribute('y1', plotH);
+        xAxis.setAttribute('x2', plotW); xAxis.setAttribute('y2', plotH);
+        xAxis.setAttribute('stroke', '#666'); xAxis.setAttribute('stroke-width', 1.5);
+        g.appendChild(xAxis);
+
+        const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        yAxis.setAttribute('x1', 0); yAxis.setAttribute('y1', 0);
+        yAxis.setAttribute('x2', 0); yAxis.setAttribute('y2', plotH);
+        yAxis.setAttribute('stroke', '#666'); yAxis.setAttribute('stroke-width', 1.5);
+        g.appendChild(yAxis);
+
+        // Labels
+        const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 30);
+        xLabel.setAttribute('fill', '#888'); xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('font-size', '12px');
+        xLabel.textContent = 'Time (s)';
+        g.appendChild(xLabel);
+
+        const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -35);
+        yLabel.setAttribute('fill', '#888'); yLabel.setAttribute('text-anchor', 'middle');
+        yLabel.setAttribute('transform', 'rotate(-90)');
+        yLabel.setAttribute('font-size', '12px');
+        yLabel.textContent = 'Height x(t) (m)';
+        g.appendChild(yLabel);
+
+        // Draw analytical solution (dashed green line)
+        let analyticalPath = '';
+        const nPoints = 100;
+        for (let i = 0; i <= nPoints; i++) {
+            const t = (i / nPoints) * tMax;
+            const x_analytical = eulerX0 + eulerV0 * t - 0.5 * eulerG * t * t;
+            const px = (t / tMax) * plotW;
+            const py = plotH - (Math.max(0, x_analytical) / xMax) * plotH;
+            analyticalPath += (i === 0 ? 'M' : 'L') + `${px},${py}`;
+        }
+        const analyticalCurve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        analyticalCurve.setAttribute('d', analyticalPath);
+        analyticalCurve.setAttribute('stroke', '#98c379');
+        analyticalCurve.setAttribute('stroke-width', 2);
+        analyticalCurve.setAttribute('stroke-dasharray', '8,4');
+        analyticalCurve.setAttribute('fill', 'none');
+        g.appendChild(analyticalCurve);
+
+        // Draw numerical solution (blue dots and lines)
+        if (eulerHistory.length > 1) {
+            let numPath = '';
+            eulerHistory.forEach((pt, i) => {
+                const px = (pt.t / tMax) * plotW;
+                const py = plotH - (Math.max(0, pt.x) / xMax) * plotH;
+                numPath += (i === 0 ? 'M' : 'L') + `${px},${py}`;
+            });
+            const numCurve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            numCurve.setAttribute('d', numPath);
+            numCurve.setAttribute('stroke', '#61afef');
+            numCurve.setAttribute('stroke-width', 2);
+            numCurve.setAttribute('fill', 'none');
+            g.appendChild(numCurve);
+        }
+
+        // Draw points
+        eulerHistory.forEach((pt, i) => {
+            const px = (pt.t / tMax) * plotW;
+            const py = plotH - (Math.max(0, pt.x) / xMax) * plotH;
+
+            const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            dot.setAttribute('cx', px);
+            dot.setAttribute('cy', py);
+            dot.setAttribute('r', 6);
+            dot.setAttribute('fill', '#61afef');
+            dot.setAttribute('stroke', '#fff');
+            dot.setAttribute('stroke-width', 1);
+            g.appendChild(dot);
+
+            // Label for point
+            const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            label.setAttribute('x', px);
+            label.setAttribute('y', py - 10);
+            label.setAttribute('fill', '#ccc');
+            label.setAttribute('text-anchor', 'middle');
+            label.setAttribute('font-size', '10px');
+            label.textContent = i.toString();
+            g.appendChild(label);
+        });
+
+        // Ground line
+        const ground = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        ground.setAttribute('x1', 0); ground.setAttribute('y1', plotH);
+        ground.setAttribute('x2', plotW); ground.setAttribute('y2', plotH);
+        ground.setAttribute('stroke', '#888'); ground.setAttribute('stroke-width', 2);
+        ground.setAttribute('stroke-dasharray', '4,2');
+        g.appendChild(ground);
+
+        // Tick marks on axes
+        for (let i = 0; i <= 4; i++) {
+            const t = (i / 4) * tMax;
+            const px = (t / tMax) * plotW;
+            const tick = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            tick.setAttribute('x1', px); tick.setAttribute('y1', plotH);
+            tick.setAttribute('x2', px); tick.setAttribute('y2', plotH + 5);
+            tick.setAttribute('stroke', '#888');
+            g.appendChild(tick);
+
+            const tickLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            tickLabel.setAttribute('x', px); tickLabel.setAttribute('y', plotH + 15);
+            tickLabel.setAttribute('fill', '#888'); tickLabel.setAttribute('text-anchor', 'middle');
+            tickLabel.setAttribute('font-size', '10px');
+            tickLabel.textContent = t.toFixed(1);
+            g.appendChild(tickLabel);
+        }
+
+        for (let i = 0; i <= 4; i++) {
+            const x = (i / 4) * xMax;
+            const py = plotH - (x / xMax) * plotH;
+            const tick = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            tick.setAttribute('x1', 0); tick.setAttribute('y1', py);
+            tick.setAttribute('x2', -5); tick.setAttribute('y2', py);
+            tick.setAttribute('stroke', '#888');
+            g.appendChild(tick);
+
+            const tickLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            tickLabel.setAttribute('x', -8); tickLabel.setAttribute('y', py + 3);
+            tickLabel.setAttribute('fill', '#888'); tickLabel.setAttribute('text-anchor', 'end');
+            tickLabel.setAttribute('font-size', '10px');
+            tickLabel.textContent = x.toFixed(1);
+            g.appendChild(tickLabel);
+        }
+    }
+
+    // ==========================================
     // INITIALIZATION
     // ==========================================
     Reveal.on('slidechanged', event => {
+        // Euler step-by-step
+        if (event.currentSlide.querySelector('#euler-plot')) {
+            initEuler();
+        }
+
         // Predator-prey
         if (event.currentSlide.querySelector('#predprey-viz')) {
             initPredPrey();
@@ -1785,6 +2048,9 @@ function fluidStep() {
 
     // Slider listeners
     document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('euler-dt')?.addEventListener('input', () => {
+            document.getElementById('euler-dt-val').textContent = parseFloat(document.getElementById('euler-dt').value).toFixed(2);
+        });
         document.getElementById('pp-alpha')?.addEventListener('input', () => {
             document.getElementById('pp-alpha-val').textContent = document.getElementById('pp-alpha').value;
         });
