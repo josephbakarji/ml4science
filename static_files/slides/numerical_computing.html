@@ -109,18 +109,18 @@
         }
         .stencil-grid {
             display: inline-grid;
-            grid-template-columns: repeat(3, 40px);
-            gap: 5px;
+            grid-template-columns: repeat(3, 55px);
+            gap: 4px;
         }
         .stencil-cell {
-            width: 40px;
-            height: 40px;
+            width: 55px;
+            height: 35px;
             border: 2px solid #444;
             border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.7em;
+            font-size: 0.55em;
         }
         .stencil-active { background: rgba(97, 175, 239, 0.5); border-color: #61afef; }
         .stencil-target { background: rgba(152, 195, 121, 0.5); border-color: #98c379; }
@@ -497,11 +497,35 @@ for _ in range(n):
         <h2>Case Study: The Pendulum</h2>
         <p>The equation of motion:</p>
         <div class="equation-box">
-            $\ddot{\theta} = -\frac{g}{L}\sin\theta$
+            $\displaystyle\frac{d^2\theta}{dt^2} = -\frac{g}{L}\sin\theta$
         </div>
         <div class="fragment" style="margin-top: 20px;">
             <p class="small-text">For small angles: $\sin\theta \approx \theta$ &rarr; simple harmonic motion</p>
             <p class="small-text">For large angles: <strong>nonlinear!</strong> Must solve numerically.</p>
+        </div>
+    </section>
+
+    <section>
+        <h2>Discretizing the Pendulum</h2>
+        <p class="small-text">Introduce angular velocity $\omega = \frac{d\theta}{dt}$, then apply Euler:</p>
+        <div class="two-column" style="margin-top: 15px;">
+            <div>
+                <div class="highlight-box small-text">
+                    <strong>Continuous:</strong><br>
+                    $\displaystyle\frac{d\theta}{dt} = \omega$<br><br>
+                    $\displaystyle\frac{d\omega}{dt} = -\frac{g}{L}\sin\theta$
+                </div>
+            </div>
+            <div>
+                <div class="success-box small-text">
+                    <strong>Discrete (Euler):</strong><br>
+                    $\theta_{n+1} = \theta_n + \Delta t \cdot \omega_n$<br><br>
+                    $\omega_{n+1} = \omega_n - \Delta t \cdot \frac{g}{L}\sin\theta_n$
+                </div>
+            </div>
+        </div>
+        <div class="fragment principle-box small-text" style="margin-top: 20px;">
+            <strong>Same pattern:</strong> Given $(\theta_n, \omega_n)$ at time $t_n$, compute $(\theta_{n+1}, \omega_{n+1})$ at $t_{n+1} = t_n + \Delta t$
         </div>
     </section>
 
@@ -511,7 +535,7 @@ for _ in range(n):
             <div>
                 <svg id="pendulum-viz" width="250" height="250" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
                 <div class="slider-container" style="margin-top: 10px;">
-                    <label>$\theta_0$:</label>
+                    <label style="min-width: 30px;">θ₀:</label>
                     <input type="range" id="pend-theta0" min="0.1" max="3.0" step="0.1" value="0.5">
                     <span id="pend-theta0-val">0.5</span>
                 </div>
@@ -521,7 +545,7 @@ for _ in range(n):
             </div>
         </div>
         <p class="tiny-text center-text" style="margin-top: 10px;">
-            Left: Pendulum animation | Right: Phase space $(\theta, \dot{\theta})$
+            Left: Pendulum animation | Right: Phase space (θ, ω)
         </p>
     </section>
 
@@ -547,9 +571,18 @@ for _ in range(n):
         <h2>Error Analysis: How Accurate?</h2>
         <p>Unlike Fibonacci (exact), numerical solutions have <strong>error</strong></p>
         <p class="fragment">Use <strong>Taylor expansion</strong> to estimate error:</p>
-        <div class="fragment equation-box small-text">
+        <div class="fragment equation-box tiny-text" style="padding: 15px;">
             $x(t + \Delta t) = x(t) + \Delta t \cdot \dot{x}(t) + \frac{(\Delta t)^2}{2}\ddot{x}(t) + O((\Delta t)^3)$
         </div>
+        <div class="fragment" style="margin-top: 15px;">
+            <p class="small-text">Rearranging for the derivative:</p>
+            <div class="equation-box tiny-text" style="padding: 15px;">
+                $\displaystyle\frac{x(t + \Delta t) - x(t)}{\Delta t} = \dot{x}(t) + \underbrace{\frac{\Delta t}{2}\ddot{x}(t) + O((\Delta t)^2)}_{\text{Error} = O(\Delta t)}$
+            </div>
+        </div>
+        <p class="fragment tiny-text" style="margin-top: 10px; color: #888;">
+            The $(\Delta t)^2$ term becomes $O(\Delta t)$ after dividing by $\Delta t$
+        </p>
     </section>
 
     <section>
@@ -557,17 +590,17 @@ for _ in range(n):
         <div class="three-column small-text">
             <div class="highlight-box" style="text-align: center;">
                 <strong>Forward</strong><br>
-                $\frac{x_{n+1} - x_n}{\Delta t}$<br><br>
+                $\displaystyle\frac{x_{n+1} - x_n}{\Delta t}$<br><br>
                 Error: $O(\Delta t)$
             </div>
             <div class="highlight-box" style="text-align: center;">
                 <strong>Backward</strong><br>
-                $\frac{x_n - x_{n-1}}{\Delta t}$<br><br>
+                $\displaystyle\frac{x_n - x_{n-1}}{\Delta t}$<br><br>
                 Error: $O(\Delta t)$
             </div>
             <div class="success-box" style="text-align: center;">
                 <strong>Central</strong><br>
-                $\frac{x_{n+1} - x_{n-1}}{2\Delta t}$<br><br>
+                $\displaystyle\frac{x_{n+1} - x_{n-1}}{2\Delta t}$<br><br>
                 Error: $O((\Delta t)^2)$
             </div>
         </div>
@@ -596,27 +629,69 @@ for _ in range(n):
         <h2>PDEs: Functions of Space AND Time</h2>
         <p>Now $u(x, t)$ depends on both space and time</p>
         <div class="equation-box">
-            <strong>Diffusion Equation:</strong> $\frac{\partial u}{\partial t} = D\frac{\partial^2 u}{\partial x^2}$
+            <strong>Diffusion Equation:</strong> $\displaystyle\frac{\partial u}{\partial t} = D\frac{\partial^2 u}{\partial x^2}$
         </div>
-        <p class="fragment small-text" style="margin-top: 15px;">Must discretize in <strong>both</strong> space and time:</p>
-        <div class="fragment equation-box small-text">
-            $u_i^{n+1} = u_i^n + D\frac{\Delta t}{(\Delta x)^2}(u_{i+1}^n - 2u_i^n + u_{i-1}^n)$
+        <div class="fragment" style="margin-top: 20px;">
+            <p class="small-text"><strong>Examples where diffusion appears:</strong></p>
+            <ul class="tiny-text">
+                <li><strong>Heat conduction:</strong> Temperature spreads through a material</li>
+                <li><strong>Chemical diffusion:</strong> Ink spreading in water, pollutants in air</li>
+                <li><strong>Electrical signals:</strong> Current spreading in neural axons</li>
+                <li><strong>Population dynamics:</strong> Species spreading into new territory</li>
+                <li><strong>Information:</strong> Rumors spreading through a network</li>
+            </ul>
+        </div>
+    </section>
+
+    <section>
+        <h2>Discretizing Space and Time</h2>
+        <p class="small-text">Define a grid with spacing $\Delta x$ in space and $\Delta t$ in time:</p>
+        <div class="equation-box small-text" style="margin-top: 15px;">
+            $u_i^n \equiv u(x_i, t_n)$ where $x_i = i \cdot \Delta x$ and $t_n = n \cdot \Delta t$
+        </div>
+        <div class="fragment" style="margin-top: 20px;">
+            <p class="small-text">Apply finite differences to both derivatives:</p>
+            <div class="two-column tiny-text" style="margin-top: 10px;">
+                <div class="highlight-box" style="text-align: center;">
+                    <strong>Time derivative:</strong><br>
+                    $\displaystyle\frac{\partial u}{\partial t} \approx \frac{u_i^{n+1} - u_i^n}{\Delta t}$
+                </div>
+                <div class="highlight-box" style="text-align: center;">
+                    <strong>Space derivative:</strong><br>
+                    $\displaystyle\frac{\partial^2 u}{\partial x^2} \approx \frac{u_{i+1}^n - 2u_i^n + u_{i-1}^n}{(\Delta x)^2}$
+                </div>
+            </div>
+        </div>
+        <div class="fragment success-box small-text" style="margin-top: 15px;">
+            <strong>Discrete update rule:</strong> $\quad u_i^{n+1} = u_i^n + D\frac{\Delta t}{(\Delta x)^2}(u_{i+1}^n - 2u_i^n + u_{i-1}^n)$
         </div>
     </section>
 
     <section>
         <h2>PDE Discretization: Step by Step</h2>
-        <div style="display: flex; justify-content: center;">
-            <svg id="pde-grid-viz" width="800" height="350" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+        <div class="two-column">
+            <div style="flex: 1.3;">
+                <svg id="pde-grid-viz" width="550" height="320" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+            </div>
+            <div style="flex: 0.7;">
+                <div id="pde-formula-box" class="highlight-box tiny-text" style="min-height: 120px; font-family: monospace;">
+                    <div style="margin-bottom: 8px;"><strong>Current stencil:</strong></div>
+                    <div style="color: #888;">Click "Step" to begin...</div>
+                </div>
+                <div style="margin-top: 10px;">
+                    <svg id="pde-colorbar" width="200" height="30"></svg>
+                    <p class="tiny-text" style="margin: 0; color: #888;">u value (0 to 1)</p>
+                </div>
+            </div>
         </div>
         <div style="text-align: center; margin-top: 10px;">
-            <button onclick="pdeStepBack()" style="padding: 5px 15px; margin: 0 5px; cursor: pointer; border-radius: 4px; border: none; background: #666; color: white;">&larr; Back</button>
-            <button onclick="pdeStepForward()" style="padding: 5px 15px; margin: 0 5px; cursor: pointer; border-radius: 4px; border: none; background: #61afef; color: white;">Step &rarr;</button>
+            <button onclick="pdeStepBack()" style="padding: 5px 15px; margin: 0 5px; cursor: pointer; border-radius: 4px; border: none; background: #666; color: white;">← Back</button>
+            <button onclick="pdeStepStencil()" style="padding: 5px 15px; margin: 0 5px; cursor: pointer; border-radius: 4px; border: none; background: #61afef; color: white;">Step Stencil →</button>
+            <button onclick="pdeStepRow()" style="padding: 5px 15px; margin: 0 5px; cursor: pointer; border-radius: 4px; border: none; background: #c678dd; color: white;">Next Row ↑</button>
             <button onclick="pdeReset()" style="padding: 5px 15px; margin: 0 5px; cursor: pointer; border-radius: 4px; border: none; background: #e06c75; color: white;">Reset</button>
-            <button onclick="pdeAnimate()" id="pde-animate-btn" style="padding: 5px 15px; margin: 0 5px; cursor: pointer; border-radius: 4px; border: none; background: #98c379; color: white;">Animate</button>
         </div>
         <p class="tiny-text center-text" style="margin-top: 5px; color: #888;">
-            Click "Step" to see how each point is computed from its neighbors
+            "Step Stencil" moves one cell in space | "Next Row" completes a time step
         </p>
     </section>
 
@@ -625,53 +700,77 @@ for _ in range(n):
         <p class="small-text">Each new value depends on neighboring values:</p>
         <div class="three-column" style="margin-top: 20px; text-align: center;">
             <div>
-                <p class="tiny-text"><strong>Explicit (FTCS)</strong></p>
+                <p class="tiny-text"><strong>FTCS</strong></p>
+                <p class="tiny-text" style="color: #888;">(Forward Time, Central Space)</p>
                 <div class="stencil-grid">
                     <div class="stencil-cell stencil-inactive"></div>
-                    <div class="stencil-cell stencil-target">?</div>
+                    <div class="stencil-cell stencil-target">$u_i^{n+1}$</div>
                     <div class="stencil-cell stencil-inactive"></div>
-                    <div class="stencil-cell stencil-active">&#9679;</div>
-                    <div class="stencil-cell stencil-active">&#9679;</div>
-                    <div class="stencil-cell stencil-active">&#9679;</div>
+                    <div class="stencil-cell stencil-active">$u_{i-1}^n$</div>
+                    <div class="stencil-cell stencil-active">$u_i^n$</div>
+                    <div class="stencil-cell stencil-active">$u_{i+1}^n$</div>
                 </div>
-                <p class="tiny-text" style="margin-top: 5px;">$u_i^{n+1}$ from $u_{i-1}^n, u_i^n, u_{i+1}^n$</p>
+                <p class="tiny-text" style="margin-top: 8px;">$u_i^{n+1} = u_i^n + r(u_{i+1}^n - 2u_i^n + u_{i-1}^n)$</p>
             </div>
             <div class="fragment">
-                <p class="tiny-text"><strong>Implicit (BTCS)</strong></p>
+                <p class="tiny-text"><strong>BTCS</strong></p>
+                <p class="tiny-text" style="color: #888;">(Backward Time, Central Space)</p>
                 <div class="stencil-grid">
-                    <div class="stencil-cell stencil-active">&#9679;</div>
-                    <div class="stencil-cell stencil-active">&#9679;</div>
-                    <div class="stencil-cell stencil-active">&#9679;</div>
+                    <div class="stencil-cell stencil-active">$u_{i-1}^{n+1}$</div>
+                    <div class="stencil-cell stencil-active">$u_i^{n+1}$</div>
+                    <div class="stencil-cell stencil-active">$u_{i+1}^{n+1}$</div>
                     <div class="stencil-cell stencil-inactive"></div>
-                    <div class="stencil-cell stencil-target">&#9679;</div>
+                    <div class="stencil-cell stencil-target">$u_i^n$</div>
                     <div class="stencil-cell stencil-inactive"></div>
                 </div>
-                <p class="tiny-text" style="margin-top: 5px;">Solve system of equations</p>
+                <p class="tiny-text" style="margin-top: 8px;">$u_i^{n+1} - r(u_{i+1}^{n+1} - 2u_i^{n+1} + u_{i-1}^{n+1}) = u_i^n$</p>
             </div>
             <div class="fragment">
                 <p class="tiny-text"><strong>Crank-Nicolson</strong></p>
+                <p class="tiny-text" style="color: #888;">(Average of FTCS + BTCS)</p>
                 <div class="stencil-grid">
-                    <div class="stencil-cell stencil-active">&#9679;</div>
-                    <div class="stencil-cell stencil-active">&#9679;</div>
-                    <div class="stencil-cell stencil-active">&#9679;</div>
-                    <div class="stencil-cell stencil-active">&#9679;</div>
-                    <div class="stencil-cell stencil-active">&#9679;</div>
-                    <div class="stencil-cell stencil-active">&#9679;</div>
+                    <div class="stencil-cell stencil-active">●</div>
+                    <div class="stencil-cell stencil-active">●</div>
+                    <div class="stencil-cell stencil-active">●</div>
+                    <div class="stencil-cell stencil-active">●</div>
+                    <div class="stencil-cell stencil-active">●</div>
+                    <div class="stencil-cell stencil-active">●</div>
                 </div>
-                <p class="tiny-text" style="margin-top: 5px;">Average of explicit/implicit</p>
+                <p class="tiny-text" style="margin-top: 8px;">$O((\Delta t)^2, (\Delta x)^2)$ accuracy</p>
             </div>
         </div>
     </section>
 
     <section>
-        <h2>Stability: Not All $\Delta t$ Work!</h2>
-        <p class="small-text">For the explicit diffusion scheme:</p>
-        <div class="equation-box">
-            $r = \frac{D \cdot \Delta t}{(\Delta x)^2} \leq \frac{1}{2}$
+        <h2>Stability: The CFL Condition</h2>
+        <div class="two-column">
+            <div style="flex: 1;">
+                <svg id="cfl-demo-viz" width="400" height="280" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+                <div class="slider-container" style="margin-top: 10px;">
+                    <label>r =</label>
+                    <input type="range" id="cfl-r" min="0.1" max="0.8" step="0.05" value="0.4">
+                    <span id="cfl-r-val">0.40</span>
+                </div>
+                <div style="text-align: center; margin-top: 5px;">
+                    <button onclick="runCFLDemo()" style="padding: 5px 20px; cursor: pointer; border-radius: 4px; border: none; background: #61afef; color: white;">Run Simulation</button>
+                </div>
+            </div>
+            <div style="flex: 1;">
+                <div class="equation-box small-text">
+                    <strong>CFL Condition:</strong><br><br>
+                    $r = \frac{D \cdot \Delta t}{(\Delta x)^2} \leq \frac{1}{2}$
+                </div>
+                <div id="cfl-status" class="success-box small-text" style="margin-top: 15px;">
+                    <strong>r = 0.40:</strong> Stable ✓<br>
+                    Solution remains bounded
+                </div>
+                <p class="tiny-text" style="margin-top: 10px; color: #888;">
+                    Try r > 0.5 to see instability!
+                </p>
+            </div>
         </div>
-        <p class="fragment small-text" style="margin-top: 15px;">If $r > 0.5$, the solution <strong>blows up</strong>!</p>
         <div class="fragment warning-box small-text" style="margin-top: 15px;">
-            <strong>Implicit schemes</strong> are unconditionally stable but require solving linear systems.
+            <strong>Implicit schemes</strong> (BTCS, Crank-Nicolson) are unconditionally stable but require solving linear systems.
         </div>
     </section>
 </section>
@@ -1440,14 +1539,20 @@ function fluidStep() {
     // ==========================================
     let pdeGrid = [];
     let pdeTimeStep = 0;
-    let pdeAnimating = false;
-    let pdeAnimId = null;
-    const pdeNx = 25;
-    const pdeNt = 40;
+    let pdeSpaceIdx = 1; // Current stencil position in space (1 to pdeNx-2)
+    let pdeCurrentRow = []; // Row being built
+    const pdeNx = 15;
+    const pdeNt = 20;
+    const pdeD = 0.4;
+    const pdeDx = 1 / (pdeNx - 1);
+    const pdeDt = 0.4 * pdeDx * pdeDx / pdeD;
+    const pdeR = pdeD * pdeDt / (pdeDx * pdeDx);
 
     function initPDEGrid() {
         pdeGrid = [];
         pdeTimeStep = 0;
+        pdeSpaceIdx = 1;
+        pdeCurrentRow = [];
 
         // Initial condition: Gaussian
         const row = [];
@@ -1456,31 +1561,68 @@ function fluidStep() {
             row.push(Math.exp(-Math.pow((x - 0.5) * 5, 2)));
         }
         pdeGrid.push(row);
+        pdeCurrentRow = [0]; // Start with BC
+
+        drawPDEGrid();
+        drawPDEColorbar();
+        updatePDEFormula(null);
+    }
+
+    function pdeStepStencil() {
+        if (pdeTimeStep >= pdeNt - 1) return;
+
+        const prev = pdeGrid[pdeGrid.length - 1];
+
+        if (pdeSpaceIdx < pdeNx - 1) {
+            // Compute this cell
+            const i = pdeSpaceIdx;
+            const newVal = prev[i] + pdeR * (prev[i+1] - 2*prev[i] + prev[i-1]);
+            pdeCurrentRow.push(newVal);
+
+            // Update formula display
+            updatePDEFormula({
+                i: i,
+                n: pdeTimeStep,
+                uPrev: prev[i-1],
+                uCurr: prev[i],
+                uNext: prev[i+1],
+                uNew: newVal,
+                r: pdeR
+            });
+
+            pdeSpaceIdx++;
+        }
+
+        // Check if row is complete
+        if (pdeSpaceIdx >= pdeNx - 1) {
+            pdeCurrentRow.push(0); // Right BC
+            pdeGrid.push([...pdeCurrentRow]);
+            pdeTimeStep++;
+            pdeSpaceIdx = 1;
+            pdeCurrentRow = [0]; // Start new row with left BC
+        }
 
         drawPDEGrid();
     }
 
-    function pdeStepForward() {
+    function pdeStepRow() {
         if (pdeTimeStep >= pdeNt - 1) return;
 
-        const D = 0.4;
-        const dx = 1 / (pdeNx - 1);
-        const dt = 0.4 * dx * dx / D; // Stability
-        const r = D * dt / (dx * dx);
-
+        // Complete the current row
         const prev = pdeGrid[pdeGrid.length - 1];
-        const next = [];
+        pdeCurrentRow = [0]; // Left BC
 
-        for (let i = 0; i < pdeNx; i++) {
-            if (i === 0 || i === pdeNx - 1) {
-                next.push(0); // Dirichlet BC
-            } else {
-                next.push(prev[i] + r * (prev[i+1] - 2*prev[i] + prev[i-1]));
-            }
+        for (let i = 1; i < pdeNx - 1; i++) {
+            pdeCurrentRow.push(prev[i] + pdeR * (prev[i+1] - 2*prev[i] + prev[i-1]));
         }
+        pdeCurrentRow.push(0); // Right BC
 
-        pdeGrid.push(next);
+        pdeGrid.push([...pdeCurrentRow]);
         pdeTimeStep++;
+        pdeSpaceIdx = 1;
+        pdeCurrentRow = [0];
+
+        updatePDEFormula(null);
         drawPDEGrid();
     }
 
@@ -1488,45 +1630,82 @@ function fluidStep() {
         if (pdeGrid.length <= 1) return;
         pdeGrid.pop();
         pdeTimeStep--;
+        pdeSpaceIdx = 1;
+        pdeCurrentRow = [0];
+        updatePDEFormula(null);
         drawPDEGrid();
     }
 
     function pdeReset() {
-        pdeAnimating = false;
-        if (pdeAnimId) cancelAnimationFrame(pdeAnimId);
-        document.getElementById('pde-animate-btn').textContent = 'Animate';
         initPDEGrid();
     }
 
-    function pdeAnimate() {
-        const btn = document.getElementById('pde-animate-btn');
-        if (pdeAnimating) {
-            pdeAnimating = false;
-            btn.textContent = 'Animate';
-            return;
+    function updatePDEFormula(data) {
+        const box = document.getElementById('pde-formula-box');
+        if (!box) return;
+
+        if (!data) {
+            box.innerHTML = `
+                <div style="margin-bottom: 8px;"><strong>Current stencil:</strong></div>
+                <div style="color: #888;">Click "Step Stencil" to begin...</div>
+                <div style="margin-top: 10px; color: #61afef;">r = ${pdeR.toFixed(3)}</div>
+            `;
+        } else {
+            box.innerHTML = `
+                <div style="margin-bottom: 8px;"><strong>Computing $u_{${data.i}}^{${data.n+1}}$:</strong></div>
+                <div style="font-size: 0.85em;">
+                    $u_{${data.i}}^{${data.n+1}} = u_{${data.i}}^{${data.n}} + r(u_{${data.i+1}}^{${data.n}} - 2u_{${data.i}}^{${data.n}} + u_{${data.i-1}}^{${data.n}})$
+                </div>
+                <div style="margin-top: 8px; font-size: 0.85em;">
+                    $= ${data.uCurr.toFixed(3)} + ${pdeR.toFixed(2)}(${data.uNext.toFixed(3)} - 2 \\cdot ${data.uCurr.toFixed(3)} + ${data.uPrev.toFixed(3)})$
+                </div>
+                <div style="margin-top: 8px; color: #98c379; font-size: 0.9em;">
+                    $= ${data.uNew.toFixed(4)}$
+                </div>
+            `;
+        }
+    }
+
+    function drawPDEColorbar() {
+        const svg = document.getElementById('pde-colorbar');
+        if (!svg) return;
+
+        svg.innerHTML = '';
+        const width = 200, height = 20;
+
+        // Gradient bar
+        for (let i = 0; i < width; i++) {
+            const val = i / width;
+            const intensity = Math.floor(val * 255);
+            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            rect.setAttribute('x', i);
+            rect.setAttribute('y', 0);
+            rect.setAttribute('width', 1);
+            rect.setAttribute('height', height);
+            rect.setAttribute('fill', `rgb(${intensity}, ${Math.floor(intensity * 0.7)}, ${255 - intensity})`);
+            svg.appendChild(rect);
         }
 
-        pdeAnimating = true;
-        btn.textContent = 'Stop';
-
-        function step() {
-            if (!pdeAnimating || pdeTimeStep >= pdeNt - 1) {
-                pdeAnimating = false;
-                btn.textContent = 'Animate';
-                return;
-            }
-            pdeStepForward();
-            pdeAnimId = setTimeout(step, 100);
-        }
-        step();
+        // Labels
+        [0, 0.5, 1].forEach(val => {
+            const x = val * width;
+            const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            label.setAttribute('x', x);
+            label.setAttribute('y', height + 10);
+            label.setAttribute('fill', '#888');
+            label.setAttribute('text-anchor', val === 0 ? 'start' : (val === 1 ? 'end' : 'middle'));
+            label.setAttribute('font-size', '9px');
+            label.textContent = val.toFixed(1);
+            svg.appendChild(label);
+        });
     }
 
     function drawPDEGrid() {
         const svg = document.getElementById('pde-grid-viz');
         if (!svg) return;
 
-        const width = 800, height = 350;
-        const margin = { top: 30, right: 30, bottom: 50, left: 60 };
+        const width = 550, height = 320;
+        const margin = { top: 30, right: 20, bottom: 50, left: 50 };
         const plotW = width - margin.left - margin.right;
         const plotH = height - margin.top - margin.bottom;
 
@@ -1539,7 +1718,7 @@ function fluidStep() {
         const cellW = plotW / pdeNx;
         const cellH = plotH / pdeNt;
 
-        // Draw grid cells
+        // Draw completed grid cells
         for (let t = 0; t < pdeGrid.length; t++) {
             for (let i = 0; i < pdeNx; i++) {
                 const val = pdeGrid[t][i];
@@ -1549,7 +1728,6 @@ function fluidStep() {
                 rect.setAttribute('width', cellW - 1);
                 rect.setAttribute('height', cellH - 1);
 
-                // Color based on value
                 const intensity = Math.min(255, Math.floor(val * 255));
                 rect.setAttribute('fill', `rgb(${intensity}, ${Math.floor(intensity * 0.7)}, ${255 - intensity})`);
                 rect.setAttribute('stroke', 'rgba(255,255,255,0.1)');
@@ -1557,28 +1735,46 @@ function fluidStep() {
             }
         }
 
-        // Highlight stencil for next computation
-        if (pdeGrid.length < pdeNt && pdeGrid.length > 0) {
-            const t = pdeGrid.length - 1;
-            for (let i = 1; i < pdeNx - 1; i++) {
-                // Source cells
-                [-1, 0, 1].forEach(di => {
-                    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                    rect.setAttribute('x', (i + di) * cellW);
-                    rect.setAttribute('y', plotH - (t + 1) * cellH);
-                    rect.setAttribute('width', cellW - 1);
-                    rect.setAttribute('height', cellH - 1);
-                    rect.setAttribute('fill', 'none');
-                    rect.setAttribute('stroke', '#61afef');
-                    rect.setAttribute('stroke-width', 2);
-                    g.appendChild(rect);
-                });
-                break; // Just show for first interior point
+        // Draw current row being built
+        if (pdeCurrentRow.length > 0 && pdeTimeStep < pdeNt - 1) {
+            const t = pdeGrid.length;
+            for (let i = 0; i < pdeCurrentRow.length; i++) {
+                const val = pdeCurrentRow[i];
+                const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                rect.setAttribute('x', i * cellW);
+                rect.setAttribute('y', plotH - (t + 1) * cellH);
+                rect.setAttribute('width', cellW - 1);
+                rect.setAttribute('height', cellH - 1);
+
+                const intensity = Math.min(255, Math.floor(val * 255));
+                rect.setAttribute('fill', `rgb(${intensity}, ${Math.floor(intensity * 0.7)}, ${255 - intensity})`);
+                rect.setAttribute('stroke', '#98c379');
+                rect.setAttribute('stroke-width', 2);
+                g.appendChild(rect);
             }
+        }
+
+        // Highlight current stencil
+        if (pdeTimeStep < pdeNt - 1 && pdeSpaceIdx < pdeNx - 1) {
+            const t = pdeGrid.length - 1;
+            const i = pdeSpaceIdx;
+
+            // Source cells (previous row)
+            [-1, 0, 1].forEach(di => {
+                const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                rect.setAttribute('x', (i + di) * cellW);
+                rect.setAttribute('y', plotH - (t + 1) * cellH);
+                rect.setAttribute('width', cellW - 1);
+                rect.setAttribute('height', cellH - 1);
+                rect.setAttribute('fill', 'none');
+                rect.setAttribute('stroke', '#61afef');
+                rect.setAttribute('stroke-width', 2);
+                g.appendChild(rect);
+            });
 
             // Target cell
             const targetRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-            targetRect.setAttribute('x', 1 * cellW);
+            targetRect.setAttribute('x', i * cellW);
             targetRect.setAttribute('y', plotH - (t + 2) * cellH);
             targetRect.setAttribute('width', cellW - 1);
             targetRect.setAttribute('height', cellH - 1);
@@ -1588,29 +1784,167 @@ function fluidStep() {
             g.appendChild(targetRect);
         }
 
-        // Labels
+        // Axis labels
         const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 35);
         xLabel.setAttribute('fill', '#888'); xLabel.setAttribute('text-anchor', 'middle');
-        xLabel.setAttribute('font-size', '14px');
+        xLabel.setAttribute('font-size', '12px');
+        xLabel.textContent = 'Space index i';
+        g.appendChild(xLabel);
+
+        const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -35);
+        yLabel.setAttribute('fill', '#888'); yLabel.setAttribute('text-anchor', 'middle');
+        yLabel.setAttribute('transform', 'rotate(-90)');
+        yLabel.setAttribute('font-size', '12px');
+        yLabel.textContent = 'Time step n';
+        g.appendChild(yLabel);
+
+        // Status
+        const stepText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        stepText.setAttribute('x', plotW - 5); stepText.setAttribute('y', -10);
+        stepText.setAttribute('fill', '#ccc'); stepText.setAttribute('text-anchor', 'end');
+        stepText.setAttribute('font-size', '11px');
+        stepText.textContent = `n=${pdeTimeStep}, i=${pdeSpaceIdx}`;
+        g.appendChild(stepText);
+    }
+
+    // ==========================================
+    // CFL STABILITY DEMONSTRATION
+    // ==========================================
+    function initCFLDemo() {
+        drawCFLDemo();
+    }
+
+    function runCFLDemo() {
+        const r = parseFloat(document.getElementById('cfl-r')?.value || 0.4);
+        document.getElementById('cfl-r-val').textContent = r.toFixed(2);
+
+        // Run simulation
+        const nx = 30;
+        const nt = 50;
+        let u = [];
+
+        // Initial condition: Gaussian
+        for (let i = 0; i < nx; i++) {
+            const x = i / (nx - 1);
+            u.push(Math.exp(-Math.pow((x - 0.5) * 5, 2)));
+        }
+
+        const history = [u.slice()];
+
+        for (let n = 0; n < nt; n++) {
+            const uNew = [0]; // Left BC
+            for (let i = 1; i < nx - 1; i++) {
+                const val = u[i] + r * (u[i+1] - 2*u[i] + u[i-1]);
+                uNew.push(val);
+            }
+            uNew.push(0); // Right BC
+            u = uNew;
+            history.push(u.slice());
+
+            // Check for blowup
+            const maxU = Math.max(...u.map(Math.abs));
+            if (maxU > 100) break;
+        }
+
+        drawCFLDemo(history, r);
+
+        // Update status
+        const statusBox = document.getElementById('cfl-status');
+        if (r <= 0.5) {
+            statusBox.className = 'success-box small-text';
+            statusBox.innerHTML = `<strong>r = ${r.toFixed(2)}:</strong> Stable ✓<br>Solution remains bounded`;
+        } else {
+            statusBox.className = 'warning-box small-text';
+            statusBox.innerHTML = `<strong>r = ${r.toFixed(2)}:</strong> UNSTABLE ✗<br>Solution blows up!`;
+        }
+    }
+
+    function drawCFLDemo(history, r) {
+        const svg = document.getElementById('cfl-demo-viz');
+        if (!svg) return;
+
+        const width = 400, height = 280;
+        const margin = { top: 20, right: 20, bottom: 40, left: 45 };
+        const plotW = width - margin.left - margin.right;
+        const plotH = height - margin.top - margin.bottom;
+
+        svg.innerHTML = '';
+
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('transform', `translate(${margin.left}, ${margin.top})`);
+        svg.appendChild(g);
+
+        // Axes
+        const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxis.setAttribute('x1', 0); xAxis.setAttribute('y1', plotH);
+        xAxis.setAttribute('x2', plotW); xAxis.setAttribute('y2', plotH);
+        xAxis.setAttribute('stroke', '#666'); xAxis.setAttribute('stroke-width', 1);
+        g.appendChild(xAxis);
+
+        const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        yAxis.setAttribute('x1', 0); yAxis.setAttribute('y1', 0);
+        yAxis.setAttribute('x2', 0); yAxis.setAttribute('y2', plotH);
+        yAxis.setAttribute('stroke', '#666'); yAxis.setAttribute('stroke-width', 1);
+        g.appendChild(yAxis);
+
+        // Labels
+        const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 30);
+        xLabel.setAttribute('fill', '#888'); xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('font-size', '11px');
         xLabel.textContent = 'Space (x)';
         g.appendChild(xLabel);
 
         const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -40);
+        yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -30);
         yLabel.setAttribute('fill', '#888'); yLabel.setAttribute('text-anchor', 'middle');
         yLabel.setAttribute('transform', 'rotate(-90)');
-        yLabel.setAttribute('font-size', '14px');
-        yLabel.textContent = 'Time (t)';
+        yLabel.setAttribute('font-size', '11px');
+        yLabel.textContent = 'u(x,t)';
         g.appendChild(yLabel);
 
-        // Time step indicator
-        const stepText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        stepText.setAttribute('x', plotW - 10); stepText.setAttribute('y', -10);
-        stepText.setAttribute('fill', '#ccc'); stepText.setAttribute('text-anchor', 'end');
-        stepText.setAttribute('font-size', '12px');
-        stepText.textContent = `Time step: ${pdeTimeStep}`;
-        g.appendChild(stepText);
+        if (!history) return;
+
+        const nx = history[0].length;
+        const yMax = r > 0.5 ? 5 : 1.2;
+        const yMin = r > 0.5 ? -5 : -0.2;
+
+        // Draw several time slices
+        const colors = ['#61afef', '#98c379', '#e5c07b', '#e06c75', '#c678dd'];
+        const times = [0, Math.floor(history.length * 0.25), Math.floor(history.length * 0.5),
+                       Math.floor(history.length * 0.75), history.length - 1];
+
+        times.forEach((t, idx) => {
+            if (t >= history.length) return;
+            const u = history[t];
+            let path = '';
+
+            u.forEach((val, i) => {
+                const px = (i / (nx - 1)) * plotW;
+                const py = plotH - ((Math.min(Math.max(val, yMin), yMax) - yMin) / (yMax - yMin)) * plotH;
+                path += (i === 0 ? 'M' : 'L') + `${px},${py}`;
+            });
+
+            const curve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            curve.setAttribute('d', path);
+            curve.setAttribute('stroke', colors[idx]);
+            curve.setAttribute('stroke-width', 1.5);
+            curve.setAttribute('fill', 'none');
+            curve.setAttribute('opacity', idx === times.length - 1 ? 1 : 0.5);
+            g.appendChild(curve);
+        });
+
+        // Zero line
+        if (r > 0.5) {
+            const zeroY = plotH - ((0 - yMin) / (yMax - yMin)) * plotH;
+            const zeroLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            zeroLine.setAttribute('x1', 0); zeroLine.setAttribute('y1', zeroY);
+            zeroLine.setAttribute('x2', plotW); zeroLine.setAttribute('y2', zeroY);
+            zeroLine.setAttribute('stroke', '#888'); zeroLine.setAttribute('stroke-dasharray', '4,4');
+            g.appendChild(zeroLine);
+        }
     }
 
     // ==========================================
@@ -2266,6 +2600,11 @@ function fluidStep() {
             initPDEGrid();
         }
 
+        // CFL Demo
+        if (event.currentSlide.querySelector('#cfl-demo-viz')) {
+            initCFLDemo();
+        }
+
         // Fluid
         if (event.currentSlide.querySelector('#fluid-canvas')) {
             initFluid();
@@ -2300,6 +2639,10 @@ function fluidStep() {
         document.getElementById('pend-theta0')?.addEventListener('input', () => {
             if (pendAnimId) cancelAnimationFrame(pendAnimId);
             initPendulum();
+        });
+        // CFL slider
+        document.getElementById('cfl-r')?.addEventListener('input', () => {
+            document.getElementById('cfl-r-val').textContent = parseFloat(document.getElementById('cfl-r').value).toFixed(2);
         });
         document.getElementById('lorenz-perturb')?.addEventListener('input', updateLorenzSensitivity);
     });
