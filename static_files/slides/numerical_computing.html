@@ -367,49 +367,124 @@ for _ in range(n):
 <!-- ============================================ -->
 <section>
     <section>
-        <h2>Case Study: Predator-Prey Model</h2>
-        <p class="small-text">Lotka (1925) and Volterra (1926) independently discovered this model</p>
-        <div class="two-column" style="margin-top: 15px;">
+        <h2>Case Study: The Hudson Bay Fur Records</h2>
+        <div class="two-column">
             <div>
-                <p class="small-text"><strong>The logic:</strong></p>
+                <p class="small-text"><strong>Historical context:</strong></p>
                 <ul class="tiny-text">
-                    <li>More predators &rarr; eat more prey</li>
-                    <li>Fewer prey &rarr; predators starve</li>
-                    <li>Fewer predators &rarr; prey recover</li>
-                    <li>More prey &rarr; predators thrive</li>
-                    <li>&rarr; <strong>Oscillation!</strong></li>
+                    <li><strong>1670-1920s:</strong> Hudson's Bay Company traded furs in Canada</li>
+                    <li>Kept meticulous records of pelts purchased each year</li>
+                    <li><strong>1924:</strong> Ecologist Charles Elton analyzed 90 years of data</li>
+                    <li>Discovered striking ~10-year cycles in lynx and hare populations</li>
                 </ul>
-            </div>
-            <div class="fragment">
-                <div class="equation-box small-text">
-                    $\frac{dx}{dt} = \alpha x - \beta xy$<br><br>
-                    $\frac{dy}{dt} = \delta xy - \gamma y$
+                <div class="fragment highlight-box tiny-text" style="margin-top: 10px;">
+                    <strong>The puzzle:</strong> Why do populations oscillate so regularly?<br>
+                    Can we build a mathematical model to explain this?
                 </div>
-                <p class="tiny-text" style="text-align: center;">$x$ = prey, $y$ = predators</p>
+            </div>
+            <div>
+                <svg id="hudson-data-viz" width="420" height="280" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+                <p class="tiny-text" style="text-align: center; color: #888;">
+                    Hudson Bay Company records (1900-1920)<br>
+                    <span style="color: #61afef;">■ Hare</span> | <span style="color: #e06c75;">■ Lynx</span> (thousands)
+                </p>
             </div>
         </div>
     </section>
 
     <section>
-        <h2>Predator-Prey Simulation</h2>
-        <div style="display: flex; justify-content: center;">
-            <svg id="predprey-viz" width="750" height="320" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+        <h2>The Lotka-Volterra Model</h2>
+        <p class="small-text">Lotka (1925) and Volterra (1926) independently proposed:</p>
+        <div class="two-column" style="margin-top: 15px;">
+            <div>
+                <p class="small-text"><strong>The logic:</strong></p>
+                <ul class="tiny-text">
+                    <li>More prey &rarr; predators thrive</li>
+                    <li>More predators &rarr; eat more prey</li>
+                    <li>Fewer prey &rarr; predators starve</li>
+                    <li>Fewer predators &rarr; prey recover</li>
+                    <li>&rarr; <strong>Oscillation!</strong></li>
+                </ul>
+            </div>
+            <div>
+                <div class="equation-box small-text">
+                    $\displaystyle\frac{dx}{dt} = \color{#98c379}{\alpha}\, x - \color{#e5c07b}{\beta}\, xy$<br><br>
+                    $\displaystyle\frac{dy}{dt} = \color{#c678dd}{\delta}\, xy - \color{#56b6c2}{\gamma}\, y$
+                </div>
+                <p class="tiny-text" style="margin-top: 10px;">
+                    $x$ = prey (hares), $y$ = predators (lynx)<br>
+                    <span style="color: #98c379;">α</span> = prey growth |
+                    <span style="color: #e5c07b;">β</span> = predation rate<br>
+                    <span style="color: #c678dd;">δ</span> = predator efficiency |
+                    <span style="color: #56b6c2;">γ</span> = predator death
+                </p>
+            </div>
         </div>
-        <div style="display: flex; justify-content: center; gap: 30px; margin-top: 10px;">
-            <div class="slider-container">
-                <label>$\alpha$:</label>
-                <input type="range" id="pp-alpha" min="0.5" max="2" step="0.1" value="1.1">
-                <span id="pp-alpha-val">1.1</span>
+    </section>
+
+    <section>
+        <h2>Discretizing the Equations</h2>
+        <p class="small-text">Apply Euler's method to each equation:</p>
+        <div class="two-column" style="margin-top: 15px;">
+            <div>
+                <div class="highlight-box small-text">
+                    <strong>Continuous:</strong><br>
+                    $\displaystyle\frac{dx}{dt} = \alpha x - \beta xy$<br><br>
+                    $\displaystyle\frac{dy}{dt} = \delta xy - \gamma y$
+                </div>
             </div>
-            <div class="slider-container">
-                <label>$\beta$:</label>
-                <input type="range" id="pp-beta" min="0.1" max="1" step="0.05" value="0.4">
-                <span id="pp-beta-val">0.4</span>
+            <div>
+                <div class="success-box small-text">
+                    <strong>Discrete (Euler):</strong><br>
+                    $x_{n+1} = x_n + \Delta t \cdot (\alpha x_n - \beta x_n y_n)$<br><br>
+                    $y_{n+1} = y_n + \Delta t \cdot (\delta x_n y_n - \gamma y_n)$
+                </div>
             </div>
-            <button onclick="resetPredPrey()" style="padding: 5px 15px; cursor: pointer; border-radius: 4px; border: none; background: #61afef; color: white;">Reset</button>
+        </div>
+        <div class="fragment principle-box small-text" style="margin-top: 20px;">
+            <strong>The recipe:</strong> Given $(x_n, y_n)$ at time $t_n$, compute $(x_{n+1}, y_{n+1})$ at time $t_{n+1} = t_n + \Delta t$
+        </div>
+    </section>
+
+    <section>
+        <h2>Fitting the Model to Data</h2>
+        <div class="two-column">
+            <div style="flex: 1.5;">
+                <svg id="predprey-fit-viz" width="550" height="320" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+            </div>
+            <div style="flex: 1;">
+                <div class="equation-box tiny-text" style="padding: 10px;">
+                    $\displaystyle\frac{dx}{dt} = \color{#98c379}{\alpha}\, x - \color{#e5c07b}{\beta}\, xy$<br><br>
+                    $\displaystyle\frac{dy}{dt} = \color{#c678dd}{\delta}\, xy - \color{#56b6c2}{\gamma}\, y$
+                </div>
+                <div style="margin-top: 10px;">
+                    <div class="slider-container">
+                        <label style="color: #98c379;">α:</label>
+                        <input type="range" id="pp-alpha" min="0.2" max="1.0" step="0.02" value="0.55">
+                        <span id="pp-alpha-val" style="color: #98c379;">0.55</span>
+                    </div>
+                    <div class="slider-container">
+                        <label style="color: #e5c07b;">β:</label>
+                        <input type="range" id="pp-beta" min="0.01" max="0.1" step="0.005" value="0.028">
+                        <span id="pp-beta-val" style="color: #e5c07b;">0.028</span>
+                    </div>
+                    <div class="slider-container">
+                        <label style="color: #c678dd;">δ:</label>
+                        <input type="range" id="pp-delta" min="0.005" max="0.05" step="0.002" value="0.018">
+                        <span id="pp-delta-val" style="color: #c678dd;">0.018</span>
+                    </div>
+                    <div class="slider-container">
+                        <label style="color: #56b6c2;">γ:</label>
+                        <input type="range" id="pp-gamma" min="0.2" max="1.2" step="0.02" value="0.84">
+                        <span id="pp-gamma-val" style="color: #56b6c2;">0.84</span>
+                    </div>
+                </div>
+                <button onclick="resetPredPreyFit()" style="margin-top: 10px; padding: 5px 15px; cursor: pointer; border-radius: 4px; border: none; background: #61afef; color: white; width: 100%;">Reset Parameters</button>
+            </div>
         </div>
         <p class="tiny-text center-text" style="margin-top: 5px; color: #888;">
-            <span style="color: #61afef;">Blue = Prey</span> | <span style="color: #e06c75;">Red = Predators</span>
+            Dots = Real data | Lines = Model simulation |
+            <span style="color: #61afef;">Hare</span> | <span style="color: #e06c75;">Lynx</span>
         </p>
     </section>
 </section>
@@ -841,65 +916,25 @@ function fluidStep() {
     });
 
     // ==========================================
-    // PREDATOR-PREY SIMULATION
+    // PREDATOR-PREY: HUDSON BAY DATA & FITTING
     // ==========================================
-    let ppAnimId = null;
-    let ppData = { prey: [], predators: [], t: [] };
-    let ppState = { x: 10, y: 5 };
+    // Historical Hudson Bay Company data (1900-1920, approximate values in thousands)
+    // Based on Elton & Nicholson (1942) and MacLulich (1937)
+    const hudsonBayData = {
+        years: [1900, 1901, 1902, 1903, 1904, 1905, 1906, 1907, 1908, 1909,
+                1910, 1911, 1912, 1913, 1914, 1915, 1916, 1917, 1918, 1919, 1920],
+        hare: [30, 47, 70, 78, 36, 20, 9, 7, 10, 28,
+               55, 82, 73, 40, 18, 10, 8, 13, 28, 55, 80],
+        lynx: [4, 7, 12, 25, 44, 36, 15, 5, 3, 4,
+               6, 12, 22, 38, 50, 32, 12, 5, 4, 5, 8]
+    };
 
-    function initPredPrey() {
-        ppState = { x: 10, y: 5 };
-        ppData = { prey: [10], predators: [5], t: [0] };
-        if (ppAnimId) cancelAnimationFrame(ppAnimId);
-        animatePredPrey();
-    }
-
-    function animatePredPrey() {
-        const alpha = parseFloat(document.getElementById('pp-alpha')?.value || 1.1);
-        const beta = parseFloat(document.getElementById('pp-beta')?.value || 0.4);
-        const gamma = 0.4;
-        const delta = 0.1;
-        const dt = 0.02;
-
-        document.getElementById('pp-alpha-val').textContent = alpha.toFixed(1);
-        document.getElementById('pp-beta-val').textContent = beta.toFixed(2);
-
-        // RK4 step
-        const f = (x, y) => [alpha * x - beta * x * y, delta * x * y - gamma * y];
-
-        const k1 = f(ppState.x, ppState.y);
-        const k2 = f(ppState.x + dt/2 * k1[0], ppState.y + dt/2 * k1[1]);
-        const k3 = f(ppState.x + dt/2 * k2[0], ppState.y + dt/2 * k2[1]);
-        const k4 = f(ppState.x + dt * k3[0], ppState.y + dt * k3[1]);
-
-        ppState.x += dt/6 * (k1[0] + 2*k2[0] + 2*k3[0] + k4[0]);
-        ppState.y += dt/6 * (k1[1] + 2*k2[1] + 2*k3[1] + k4[1]);
-
-        ppState.x = Math.max(0.1, ppState.x);
-        ppState.y = Math.max(0.1, ppState.y);
-
-        const t = ppData.t[ppData.t.length - 1] + dt;
-        ppData.t.push(t);
-        ppData.prey.push(ppState.x);
-        ppData.predators.push(ppState.y);
-
-        // Keep last 500 points
-        if (ppData.t.length > 500) {
-            ppData.t.shift();
-            ppData.prey.shift();
-            ppData.predators.shift();
-        }
-
-        drawPredPrey();
-        ppAnimId = requestAnimationFrame(animatePredPrey);
-    }
-
-    function drawPredPrey() {
-        const svg = document.getElementById('predprey-viz');
+    function drawHudsonData() {
+        const svg = document.getElementById('hudson-data-viz');
         if (!svg) return;
 
-        const width = 750, height = 320;
-        const margin = { top: 20, right: 30, bottom: 40, left: 50 };
+        const width = 420, height = 280;
+        const margin = { top: 20, right: 20, bottom: 40, left: 45 };
         const plotW = width - margin.left - margin.right;
         const plotH = height - margin.top - margin.bottom;
 
@@ -924,57 +959,259 @@ function fluidStep() {
 
         // Labels
         const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 35);
+        xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 30);
         xLabel.setAttribute('fill', '#888'); xLabel.setAttribute('text-anchor', 'middle');
-        xLabel.setAttribute('font-size', '12px');
-        xLabel.textContent = 'Time';
+        xLabel.setAttribute('font-size', '11px');
+        xLabel.textContent = 'Year';
+        g.appendChild(xLabel);
+
+        const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -32);
+        yLabel.setAttribute('fill', '#888'); yLabel.setAttribute('text-anchor', 'middle');
+        yLabel.setAttribute('transform', 'rotate(-90)');
+        yLabel.setAttribute('font-size', '11px');
+        yLabel.textContent = 'Population (thousands)';
+        g.appendChild(yLabel);
+
+        const years = hudsonBayData.years;
+        const tMin = years[0], tMax = years[years.length - 1];
+        const maxPop = Math.max(...hudsonBayData.hare, ...hudsonBayData.lynx) * 1.1;
+
+        // Draw hare data
+        let harePath = '';
+        hudsonBayData.hare.forEach((h, i) => {
+            const x = ((years[i] - tMin) / (tMax - tMin)) * plotW;
+            const y = plotH - (h / maxPop) * plotH;
+            harePath += (i === 0 ? 'M' : 'L') + `${x},${y}`;
+        });
+        const hareCurve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        hareCurve.setAttribute('d', harePath);
+        hareCurve.setAttribute('stroke', '#61afef');
+        hareCurve.setAttribute('stroke-width', 2);
+        hareCurve.setAttribute('fill', 'none');
+        g.appendChild(hareCurve);
+
+        // Draw lynx data
+        let lynxPath = '';
+        hudsonBayData.lynx.forEach((l, i) => {
+            const x = ((years[i] - tMin) / (tMax - tMin)) * plotW;
+            const y = plotH - (l / maxPop) * plotH;
+            lynxPath += (i === 0 ? 'M' : 'L') + `${x},${y}`;
+        });
+        const lynxCurve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        lynxCurve.setAttribute('d', lynxPath);
+        lynxCurve.setAttribute('stroke', '#e06c75');
+        lynxCurve.setAttribute('stroke-width', 2);
+        lynxCurve.setAttribute('fill', 'none');
+        g.appendChild(lynxCurve);
+
+        // Draw data points
+        hudsonBayData.hare.forEach((h, i) => {
+            const x = ((years[i] - tMin) / (tMax - tMin)) * plotW;
+            const y = plotH - (h / maxPop) * plotH;
+            const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            dot.setAttribute('cx', x); dot.setAttribute('cy', y);
+            dot.setAttribute('r', 3); dot.setAttribute('fill', '#61afef');
+            g.appendChild(dot);
+        });
+
+        hudsonBayData.lynx.forEach((l, i) => {
+            const x = ((years[i] - tMin) / (tMax - tMin)) * plotW;
+            const y = plotH - (l / maxPop) * plotH;
+            const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            dot.setAttribute('cx', x); dot.setAttribute('cy', y);
+            dot.setAttribute('r', 3); dot.setAttribute('fill', '#e06c75');
+            g.appendChild(dot);
+        });
+
+        // Year tick marks
+        [1900, 1905, 1910, 1915, 1920].forEach(yr => {
+            const x = ((yr - tMin) / (tMax - tMin)) * plotW;
+            const tick = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            tick.setAttribute('x', x); tick.setAttribute('y', plotH + 15);
+            tick.setAttribute('fill', '#888'); tick.setAttribute('text-anchor', 'middle');
+            tick.setAttribute('font-size', '9px');
+            tick.textContent = yr.toString();
+            g.appendChild(tick);
+        });
+    }
+
+    function initPredPreyFit() {
+        drawPredPreyFit();
+    }
+
+    function drawPredPreyFit() {
+        const svg = document.getElementById('predprey-fit-viz');
+        if (!svg) return;
+
+        const alpha = parseFloat(document.getElementById('pp-alpha')?.value || 0.55);
+        const beta = parseFloat(document.getElementById('pp-beta')?.value || 0.028);
+        const delta = parseFloat(document.getElementById('pp-delta')?.value || 0.018);
+        const gamma = parseFloat(document.getElementById('pp-gamma')?.value || 0.84);
+
+        // Update displays
+        if (document.getElementById('pp-alpha-val')) document.getElementById('pp-alpha-val').textContent = alpha.toFixed(2);
+        if (document.getElementById('pp-beta-val')) document.getElementById('pp-beta-val').textContent = beta.toFixed(3);
+        if (document.getElementById('pp-delta-val')) document.getElementById('pp-delta-val').textContent = delta.toFixed(3);
+        if (document.getElementById('pp-gamma-val')) document.getElementById('pp-gamma-val').textContent = gamma.toFixed(2);
+
+        const width = 550, height = 320;
+        const margin = { top: 20, right: 20, bottom: 40, left: 50 };
+        const plotW = width - margin.left - margin.right;
+        const plotH = height - margin.top - margin.bottom;
+
+        svg.innerHTML = '';
+
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('transform', `translate(${margin.left}, ${margin.top})`);
+        svg.appendChild(g);
+
+        // Axes
+        const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxis.setAttribute('x1', 0); xAxis.setAttribute('y1', plotH);
+        xAxis.setAttribute('x2', plotW); xAxis.setAttribute('y2', plotH);
+        xAxis.setAttribute('stroke', '#666'); xAxis.setAttribute('stroke-width', 1.5);
+        g.appendChild(xAxis);
+
+        const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        yAxis.setAttribute('x1', 0); yAxis.setAttribute('y1', 0);
+        yAxis.setAttribute('x2', 0); yAxis.setAttribute('y2', plotH);
+        yAxis.setAttribute('stroke', '#666'); yAxis.setAttribute('stroke-width', 1.5);
+        g.appendChild(yAxis);
+
+        // Labels
+        const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 30);
+        xLabel.setAttribute('fill', '#888'); xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('font-size', '11px');
+        xLabel.textContent = 'Year';
         g.appendChild(xLabel);
 
         const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -35);
         yLabel.setAttribute('fill', '#888'); yLabel.setAttribute('text-anchor', 'middle');
         yLabel.setAttribute('transform', 'rotate(-90)');
-        yLabel.setAttribute('font-size', '12px');
-        yLabel.textContent = 'Population';
+        yLabel.setAttribute('font-size', '11px');
+        yLabel.textContent = 'Population (thousands)';
         g.appendChild(yLabel);
 
-        if (ppData.t.length < 2) return;
+        const years = hudsonBayData.years;
+        const tMin = years[0], tMax = years[years.length - 1];
+        const maxPop = 100;
 
-        const tMin = ppData.t[0], tMax = ppData.t[ppData.t.length - 1];
-        const maxPop = Math.max(...ppData.prey, ...ppData.predators) * 1.1;
+        // Simulate model using RK4
+        const dt = 0.05;
+        const simYears = 21;
+        const stepsPerYear = Math.round(1 / dt);
 
-        // Draw prey
-        let preyPath = '';
-        ppData.prey.forEach((p, i) => {
-            const x = ((ppData.t[i] - tMin) / (tMax - tMin)) * plotW;
-            const y = plotH - (p / maxPop) * plotH;
-            preyPath += (i === 0 ? 'M' : 'L') + `${x},${y}`;
+        let x = hudsonBayData.hare[0];  // Initial hare population
+        let y = hudsonBayData.lynx[0];  // Initial lynx population
+        const simHare = [x];
+        const simLynx = [y];
+        const simTime = [0];
+
+        for (let year = 0; year < simYears; year++) {
+            for (let step = 0; step < stepsPerYear; step++) {
+                // RK4 integration
+                const f = (h, l) => [
+                    alpha * h - beta * h * l,
+                    delta * h * l - gamma * l
+                ];
+                const k1 = f(x, y);
+                const k2 = f(x + dt/2 * k1[0], y + dt/2 * k1[1]);
+                const k3 = f(x + dt/2 * k2[0], y + dt/2 * k2[1]);
+                const k4 = f(x + dt * k3[0], y + dt * k3[1]);
+
+                x += dt/6 * (k1[0] + 2*k2[0] + 2*k3[0] + k4[0]);
+                y += dt/6 * (k1[1] + 2*k2[1] + 2*k3[1] + k4[1]);
+
+                x = Math.max(0.1, x);
+                y = Math.max(0.1, y);
+            }
+            simHare.push(x);
+            simLynx.push(y);
+            simTime.push(year + 1);
+        }
+
+        // Draw simulated hare line
+        let simHarePath = '';
+        simHare.forEach((h, i) => {
+            const px = (simTime[i] / (tMax - tMin)) * plotW;
+            const py = plotH - (Math.min(h, maxPop) / maxPop) * plotH;
+            simHarePath += (i === 0 ? 'M' : 'L') + `${px},${py}`;
         });
-        const preyCurve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        preyCurve.setAttribute('d', preyPath);
-        preyCurve.setAttribute('stroke', '#61afef');
-        preyCurve.setAttribute('stroke-width', 2);
-        preyCurve.setAttribute('fill', 'none');
-        g.appendChild(preyCurve);
+        const simHareCurve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        simHareCurve.setAttribute('d', simHarePath);
+        simHareCurve.setAttribute('stroke', '#61afef');
+        simHareCurve.setAttribute('stroke-width', 2);
+        simHareCurve.setAttribute('fill', 'none');
+        g.appendChild(simHareCurve);
 
-        // Draw predators
-        let predPath = '';
-        ppData.predators.forEach((p, i) => {
-            const x = ((ppData.t[i] - tMin) / (tMax - tMin)) * plotW;
-            const y = plotH - (p / maxPop) * plotH;
-            predPath += (i === 0 ? 'M' : 'L') + `${x},${y}`;
+        // Draw simulated lynx line
+        let simLynxPath = '';
+        simLynx.forEach((l, i) => {
+            const px = (simTime[i] / (tMax - tMin)) * plotW;
+            const py = plotH - (Math.min(l, maxPop) / maxPop) * plotH;
+            simLynxPath += (i === 0 ? 'M' : 'L') + `${px},${py}`;
         });
-        const predCurve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        predCurve.setAttribute('d', predPath);
-        predCurve.setAttribute('stroke', '#e06c75');
-        predCurve.setAttribute('stroke-width', 2);
-        predCurve.setAttribute('fill', 'none');
-        g.appendChild(predCurve);
+        const simLynxCurve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        simLynxCurve.setAttribute('d', simLynxPath);
+        simLynxCurve.setAttribute('stroke', '#e06c75');
+        simLynxCurve.setAttribute('stroke-width', 2);
+        simLynxCurve.setAttribute('fill', 'none');
+        g.appendChild(simLynxCurve);
+
+        // Draw real data points (hare)
+        hudsonBayData.hare.forEach((h, i) => {
+            const px = ((years[i] - tMin) / (tMax - tMin)) * plotW;
+            const py = plotH - (h / maxPop) * plotH;
+            const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            dot.setAttribute('cx', px); dot.setAttribute('cy', py);
+            dot.setAttribute('r', 5); dot.setAttribute('fill', '#61afef');
+            dot.setAttribute('stroke', '#fff'); dot.setAttribute('stroke-width', 1);
+            g.appendChild(dot);
+        });
+
+        // Draw real data points (lynx)
+        hudsonBayData.lynx.forEach((l, i) => {
+            const px = ((years[i] - tMin) / (tMax - tMin)) * plotW;
+            const py = plotH - (l / maxPop) * plotH;
+            const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            dot.setAttribute('cx', px); dot.setAttribute('cy', py);
+            dot.setAttribute('r', 5); dot.setAttribute('fill', '#e06c75');
+            dot.setAttribute('stroke', '#fff'); dot.setAttribute('stroke-width', 1);
+            g.appendChild(dot);
+        });
+
+        // Year tick marks
+        [1900, 1905, 1910, 1915, 1920].forEach(yr => {
+            const x = ((yr - tMin) / (tMax - tMin)) * plotW;
+            const tick = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            tick.setAttribute('x', x); tick.setAttribute('y', plotH + 15);
+            tick.setAttribute('fill', '#888'); tick.setAttribute('text-anchor', 'middle');
+            tick.setAttribute('font-size', '10px');
+            tick.textContent = yr.toString();
+            g.appendChild(tick);
+        });
+
+        // Y-axis ticks
+        [0, 25, 50, 75, 100].forEach(val => {
+            const py = plotH - (val / maxPop) * plotH;
+            const tick = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            tick.setAttribute('x', -8); tick.setAttribute('y', py + 3);
+            tick.setAttribute('fill', '#888'); tick.setAttribute('text-anchor', 'end');
+            tick.setAttribute('font-size', '9px');
+            tick.textContent = val.toString();
+            g.appendChild(tick);
+        });
     }
 
-    function resetPredPrey() {
-        if (ppAnimId) cancelAnimationFrame(ppAnimId);
-        initPredPrey();
+    function resetPredPreyFit() {
+        document.getElementById('pp-alpha').value = 0.55;
+        document.getElementById('pp-beta').value = 0.028;
+        document.getElementById('pp-delta').value = 0.018;
+        document.getElementById('pp-gamma').value = 0.84;
+        drawPredPreyFit();
     }
 
     // ==========================================
@@ -2002,11 +2239,14 @@ function fluidStep() {
             initEuler();
         }
 
-        // Predator-prey
-        if (event.currentSlide.querySelector('#predprey-viz')) {
-            initPredPrey();
-        } else if (ppAnimId) {
-            cancelAnimationFrame(ppAnimId);
+        // Hudson Bay data
+        if (event.currentSlide.querySelector('#hudson-data-viz')) {
+            drawHudsonData();
+        }
+
+        // Predator-prey fitting
+        if (event.currentSlide.querySelector('#predprey-fit-viz')) {
+            initPredPreyFit();
         }
 
         // Pendulum
@@ -2051,12 +2291,12 @@ function fluidStep() {
         document.getElementById('euler-dt')?.addEventListener('input', () => {
             document.getElementById('euler-dt-val').textContent = parseFloat(document.getElementById('euler-dt').value).toFixed(2);
         });
-        document.getElementById('pp-alpha')?.addEventListener('input', () => {
-            document.getElementById('pp-alpha-val').textContent = document.getElementById('pp-alpha').value;
-        });
-        document.getElementById('pp-beta')?.addEventListener('input', () => {
-            document.getElementById('pp-beta-val').textContent = document.getElementById('pp-beta').value;
-        });
+        // Predator-prey fitting sliders
+        document.getElementById('pp-alpha')?.addEventListener('input', drawPredPreyFit);
+        document.getElementById('pp-beta')?.addEventListener('input', drawPredPreyFit);
+        document.getElementById('pp-delta')?.addEventListener('input', drawPredPreyFit);
+        document.getElementById('pp-gamma')?.addEventListener('input', drawPredPreyFit);
+        // Pendulum
         document.getElementById('pend-theta0')?.addEventListener('input', () => {
             if (pendAnimId) cancelAnimationFrame(pendAnimId);
             initPendulum();
