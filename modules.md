@@ -1,5 +1,5 @@
 ---
 layout: lectures
-title: Modules
+title: 2025 Lectures
 permalink: modules/
 ---

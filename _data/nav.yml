@@ -1,32 +1,32 @@
 items:
-- url: /
-  name: Home
-  icon_class: fa fa-home fa-lg
+  - url: /
+    name: Home
+    icon_class: fa fa-home fa-lg
 
-- url: /syllabus/
-  name: Syllabus 
-  icon_class: fas fa-calendar-alt
+  - url: /syllabus/
+    name: Syllabus
+    icon_class: fas fa-calendar-alt
 
-- url: /modules/
-  name: Modules
-  icon_class: fas fa-book-reader
+  - url: /modules/
+    name: 2025 Lectures
+    icon_class: fas fa-book-reader
 
-- url: /lectures/
-  name: Lectures
-  icon_class: fas fa-chalkboard-teacher
+  - url: /lectures/
+    name: Lectures
+    icon_class: fas fa-chalkboard-teacher
 
-- url: /assignments/
-  name: Assignments
-  icon_class: fas fa-user-graduate
+  - url: /assignments/
+    name: Assignments
+    icon_class: fas fa-user-graduate
 
-# - url: /project/
-#   name: Project
-#   icon_class: fas fa-user-graduate
+  # - url: /project/
+  #   name: Project
+  #   icon_class: fas fa-user-graduate
 
-- url: /schedule/
-  name: Schedule 
-  icon_class: fas fa-calendar-alt
+  - url: /schedule/
+    name: Schedule
+    icon_class: fas fa-calendar-alt
 
-- url: /references/
-  name: References
-  icon_class: fas fa-book
+  - url: /references/
+    name: References
+    icon_class: fas fa-book
