@@ -8,7 +8,7 @@ items:
     icon_class: fas fa-calendar-alt
 
   - url: /modules/
-    name: 2025 Lectures
+    name: 2025
     icon_class: fas fa-book-reader
 
   - url: /lectures/
