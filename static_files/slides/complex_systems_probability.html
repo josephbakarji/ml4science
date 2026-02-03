@@ -1,0 +1,2896 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complex Systems and Probabilistic Modeling</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/night.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/monokai.css">
+    <style>
+        :root {
+            --accent-blue: #61afef;
+            --accent-green: #98c379;
+            --accent-yellow: #e5c07b;
+            --accent-red: #e06c75;
+            --accent-purple: #c678dd;
+            --accent-cyan: #56b6c2;
+        }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; }
+        .reveal h1 { font-size: 2.2em; }
+        .reveal h2 { font-size: 1.6em; }
+        .reveal h3 { font-size: 1.3em; }
+        .reveal blockquote {
+            font-style: italic;
+            background: rgba(255,255,255,0.05);
+            padding: 20px 30px;
+            border-left: 4px solid #42affa;
+            width: 90%;
+            margin: 0 auto;
+            border-radius: 0 8px 8px 0;
+        }
+        .reveal .slides section { text-align: left; }
+        .reveal ul { display: block; }
+        .reveal li { margin: 0.5em 0; font-size: 0.85em; }
+        .center-text { text-align: center; }
+        .highlight-box {
+            background: rgba(66, 175, 250, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(66, 175, 250, 0.3);
+        }
+        .warning-box {
+            background: rgba(224, 108, 117, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(224, 108, 117, 0.3);
+        }
+        .success-box {
+            background: rgba(152, 195, 121, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(152, 195, 121, 0.3);
+        }
+        .principle-box {
+            background: rgba(198, 120, 221, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(198, 120, 221, 0.3);
+        }
+        .small-text { font-size: 0.75em; }
+        .tiny-text { font-size: 0.65em; }
+        pre code { font-size: 0.65em !important; line-height: 1.4 !important; }
+        .reveal pre { width: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .two-column { display: flex; gap: 30px; align-items: flex-start; }
+        .two-column > div { flex: 1; }
+        .three-column { display: flex; gap: 20px; }
+        .three-column > div { flex: 1; }
+        .equation-box {
+            background: rgba(255,255,255,0.08);
+            padding: 12px 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 10px 0;
+            font-size: 0.85em;
+        }
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 5px 0;
+        }
+        .slider-container label {
+            min-width: 80px;
+            font-size: 0.8em;
+        }
+        .slider-container input[type="range"] {
+            flex: 1;
+        }
+        .slider-container span {
+            min-width: 50px;
+            font-size: 0.8em;
+            color: var(--accent-blue);
+        }
+    </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ============================================ -->
+<!-- TITLE SLIDE -->
+<!-- ============================================ -->
+<section class="center-text">
+    <h1>Complex Systems</h1>
+    <h2>and Probabilistic Modeling</h2>
+    <p style="margin-top: 40px; color: #888;">ML for Science - Lecture 6</p>
+    <p class="small-text" style="color: #666;">Chaos, uncertainty, and the bridge from randomness to determinism</p>
+</section>
+
+<!-- ============================================ -->
+<!-- RECAP AND ROADMAP -->
+<!-- ============================================ -->
+<section>
+    <h2>Where We Are</h2>
+    <div class="two-column">
+        <div>
+            <p class="small-text"><strong>So far:</strong></p>
+            <ul class="small-text">
+                <li>Empirical laws, linear regression</li>
+                <li>Differential equations (ODEs, PDEs)</li>
+                <li>Numerical methods: discretization, stability</li>
+                <li>Simulating physical systems</li>
+            </ul>
+        </div>
+        <div class="fragment">
+            <p class="small-text"><strong>Today:</strong></p>
+            <ul class="small-text">
+                <li>What are complex systems?</li>
+                <li>Chaos and predictability limits</li>
+                <li>Probability as a tool</li>
+                <li>From randomness to determinism</li>
+            </ul>
+        </div>
+    </div>
+    <div class="fragment principle-box small-text" style="margin-top: 20px;">
+        <strong>Key question:</strong> If we know the laws of physics, what's left to discover?
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- COMPLEX SYSTEMS INTRODUCTION -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>What is a Complex System?</h2>
+        <blockquote style="margin-top: 30px;">
+            "A system where the whole is much more than the sum of its parts."
+        </blockquote>
+        <div class="fragment" style="margin-top: 30px;">
+            <p class="small-text"><strong>Key properties:</strong></p>
+            <ul class="small-text">
+                <li><strong>Emergence:</strong> Global patterns arise from local interactions</li>
+                <li><strong>Nonlinearity:</strong> Understanding parts doesn't mean understanding the whole</li>
+                <li><strong>Multiple scales:</strong> Different behavior at different scales</li>
+                <li><strong>Sensitivity:</strong> Small changes can have large effects</li>
+            </ul>
+        </div>
+    </section>
+
+    <section>
+        <h2>Examples of Complex Systems</h2>
+        <div class="three-column small-text">
+            <div>
+                <p style="color: var(--accent-blue);"><strong>Physical</strong></p>
+                <ul class="tiny-text">
+                    <li>Weather & climate</li>
+                    <li>Fluid turbulence</li>
+                    <li>Granular materials</li>
+                    <li>Protein folding</li>
+                </ul>
+            </div>
+            <div class="fragment">
+                <p style="color: var(--accent-green);"><strong>Biological</strong></p>
+                <ul class="tiny-text">
+                    <li>Brain / neural systems</li>
+                    <li>Ecosystems</li>
+                    <li>Immune system</li>
+                    <li>Cell signaling</li>
+                </ul>
+            </div>
+            <div class="fragment">
+                <p style="color: var(--accent-purple);"><strong>Social/Tech</strong></p>
+                <ul class="tiny-text">
+                    <li>Social networks</li>
+                    <li>Financial markets</li>
+                    <li>Internet/routing</li>
+                    <li>Cities & traffic</li>
+                </ul>
+            </div>
+        </div>
+        <div class="fragment highlight-box tiny-text" style="margin-top: 20px;">
+            <strong>Common thread:</strong> We know the rules for the parts, but can't easily predict the whole.
+        </div>
+    </section>
+
+    <section>
+        <h2>Why Complex Systems Matter for ML</h2>
+        <p class="small-text">When applying ML to science, you often encounter:</p>
+        <div class="two-column" style="margin-top: 15px;">
+            <div class="warning-box tiny-text">
+                <strong>Challenges:</strong>
+                <ul style="margin: 5px 0 0 15px;">
+                    <li>High-dimensional, noisy data</li>
+                    <li>Multiple interacting scales</li>
+                    <li>Chaotic dynamics</li>
+                    <li>Missing measurements</li>
+                </ul>
+            </div>
+            <div class="success-box tiny-text fragment">
+                <strong>Opportunities:</strong>
+                <ul style="margin: 5px 0 0 15px;">
+                    <li>Statistics may be predictable</li>
+                    <li>Patterns emerge at right scale</li>
+                    <li>Neural networks are themselves complex systems!</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- CHAOS - LORENZ SYSTEM -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Rayleigh-Bénard Convection</h2>
+        <p class="small-text" style="margin-bottom: 10px;">Fluid heated from below, cooled from above — creates convection cells</p>
+        <div style="display: flex; justify-content: center;">
+            <iframe width="800" height="450"
+                src="https://www.youtube-nocookie.com/embed/OM0l2YPVMf8?rel=0&modestbranding=1"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+                style="border-radius: 8px; max-width: 100%;">
+            </iframe>
+        </div>
+        <p class="tiny-text center-text" style="margin-top: 10px; color: #888;">
+            Basic mechanism of atmospheric and oceanic circulation
+        </p>
+    </section>
+
+    <section>
+        <h2>From 7 Equations to 3: The Saltzman-Lorenz Story</h2>
+        <div class="two-column">
+            <div>
+                <p class="small-text"><strong>Barry Saltzman</strong> (Yale, 1961) developed a 7-equation model for convection.</p>
+                <p class="fragment small-text" style="margin-top: 15px;">He showed it to <strong>Edward Lorenz</strong> at MIT - one solution "refused to settle down."</p>
+                <p class="fragment small-text" style="margin-top: 15px;">Lorenz noticed: <em>4 variables quickly became tiny. Only 3 were "keeping each other going."</em></p>
+            </div>
+            <div class="fragment">
+                <div class="highlight-box tiny-text" style="padding: 12px;">
+                    <strong>Lorenz's insight:</strong><br><br>
+                    "Barry gave me the go-ahead signal, and back at MIT the next morning I put the three equations on the computer..."<br><br>
+                    "...and sure enough, there was the same lack of periodicity."
+                </div>
+                <p class="tiny-text" style="margin-top: 10px; color: #888;">
+                    <a href="https://journals.ametsoc.org/view/journals/bams/105/7/BAMS-D-23-0157.1.xml" style="color: #61afef;">Saltzman-Lorenz Exchange, 1961</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>The Lorenz Equations</h2>
+        <p class="small-text">Saltzman's 7 equations reduced to 3:</p>
+        <div class="two-column" style="margin-top: 20px; align-items: flex-start;">
+            <div class="equation-box" style="font-size: 1em; text-align: left; padding: 20px 30px;">
+                $\dot{x} = \sigma(y - x)$<br><br>
+                $\dot{y} = x(\rho - z) - y$<br><br>
+                $\dot{z} = xy - \beta z$
+            </div>
+            <div class="small-text">
+                <strong>Variables:</strong>
+                <ul class="tiny-text" style="margin-top: 5px;">
+                    <li>$x$ = intensity of convection</li>
+                    <li>$y$ = horizontal temperature diff</li>
+                    <li>$z$ = vertical temperature deviation</li>
+                </ul>
+                <div class="fragment" style="margin-top: 15px;">
+                    <strong>Parameters (chaotic regime):</strong>
+                    <p class="tiny-text">$\sigma = 10$, $\rho = 28$, $\beta = 8/3$</p>
+                </div>
+            </div>
+        </div>
+        <p class="fragment tiny-text" style="margin-top: 15px; color: #888;">
+            Just 3 coupled ODEs, yet the dynamics are incredibly complex
+        </p>
+    </section>
+
+    <section>
+        <h2>The Lorenz Attractor</h2>
+        <div class="two-column">
+            <div style="flex: 1.5;">
+                <svg id="lorenz-viz" width="500" height="380" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+            </div>
+            <div style="flex: 0.8;">
+                <div id="lorenz-coords" class="highlight-box tiny-text" style="font-family: monospace; padding: 10px;">
+                    x = 1.00<br>y = 1.00<br>z = 1.00
+                </div>
+                <div style="margin-top: 15px;">
+                    <div class="slider-container">
+                        <label>Speed:</label>
+                        <input type="range" id="lorenz-speed" min="1" max="10" step="1" value="3">
+                        <span id="lorenz-speed-val">3</span>
+                    </div>
+                    <div class="slider-container">
+                        <label>Trail:</label>
+                        <input type="range" id="lorenz-trail" min="500" max="3000" step="250" value="1500">
+                        <span id="lorenz-trail-val">1500</span>
+                    </div>
+                </div>
+                <button onclick="resetLorenz()" style="margin-top: 10px; padding: 5px 15px; cursor: pointer; border-radius: 4px; border: none; background: #61afef; color: white; width: 100%;">Reset</button>
+            </div>
+        </div>
+        <p class="tiny-text center-text" style="margin-top: 5px; color: #888;">
+            The trajectory never repeats but stays on this strange "butterfly" shape
+        </p>
+    </section>
+
+    <section>
+        <h2>The Accident</h2>
+        <p class="small-text">Lorenz wanted to extend a simulation. Instead of starting over, he typed in values from a printout:</p>
+        <div class="two-column" style="margin-top: 20px;">
+            <div class="highlight-box small-text" style="text-align: center;">
+                <strong>Printout showed:</strong><br><br>
+                <span style="font-family: monospace; font-size: 1.3em;">0.506</span>
+            </div>
+            <div class="highlight-box small-text" style="text-align: center;">
+                <strong>Computer stored:</strong><br><br>
+                <span style="font-family: monospace; font-size: 1.3em;">0.506127</span>
+            </div>
+        </div>
+        <p class="fragment small-text" style="margin-top: 20px; text-align: center;">
+            A difference of about <strong>0.0001</strong> - surely that can't matter?
+        </p>
+        <p class="fragment small-text" style="margin-top: 15px; text-align: center;">
+            He goes for coffee, comes back, and...
+        </p>
+    </section>
+
+    <section>
+        <h2>The Weather is Completely Different!</h2>
+        <div style="display: flex; justify-content: center;">
+            <svg id="lorenz-diverge-viz" width="800" height="300" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+        </div>
+        <p class="small-text center-text" style="margin-top: 15px;">
+            The two simulations start nearly identical, then <strong>completely diverge</strong>.
+        </p>
+        <div class="fragment warning-box small-text" style="margin-top: 15px;">
+            <strong>Wait... what's happening here?</strong><br>
+            The equations are <em>deterministic</em>. Same input should give same output, right?
+        </div>
+    </section>
+
+    <section>
+        <h2>Sensitivity to Initial Conditions</h2>
+        <div style="display: flex; justify-content: center;">
+            <svg id="lorenz-sensitivity-viz" width="800" height="320" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+        </div>
+        <div class="slider-container" style="justify-content: center; margin-top: 10px;">
+            <label style="font-size: 1.2em;">Perturbation <span style="font-size: 1.5em; color: var(--accent-cyan); font-style: italic;">ε</span> =</label>
+            <input type="range" id="lorenz-perturb" min="-6" max="-2" step="0.5" value="-4">
+            <span id="lorenz-perturb-val" style="font-size: 1.2em; min-width: 70px;">10<sup>-4</sup></span>
+        </div>
+        <p class="small-text center-text" style="margin-top: 10px;">
+            <span style="color: #61afef;">&#9632; Original</span> vs <span style="color: #e06c75;">&#9632; Perturbed by $\varepsilon$</span>
+        </p>
+        <p class="fragment tiny-text center-text" style="color: #888;">
+            No matter how small $\varepsilon$ is, the trajectories <em>eventually</em> diverge completely.
+        </p>
+    </section>
+
+    <section>
+        <h2>The Butterfly Effect</h2>
+        <blockquote style="font-size: 0.85em;">
+            "Does the flap of a butterfly's wings in Brazil set off a tornado in Texas?"
+            <footer>- Edward Lorenz, 1972</footer>
+        </blockquote>
+        <div class="fragment" style="margin-top: 20px;">
+            <p class="small-text"><strong>Lorenz's discovery:</strong></p>
+            <ul class="small-text">
+                <li>Deterministic $\neq$ Predictable</li>
+                <li>Tiny errors grow <em>exponentially</em> fast</li>
+                <li>Long-term weather prediction has a <strong>fundamental limit</strong> (~2 weeks)</li>
+            </ul>
+        </div>
+        <div class="fragment principle-box small-text" style="margin-top: 15px;">
+            This is <strong>chaos</strong>: sensitivity to initial conditions in deterministic systems.
+        </div>
+    </section>
+
+    <section>
+        <h2>Ensemble of Initial Conditions</h2>
+        <p class="small-text">What happens to a <em>distribution</em> of initial conditions in the Lorenz system?</p>
+        <div style="display: flex; justify-content: center; margin-top: 20px;">
+            <svg id="lorenz-ensemble-viz" width="700" height="350" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+        </div>
+        <div class="slider-container" style="justify-content: center; margin-top: 10px;">
+            <button id="ensemble-step" style="padding: 5px 15px; cursor: pointer; border-radius: 4px; border: none; background: #61afef; color: white;">Step</button>
+            <button id="ensemble-play" style="padding: 5px 15px; cursor: pointer; border-radius: 4px; border: none; background: #98c379; color: white; margin-left: 10px;">Play</button>
+            <button id="ensemble-reset" style="padding: 5px 15px; cursor: pointer; border-radius: 4px; border: none; background: #e06c75; color: white; margin-left: 10px;">Reset</button>
+            <span style="margin-left: 20px;">t = <span id="ensemble-time">0.0</span></span>
+        </div>
+        <p class="tiny-text center-text" style="color: #888; margin-top: 5px;">
+            A tight cluster of initial conditions spreads across the entire attractor
+        </p>
+    </section>
+
+    <section>
+        <h2>From Trajectories to Distribution</h2>
+        <p class="small-text">100 trajectories starting within $10^{-6}$ — sample at time $t$ to get a distribution</p>
+        <div style="display: flex; gap: 15px; justify-content: center; margin-top: 10px;">
+            <svg id="lorenz-traj-hist-left" width="520" height="340" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+            <svg id="lorenz-traj-hist-right" width="300" height="340" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+        </div>
+        <div class="slider-container" style="justify-content: center; margin-top: 10px;">
+            <label style="font-size: 1em;">Sample time:</label>
+            <input type="range" id="traj-hist-time" min="1" max="25" step="0.5" value="10">
+            <span id="traj-hist-time-val" style="font-size: 1em; min-width: 60px;">t = 10</span>
+        </div>
+        <p class="tiny-text center-text" style="color: #888; margin-top: 5px;">
+            The histogram shows a <strong>Probability Mass Function (PMF)</strong> — counts in discrete bins
+        </p>
+    </section>
+
+    <section>
+        <h2>From PMF to PDF</h2>
+        <p class="small-text" style="color: var(--accent-cyan); margin-top: -5px;">What if $\Delta x \to 0$?</p>
+        <p class="small-text">As we use more bins (smaller $\Delta x$), the histogram approaches a smooth curve:</p>
+        <div style="display: flex; justify-content: center; margin-top: 15px;">
+            <svg id="pmf-to-pdf-viz" width="800" height="300" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+        </div>
+        <div class="slider-container" style="justify-content: center; margin-top: 10px;">
+            <label style="font-size: 1em;">Number of bins:</label>
+            <input type="range" id="num-bins" min="5" max="50" step="5" value="10">
+            <span id="num-bins-val" style="font-size: 1em;">10</span>
+        </div>
+        <div class="fragment principle-box small-text" style="margin-top: 15px;">
+            In the limit $\Delta x \to 0$, the PMF becomes a <strong>Probability Density Function (PDF)</strong>
+        </div>
+    </section>
+
+    <section>
+        <h2>Estimating PDF from Samples</h2>
+        <p class="small-text">Click to add samples — each gets a Gaussian "kernel", and they sum to form the estimate</p>
+        <div style="display: flex; justify-content: center; margin-top: 10px;">
+            <svg id="kde-viz" width="850" height="320" style="background: rgba(0,0,0,0.2); border-radius: 8px; cursor: crosshair;"></svg>
+        </div>
+        <div class="slider-container" style="justify-content: center; margin-top: 10px;">
+            <label style="font-size: 0.9em;">Bandwidth h:</label>
+            <input type="range" id="kde-bandwidth" min="0.2" max="2" step="0.1" value="0.6">
+            <span id="kde-bandwidth-val" style="font-size: 0.9em;">0.6</span>
+            <button id="kde-clear" style="margin-left: 20px; padding: 5px 15px; cursor: pointer; border-radius: 4px; border: none; background: #e06c75; color: white;">Clear</button>
+            <span style="margin-left: 15px; font-size: 0.85em;">Samples: <span id="kde-count">0</span></span>
+        </div>
+        <div class="equation-box tiny-text" style="margin-top: 10px;">
+            $\hat{f}(x) = \frac{1}{nh} \sum_{i=1}^{n} K\left(\frac{x - x_i}{h}\right)$ &emsp; where &emsp; $K(u) = \frac{1}{\sqrt{2\pi}} e^{-u^2/2}$ (Gaussian kernel)
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- PROBABILITY REVIEW (OPTIONAL) -->
+<!-- ============================================ -->
+<section>
+    <section class="center-text">
+        <h2 style="color: var(--accent-purple);">Probability Review</h2>
+        <p class="small-text" style="color: #888;">(Optional background material)</p>
+        <div style="margin-top: 30px;">
+            <p class="small-text">Key concepts we'll use throughout the course:</p>
+            <ul class="small-text" style="display: inline-block; text-align: left; margin-top: 15px;">
+                <li>Random variables, PMF, PDF</li>
+                <li>Mean, variance, expectation</li>
+                <li>Joint & conditional probability</li>
+                <li>Independence & Bayes' rule</li>
+                <li>Central Limit Theorem</li>
+            </ul>
+        </div>
+    </section>
+
+    <section>
+        <h2>Random Variables</h2>
+        <p class="small-text">A <strong>random variable</strong> $X$ maps outcomes to numbers:</p>
+        <div class="equation-box" style="margin-top: 15px;">
+            $X: \Omega \to \mathbb{R}$ &emsp; (sample space to real numbers)
+        </div>
+        <div class="two-column fragment" style="margin-top: 20px;">
+            <div class="highlight-box tiny-text">
+                <strong>Example: Coin flip</strong><br>
+                $\Omega = \{\text{Heads}, \text{Tails}\}$<br>
+                $X(\text{Heads}) = 1$<br>
+                $X(\text{Tails}) = 0$
+            </div>
+            <div class="highlight-box tiny-text">
+                <strong>Example: Temperature</strong><br>
+                $\Omega = $ all possible states<br>
+                $X = $ temperature reading<br>
+                $X \in \mathbb{R}$ (continuous)
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Probability Mass Function (PMF)</h2>
+        <p class="small-text">For <strong>discrete</strong> random variables:</p>
+        <div class="equation-box">
+            $P(X = x)$ = probability that $X$ takes value $x$
+        </div>
+        <div class="two-column" style="margin-top: 20px;">
+            <div>
+                <svg width="350" height="200" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
+                    <!-- Axes -->
+                    <line x1="50" y1="170" x2="320" y2="170" stroke="#666" stroke-width="1"/>
+                    <line x1="50" y1="170" x2="50" y2="30" stroke="#666" stroke-width="1"/>
+                    <!-- Bars (example: dice roll) -->
+                    <rect x="70" y="100" width="30" height="70" fill="#61afef" opacity="0.7"/>
+                    <rect x="115" y="100" width="30" height="70" fill="#61afef" opacity="0.7"/>
+                    <rect x="160" y="100" width="30" height="70" fill="#61afef" opacity="0.7"/>
+                    <rect x="205" y="100" width="30" height="70" fill="#61afef" opacity="0.7"/>
+                    <rect x="250" y="100" width="30" height="70" fill="#61afef" opacity="0.7"/>
+                    <rect x="295" y="100" width="30" height="70" fill="#61afef" opacity="0.7"/>
+                    <!-- Labels -->
+                    <text x="85" y="185" fill="#888" font-size="10" text-anchor="middle">1</text>
+                    <text x="130" y="185" fill="#888" font-size="10" text-anchor="middle">2</text>
+                    <text x="175" y="185" fill="#888" font-size="10" text-anchor="middle">3</text>
+                    <text x="220" y="185" fill="#888" font-size="10" text-anchor="middle">4</text>
+                    <text x="265" y="185" fill="#888" font-size="10" text-anchor="middle">5</text>
+                    <text x="310" y="185" fill="#888" font-size="10" text-anchor="middle">6</text>
+                    <text x="35" y="105" fill="#888" font-size="10">1/6</text>
+                    <text x="185" y="20" fill="#aaa" font-size="12" text-anchor="middle">Fair Dice</text>
+                </svg>
+            </div>
+            <div class="tiny-text">
+                <strong>Properties:</strong>
+                <ul style="margin-top: 10px;">
+                    <li>$P(X = x) \geq 0$</li>
+                    <li>$\sum_x P(X = x) = 1$</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Probability Density Function (PDF)</h2>
+        <p class="small-text">For <strong>continuous</strong> random variables, the PDF $f(x)$ gives probability via integration:</p>
+        <div class="equation-box">
+            $P(a \leq X \leq b) = \int_a^b f(x) \, dx$ = <span style="color: var(--accent-cyan);">shaded area</span>
+        </div>
+        <div class="two-column" style="margin-top: 15px;">
+            <div>
+                <svg id="pdf-gaussian-svg" width="400" height="240" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
+                    <!-- Will be drawn by JS -->
+                </svg>
+            </div>
+            <div class="tiny-text">
+                <strong>Key points:</strong><br><br>
+                $f(x)$ is the PDF (not a probability!)<br><br>
+                $f(x) \geq 0$ and $\int_{-\infty}^{\infty} f(x) dx = 1$<br><br>
+                $P(X = x) = 0$ for any single point<br><br>
+                Only <em>areas</em> under the curve are probabilities.
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Mean and Variance</h2>
+        <div class="two-column">
+            <div>
+                <div class="equation-box tiny-text">
+                    <strong>Mean (Expected Value):</strong><br><br>
+                    $\mu = E[X] = \int x \cdot f(x) \, dx$
+                </div>
+                <p class="tiny-text" style="margin-top: 10px; color: #888;">
+                    The "center of mass" of the distribution
+                </p>
+            </div>
+            <div>
+                <div class="equation-box tiny-text">
+                    <strong>Variance:</strong><br><br>
+                    $\sigma^2 = E[(X - \mu)^2]$
+                </div>
+                <p class="tiny-text" style="margin-top: 10px; color: #888;">
+                    How spread out the distribution is
+                </p>
+            </div>
+        </div>
+        <div class="fragment principle-box small-text" style="margin-top: 20px;">
+            <strong>Why this matters:</strong> Instead of predicting a single value, we can predict the mean AND quantify our uncertainty (variance).
+        </div>
+    </section>
+
+    <section>
+        <h2>Joint & Conditional Probability</h2>
+        <div class="two-column">
+            <div>
+                <div class="equation-box tiny-text" style="margin-bottom: 15px;">
+                    <strong>Joint Probability:</strong><br><br>
+                    $P(X, Y)$ = probability of both $X$ and $Y$
+                </div>
+                <div class="equation-box tiny-text">
+                    <strong>Conditional Probability:</strong><br><br>
+                    $P(X | Y) = \frac{P(X, Y)}{P(Y)}$
+                </div>
+            </div>
+            <div class="fragment">
+                <div class="highlight-box tiny-text">
+                    <strong>Example:</strong><br>
+                    $X$ = it rains, $Y$ = cloudy<br><br>
+                    $P(\text{rain} | \text{cloudy})$ = probability of rain <em>given</em> it's cloudy<br><br>
+                    Usually $P(\text{rain} | \text{cloudy}) > P(\text{rain})$
+                </div>
+            </div>
+        </div>
+        <div class="fragment tiny-text" style="margin-top: 15px;">
+            <strong>Marginalization:</strong> $P(X) = \sum_y P(X, Y=y) = \sum_y P(X|Y=y) P(Y=y)$
+        </div>
+    </section>
+
+    <section>
+        <h2>Independence</h2>
+        <p class="small-text">Two random variables are <strong>independent</strong> if knowing one tells you nothing about the other:</p>
+        <div class="equation-box" style="margin-top: 20px;">
+            $\begin{aligned} X \perp Y \;&\iff\; P(X, Y) = P(X) \cdot P(Y) \\ &\iff\; P(X|Y) = P(X) \end{aligned}$
+        </div>
+        <div class="two-column fragment" style="margin-top: 20px;">
+            <div class="success-box tiny-text">
+                <strong>Independent:</strong>
+                <ul style="margin-top: 5px;">
+                    <li>Coin flip 1 and coin flip 2</li>
+                    <li>Weather in Tokyo and weather in Paris</li>
+                </ul>
+            </div>
+            <div class="warning-box tiny-text">
+                <strong>NOT Independent:</strong>
+                <ul style="margin-top: 5px;">
+                    <li>Temperature and ice cream sales</li>
+                    <li>Parent height and child height</li>
+                </ul>
+            </div>
+        </div>
+        <p class="fragment tiny-text center-text" style="margin-top: 15px; color: #888;">
+            Independence is a strong assumption — rarely true in real data!
+        </p>
+    </section>
+
+    <section>
+        <h2>Bayes' Rule</h2>
+        <p class="small-text">Inverting conditional probabilities:</p>
+        <div class="equation-box" style="margin-top: 15px; font-size: 1.1em;">
+            $P(A | B) = \frac{P(B | A) \cdot P(A)}{P(B)}$
+        </div>
+        <div class="fragment two-column" style="margin-top: 20px;">
+            <div class="tiny-text">
+                <strong style="color: var(--accent-cyan);">$P(A)$</strong> — Prior<br>
+                <span style="color: #888;">What we believed before seeing data</span><br><br>
+                <strong style="color: var(--accent-green);">$P(B|A)$</strong> — Likelihood<br>
+                <span style="color: #888;">How likely is the data given our hypothesis?</span>
+            </div>
+            <div class="tiny-text">
+                <strong style="color: var(--accent-purple);">$P(A|B)$</strong> — Posterior<br>
+                <span style="color: #888;">Updated belief after seeing data</span><br><br>
+                <strong style="color: var(--accent-yellow);">$P(B)$</strong> — Evidence<br>
+                <span style="color: #888;">Normalizing constant</span>
+            </div>
+        </div>
+        <div class="fragment principle-box tiny-text" style="margin-top: 15px;">
+            <strong>Key idea:</strong> Bayes' rule tells us how to update beliefs with new evidence. Foundation of Bayesian inference and many ML algorithms.
+        </div>
+        <p class="fragment tiny-text" style="margin-top: 10px;">
+            <a href="https://www.youtube.com/watch?v=HZGCoVF3YvM" target="_blank" style="color: var(--accent-blue);">▶ 3Blue1Brown: Bayes theorem, the geometry of changing beliefs</a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Central Limit Theorem</h2>
+        <p class="small-text">One of the most important results in probability:</p>
+        <div class="highlight-box small-text" style="margin-top: 15px;">
+            The sum (or average) of many independent random variables tends toward a <strong>Gaussian distribution</strong>, regardless of the original distribution.
+        </div>
+        <div class="equation-box tiny-text fragment" style="margin-top: 15px;">
+            If $X_1, X_2, \ldots, X_n$ are i.i.d. with mean $\mu$ and variance $\sigma^2$, then:<br><br>
+            $\bar{X}_n = \frac{1}{n}\sum_{i=1}^n X_i \xrightarrow{d} \mathcal{N}\left(\mu, \frac{\sigma^2}{n}\right)$ as $n \to \infty$
+        </div>
+        <div class="fragment two-column tiny-text" style="margin-top: 15px;">
+            <div class="success-box">
+                <strong>Why it matters:</strong>
+                <ul style="margin-top: 5px;">
+                    <li>Explains why Gaussians are everywhere</li>
+                    <li>Justifies normal approximations</li>
+                    <li>Foundation of statistical inference</li>
+                </ul>
+            </div>
+            <div class="highlight-box">
+                <strong>Examples:</strong>
+                <ul style="margin-top: 5px;">
+                    <li>Measurement errors</li>
+                    <li>Heights of people</li>
+                    <li>Stock price changes (approx)</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+</section>
+
+<!-- ============================================ -->
+<!-- BROWNIAN MOTION -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Brownian Motion</h2>
+        <div class="two-column">
+            <div>
+                <p class="small-text"><strong>Robert Brown (1827):</strong></p>
+                <p class="tiny-text">Observed pollen grains moving erratically in water under a microscope.</p>
+                <p class="fragment small-text" style="margin-top: 20px;"><strong>Albert Einstein (1905):</strong></p>
+                <p class="fragment tiny-text">Explained it as evidence for atoms! Tiny molecules randomly bump the particle.</p>
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center;">
+                <canvas id="brownian-canvas" width="280" height="280" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></canvas>
+            </div>
+        </div>
+        <p class="fragment tiny-text center-text" style="color: #888; margin-top: 10px;">
+            Imagine being pushed randomly by a crowd - you end up doing a "random walk"
+        </p>
+    </section>
+
+    <section>
+        <h2>Random Walk</h2>
+        <p class="small-text">At each step, move randomly — left: trajectories, right: density estimate (KDE)</p>
+        <div style="display: flex; justify-content: center; gap: 15px; margin-top: 10px;">
+            <canvas id="random-walk-canvas" width="400" height="300" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></canvas>
+            <canvas id="random-walk-kde" width="400" height="300" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></canvas>
+        </div>
+        <div class="slider-container" style="justify-content: center; margin-top: 10px;">
+            <button id="walk-add10" style="padding: 5px 15px; cursor: pointer; border-radius: 4px; border: none; background: #61afef; color: white;">+10 Walkers</button>
+            <button id="walk-reset" style="padding: 5px 15px; cursor: pointer; border-radius: 4px; border: none; background: #e06c75; color: white; margin-left: 10px;">Reset</button>
+            <span style="margin-left: 20px;">Walkers: <span id="walk-count">0</span></span>
+        </div>
+    </section>
+
+    <section>
+        <h2>Deriving the Diffusion Equation</h2>
+        <p class="small-text">Consider a 1D random walk on a grid with spacing $\Delta x$ and time step $\Delta t$:</p>
+        <div style="display: flex; justify-content: center; margin-top: 10px;">
+            <svg width="700" height="160" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
+                <!-- Grid line -->
+                <line x1="50" y1="70" x2="650" y2="70" stroke="#666" stroke-width="2"/>
+                <!-- Grid points -->
+                <circle cx="150" cy="70" r="6" fill="#666"/>
+                <circle cx="275" cy="70" r="6" fill="#666"/>
+                <circle cx="400" cy="70" r="6" fill="#e5c07b"/>
+                <circle cx="525" cy="70" r="6" fill="#666"/>
+                <circle cx="650" cy="70" r="6" fill="#666"/>
+                <!-- Arrows showing jumps -->
+                <defs>
+                    <marker id="arr-blue" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                        <polygon points="0 0, 8 4, 0 8" fill="#61afef"/>
+                    </marker>
+                    <marker id="arr-red" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                        <polygon points="0 0, 8 4, 0 8" fill="#e06c75"/>
+                    </marker>
+                </defs>
+                <path d="M 290 42 Q 340 12 385 42" stroke="#61afef" stroke-width="2" fill="none" marker-end="url(#arr-blue)"/>
+                <path d="M 510 42 Q 460 12 415 42" stroke="#e06c75" stroke-width="2" fill="none" marker-end="url(#arr-red)"/>
+                <!-- LaTeX labels using foreignObject -->
+                <foreignObject x="100" y="80" width="100" height="30">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: 13px; color: #888; text-align: center;">$x - 2\Delta x$</div>
+                </foreignObject>
+                <foreignObject x="225" y="80" width="100" height="30">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: 13px; color: #888; text-align: center;">$x - \Delta x$</div>
+                </foreignObject>
+                <foreignObject x="370" y="80" width="60" height="30">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: 13px; color: #e5c07b; text-align: center;">$x$</div>
+                </foreignObject>
+                <foreignObject x="475" y="80" width="100" height="30">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: 13px; color: #888; text-align: center;">$x + \Delta x$</div>
+                </foreignObject>
+                <foreignObject x="600" y="80" width="100" height="30">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: 13px; color: #888; text-align: center;">$x + 2\Delta x$</div>
+                </foreignObject>
+                <!-- Probability labels -->
+                <foreignObject x="210" y="120" width="130" height="35">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: 12px; color: #61afef; text-align: center;">$p(x - \Delta x, t)$</div>
+                </foreignObject>
+                <foreignObject x="460" y="120" width="130" height="35">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: 12px; color: #e06c75; text-align: center;">$p(x + \Delta x, t)$</div>
+                </foreignObject>
+                <!-- Prob = 1/2 labels -->
+                <foreignObject x="295" y="2" width="90" height="25">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: 11px; color: #61afef; text-align: center;">prob $= \tfrac{1}{2}$</div>
+                </foreignObject>
+                <foreignObject x="415" y="2" width="90" height="25">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: 11px; color: #e06c75; text-align: center;">prob $= \tfrac{1}{2}$</div>
+                </foreignObject>
+            </svg>
+        </div>
+        <div class="fragment small-text" style="margin-top: 10px;">
+            <strong>Master Equation:</strong> &emsp; $p(x, t + \Delta t) = \frac{1}{2} p(x - \Delta x, t) + \frac{1}{2} p(x + \Delta x, t)$
+        </div>
+        <div class="fragment tiny-text" style="margin-top: 8px; color: #888;">
+            Probability at $x$ comes from particles jumping in from both neighbors
+        </div>
+    </section>
+
+    <section>
+        <h2>The Master Equation</h2>
+        <p class="small-text">Probability at position $x$ at time $t + \Delta t$ comes from neighbors:</p>
+        <div class="equation-box" style="margin-top: 15px;">
+            $p(x, t + \Delta t) = \frac{1}{2} p(x - \Delta x, t) + \frac{1}{2} p(x + \Delta x, t)$
+        </div>
+        <div class="fragment" style="margin-top: 20px;">
+            <p class="small-text">Subtracting $p(x, t)$ on both sides:</p>
+            <div class="equation-box" style="font-size: 0.75em;">
+                $\underbrace{p(x, t + \Delta t) - p(x, t)}_{\text{change in time}} = \tfrac{1}{2} \underbrace{\left[ p(x + \Delta x, t) - 2p(x, t) + p(x - \Delta x, t) \right]}_{\text{curvature in space}}$
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Taking the Continuum Limit</h2>
+        <p class="small-text">Taylor expand for small $\Delta x$ and $\Delta t$:</p>
+        <div class="two-column tiny-text" style="margin-top: 15px;">
+            <div class="equation-box">
+                $p(x, t + \Delta t) \approx p + \frac{\partial p}{\partial t} \Delta t$
+            </div>
+            <div class="equation-box">
+                $p(x \pm \Delta x, t) \approx p \pm \frac{\partial p}{\partial x} \Delta x + \frac{1}{2}\frac{\partial^2 p}{\partial x^2} (\Delta x)^2$
+            </div>
+        </div>
+        <div class="fragment" style="margin-top: 20px;">
+            <p class="small-text">Substituting and simplifying:</p>
+            <div class="equation-box">
+                $\frac{\partial p}{\partial t} \Delta t = \frac{1}{2} \cdot \frac{\partial^2 p}{\partial x^2} (\Delta x)^2$
+            </div>
+        </div>
+        <div class="fragment principle-box small-text" style="margin-top: 15px;">
+            <strong>The Diffusion Equation:</strong> &emsp; $\displaystyle\frac{\partial p}{\partial t} = D \frac{\partial^2 p}{\partial x^2}$ &emsp; where &emsp; $D = \frac{(\Delta x)^2}{2 \Delta t}$
+        </div>
+    </section>
+
+    <section>
+        <h2>What if $\Delta x \to 0$? Random $dx$ at every $dt$?</h2>
+        <p class="small-text">The same physics can be written as a <strong>Stochastic Differential Equation</strong>:</p>
+        <div class="two-column" style="margin-top: 20px;">
+            <div>
+                <div class="highlight-box small-text" style="text-align: center;">
+                    <strong>PDE (density)</strong><br><br>
+                    $\frac{\partial p}{\partial t} = D \frac{\partial^2 p}{\partial x^2}$
+                </div>
+                <p class="tiny-text center-text" style="margin-top: 10px; color: #888;">Evolution of probability density</p>
+            </div>
+            <div>
+                <div class="success-box small-text" style="text-align: center;">
+                    <strong>SDE (trajectory)</strong><br><br>
+                    $dX = \sqrt{2D}\, dW$
+                </div>
+                <p class="tiny-text center-text" style="margin-top: 10px; color: #888;">Langevin equation for single particle</p>
+            </div>
+        </div>
+        <div class="fragment tiny-text" style="margin-top: 20px;">
+            <strong>$dW$</strong> = Wiener process increment (Gaussian noise with $\langle dW \rangle = 0$, $\langle dW^2 \rangle = dt$)
+        </div>
+        <div class="fragment principle-box tiny-text" style="margin-top: 15px;">
+            <strong>Key insight:</strong> The PDE describes the ensemble, the SDE describes individual realizations. Both are equivalent!
+        </div>
+    </section>
+
+    <section>
+        <h2>From Randomness to Determinism</h2>
+        <div class="two-column" style="margin-top: 20px;">
+            <div class="warning-box small-text" style="text-align: center;">
+                <strong style="color: var(--accent-red);">Microscopic</strong><br><br>
+                Individual particles walk randomly<br>
+                Completely unpredictable!
+            </div>
+            <div class="success-box small-text" style="text-align: center;">
+                <strong style="color: var(--accent-green);">Macroscopic</strong><br><br>
+                Density evolves deterministically<br>
+                Perfectly predictable!
+            </div>
+        </div>
+        <p class="fragment tiny-text center-text" style="margin-top: 25px; color: #888;">
+            This is how we go from randomness at small scales to determinism at large scales.
+        </p>
+    </section>
+
+    <section>
+        <h2>The Right Scale Matters</h2>
+        <p class="small-text">A profound lesson for modeling:</p>
+        <div class="principle-box small-text" style="margin-top: 15px;">
+            <strong>If something seems unpredictable, maybe you're looking at the wrong scale.</strong>
+        </div>
+        <div class="fragment two-column" style="margin-top: 20px;">
+            <div class="warning-box small-text" style="text-align: center;">
+                <strong style="color: var(--accent-red);">Individual Scale</strong>
+                <ul class="tiny-text" style="text-align: left; margin-top: 10px;">
+                    <li>Molecules → chaotic</li>
+                    <li>Neuron spikes → noisy</li>
+                    <li>Individual trades → random</li>
+                </ul>
+            </div>
+            <div class="success-box small-text" style="text-align: center;">
+                <strong style="color: var(--accent-green);">Statistical Scale</strong>
+                <ul class="tiny-text" style="text-align: left; margin-top: 10px;">
+                    <li>Temperature/pressure → smooth</li>
+                    <li>Population activity → structured</li>
+                    <li>Market trends → regularities</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- NETWORKS PREVIEW -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Complex Systems on Networks</h2>
+        <p class="small-text">Many complex systems have a network structure:</p>
+        <div class="three-column tiny-text" style="margin-top: 20px;">
+            <div class="highlight-box" style="text-align: center;">
+                <strong>Internet</strong><br>
+                Routers, packets<br>
+                Congestion, packet loss
+            </div>
+            <div class="highlight-box" style="text-align: center;">
+                <strong>Social</strong><br>
+                People, connections<br>
+                Information spread
+            </div>
+            <div class="highlight-box" style="text-align: center;">
+                <strong>Neural</strong><br>
+                Neurons, synapses<br>
+                Signal propagation
+            </div>
+        </div>
+        <div class="fragment principle-box small-text" style="margin-top: 20px;">
+            <strong>Common questions:</strong> What's the probability of packet loss? How does information spread? How do signals propagate?
+        </div>
+    </section>
+
+    <section>
+        <h2>How About Neurons to Brains?</h2>
+        <p class="tiny-text">The <strong>FitzHugh-Nagumo</strong> model: a 2D simplification of Hodgkin-Huxley (equivalent to the <strong>Van der Pol oscillator</strong> circuit)</p>
+        <!-- Top row: plots -->
+        <div style="display: flex; justify-content: center; gap: 15px; margin-top: 6px;">
+            <svg id="fhn-phase-svg" width="340" height="210" style="background: rgba(0,0,0,0.3); border-radius: 8px;"></svg>
+            <svg id="fhn-time-svg" width="220" height="210" style="background: rgba(0,0,0,0.3); border-radius: 8px;"></svg>
+        </div>
+        <!-- Bottom row: equations, definitions, slider -->
+        <div style="display: flex; justify-content: center; align-items: flex-start; gap: 25px; margin-top: 10px;">
+            <div class="tiny-text" style="background: rgba(0,0,0,0.2); border-radius: 6px; padding: 8px 12px;">
+                $\dot{V} = V - \tfrac{V^3}{3} - W + I$<br>
+                $\dot{W} = \varepsilon(V + a - bW)$
+            </div>
+            <table class="tiny-text" style="border-collapse: collapse;">
+                <tr><td style="padding: 1px 8px; color: #ccc;">$V$</td><td style="padding: 1px 8px; color: #888;">membrane potential</td></tr>
+                <tr><td style="padding: 1px 8px; color: #ccc;">$W$</td><td style="padding: 1px 8px; color: #888;">recovery variable</td></tr>
+                <tr><td style="padding: 1px 8px; color: #ccc;">$I$</td><td style="padding: 1px 8px; color: #888;">input current</td></tr>
+                <tr><td style="padding: 1px 8px; color: #ccc;">$\varepsilon$</td><td style="padding: 1px 8px; color: #888;">time scale</td></tr>
+            </table>
+            <div class="tiny-text" style="background: rgba(0,0,0,0.2); border-radius: 6px; padding: 8px 12px; min-width: 140px;">
+                <div style="color: #98c379; margin-bottom: 4px;">$I$ controls frequency:</div>
+                <input type="range" id="fhn-I-slider" min="0.2" max="0.9" step="0.02" value="0.5"
+                       style="width: 100%; accent-color: #98c379;">
+                <div style="text-align: center; color: #98c379; margin-top: 2px;">$I = $ <span id="fhn-I-value">0.50</span></div>
+            </div>
+        </div>
+        <p class="fragment tiny-text center-text" style="margin-top: 6px; color: #888;">
+            Flow field shows state evolution. Cubic shape creates excitability: small push → large spike.
+        </p>
+        <script>
+        (function() {
+            const phaseSvg = document.getElementById('fhn-phase-svg');
+            const timeSvg = document.getElementById('fhn-time-svg');
+            const slider = document.getElementById('fhn-I-slider');
+            const valueDisplay = document.getElementById('fhn-I-value');
+            const ns = 'http://www.w3.org/2000/svg';
+
+            const PW = 340, PH = 210, TW = 220, TH = 210;
+            const a = 0.7, b = 0.8, eps = 0.08;
+            let I = 0.5;
+
+            const vMin = -2.5, vMax = 2.5, wMin = -0.8, wMax = 2.0;
+            const toX = v => (v - vMin) / (vMax - vMin) * (PW - 55) + 40;
+            const toY = w => PH - 30 - (w - wMin) / (wMax - wMin) * (PH - 45);
+
+            // Phase portrait elements
+            const flowGroup = document.createElementNS(ns, 'g');
+            phaseSvg.appendChild(flowGroup);
+
+            function drawFlowField() {
+                flowGroup.innerHTML = '';
+                const gridSize = 10;
+                for (let i = 0; i <= gridSize; i++) {
+                    for (let j = 0; j <= gridSize; j++) {
+                        const v = vMin + (vMax - vMin) * i / gridSize;
+                        const w = wMin + (wMax - wMin) * j / gridSize;
+                        const dv = v - v*v*v/3 - w + I;
+                        const dw = eps * (v + a - b*w);
+                        const mag = Math.sqrt(dv*dv + dw*dw);
+                        if (mag < 0.01) continue;
+                        const scale = Math.min(14, 6 * Math.log(1 + mag));
+                        const x = toX(v), y = toY(w);
+                        const dx = scale * dv / mag;
+                        const dy = -scale * dw / mag;
+
+                        const line = document.createElementNS(ns, 'line');
+                        line.setAttribute('x1', x);
+                        line.setAttribute('y1', y);
+                        line.setAttribute('x2', x + dx);
+                        line.setAttribute('y2', y + dy);
+                        line.setAttribute('stroke', '#61afef');
+                        line.setAttribute('stroke-width', '1.2');
+                        line.setAttribute('opacity', '0.5');
+                        flowGroup.appendChild(line);
+                    }
+                }
+            }
+
+            // V-nullcline
+            const vNullPath = document.createElementNS(ns, 'polyline');
+            vNullPath.setAttribute('fill', 'none');
+            vNullPath.setAttribute('stroke', '#666');
+            vNullPath.setAttribute('stroke-width', '1.5');
+            vNullPath.setAttribute('stroke-dasharray', '3,2');
+            phaseSvg.appendChild(vNullPath);
+
+            function updateVNullcline() {
+                let pts = '';
+                for (let v = vMin; v <= vMax; v += 0.05) {
+                    const w = v - v*v*v/3 + I;
+                    pts += `${toX(v).toFixed(1)},${toY(w).toFixed(1)} `;
+                }
+                vNullPath.setAttribute('points', pts.trim());
+            }
+
+            // W-nullcline (static)
+            const wNull = document.createElementNS(ns, 'line');
+            wNull.setAttribute('x1', toX(vMin)); wNull.setAttribute('y1', toY((vMin + a) / b));
+            wNull.setAttribute('x2', toX(vMax)); wNull.setAttribute('y2', toY((vMax + a) / b));
+            wNull.setAttribute('stroke', '#666');
+            wNull.setAttribute('stroke-width', '1.5');
+            wNull.setAttribute('stroke-dasharray', '3,2');
+            phaseSvg.appendChild(wNull);
+
+            // Axes
+            const axX = document.createElementNS(ns, 'line');
+            axX.setAttribute('x1', 40); axX.setAttribute('y1', PH - 30);
+            axX.setAttribute('x2', PW - 10); axX.setAttribute('y2', PH - 30);
+            axX.setAttribute('stroke', '#888'); axX.setAttribute('stroke-width', '1');
+            phaseSvg.appendChild(axX);
+
+            const axY = document.createElementNS(ns, 'line');
+            axY.setAttribute('x1', 40); axY.setAttribute('y1', PH - 30);
+            axY.setAttribute('x2', 40); axY.setAttribute('y2', 10);
+            axY.setAttribute('stroke', '#888'); axY.setAttribute('stroke-width', '1');
+            phaseSvg.appendChild(axY);
+
+            // Axis labels
+            const lV = document.createElementNS(ns, 'foreignObject');
+            lV.setAttribute('x', PW - 25); lV.setAttribute('y', PH - 28);
+            lV.setAttribute('width', 25); lV.setAttribute('height', 20);
+            lV.innerHTML = '<div xmlns="http://www.w3.org/1999/xhtml" style="font-size:12px;color:#aaa;">$V$</div>';
+            phaseSvg.appendChild(lV);
+
+            const lW = document.createElementNS(ns, 'foreignObject');
+            lW.setAttribute('x', 25); lW.setAttribute('y', 2);
+            lW.setAttribute('width', 25); lW.setAttribute('height', 20);
+            lW.innerHTML = '<div xmlns="http://www.w3.org/1999/xhtml" style="font-size:12px;color:#aaa;">$W$</div>';
+            phaseSvg.appendChild(lW);
+
+            // Trajectory
+            const trajPath = document.createElementNS(ns, 'polyline');
+            trajPath.setAttribute('fill', 'none');
+            trajPath.setAttribute('stroke', '#e5c07b');
+            trajPath.setAttribute('stroke-width', '2');
+            trajPath.setAttribute('stroke-linejoin', 'round');
+            phaseSvg.appendChild(trajPath);
+
+            const dot = document.createElementNS(ns, 'circle');
+            dot.setAttribute('r', '4');
+            dot.setAttribute('fill', '#e5c07b');
+            phaseSvg.appendChild(dot);
+
+            // Time series SVG
+            const timeAxX = document.createElementNS(ns, 'line');
+            timeAxX.setAttribute('x1', 30); timeAxX.setAttribute('y1', TH - 25);
+            timeAxX.setAttribute('x2', TW - 10); timeAxX.setAttribute('y2', TH - 25);
+            timeAxX.setAttribute('stroke', '#888'); timeAxX.setAttribute('stroke-width', '1');
+            timeSvg.appendChild(timeAxX);
+
+            const timeAxY = document.createElementNS(ns, 'line');
+            timeAxY.setAttribute('x1', 30); timeAxY.setAttribute('y1', TH - 25);
+            timeAxY.setAttribute('x2', 30); timeAxY.setAttribute('y2', 10);
+            timeAxY.setAttribute('stroke', '#888'); timeAxY.setAttribute('stroke-width', '1');
+            timeSvg.appendChild(timeAxY);
+
+            const timeLabelV = document.createElementNS(ns, 'foreignObject');
+            timeLabelV.setAttribute('x', 5); timeLabelV.setAttribute('y', 2);
+            timeLabelV.setAttribute('width', 40); timeLabelV.setAttribute('height', 20);
+            timeLabelV.innerHTML = '<div xmlns="http://www.w3.org/1999/xhtml" style="font-size:11px;color:#aaa;">$V(t)$</div>';
+            timeSvg.appendChild(timeLabelV);
+
+            const timeLabelT = document.createElementNS(ns, 'foreignObject');
+            timeLabelT.setAttribute('x', TW - 20); timeLabelT.setAttribute('y', TH - 22);
+            timeLabelT.setAttribute('width', 20); timeLabelT.setAttribute('height', 20);
+            timeLabelT.innerHTML = '<div xmlns="http://www.w3.org/1999/xhtml" style="font-size:11px;color:#aaa;">$t$</div>';
+            timeSvg.appendChild(timeLabelT);
+
+            const timePath = document.createElementNS(ns, 'polyline');
+            timePath.setAttribute('fill', 'none');
+            timePath.setAttribute('stroke', '#e5c07b');
+            timePath.setAttribute('stroke-width', '1.8');
+            timePath.setAttribute('stroke-linejoin', 'round');
+            timeSvg.appendChild(timePath);
+
+            // State
+            let v = -1.5, w = -0.5;
+            const phaseTrail = [];
+            const timeHistory = [];
+            const maxPhase = 300, maxTime = 200;
+
+            slider.addEventListener('input', function() {
+                I = parseFloat(this.value);
+                valueDisplay.textContent = I.toFixed(2);
+                drawFlowField();
+                updateVNullcline();
+            });
+
+            drawFlowField();
+            updateVNullcline();
+
+            function animate() {
+                const dt = 0.1;
+                const dv = v - v*v*v/3 - w + I;
+                const dw = eps * (v + a - b*w);
+                v += dv * dt;
+                w += dw * dt;
+
+                phaseTrail.push(`${toX(v).toFixed(1)},${toY(w).toFixed(1)}`);
+                if (phaseTrail.length > maxPhase) phaseTrail.shift();
+                trajPath.setAttribute('points', phaseTrail.join(' '));
+                dot.setAttribute('cx', toX(v));
+                dot.setAttribute('cy', toY(w));
+
+                timeHistory.push(v);
+                if (timeHistory.length > maxTime) timeHistory.shift();
+                let timePts = '';
+                const tScale = (TW - 40) / maxTime;
+                const vScale = (TH - 45) / 4;
+                for (let i = 0; i < timeHistory.length; i++) {
+                    const tx = 30 + i * tScale;
+                    const ty = TH / 2 - timeHistory[i] * vScale * 0.8;
+                    timePts += `${tx.toFixed(1)},${ty.toFixed(1)} `;
+                }
+                timePath.setAttribute('points', timePts.trim());
+
+                requestAnimationFrame(animate);
+            }
+            setTimeout(animate, 500);
+        })();
+        </script>
+    </section>
+
+    <section>
+        <h2>Coupled Neurons</h2>
+        <p class="tiny-text">Neurons interact through synaptic connections:</p>
+        <div class="equation-box tiny-text" style="margin-top: 8px; font-size: 0.85em;">
+            $\displaystyle\frac{dV_k}{dt} = V_k - \frac{V_k^3}{3} - W_k + I_k + \sum_{j \in \mathcal{N}(k)} g_{jk}(V_j - V_k)$
+        </div>
+        <div style="display: flex; justify-content: center; margin-top: 12px;">
+            <svg width="580" height="240" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
+                <defs>
+                    <marker id="net-arrow" markerWidth="10" markerHeight="8" refX="10" refY="4" orient="auto">
+                        <polygon points="0 0, 10 4, 0 8" fill="#98c379"/>
+                    </marker>
+                </defs>
+                <!-- Neurons at random-ish positions -->
+                <circle cx="90" cy="80" r="28" fill="none" stroke="#61afef" stroke-width="2.5"/>
+                <circle cx="200" cy="160" r="28" fill="none" stroke="#61afef" stroke-width="2.5"/>
+                <circle cx="300" cy="60" r="28" fill="none" stroke="#e5c07b" stroke-width="2.5"/>
+                <circle cx="380" cy="175" r="28" fill="none" stroke="#61afef" stroke-width="2.5"/>
+                <circle cx="480" cy="90" r="28" fill="none" stroke="#61afef" stroke-width="2.5"/>
+                <circle cx="520" cy="190" r="28" fill="none" stroke="#61afef" stroke-width="2.5"/>
+
+                <!-- Labels -->
+                <foreignObject x="70" y="65" width="45" height="35">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: 16px; color: #61afef; text-align: center;">$V_1$</div>
+                </foreignObject>
+                <foreignObject x="180" y="145" width="45" height="35">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: 16px; color: #61afef; text-align: center;">$V_2$</div>
+                </foreignObject>
+                <foreignObject x="280" y="45" width="45" height="35">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: 16px; color: #e5c07b; text-align: center;">$V_3$</div>
+                </foreignObject>
+                <foreignObject x="360" y="160" width="45" height="35">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: 16px; color: #61afef; text-align: center;">$V_4$</div>
+                </foreignObject>
+                <foreignObject x="460" y="75" width="45" height="35">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: 16px; color: #61afef; text-align: center;">$V_5$</div>
+                </foreignObject>
+                <foreignObject x="500" y="175" width="45" height="35">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: 16px; color: #61afef; text-align: center;">$V_6$</div>
+                </foreignObject>
+
+                <!-- Connections (irregular network) -->
+                <line x1="118" y1="85" x2="172" y2="140" stroke="#98c379" stroke-width="2" marker-end="url(#net-arrow)"/>
+                <line x1="115" y1="68" x2="272" y2="62" stroke="#98c379" stroke-width="2" marker-end="url(#net-arrow)"/>
+                <line x1="225" y1="145" x2="275" y2="82" stroke="#98c379" stroke-width="2" marker-end="url(#net-arrow)"/>
+                <line x1="328" y1="65" x2="452" y2="85" stroke="#98c379" stroke-width="2" marker-end="url(#net-arrow)"/>
+                <line x1="315" y1="85" x2="360" y2="150" stroke="#98c379" stroke-width="2" marker-end="url(#net-arrow)"/>
+                <line x1="228" y1="165" x2="352" y2="172" stroke="#98c379" stroke-width="2" marker-end="url(#net-arrow)"/>
+                <line x1="405" y1="162" x2="455" y2="105" stroke="#98c379" stroke-width="2" marker-end="url(#net-arrow)"/>
+                <line x1="408" y1="180" x2="492" y2="185" stroke="#98c379" stroke-width="2" marker-end="url(#net-arrow)"/>
+                <line x1="495" y1="115" x2="510" y2="162" stroke="#98c379" stroke-width="2" marker-end="url(#net-arrow)"/>
+
+                <!-- Some coupling labels -->
+                <foreignObject x="130" y="95" width="50" height="25">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: 12px; color: #98c379; text-align: center;">$g_{12}$</div>
+                </foreignObject>
+                <foreignObject x="235" y="95" width="50" height="25">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: 12px; color: #98c379; text-align: center;">$g_{23}$</div>
+                </foreignObject>
+                <foreignObject x="380" y="55" width="50" height="25">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="font-size: 12px; color: #98c379; text-align: center;">$g_{35}$</div>
+                </foreignObject>
+            </svg>
+        </div>
+        <p class="fragment tiny-text center-text" style="margin-top: 8px; color: #888;">
+            Coupling strength $g_{jk}$ determines influence of neuron $j$ on neuron $k$
+        </p>
+    </section>
+
+    <section>
+        <h2>Synchronization</h2>
+        <p class="tiny-text">Explore how coupling strength affects synchronization:</p>
+        <div style="display: flex; justify-content: center; gap: 15px; margin-top: 6px;">
+            <svg id="sync-svg" width="620" height="280" style="background: rgba(0,0,0,0.3); border-radius: 8px;"></svg>
+            <div id="sync-params" style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 8px 12px; width: 110px;">
+                <div class="tiny-text" style="color: #888; margin-bottom: 6px; text-align: center;">Intrinsic $I_k$</div>
+            </div>
+        </div>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 10px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="tiny-text" style="color: #98c379;">Coupling $g$:</span>
+                <input type="range" id="sync-coupling-slider" min="0" max="0.25" step="0.005" value="0"
+                       style="width: 180px; accent-color: #98c379;">
+                <span id="sync-coupling-value" class="tiny-text" style="color: #98c379; width: 45px;">0.000</span>
+            </div>
+            <button id="sync-reset-btn" class="tiny-text"
+                    style="padding: 4px 12px; background: #61afef; color: #1e1e1e; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                Reset
+            </button>
+        </div>
+        <div class="principle-box tiny-text" style="margin-top: 8px;">
+            <strong>Try it:</strong> At $g=0$ neurons oscillate at their natural frequencies (set by $I_k$). Increase $g$ to see them synchronize.
+        </div>
+        <script>
+        (function() {
+            const svg = document.getElementById('sync-svg');
+            const paramsDiv = document.getElementById('sync-params');
+            const slider = document.getElementById('sync-coupling-slider');
+            const valueDisplay = document.getElementById('sync-coupling-value');
+            const resetBtn = document.getElementById('sync-reset-btn');
+            const W = 620, H = 280;
+            const ns = 'http://www.w3.org/2000/svg';
+
+            const N = 8;
+            const colors = ['#e06c75', '#61afef', '#98c379', '#e5c07b', '#c678dd', '#56b6c2', '#d19a66', '#be5046'];
+            const a = 0.7, b = 0.8, eps = 0.08;
+            const baseI = [0.30, 0.38, 0.44, 0.50, 0.54, 0.60, 0.68, 0.75];
+
+            let neurons = [];
+            let coupling = 0;
+            const maxHistory = 320;
+            const traceH = (H - 30) / N;
+            const xStart = 45, xEnd = W - 10;
+
+            // Build static SVG elements
+            // Background grid lines
+            for (let i = 0; i < N; i++) {
+                const line = document.createElementNS(ns, 'line');
+                line.setAttribute('x1', xStart);
+                line.setAttribute('y1', 18 + i * traceH);
+                line.setAttribute('x2', xEnd);
+                line.setAttribute('y2', 18 + i * traceH);
+                line.setAttribute('stroke', '#444');
+                line.setAttribute('stroke-width', '1');
+                svg.appendChild(line);
+            }
+
+            // Axis labels
+            const labelV = document.createElementNS(ns, 'text');
+            labelV.setAttribute('x', 8);
+            labelV.setAttribute('y', 15);
+            labelV.setAttribute('fill', '#888');
+            labelV.setAttribute('font-size', '12');
+            labelV.textContent = 'V(t)';
+            svg.appendChild(labelV);
+
+            const labelT = document.createElementNS(ns, 'text');
+            labelT.setAttribute('x', W - 8);
+            labelT.setAttribute('y', H - 5);
+            labelT.setAttribute('fill', '#888');
+            labelT.setAttribute('font-size', '12');
+            labelT.setAttribute('text-anchor', 'end');
+            labelT.textContent = 't';
+            svg.appendChild(labelT);
+
+            // Create neuron labels and traces
+            const traces = [];
+            for (let i = 0; i < N; i++) {
+                const baseY = 18 + i * traceH + traceH / 2;
+
+                // Label
+                const label = document.createElementNS(ns, 'text');
+                label.setAttribute('x', 40);
+                label.setAttribute('y', baseY + 4);
+                label.setAttribute('fill', colors[i]);
+                label.setAttribute('font-size', '11');
+                label.setAttribute('text-anchor', 'end');
+                label.textContent = 'V' + (i + 1);
+                svg.appendChild(label);
+
+                // Trace polyline
+                const trace = document.createElementNS(ns, 'polyline');
+                trace.setAttribute('fill', 'none');
+                trace.setAttribute('stroke', colors[i]);
+                trace.setAttribute('stroke-width', '1.8');
+                trace.setAttribute('stroke-linejoin', 'round');
+                trace.setAttribute('stroke-linecap', 'round');
+                svg.appendChild(trace);
+                traces.push(trace);
+            }
+
+            // Build parameter display
+            for (let i = 0; i < N; i++) {
+                const row = document.createElement('div');
+                row.style.cssText = 'display: flex; justify-content: space-between; align-items: center; margin: 3px 0;';
+                row.innerHTML = `<span style="color: ${colors[i]}; font-size: 11px;">V<sub>${i+1}</sub>:</span>
+                                 <span style="color: ${colors[i]}; font-size: 11px; font-family: monospace;">${baseI[i].toFixed(2)}</span>`;
+                paramsDiv.appendChild(row);
+            }
+
+            function initNeurons() {
+                neurons = [];
+                for (let i = 0; i < N; i++) {
+                    neurons.push({
+                        v: -2.5 + Math.random() * 2.5,
+                        w: -1 + Math.random() * 1,
+                        history: []
+                    });
+                }
+                // Clear traces
+                traces.forEach(t => t.setAttribute('points', ''));
+            }
+
+            initNeurons();
+
+            slider.addEventListener('input', function() {
+                coupling = parseFloat(this.value);
+                valueDisplay.textContent = coupling.toFixed(3);
+            });
+
+            resetBtn.addEventListener('click', function() {
+                initNeurons();
+            });
+
+            function step() {
+                const dt = 0.12;
+                const newStates = [];
+
+                for (let i = 0; i < N; i++) {
+                    const n = neurons[i];
+                    let coupleSum = 0;
+                    for (let j = 0; j < N; j++) {
+                        if (i !== j) coupleSum += (neurons[j].v - n.v);
+                    }
+
+                    const dv = n.v - n.v*n.v*n.v/3 - n.w + baseI[i] + coupling * coupleSum / (N - 1);
+                    const dw = eps * (n.v + a - b*n.w);
+
+                    newStates.push({
+                        v: n.v + dv * dt,
+                        w: n.w + dw * dt
+                    });
+                }
+
+                for (let i = 0; i < N; i++) {
+                    neurons[i].v = newStates[i].v;
+                    neurons[i].w = newStates[i].w;
+                    neurons[i].history.push(neurons[i].v);
+                    if (neurons[i].history.length > maxHistory) neurons[i].history.shift();
+                }
+            }
+
+            function draw() {
+                for (let i = 0; i < N; i++) {
+                    const baseY = 18 + i * traceH + traceH / 2;
+                    const hist = neurons[i].history;
+
+                    if (hist.length > 1) {
+                        let points = '';
+                        for (let j = 0; j < hist.length; j++) {
+                            const x = xStart + j * (xEnd - xStart) / maxHistory;
+                            const y = baseY - hist[j] * (traceH * 0.42);
+                            points += `${x.toFixed(1)},${y.toFixed(1)} `;
+                        }
+                        traces[i].setAttribute('points', points.trim());
+                    }
+                }
+            }
+
+            function animate() {
+                step();
+                draw();
+                requestAnimationFrame(animate);
+            }
+
+            setTimeout(animate, 500);
+        })();
+        </script>
+    </section>
+
+    <section>
+        <h2>Preview: Artificial Neural Networks</h2>
+        <p class="small-text">Artificial neurons are a <em>simplification</em>:</p>
+        <div class="two-column" style="margin-top: 15px;">
+            <div class="warning-box tiny-text">
+                <strong>Real neurons:</strong><br>
+                - Fire in time (spikes)<br>
+                - Complex ion dynamics<br>
+                - Many neurotransmitters<br>
+                - Stochastic
+            </div>
+            <div class="success-box tiny-text">
+                <strong>Artificial neurons:</strong><br>
+                - Static input/output<br>
+                - Simple: $y = \sigma(Wx + b)$<br>
+                - Deterministic<br>
+                - But still a complex system!
+            </div>
+        </div>
+        <div class="fragment principle-box small-text" style="margin-top: 20px;">
+            <strong>Key insight:</strong> Neural networks learn because they're complex systems that can adapt to data.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SUMMARY -->
+<!-- ============================================ -->
+<section>
+    <h2>Summary</h2>
+    <ol class="small-text">
+        <li class="fragment"><strong>Complex systems:</strong> The whole is more than the sum of parts</li>
+        <li class="fragment"><strong>Chaos:</strong> Deterministic $\neq$ Predictable (Lorenz system)</li>
+        <li class="fragment"><strong>Probability:</strong> A tool for dealing with uncertainty and complexity</li>
+        <li class="fragment"><strong>Uncertainty propagation:</strong> Distributions evolve deterministically</li>
+        <li class="fragment"><strong>Scale matters:</strong> Randomness at small scales can become determinism at large scales (Brownian motion $\to$ diffusion)</li>
+        <li class="fragment"><strong>Neural networks:</strong> Are themselves complex systems that learn from data</li>
+    </ol>
+    <div class="fragment highlight-box small-text" style="margin-top: 20px;">
+        <strong>Next lecture:</strong> Neural networks as function approximators
+    </div>
+</section>
+
+</div>
+</div>
+
+<!-- Reveal.js and plugins -->
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js"></script>
+
+<script>
+    Reveal.initialize({
+        hash: true,
+        slideNumber: true,
+        width: 1100,
+        height: 650,
+        margin: 0.15,
+        plugins: [RevealMath.KaTeX, RevealHighlight]
+    });
+
+    // ==========================================
+    // LORENZ SYSTEM
+    // ==========================================
+    let lorenzState = { x: 1, y: 1, z: 1 };
+    let lorenzTrail = [];
+    let lorenzAnimId = null;
+    let lorenzTrailLength = 1500;
+    let lorenzSpeed = 3;
+
+    function initLorenz() {
+        lorenzState = { x: 1, y: 1, z: 1 };
+        lorenzTrail = [];
+        lorenzTrailLength = parseInt(document.getElementById('lorenz-trail')?.value || 1500);
+        lorenzSpeed = parseInt(document.getElementById('lorenz-speed')?.value || 3);
+        if (lorenzAnimId) cancelAnimationFrame(lorenzAnimId);
+        animateLorenz();
+    }
+
+    function animateLorenz() {
+        const sigma = 10, rho = 28, beta = 8/3;
+        const dt = 0.008;
+
+        lorenzTrailLength = parseInt(document.getElementById('lorenz-trail')?.value || 1500);
+        lorenzSpeed = parseInt(document.getElementById('lorenz-speed')?.value || 3);
+
+        if (document.getElementById('lorenz-speed-val'))
+            document.getElementById('lorenz-speed-val').textContent = lorenzSpeed;
+        if (document.getElementById('lorenz-trail-val'))
+            document.getElementById('lorenz-trail-val').textContent = lorenzTrailLength;
+
+        for (let step = 0; step < lorenzSpeed; step++) {
+            const f = (x, y, z) => [sigma * (y - x), x * (rho - z) - y, x * y - beta * z];
+            const k1 = f(lorenzState.x, lorenzState.y, lorenzState.z);
+            const k2 = f(lorenzState.x + dt/2 * k1[0], lorenzState.y + dt/2 * k1[1], lorenzState.z + dt/2 * k1[2]);
+            const k3 = f(lorenzState.x + dt/2 * k2[0], lorenzState.y + dt/2 * k2[1], lorenzState.z + dt/2 * k2[2]);
+            const k4 = f(lorenzState.x + dt * k3[0], lorenzState.y + dt * k3[1], lorenzState.z + dt * k3[2]);
+
+            lorenzState.x += dt/6 * (k1[0] + 2*k2[0] + 2*k3[0] + k4[0]);
+            lorenzState.y += dt/6 * (k1[1] + 2*k2[1] + 2*k3[1] + k4[1]);
+            lorenzState.z += dt/6 * (k1[2] + 2*k2[2] + 2*k3[2] + k4[2]);
+
+            lorenzTrail.push({ x: lorenzState.x, y: lorenzState.y, z: lorenzState.z });
+            if (lorenzTrail.length > lorenzTrailLength) lorenzTrail.shift();
+        }
+
+        const coordsDiv = document.getElementById('lorenz-coords');
+        if (coordsDiv) {
+            coordsDiv.innerHTML = `x = ${lorenzState.x.toFixed(2)}<br>y = ${lorenzState.y.toFixed(2)}<br>z = ${lorenzState.z.toFixed(2)}`;
+        }
+
+        drawLorenz();
+        lorenzAnimId = requestAnimationFrame(animateLorenz);
+    }
+
+    function drawLorenz() {
+        const svg = document.getElementById('lorenz-viz');
+        if (!svg) return;
+
+        const width = 500, height = 380;
+        svg.innerHTML = '';
+
+        if (lorenzTrail.length < 2) return;
+
+        const segmentSize = 50;
+        const numSegments = Math.ceil(lorenzTrail.length / segmentSize);
+
+        for (let seg = 0; seg < numSegments; seg++) {
+            const startIdx = seg * segmentSize;
+            const endIdx = Math.min((seg + 1) * segmentSize + 1, lorenzTrail.length);
+            if (endIdx - startIdx < 2) continue;
+
+            let path = '';
+            for (let i = startIdx; i < endIdx; i++) {
+                const pt = lorenzTrail[i];
+                const scale = 5.5;
+                const px = width / 2 + (pt.x + pt.y * 0.1) * scale;
+                const py = height - 40 - pt.z * scale * 0.75;
+                path += (i === startIdx ? 'M' : 'L') + `${px},${py}`;
+            }
+
+            const opacity = 0.1 + 0.9 * (seg / numSegments);
+            const curve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            curve.setAttribute('d', path);
+            curve.setAttribute('stroke', '#61afef');
+            curve.setAttribute('stroke-width', 1.5);
+            curve.setAttribute('fill', 'none');
+            curve.setAttribute('opacity', opacity.toFixed(2));
+            svg.appendChild(curve);
+        }
+
+        const last = lorenzTrail[lorenzTrail.length - 1];
+        const scale = 5.5;
+        const lastX = width / 2 + (last.x + last.y * 0.1) * scale;
+        const lastY = height - 40 - last.z * scale * 0.75;
+
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', lastX);
+        dot.setAttribute('cy', lastY);
+        dot.setAttribute('r', 4);
+        dot.setAttribute('fill', '#e5c07b');
+        svg.appendChild(dot);
+
+        // Axes
+        const axisOriginX = 60, axisOriginY = height - 50, axisLen = 50;
+
+        // X axis (red)
+        const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxis.setAttribute('x1', axisOriginX); xAxis.setAttribute('y1', axisOriginY);
+        xAxis.setAttribute('x2', axisOriginX + axisLen); xAxis.setAttribute('y2', axisOriginY);
+        xAxis.setAttribute('stroke', '#e06c75'); xAxis.setAttribute('stroke-width', 2);
+        svg.appendChild(xAxis);
+
+        const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xLabel.setAttribute('x', axisOriginX + axisLen + 8);
+        xLabel.setAttribute('y', axisOriginY + 4);
+        xLabel.setAttribute('fill', '#e06c75');
+        xLabel.setAttribute('font-size', '14px');
+        xLabel.textContent = 'x';
+        svg.appendChild(xLabel);
+
+        // Z axis (blue, vertical)
+        const zAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        zAxis.setAttribute('x1', axisOriginX); zAxis.setAttribute('y1', axisOriginY);
+        zAxis.setAttribute('x2', axisOriginX); zAxis.setAttribute('y2', axisOriginY - axisLen);
+        zAxis.setAttribute('stroke', '#61afef'); zAxis.setAttribute('stroke-width', 2);
+        svg.appendChild(zAxis);
+
+        const zLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        zLabel.setAttribute('x', axisOriginX - 5);
+        zLabel.setAttribute('y', axisOriginY - axisLen - 8);
+        zLabel.setAttribute('fill', '#61afef');
+        zLabel.setAttribute('font-size', '14px');
+        zLabel.setAttribute('text-anchor', 'middle');
+        zLabel.textContent = 'z';
+        svg.appendChild(zLabel);
+
+        // Y axis (green, diagonal for depth)
+        const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        yAxis.setAttribute('x1', axisOriginX); yAxis.setAttribute('y1', axisOriginY);
+        yAxis.setAttribute('x2', axisOriginX - axisLen * 0.5); yAxis.setAttribute('y2', axisOriginY - axisLen * 0.5);
+        yAxis.setAttribute('stroke', '#98c379'); yAxis.setAttribute('stroke-width', 2);
+        svg.appendChild(yAxis);
+
+        const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        yLabel.setAttribute('x', axisOriginX - axisLen * 0.5 - 10);
+        yLabel.setAttribute('y', axisOriginY - axisLen * 0.5 - 5);
+        yLabel.setAttribute('fill', '#98c379');
+        yLabel.setAttribute('font-size', '14px');
+        yLabel.textContent = 'y';
+        svg.appendChild(yLabel);
+    }
+
+    function resetLorenz() {
+        if (lorenzAnimId) cancelAnimationFrame(lorenzAnimId);
+        initLorenz();
+    }
+
+    // ==========================================
+    // LORENZ DIVERGENCE
+    // ==========================================
+    function initLorenzDiverge() {
+        const svg = document.getElementById('lorenz-diverge-viz');
+        if (!svg) return;
+
+        const width = 800, height = 300;
+        const margin = { top: 20, right: 20, bottom: 40, left: 50 };
+        const plotW = width - margin.left - margin.right;
+        const plotH = height - margin.top - margin.bottom;
+
+        svg.innerHTML = '';
+
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('transform', `translate(${margin.left}, ${margin.top})`);
+        svg.appendChild(g);
+
+        const sigma = 10, rho = 28, beta = 8/3;
+        const dt = 0.01, steps = 2500, eps = 0.000127;
+
+        let x1 = 1, y1 = 1, z1 = 1;
+        let x2 = 1 + eps, y2 = 1, z2 = 1;
+
+        const traj1 = [], traj2 = [];
+
+        for (let i = 0; i < steps; i++) {
+            if (i % 4 === 0) {
+                traj1.push({ t: i * dt, x: x1 });
+                traj2.push({ t: i * dt, x: x2 });
+            }
+
+            const f = (x, y, z) => [sigma * (y - x), x * (rho - z) - y, x * y - beta * z];
+
+            let k1 = f(x1, y1, z1);
+            let k2 = f(x1 + dt/2 * k1[0], y1 + dt/2 * k1[1], z1 + dt/2 * k1[2]);
+            let k3 = f(x1 + dt/2 * k2[0], y1 + dt/2 * k2[1], z1 + dt/2 * k2[2]);
+            let k4 = f(x1 + dt * k3[0], y1 + dt * k3[1], z1 + dt * k3[2]);
+            x1 += dt/6 * (k1[0] + 2*k2[0] + 2*k3[0] + k4[0]);
+            y1 += dt/6 * (k1[1] + 2*k2[1] + 2*k3[1] + k4[1]);
+            z1 += dt/6 * (k1[2] + 2*k2[2] + 2*k3[2] + k4[2]);
+
+            k1 = f(x2, y2, z2);
+            k2 = f(x2 + dt/2 * k1[0], y2 + dt/2 * k1[1], z2 + dt/2 * k1[2]);
+            k3 = f(x2 + dt/2 * k2[0], y2 + dt/2 * k2[1], z2 + dt/2 * k2[2]);
+            k4 = f(x2 + dt * k3[0], y2 + dt * k3[1], z2 + dt * k3[2]);
+            x2 += dt/6 * (k1[0] + 2*k2[0] + 2*k3[0] + k4[0]);
+            y2 += dt/6 * (k1[1] + 2*k2[1] + 2*k3[1] + k4[1]);
+            z2 += dt/6 * (k1[2] + 2*k2[2] + 2*k3[2] + k4[2]);
+        }
+
+        const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxis.setAttribute('x1', 0); xAxis.setAttribute('y1', plotH / 2);
+        xAxis.setAttribute('x2', plotW); xAxis.setAttribute('y2', plotH / 2);
+        xAxis.setAttribute('stroke', '#666'); xAxis.setAttribute('stroke-width', 1);
+        g.appendChild(xAxis);
+
+        const tMax = traj1[traj1.length - 1].t;
+        const xScale = plotW / tMax;
+        const yScale = plotH / 50;
+
+        [{ data: traj1, color: '#61afef' }, { data: traj2, color: '#e06c75' }].forEach(({ data, color }) => {
+            let path = '';
+            data.forEach((pt, i) => {
+                const px = pt.t * xScale;
+                const py = plotH / 2 - pt.x * yScale;
+                path += (i === 0 ? 'M' : 'L') + `${px},${py}`;
+            });
+            const curve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            curve.setAttribute('d', path);
+            curve.setAttribute('stroke', color);
+            curve.setAttribute('stroke-width', 2);
+            curve.setAttribute('fill', 'none');
+            g.appendChild(curve);
+        });
+
+        const legend1 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        legend1.setAttribute('x', plotW - 10); legend1.setAttribute('y', 15);
+        legend1.setAttribute('fill', '#61afef'); legend1.setAttribute('text-anchor', 'end');
+        legend1.setAttribute('font-size', '11px');
+        legend1.textContent = 'Original run';
+        g.appendChild(legend1);
+
+        const legend2 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        legend2.setAttribute('x', plotW - 10); legend2.setAttribute('y', 30);
+        legend2.setAttribute('fill', '#e06c75'); legend2.setAttribute('text-anchor', 'end');
+        legend2.setAttribute('font-size', '11px');
+        legend2.textContent = 'Restarted (from printout)';
+        g.appendChild(legend2);
+
+        // Axis labels
+        const xAxisLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xAxisLabel.setAttribute('x', plotW / 2); xAxisLabel.setAttribute('y', plotH + 25);
+        xAxisLabel.setAttribute('fill', '#aaa'); xAxisLabel.setAttribute('text-anchor', 'middle');
+        xAxisLabel.setAttribute('font-size', '13px');
+        xAxisLabel.textContent = 'time';
+        g.appendChild(xAxisLabel);
+
+        const yAxisLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        yAxisLabel.setAttribute('x', -plotH / 2); yAxisLabel.setAttribute('y', -35);
+        yAxisLabel.setAttribute('fill', '#aaa'); yAxisLabel.setAttribute('text-anchor', 'middle');
+        yAxisLabel.setAttribute('font-size', '13px');
+        yAxisLabel.setAttribute('transform', 'rotate(-90)');
+        yAxisLabel.textContent = 'temperature (x)';
+        g.appendChild(yAxisLabel);
+    }
+
+    // ==========================================
+    // LORENZ SENSITIVITY
+    // ==========================================
+    function initLorenzSensitivity() {
+        updateLorenzSensitivity();
+    }
+
+    function updateLorenzSensitivity() {
+        const svg = document.getElementById('lorenz-sensitivity-viz');
+        if (!svg) return;
+
+        const exp = parseFloat(document.getElementById('lorenz-perturb')?.value || -4);
+        const eps = Math.pow(10, exp);
+        document.getElementById('lorenz-perturb-val').innerHTML = `10<sup>${exp}</sup>`;
+
+        const width = 800, height = 320;
+        const margin = { top: 20, right: 20, bottom: 40, left: 50 };
+        const plotW = width - margin.left - margin.right;
+        const plotH = height - margin.top - margin.bottom;
+
+        svg.innerHTML = '';
+
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('transform', `translate(${margin.left}, ${margin.top})`);
+        svg.appendChild(g);
+
+        const sigma = 10, rho = 28, beta = 8/3;
+        const dt = 0.01, steps = 3000;
+
+        let x1 = 1, y1 = 1, z1 = 1;
+        let x2 = 1 + eps, y2 = 1, z2 = 1;
+
+        const traj1 = [], traj2 = [];
+
+        for (let i = 0; i < steps; i++) {
+            if (i % 5 === 0) {
+                traj1.push({ t: i * dt, x: x1 });
+                traj2.push({ t: i * dt, x: x2 });
+            }
+
+            const f1 = (x, y, z) => [sigma * (y - x), x * (rho - z) - y, x * y - beta * z];
+            let k1 = f1(x1, y1, z1);
+            let k2 = f1(x1 + dt/2 * k1[0], y1 + dt/2 * k1[1], z1 + dt/2 * k1[2]);
+            let k3 = f1(x1 + dt/2 * k2[0], y1 + dt/2 * k2[1], z1 + dt/2 * k2[2]);
+            let k4 = f1(x1 + dt * k3[0], y1 + dt * k3[1], z1 + dt * k3[2]);
+            x1 += dt/6 * (k1[0] + 2*k2[0] + 2*k3[0] + k4[0]);
+            y1 += dt/6 * (k1[1] + 2*k2[1] + 2*k3[1] + k4[1]);
+            z1 += dt/6 * (k1[2] + 2*k2[2] + 2*k3[2] + k4[2]);
+
+            k1 = f1(x2, y2, z2);
+            k2 = f1(x2 + dt/2 * k1[0], y2 + dt/2 * k1[1], z2 + dt/2 * k1[2]);
+            k3 = f1(x2 + dt/2 * k2[0], y2 + dt/2 * k2[1], z2 + dt/2 * k2[2]);
+            k4 = f1(x2 + dt * k3[0], y2 + dt * k3[1], z2 + dt * k3[2]);
+            x2 += dt/6 * (k1[0] + 2*k2[0] + 2*k3[0] + k4[0]);
+            y2 += dt/6 * (k1[1] + 2*k2[1] + 2*k3[1] + k4[1]);
+            z2 += dt/6 * (k1[2] + 2*k2[2] + 2*k3[2] + k4[2]);
+        }
+
+        const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxis.setAttribute('x1', 0); xAxis.setAttribute('y1', plotH / 2);
+        xAxis.setAttribute('x2', plotW); xAxis.setAttribute('y2', plotH / 2);
+        xAxis.setAttribute('stroke', '#666'); xAxis.setAttribute('stroke-width', 1);
+        g.appendChild(xAxis);
+
+        const tMax = traj1[traj1.length - 1].t;
+        const xScale = plotW / tMax;
+        const yScale = plotH / 50;
+
+        [{ data: traj1, color: '#61afef' }, { data: traj2, color: '#e06c75' }].forEach(({ data, color }) => {
+            let path = '';
+            data.forEach((pt, i) => {
+                const px = pt.t * xScale;
+                const py = plotH / 2 - pt.x * yScale;
+                path += (i === 0 ? 'M' : 'L') + `${px},${py}`;
+            });
+            const curve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            curve.setAttribute('d', path);
+            curve.setAttribute('stroke', color);
+            curve.setAttribute('stroke-width', 1.5);
+            curve.setAttribute('fill', 'none');
+            g.appendChild(curve);
+        });
+    }
+
+    // ==========================================
+    // ENSEMBLE VISUALIZATION
+    // ==========================================
+    let ensembleParticles = [];
+    let ensembleTime = 0;
+    let ensemblePlaying = false;
+    let ensembleAnimId = null;
+
+    function initEnsemble() {
+        ensembleParticles = [];
+        ensembleTime = 0;
+        ensemblePlaying = false;
+
+        // Create particles in a small cluster
+        const cx = 1, cy = 1, cz = 20;
+        const spread = 0.5;
+        for (let i = 0; i < 150; i++) {
+            ensembleParticles.push({
+                x: cx + (Math.random() - 0.5) * spread,
+                y: cy + (Math.random() - 0.5) * spread,
+                z: cz + (Math.random() - 0.5) * spread
+            });
+        }
+
+        document.getElementById('ensemble-time').textContent = '0.0';
+        drawEnsemble();
+    }
+
+    function stepEnsemble() {
+        const sigma = 10, rho = 28, beta = 8/3;
+        const dt = 0.01;
+        const stepsPerFrame = 3;
+
+        for (let s = 0; s < stepsPerFrame; s++) {
+            ensembleParticles.forEach(p => {
+                const f = (x, y, z) => [sigma * (y - x), x * (rho - z) - y, x * y - beta * z];
+                const k1 = f(p.x, p.y, p.z);
+                const k2 = f(p.x + dt/2 * k1[0], p.y + dt/2 * k1[1], p.z + dt/2 * k1[2]);
+                const k3 = f(p.x + dt/2 * k2[0], p.y + dt/2 * k2[1], p.z + dt/2 * k2[2]);
+                const k4 = f(p.x + dt * k3[0], p.y + dt * k3[1], p.z + dt * k3[2]);
+
+                p.x += dt/6 * (k1[0] + 2*k2[0] + 2*k3[0] + k4[0]);
+                p.y += dt/6 * (k1[1] + 2*k2[1] + 2*k3[1] + k4[1]);
+                p.z += dt/6 * (k1[2] + 2*k2[2] + 2*k3[2] + k4[2]);
+            });
+            ensembleTime += dt;
+        }
+
+        document.getElementById('ensemble-time').textContent = ensembleTime.toFixed(1);
+        drawEnsemble();
+    }
+
+    function drawEnsemble() {
+        const svg = document.getElementById('lorenz-ensemble-viz');
+        if (!svg) return;
+
+        const width = 700, height = 350;
+        svg.innerHTML = '';
+
+        ensembleParticles.forEach(p => {
+            const scale = 6;
+            const px = width / 2 + (p.x + p.y * 0.1) * scale;
+            const py = height - 30 - p.z * scale * 0.7;
+
+            const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            dot.setAttribute('cx', px);
+            dot.setAttribute('cy', py);
+            dot.setAttribute('r', 3);
+            dot.setAttribute('fill', '#e5c07b');
+            dot.setAttribute('opacity', '0.7');
+            svg.appendChild(dot);
+        });
+
+        // Draw axes
+        const axisOriginX = 60, axisOriginY = height - 40, axisLen = 50;
+
+        // X axis (red)
+        const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxis.setAttribute('x1', axisOriginX); xAxis.setAttribute('y1', axisOriginY);
+        xAxis.setAttribute('x2', axisOriginX + axisLen); xAxis.setAttribute('y2', axisOriginY);
+        xAxis.setAttribute('stroke', '#e06c75'); xAxis.setAttribute('stroke-width', 2);
+        svg.appendChild(xAxis);
+
+        const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xLabel.setAttribute('x', axisOriginX + axisLen + 8);
+        xLabel.setAttribute('y', axisOriginY + 4);
+        xLabel.setAttribute('fill', '#e06c75');
+        xLabel.setAttribute('font-size', '14px');
+        xLabel.textContent = 'x';
+        svg.appendChild(xLabel);
+
+        // Z axis (blue, vertical)
+        const zAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        zAxis.setAttribute('x1', axisOriginX); zAxis.setAttribute('y1', axisOriginY);
+        zAxis.setAttribute('x2', axisOriginX); zAxis.setAttribute('y2', axisOriginY - axisLen);
+        zAxis.setAttribute('stroke', '#61afef'); zAxis.setAttribute('stroke-width', 2);
+        svg.appendChild(zAxis);
+
+        const zLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        zLabel.setAttribute('x', axisOriginX - 5);
+        zLabel.setAttribute('y', axisOriginY - axisLen - 8);
+        zLabel.setAttribute('fill', '#61afef');
+        zLabel.setAttribute('font-size', '14px');
+        zLabel.setAttribute('text-anchor', 'middle');
+        zLabel.textContent = 'z';
+        svg.appendChild(zLabel);
+
+        // Y axis (green, diagonal for depth)
+        const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        yAxis.setAttribute('x1', axisOriginX); yAxis.setAttribute('y1', axisOriginY);
+        yAxis.setAttribute('x2', axisOriginX - axisLen * 0.5); yAxis.setAttribute('y2', axisOriginY - axisLen * 0.5);
+        yAxis.setAttribute('stroke', '#98c379'); yAxis.setAttribute('stroke-width', 2);
+        svg.appendChild(yAxis);
+
+        const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        yLabel.setAttribute('x', axisOriginX - axisLen * 0.5 - 10);
+        yLabel.setAttribute('y', axisOriginY - axisLen * 0.5 - 5);
+        yLabel.setAttribute('fill', '#98c379');
+        yLabel.setAttribute('font-size', '14px');
+        yLabel.textContent = 'y';
+        svg.appendChild(yLabel);
+    }
+
+    function animateEnsemble() {
+        if (!ensemblePlaying) return;
+        stepEnsemble();
+        ensembleAnimId = requestAnimationFrame(animateEnsemble);
+    }
+
+    // ==========================================
+    // BROWNIAN MOTION
+    // ==========================================
+    let brownianCtx, brownianParticle;
+    let brownianAnimId;
+
+    function initBrownian() {
+        const canvas = document.getElementById('brownian-canvas');
+        if (!canvas) return;
+        brownianCtx = canvas.getContext('2d');
+        brownianParticle = { x: 140, y: 140 };
+        animateBrownian();
+    }
+
+    function animateBrownian() {
+        if (!brownianCtx) return;
+
+        // Random step
+        brownianParticle.x += (Math.random() - 0.5) * 8;
+        brownianParticle.y += (Math.random() - 0.5) * 8;
+
+        // Bounce off walls
+        if (brownianParticle.x < 10) brownianParticle.x = 10;
+        if (brownianParticle.x > 270) brownianParticle.x = 270;
+        if (brownianParticle.y < 10) brownianParticle.y = 10;
+        if (brownianParticle.y > 270) brownianParticle.y = 270;
+
+        brownianCtx.fillStyle = 'rgba(26, 26, 46, 0.1)';
+        brownianCtx.fillRect(0, 0, 280, 280);
+
+        brownianCtx.beginPath();
+        brownianCtx.arc(brownianParticle.x, brownianParticle.y, 8, 0, Math.PI * 2);
+        brownianCtx.fillStyle = '#e06c75';
+        brownianCtx.fill();
+
+        brownianAnimId = requestAnimationFrame(animateBrownian);
+    }
+
+    // ==========================================
+    // RANDOM WALK WITH KDE
+    // ==========================================
+    let walkCtx, walkKdeCtx, walkers = [];
+    let walkAnimId;
+    const walkW = 400, walkH = 300;
+    const kdeW = 400, kdeH = 300;
+
+    function initRandomWalk() {
+        const canvas = document.getElementById('random-walk-canvas');
+        const kdeCanvas = document.getElementById('random-walk-kde');
+        if (!canvas) return;
+        walkCtx = canvas.getContext('2d');
+        walkKdeCtx = kdeCanvas?.getContext('2d');
+        walkers = [];
+        document.getElementById('walk-count').textContent = '0';
+        walkCtx.fillStyle = '#1a1a2e';
+        walkCtx.fillRect(0, 0, walkW, walkH);
+        if (walkKdeCtx) {
+            walkKdeCtx.fillStyle = '#1a1a2e';
+            walkKdeCtx.fillRect(0, 0, kdeW, kdeH);
+        }
+        animateRandomWalk();
+    }
+
+    function addWalkers(n) {
+        for (let i = 0; i < n; i++) {
+            walkers.push({ x: walkW / 2, y: walkH / 2, color: `hsl(${Math.random() * 360}, 70%, 60%)` });
+        }
+        document.getElementById('walk-count').textContent = walkers.length;
+    }
+
+    function drawKDE2D() {
+        if (!walkKdeCtx || walkers.length < 3) return;
+
+        const gridSize = 30; // Lower resolution for performance
+        const h = 25; // Bandwidth
+        const density = [];
+
+        // Compute KDE on grid
+        for (let gy = 0; gy < gridSize; gy++) {
+            density[gy] = [];
+            for (let gx = 0; gx < gridSize; gx++) {
+                const px = (gx + 0.5) * kdeW / gridSize;
+                const py = (gy + 0.5) * kdeH / gridSize;
+
+                let sum = 0;
+                walkers.forEach(w => {
+                    // Map walker position to KDE canvas coordinates
+                    const wx = (w.x / walkW) * kdeW;
+                    const wy = (w.y / walkH) * kdeH;
+                    const dist2 = Math.pow(px - wx, 2) + Math.pow(py - wy, 2);
+                    sum += Math.exp(-dist2 / (2 * h * h));
+                });
+                density[gy][gx] = sum / (walkers.length * 2 * Math.PI * h * h);
+            }
+        }
+
+        // Find max density
+        let maxD = 0;
+        for (let gy = 0; gy < gridSize; gy++) {
+            for (let gx = 0; gx < gridSize; gx++) {
+                maxD = Math.max(maxD, density[gy][gx]);
+            }
+        }
+
+        // Draw heatmap
+        const cellW = kdeW / gridSize;
+        const cellH = kdeH / gridSize;
+
+        walkKdeCtx.fillStyle = '#1a1a2e';
+        walkKdeCtx.fillRect(0, 0, kdeW, kdeH);
+
+        for (let gy = 0; gy < gridSize; gy++) {
+            for (let gx = 0; gx < gridSize; gx++) {
+                const d = density[gy][gx] / maxD;
+                if (d > 0.01) {
+                    // Color gradient: dark blue -> cyan -> yellow
+                    const r = Math.floor(d * 255);
+                    const g = Math.floor(d * 200 + 50);
+                    const b = Math.floor((1 - d) * 200 + 55);
+                    walkKdeCtx.fillStyle = `rgba(${r}, ${g}, ${b}, ${Math.min(1, d * 2)})`;
+                    walkKdeCtx.fillRect(gx * cellW, gy * cellH, cellW + 1, cellH + 1);
+                }
+            }
+        }
+
+        // Draw walker positions as small dots
+        walkers.forEach(w => {
+            const wx = (w.x / walkW) * kdeW;
+            const wy = (w.y / walkH) * kdeH;
+            walkKdeCtx.beginPath();
+            walkKdeCtx.arc(wx, wy, 2, 0, Math.PI * 2);
+            walkKdeCtx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            walkKdeCtx.fill();
+        });
+    }
+
+    let kdeFrameCount = 0;
+    function animateRandomWalk() {
+        if (!walkCtx) return;
+
+        walkCtx.fillStyle = 'rgba(26, 26, 46, 0.03)';
+        walkCtx.fillRect(0, 0, walkW, walkH);
+
+        walkers.forEach(w => {
+            w.x += (Math.random() - 0.5) * 6;
+            w.y += (Math.random() - 0.5) * 6;
+
+            if (w.x < 5) w.x = 5;
+            if (w.x > walkW - 5) w.x = walkW - 5;
+            if (w.y < 5) w.y = 5;
+            if (w.y > walkH - 5) w.y = walkH - 5;
+
+            walkCtx.beginPath();
+            walkCtx.arc(w.x, w.y, 3, 0, Math.PI * 2);
+            walkCtx.fillStyle = w.color;
+            walkCtx.fill();
+        });
+
+        // Update KDE every 10 frames for performance
+        kdeFrameCount++;
+        if (kdeFrameCount % 10 === 0) {
+            drawKDE2D();
+        }
+
+        walkAnimId = requestAnimationFrame(animateRandomWalk);
+    }
+
+    // ==========================================
+    // 100 TRAJECTORIES + HISTOGRAM COMBINED
+    // ==========================================
+    let traj100Data = null;
+
+    function compute100Trajectories() {
+        const sigma = 10, rho = 28, beta = 8/3;
+        const dt = 0.005, totalTime = 30;
+        const steps = Math.floor(totalTime / dt);
+        const numTraj = 100;
+        const eps = 1e-6;
+
+        const trajectories = [];
+        for (let t = 0; t < numTraj; t++) {
+            let x = 1 + (Math.random() - 0.5) * eps * 2;
+            let y = 1 + (Math.random() - 0.5) * eps * 2;
+            let z = 20 + (Math.random() - 0.5) * eps * 2;
+            const traj = [];
+
+            for (let i = 0; i < steps; i++) {
+                if (i % 20 === 0) traj.push({ t: i * dt, x, y, z });
+
+                const f = (x, y, z) => [sigma * (y - x), x * (rho - z) - y, x * y - beta * z];
+                const k1 = f(x, y, z);
+                const k2 = f(x + dt/2 * k1[0], y + dt/2 * k1[1], z + dt/2 * k1[2]);
+                const k3 = f(x + dt/2 * k2[0], y + dt/2 * k2[1], z + dt/2 * k2[2]);
+                const k4 = f(x + dt * k3[0], y + dt * k3[1], z + dt * k3[2]);
+                x += dt/6 * (k1[0] + 2*k2[0] + 2*k3[0] + k4[0]);
+                y += dt/6 * (k1[1] + 2*k2[1] + 2*k3[1] + k4[1]);
+                z += dt/6 * (k1[2] + 2*k2[2] + 2*k3[2] + k4[2]);
+            }
+            trajectories.push(traj);
+        }
+        return trajectories;
+    }
+
+    function drawTrajAndHist() {
+        const svgLeft = document.getElementById('lorenz-traj-hist-left');
+        const svgRight = document.getElementById('lorenz-traj-hist-right');
+        if (!svgLeft || !svgRight) return;
+
+        if (!traj100Data) traj100Data = compute100Trajectories();
+
+        const sampleTime = parseFloat(document.getElementById('traj-hist-time')?.value || 10);
+        document.getElementById('traj-hist-time-val').textContent = `t = ${sampleTime}`;
+
+        // ===== LEFT: Trajectories with vertical line =====
+        const widthL = 520, heightL = 340;
+        const marginL = { top: 20, right: 20, bottom: 40, left: 50 };
+        const plotWL = widthL - marginL.left - marginL.right;
+        const plotHL = heightL - marginL.top - marginL.bottom;
+
+        svgLeft.innerHTML = '';
+        const gL = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        gL.setAttribute('transform', `translate(${marginL.left}, ${marginL.top})`);
+        svgLeft.appendChild(gL);
+
+        const tMax = 25, xMin = -25, xMax = 25;
+        const scaleT = t => t / tMax * plotWL;
+        const scaleXL = x => plotHL / 2 - x / (xMax - xMin) * plotHL;
+
+        // Draw trajectories
+        traj100Data.forEach(traj => {
+            let pathD = '';
+            traj.forEach((pt, i) => {
+                if (pt.t <= tMax) {
+                    pathD += (pathD === '' ? 'M' : ' L') + `${scaleT(pt.t)} ${scaleXL(pt.x)}`;
+                }
+            });
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', pathD);
+            path.setAttribute('fill', 'none');
+            path.setAttribute('stroke', '#61afef');
+            path.setAttribute('stroke-width', '0.8');
+            path.setAttribute('opacity', '0.4');
+            gL.appendChild(path);
+        });
+
+        // Vertical line at sample time
+        const vLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        vLine.setAttribute('x1', scaleT(sampleTime)); vLine.setAttribute('y1', 0);
+        vLine.setAttribute('x2', scaleT(sampleTime)); vLine.setAttribute('y2', plotHL);
+        vLine.setAttribute('stroke', '#e5c07b'); vLine.setAttribute('stroke-width', 2);
+        vLine.setAttribute('stroke-dasharray', '5,3');
+        gL.appendChild(vLine);
+
+        // Get x values at sample time and draw dots on the line
+        const xValues = traj100Data.map(traj => {
+            const pt = traj.find(p => p.t >= sampleTime) || traj[traj.length - 1];
+            return pt.x;
+        });
+
+        xValues.forEach(x => {
+            const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            dot.setAttribute('cx', scaleT(sampleTime));
+            dot.setAttribute('cy', scaleXL(x));
+            dot.setAttribute('r', 2.5);
+            dot.setAttribute('fill', '#e5c07b');
+            gL.appendChild(dot);
+        });
+
+        // Axes
+        const xAxisL = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxisL.setAttribute('x1', 0); xAxisL.setAttribute('y1', plotHL);
+        xAxisL.setAttribute('x2', plotWL); xAxisL.setAttribute('y2', plotHL);
+        xAxisL.setAttribute('stroke', '#666'); xAxisL.setAttribute('stroke-width', 1);
+        gL.appendChild(xAxisL);
+
+        const yAxisL = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        yAxisL.setAttribute('x1', 0); yAxisL.setAttribute('y1', 0);
+        yAxisL.setAttribute('x2', 0); yAxisL.setAttribute('y2', plotHL);
+        yAxisL.setAttribute('stroke', '#666'); yAxisL.setAttribute('stroke-width', 1);
+        gL.appendChild(yAxisL);
+
+        // Labels
+        const tLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        tLabel.setAttribute('x', plotWL / 2); tLabel.setAttribute('y', plotHL + 30);
+        tLabel.setAttribute('fill', '#aaa'); tLabel.setAttribute('text-anchor', 'middle');
+        tLabel.setAttribute('font-size', '14px'); tLabel.setAttribute('font-style', 'italic');
+        tLabel.textContent = 'time';
+        gL.appendChild(tLabel);
+
+        const xLabelL = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xLabelL.setAttribute('x', -plotHL / 2); xLabelL.setAttribute('y', -35);
+        xLabelL.setAttribute('fill', '#aaa'); xLabelL.setAttribute('text-anchor', 'middle');
+        xLabelL.setAttribute('font-size', '14px'); xLabelL.setAttribute('font-style', 'italic');
+        xLabelL.setAttribute('transform', 'rotate(-90)');
+        xLabelL.textContent = 'x(t)';
+        gL.appendChild(xLabelL);
+
+        // ===== RIGHT: Horizontal histogram =====
+        const widthR = 300, heightR = 340;
+        const marginR = { top: 20, right: 30, bottom: 40, left: 20 };
+        const plotWR = widthR - marginR.left - marginR.right;
+        const plotHR = heightR - marginR.top - marginR.bottom;
+
+        svgRight.innerHTML = '';
+        const gR = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        gR.setAttribute('transform', `translate(${marginR.left}, ${marginR.top})`);
+        svgRight.appendChild(gR);
+
+        // Use same y-scale as left plot
+        const scaleXR = x => plotHR / 2 - x / (xMax - xMin) * plotHR;
+
+        // Create histogram bins
+        const numBins = 20;
+        const binHeight = (xMax - xMin) / numBins;
+        const bins = Array(numBins).fill(0);
+
+        xValues.forEach(x => {
+            const binIdx = Math.min(numBins - 1, Math.max(0, Math.floor((x - xMin) / binHeight)));
+            bins[binIdx]++;
+        });
+
+        const maxCount = Math.max(...bins, 1);
+
+        // Draw horizontal bars
+        bins.forEach((count, i) => {
+            const binCenterX = xMin + (i + 0.5) * binHeight;
+            const barY = scaleXR(xMin + (i + 1) * binHeight);
+            const barH = plotHR / numBins - 1;
+            const barW = (count / maxCount) * plotWR * 0.9;
+
+            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            rect.setAttribute('x', 0);
+            rect.setAttribute('y', barY);
+            rect.setAttribute('width', barW);
+            rect.setAttribute('height', barH);
+            rect.setAttribute('fill', '#61afef');
+            rect.setAttribute('opacity', '0.7');
+            gR.appendChild(rect);
+        });
+
+        // Draw sample points on y-axis
+        xValues.forEach(x => {
+            const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            dot.setAttribute('cx', 0);
+            dot.setAttribute('cy', scaleXR(x));
+            dot.setAttribute('r', 2.5);
+            dot.setAttribute('fill', '#e5c07b');
+            gR.appendChild(dot);
+        });
+
+        // Axes
+        const yAxisR = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        yAxisR.setAttribute('x1', 0); yAxisR.setAttribute('y1', 0);
+        yAxisR.setAttribute('x2', 0); yAxisR.setAttribute('y2', plotHR);
+        yAxisR.setAttribute('stroke', '#666'); yAxisR.setAttribute('stroke-width', 1);
+        gR.appendChild(yAxisR);
+
+        const xAxisR = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxisR.setAttribute('x1', 0); xAxisR.setAttribute('y1', plotHR);
+        xAxisR.setAttribute('x2', plotWR); xAxisR.setAttribute('y2', plotHR);
+        xAxisR.setAttribute('stroke', '#666'); xAxisR.setAttribute('stroke-width', 1);
+        gR.appendChild(xAxisR);
+
+        // Labels
+        const countLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        countLabel.setAttribute('x', plotWR / 2); countLabel.setAttribute('y', plotHR + 30);
+        countLabel.setAttribute('fill', '#aaa'); countLabel.setAttribute('text-anchor', 'middle');
+        countLabel.setAttribute('font-size', '14px');
+        countLabel.textContent = 'count';
+        gR.appendChild(countLabel);
+    }
+
+    // ==========================================
+    // PMF TO PDF
+    // ==========================================
+    function drawPMFtoPDF() {
+        const svg = document.getElementById('pmf-to-pdf-viz');
+        if (!svg) return;
+
+        if (!traj100Data) traj100Data = compute100Trajectories();
+
+        const numBins = parseInt(document.getElementById('num-bins')?.value || 10);
+        document.getElementById('num-bins-val').textContent = numBins;
+
+        const width = 800, height = 300;
+        const margin = { top: 20, right: 20, bottom: 40, left: 60 };
+        const plotW = width - margin.left - margin.right;
+        const plotH = height - margin.top - margin.bottom;
+
+        svg.innerHTML = '';
+
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('transform', `translate(${margin.left}, ${margin.top})`);
+        svg.appendChild(g);
+
+        // Get x values at fixed time
+        const xValues = traj100Data.map(traj => {
+            const pt = traj.find(p => p.t >= 15) || traj[traj.length - 1];
+            return pt.x;
+        });
+
+        const xMin = -20, xMax = 20;
+        const binWidth = (xMax - xMin) / numBins;
+        const bins = Array(numBins).fill(0);
+
+        xValues.forEach(x => {
+            const binIdx = Math.min(numBins - 1, Math.max(0, Math.floor((x - xMin) / binWidth)));
+            bins[binIdx]++;
+        });
+
+        // Normalize to density
+        const totalArea = xValues.length * binWidth;
+        const densities = bins.map(b => b / totalArea);
+        const maxDensity = Math.max(...densities) * 1.1;
+
+        // Draw bars
+        bins.forEach((count, i) => {
+            const barX = i / numBins * plotW;
+            const barW = plotW / numBins - 1;
+            const density = count / totalArea;
+            const barH = (density / maxDensity) * plotH;
+
+            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            rect.setAttribute('x', barX);
+            rect.setAttribute('y', plotH - barH);
+            rect.setAttribute('width', barW);
+            rect.setAttribute('height', barH);
+            rect.setAttribute('fill', '#61afef');
+            rect.setAttribute('opacity', '0.6');
+            g.appendChild(rect);
+        });
+
+        // Draw smooth KDE curve if many bins
+        if (numBins >= 20) {
+            const h = 2;
+            const kde = x => {
+                let sum = 0;
+                xValues.forEach(xi => {
+                    sum += Math.exp(-0.5 * Math.pow((x - xi) / h, 2));
+                });
+                return sum / (xValues.length * h * Math.sqrt(2 * Math.PI));
+            };
+
+            let pathD = '';
+            for (let i = 0; i <= 100; i++) {
+                const x = xMin + (xMax - xMin) * i / 100;
+                const y = kde(x);
+                const px = i / 100 * plotW;
+                const py = plotH - (y / maxDensity) * plotH;
+                pathD += (i === 0 ? 'M' : ' L') + `${px} ${py}`;
+            }
+
+            const curve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            curve.setAttribute('d', pathD);
+            curve.setAttribute('fill', 'none');
+            curve.setAttribute('stroke', '#98c379');
+            curve.setAttribute('stroke-width', '2.5');
+            g.appendChild(curve);
+        }
+
+        // Axes
+        const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxis.setAttribute('x1', 0); xAxis.setAttribute('y1', plotH);
+        xAxis.setAttribute('x2', plotW); xAxis.setAttribute('y2', plotH);
+        xAxis.setAttribute('stroke', '#666'); xAxis.setAttribute('stroke-width', 1);
+        g.appendChild(xAxis);
+
+        // Labels
+        const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xLabel.setAttribute('x', plotW / 2); xLabel.setAttribute('y', plotH + 28);
+        xLabel.setAttribute('fill', '#aaa'); xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('font-size', '14px'); xLabel.setAttribute('font-style', 'italic');
+        xLabel.textContent = 'x';
+        g.appendChild(xLabel);
+
+        const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        yLabel.setAttribute('x', -plotH / 2); yLabel.setAttribute('y', -35);
+        yLabel.setAttribute('fill', '#aaa'); yLabel.setAttribute('text-anchor', 'middle');
+        yLabel.setAttribute('font-size', '14px');
+        yLabel.setAttribute('transform', 'rotate(-90)');
+        yLabel.textContent = 'density';
+        g.appendChild(yLabel);
+    }
+
+    // ==========================================
+    // KDE VISUALIZATION (Interactive)
+    // ==========================================
+    let kdeSamples = [];
+    const kdeXMin = -5, kdeXMax = 5;
+    const kdeWidth = 850, kdeHeight = 320;
+    const kdeMargin = { top: 20, right: 20, bottom: 40, left: 50 };
+    const kdePlotW = kdeWidth - kdeMargin.left - kdeMargin.right;
+    const kdePlotH = kdeHeight - kdeMargin.top - kdeMargin.bottom;
+
+    function kdeScaleX(x) {
+        return (x - kdeXMin) / (kdeXMax - kdeXMin) * kdePlotW;
+    }
+
+    function kdeInverseScaleX(px) {
+        return kdeXMin + (px / kdePlotW) * (kdeXMax - kdeXMin);
+    }
+
+    function drawKDE() {
+        const svg = document.getElementById('kde-viz');
+        if (!svg) return;
+
+        const h = parseFloat(document.getElementById('kde-bandwidth')?.value || 0.6);
+        document.getElementById('kde-bandwidth-val').textContent = h.toFixed(1);
+        document.getElementById('kde-count').textContent = kdeSamples.length;
+
+        svg.innerHTML = '';
+
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('transform', `translate(${kdeMargin.left}, ${kdeMargin.top})`);
+        svg.appendChild(g);
+
+        // Kernel function
+        const kernel = (x, xi, h) => Math.exp(-0.5 * Math.pow((x - xi) / h, 2)) / (h * Math.sqrt(2 * Math.PI));
+
+        // KDE function
+        const kde = x => {
+            if (kdeSamples.length === 0) return 0;
+            let sum = 0;
+            kdeSamples.forEach(xi => sum += kernel(x, xi, h));
+            return sum / kdeSamples.length;
+        };
+
+        // Find max for scaling
+        let maxY = 0.1;
+        if (kdeSamples.length > 0) {
+            for (let i = 0; i <= 100; i++) {
+                const x = kdeXMin + (kdeXMax - kdeXMin) * i / 100;
+                maxY = Math.max(maxY, kde(x));
+            }
+        }
+        maxY *= 1.15;
+
+        const scaleY = y => kdePlotH - (y / maxY) * kdePlotH;
+
+        // Draw individual kernels (faded)
+        kdeSamples.forEach(xi => {
+            let pathD = '';
+            for (let i = 0; i <= 60; i++) {
+                const x = xi - 4 * h + 8 * h * i / 60;
+                if (x >= kdeXMin && x <= kdeXMax) {
+                    const y = kernel(x, xi, h) / Math.max(1, kdeSamples.length);
+                    const cmd = pathD === '' ? 'M' : ' L';
+                    pathD += cmd + `${kdeScaleX(x)} ${scaleY(y)}`;
+                }
+            }
+            if (pathD) {
+                const kPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                kPath.setAttribute('d', pathD);
+                kPath.setAttribute('fill', 'none');
+                kPath.setAttribute('stroke', '#e5c07b');
+                kPath.setAttribute('stroke-width', '1.5');
+                kPath.setAttribute('opacity', '0.5');
+                g.appendChild(kPath);
+            }
+        });
+
+        // Draw KDE curve
+        if (kdeSamples.length > 0) {
+            let kdePathD = '';
+            for (let i = 0; i <= 200; i++) {
+                const x = kdeXMin + (kdeXMax - kdeXMin) * i / 200;
+                const y = kde(x);
+                kdePathD += (i === 0 ? 'M' : ' L') + `${kdeScaleX(x)} ${scaleY(y)}`;
+            }
+            const kdePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            kdePath.setAttribute('d', kdePathD);
+            kdePath.setAttribute('fill', 'none');
+            kdePath.setAttribute('stroke', '#98c379');
+            kdePath.setAttribute('stroke-width', '3');
+            g.appendChild(kdePath);
+        }
+
+        // Draw sample points
+        kdeSamples.forEach(xi => {
+            const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            dot.setAttribute('cx', kdeScaleX(xi));
+            dot.setAttribute('cy', kdePlotH);
+            dot.setAttribute('r', 6);
+            dot.setAttribute('fill', '#e06c75');
+            g.appendChild(dot);
+        });
+
+        // Axes
+        const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxis.setAttribute('x1', 0); xAxis.setAttribute('y1', kdePlotH);
+        xAxis.setAttribute('x2', kdePlotW); xAxis.setAttribute('y2', kdePlotH);
+        xAxis.setAttribute('stroke', '#666'); xAxis.setAttribute('stroke-width', 1);
+        g.appendChild(xAxis);
+
+        // X axis label
+        const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xLabel.setAttribute('x', kdePlotW / 2); xLabel.setAttribute('y', kdePlotH + 30);
+        xLabel.setAttribute('fill', '#aaa'); xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('font-size', '14px'); xLabel.setAttribute('font-style', 'italic');
+        xLabel.textContent = 'x';
+        g.appendChild(xLabel);
+
+        // Legend
+        const legend1 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        legend1.setAttribute('x', kdePlotW - 10); legend1.setAttribute('y', 15);
+        legend1.setAttribute('fill', '#e06c75'); legend1.setAttribute('text-anchor', 'end');
+        legend1.setAttribute('font-size', '12px');
+        legend1.textContent = '● Samples (click to add)';
+        g.appendChild(legend1);
+
+        const legend2 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        legend2.setAttribute('x', kdePlotW - 10); legend2.setAttribute('y', 32);
+        legend2.setAttribute('fill', '#e5c07b'); legend2.setAttribute('text-anchor', 'end');
+        legend2.setAttribute('font-size', '12px');
+        legend2.textContent = '— Individual kernels';
+        g.appendChild(legend2);
+
+        const legend3 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        legend3.setAttribute('x', kdePlotW - 10); legend3.setAttribute('y', 49);
+        legend3.setAttribute('fill', '#98c379'); legend3.setAttribute('text-anchor', 'end');
+        legend3.setAttribute('font-size', '12px');
+        legend3.textContent = '— KDE estimate';
+        g.appendChild(legend3);
+
+        // Hint text if no samples
+        if (kdeSamples.length === 0) {
+            const hint = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            hint.setAttribute('x', kdePlotW / 2); hint.setAttribute('y', kdePlotH / 2);
+            hint.setAttribute('fill', '#666'); hint.setAttribute('text-anchor', 'middle');
+            hint.setAttribute('font-size', '18px');
+            hint.textContent = 'Click anywhere to add samples';
+            g.appendChild(hint);
+        }
+    }
+
+    function initKDEInteraction() {
+        const svg = document.getElementById('kde-viz');
+        if (!svg) return;
+
+        svg.addEventListener('click', (e) => {
+            const rect = svg.getBoundingClientRect();
+            const scaleFactorX = kdeWidth / rect.width;
+            const clickX = (e.clientX - rect.left) * scaleFactorX - kdeMargin.left;
+
+            if (clickX >= 0 && clickX <= kdePlotW) {
+                const x = kdeInverseScaleX(clickX);
+                kdeSamples.push(x);
+                drawKDE();
+            }
+        });
+    }
+
+    function clearKDE() {
+        kdeSamples = [];
+        drawKDE();
+    }
+
+    // ==========================================
+    // PDF GAUSSIAN
+    // ==========================================
+    function drawPDFGaussian() {
+        const svg = document.getElementById('pdf-gaussian-svg');
+        if (!svg) return;
+
+        const width = 400, height = 240;
+        const margin = { top: 30, right: 20, bottom: 50, left: 55 };
+        const plotW = width - margin.left - margin.right;
+        const plotH = height - margin.top - margin.bottom;
+
+        svg.innerHTML = '';
+
+        // Title
+        const title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        title.setAttribute('x', width / 2);
+        title.setAttribute('y', 18);
+        title.setAttribute('fill', '#aaa');
+        title.setAttribute('font-size', '13px');
+        title.setAttribute('text-anchor', 'middle');
+        title.textContent = 'PDF: f(x) — Gaussian Example';
+        svg.appendChild(title);
+
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('transform', `translate(${margin.left}, ${margin.top})`);
+        svg.appendChild(g);
+
+        // Gaussian function
+        const mu = 0, sigma = 1;
+        const gaussian = x => Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2)) / (sigma * Math.sqrt(2 * Math.PI));
+
+        // Generate points
+        const xMin = -3.5, xMax = 3.5;
+        const numPoints = 100;
+        const points = [];
+        for (let i = 0; i <= numPoints; i++) {
+            const x = xMin + (xMax - xMin) * i / numPoints;
+            const y = gaussian(x);
+            points.push({ x, y });
+        }
+
+        // Scale to plot
+        const yMax = gaussian(mu) * 1.15;
+        const scaleX = x => (x - xMin) / (xMax - xMin) * plotW;
+        const scaleY = y => plotH - (y / yMax) * plotH;
+
+        // Define a and b for shaded region
+        const a = -0.8, b = 1.5;
+
+        // Create shaded region between a and b (P(a < X < b))
+        let shadedPath = `M ${scaleX(a)} ${plotH}`;
+        for (let i = 0; i <= 50; i++) {
+            const x = a + (b - a) * i / 50;
+            const y = gaussian(x);
+            shadedPath += ` L ${scaleX(x)} ${scaleY(y)}`;
+        }
+        shadedPath += ` L ${scaleX(b)} ${plotH} Z`;
+
+        const shadedFill = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        shadedFill.setAttribute('d', shadedPath);
+        shadedFill.setAttribute('fill', 'rgba(86, 182, 194, 0.5)');
+        shadedFill.setAttribute('stroke', 'none');
+        g.appendChild(shadedFill);
+
+        // Create light fill for entire curve
+        let pathD = `M ${scaleX(xMin)} ${plotH}`;
+        points.forEach(pt => {
+            pathD += ` L ${scaleX(pt.x)} ${scaleY(pt.y)}`;
+        });
+        pathD += ` L ${scaleX(xMax)} ${plotH} Z`;
+
+        const fill = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        fill.setAttribute('d', pathD);
+        fill.setAttribute('fill', 'rgba(152,195,121,0.15)');
+        fill.setAttribute('stroke', 'none');
+        g.appendChild(fill);
+
+        // Create stroke path for curve
+        let strokeD = '';
+        points.forEach((pt, i) => {
+            strokeD += (i === 0 ? 'M' : ' L') + ` ${scaleX(pt.x)} ${scaleY(pt.y)}`;
+        });
+
+        const stroke = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        stroke.setAttribute('d', strokeD);
+        stroke.setAttribute('fill', 'none');
+        stroke.setAttribute('stroke', '#98c379');
+        stroke.setAttribute('stroke-width', '2.5');
+        g.appendChild(stroke);
+
+        // Vertical lines at a and b
+        const lineA = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        lineA.setAttribute('x1', scaleX(a)); lineA.setAttribute('y1', plotH);
+        lineA.setAttribute('x2', scaleX(a)); lineA.setAttribute('y2', scaleY(gaussian(a)));
+        lineA.setAttribute('stroke', '#56b6c2'); lineA.setAttribute('stroke-width', 2);
+        lineA.setAttribute('stroke-dasharray', '4,2');
+        g.appendChild(lineA);
+
+        const lineB = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        lineB.setAttribute('x1', scaleX(b)); lineB.setAttribute('y1', plotH);
+        lineB.setAttribute('x2', scaleX(b)); lineB.setAttribute('y2', scaleY(gaussian(b)));
+        lineB.setAttribute('stroke', '#56b6c2'); lineB.setAttribute('stroke-width', 2);
+        lineB.setAttribute('stroke-dasharray', '4,2');
+        g.appendChild(lineB);
+
+        // Labels for a and b
+        const labelA = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        labelA.setAttribute('x', scaleX(a)); labelA.setAttribute('y', plotH + 18);
+        labelA.setAttribute('fill', '#56b6c2'); labelA.setAttribute('text-anchor', 'middle');
+        labelA.setAttribute('font-size', '14px'); labelA.setAttribute('font-style', 'italic');
+        labelA.textContent = 'a';
+        g.appendChild(labelA);
+
+        const labelB = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        labelB.setAttribute('x', scaleX(b)); labelB.setAttribute('y', plotH + 18);
+        labelB.setAttribute('fill', '#56b6c2'); labelB.setAttribute('text-anchor', 'middle');
+        labelB.setAttribute('font-size', '14px'); labelB.setAttribute('font-style', 'italic');
+        labelB.textContent = 'b';
+        g.appendChild(labelB);
+
+        // Label for shaded area
+        const areaLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        areaLabel.setAttribute('x', scaleX((a + b) / 2)); areaLabel.setAttribute('y', scaleY(gaussian((a+b)/2) * 0.4));
+        areaLabel.setAttribute('fill', '#56b6c2'); areaLabel.setAttribute('text-anchor', 'middle');
+        areaLabel.setAttribute('font-size', '11px');
+        areaLabel.textContent = 'P(a≤X≤b)';
+        g.appendChild(areaLabel);
+
+        // Axes
+        const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxis.setAttribute('x1', 0); xAxis.setAttribute('y1', plotH);
+        xAxis.setAttribute('x2', plotW); xAxis.setAttribute('y2', plotH);
+        xAxis.setAttribute('stroke', '#666'); xAxis.setAttribute('stroke-width', 1);
+        g.appendChild(xAxis);
+
+        const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        yAxis.setAttribute('x1', 0); yAxis.setAttribute('y1', 0);
+        yAxis.setAttribute('x2', 0); yAxis.setAttribute('y2', plotH);
+        yAxis.setAttribute('stroke', '#666'); yAxis.setAttribute('stroke-width', 1);
+        g.appendChild(yAxis);
+
+        // X axis label
+        const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        xLabel.setAttribute('x', plotW / 2);
+        xLabel.setAttribute('y', plotH + 35);
+        xLabel.setAttribute('fill', '#aaa');
+        xLabel.setAttribute('font-size', '14px');
+        xLabel.setAttribute('font-style', 'italic');
+        xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.textContent = 'x';
+        g.appendChild(xLabel);
+
+        // Y axis label
+        const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        yLabel.setAttribute('x', -plotH / 2);
+        yLabel.setAttribute('y', -35);
+        yLabel.setAttribute('fill', '#aaa');
+        yLabel.setAttribute('font-size', '14px');
+        yLabel.setAttribute('font-style', 'italic');
+        yLabel.setAttribute('text-anchor', 'middle');
+        yLabel.setAttribute('transform', 'rotate(-90)');
+        yLabel.textContent = 'f(x)';
+        g.appendChild(yLabel);
+    }
+
+    // ==========================================
+    // INITIALIZATION
+    // ==========================================
+    Reveal.on('slidechanged', event => {
+        // Lorenz attractor
+        if (event.currentSlide.querySelector('#lorenz-viz')) {
+            initLorenz();
+        } else if (lorenzAnimId) {
+            cancelAnimationFrame(lorenzAnimId);
+        }
+
+        // Lorenz divergence
+        if (event.currentSlide.querySelector('#lorenz-diverge-viz')) {
+            initLorenzDiverge();
+        }
+
+        // Lorenz sensitivity
+        if (event.currentSlide.querySelector('#lorenz-sensitivity-viz')) {
+            initLorenzSensitivity();
+        }
+
+        // Ensemble
+        if (event.currentSlide.querySelector('#lorenz-ensemble-viz')) {
+            initEnsemble();
+        } else if (ensembleAnimId) {
+            cancelAnimationFrame(ensembleAnimId);
+            ensemblePlaying = false;
+        }
+
+        // Brownian motion
+        if (event.currentSlide.querySelector('#brownian-canvas')) {
+            initBrownian();
+        } else if (brownianAnimId) {
+            cancelAnimationFrame(brownianAnimId);
+        }
+
+        // Random walk
+        if (event.currentSlide.querySelector('#random-walk-canvas')) {
+            initRandomWalk();
+        } else if (walkAnimId) {
+            cancelAnimationFrame(walkAnimId);
+        }
+
+        // PDF Gaussian
+        if (event.currentSlide.querySelector('#pdf-gaussian-svg')) {
+            setTimeout(drawPDFGaussian, 100);
+        }
+
+        // Trajectories + Histogram combined
+        if (event.currentSlide.querySelector('#lorenz-traj-hist-left')) {
+            setTimeout(drawTrajAndHist, 100);
+        }
+
+        // PMF to PDF
+        if (event.currentSlide.querySelector('#pmf-to-pdf-viz')) {
+            setTimeout(drawPMFtoPDF, 100);
+        }
+
+        // KDE
+        if (event.currentSlide.querySelector('#kde-viz')) {
+            kdeSamples = [];
+            setTimeout(() => {
+                drawKDE();
+                initKDEInteraction();
+            }, 100);
+        }
+    });
+
+    // Event listeners for sensitivity slider
+    document.getElementById('lorenz-perturb')?.addEventListener('input', updateLorenzSensitivity);
+
+    // Event listeners for ensemble buttons
+    document.getElementById('ensemble-step')?.addEventListener('click', stepEnsemble);
+    document.getElementById('ensemble-play')?.addEventListener('click', () => {
+        ensemblePlaying = !ensemblePlaying;
+        document.getElementById('ensemble-play').textContent = ensemblePlaying ? 'Pause' : 'Play';
+        if (ensemblePlaying) animateEnsemble();
+    });
+    document.getElementById('ensemble-reset')?.addEventListener('click', initEnsemble);
+
+    // Event listeners for random walk
+    document.getElementById('walk-add10')?.addEventListener('click', () => addWalkers(10));
+    document.getElementById('walk-reset')?.addEventListener('click', () => {
+        walkers = [];
+        document.getElementById('walk-count').textContent = '0';
+        if (walkCtx) {
+            walkCtx.fillStyle = '#1a1a2e';
+            walkCtx.fillRect(0, 0, walkW, walkH);
+        }
+        if (walkKdeCtx) {
+            walkKdeCtx.fillStyle = '#1a1a2e';
+            walkKdeCtx.fillRect(0, 0, kdeW, kdeH);
+        }
+    });
+
+    // Event listeners for new visualizations
+    document.getElementById('traj-hist-time')?.addEventListener('input', drawTrajAndHist);
+    document.getElementById('num-bins')?.addEventListener('input', drawPMFtoPDF);
+    document.getElementById('kde-bandwidth')?.addEventListener('input', drawKDE);
+    document.getElementById('kde-clear')?.addEventListener('click', clearKDE);
+</script>
+</body>
+</html>
