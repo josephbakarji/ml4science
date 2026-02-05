@@ -259,62 +259,86 @@
 
     <section>
         <h2>Short-Time Fourier Transform</h2>
-        <p class="small-text">What if the frequency content changes over time? Apply Fourier in windows:</p>
-        <div class="equation-box tiny-text" style="margin-top: 10px;">
-            $S(t, f) = \left| \int u(\tau)\, w(\tau - t)\, e^{-2\pi i f \tau}\, d\tau \right|^2$
-        </div>
-        <div style="display: flex; justify-content: center; margin-top: 15px;">
-            <svg width="600" height="200" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
-                <!-- Top: chirp signal -->
-                <text x="10" y="15" fill="#888" font-size="11">Signal (chirp):</text>
-                <polyline id="chirp-signal" fill="none" stroke="#61afef" stroke-width="1.5"/>
-                <!-- Bottom: spectrogram approximation -->
-                <text x="10" y="85" fill="#888" font-size="11">Spectrogram:</text>
-                <g id="spectrogram-blocks"></g>
-                <!-- Axes -->
-                <text x="300" y="198" fill="#888" font-size="11" text-anchor="middle">time</text>
-                <text x="588" y="145" fill="#888" font-size="10" text-anchor="end">freq</text>
-            </svg>
+        <p class="small-text">What if the frequency content changes over time? Apply Fourier in sliding windows:</p>
+        <div class="two-column" style="margin-top: 8px; gap: 20px; align-items: flex-start;">
+            <div>
+                <div class="equation-box tiny-text">
+                    $\displaystyle S(t, f) = \left| \int_{-\infty}^{\infty} u(\tau)\, w(\tau - t)\, e^{-2\pi i f \tau}\, d\tau \right|^2$
+                </div>
+                <div class="fragment" style="margin-top: 10px; font-size: 0.65em; color: #aaa; line-height: 1.7;">
+                    <span style="color:#61afef;">$u(\tau)$</span> — the signal being analyzed<br>
+                    <span style="color:#98c379;">$w(\tau - t)$</span> — window function centered at time $t$<br>
+                    <span style="color:#e5c07b;">$e^{-2\pi i f\tau}$</span> — Fourier kernel probing frequency $f$<br>
+                    $|\cdot|^2$ — squared magnitude gives spectral <strong>power</strong><br>
+                    $S(t,f)$ — how much power at time $t$ and frequency $f$
+                </div>
+                <p class="fragment tiny-text" style="color: #888; margin-top: 10px;">
+                    Voice, music, EEG, seismic: frequency content evolves in time.
+                </p>
+            </div>
+            <div>
+                <svg id="stft-svg" width="440" height="240" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+            </div>
         </div>
         <script>
-        (function() {
-            // Draw chirp signal
-            let pts = '';
-            for (let i = 0; i < 560; i++) {
-                const t = i / 560 * 6;
-                const freq = 1 + t * 2;
-                const y = 45 + Math.sin(2 * Math.PI * freq * t * 0.3) * 20;
-                pts += `${20 + i},${y} `;
+        (function(){
+            const svg = document.getElementById('stft-svg');
+            const ns = 'http://www.w3.org/2000/svg';
+            function mkEl(tag, attrs) {
+                const e = document.createElementNS(ns, tag);
+                for (const [k,v] of Object.entries(attrs)) e.setAttribute(k, v);
+                return e;
             }
-            document.getElementById('chirp-signal').setAttribute('points', pts.trim());
-
-            // Draw spectrogram blocks
-            const g = document.getElementById('spectrogram-blocks');
-            const cols = 40, rows = 10;
-            for (let c = 0; c < cols; c++) {
-                const t = c / cols * 6;
-                const peakFreq = 1 + t * 2;
-                for (let r = 0; r < rows; r++) {
-                    const f = (r + 1);
-                    const dist = Math.abs(f - peakFreq);
-                    const intensity = Math.max(0, 1 - dist * 0.4);
-                    if (intensity > 0.05) {
-                        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                        rect.setAttribute('x', 20 + c * 14);
-                        rect.setAttribute('y', 170 - r * 10);
-                        rect.setAttribute('width', 13);
-                        rect.setAttribute('height', 9);
-                        rect.setAttribute('fill', `rgba(97, 175, 239, ${intensity})`);
-                        rect.setAttribute('rx', '1');
-                        g.appendChild(rect);
+            function mkText(x,y,text,opts={}) {
+                const t = mkEl('text', {x:x, y:y, fill:opts.fill||'#888', 'font-size':opts.size||'10', 'text-anchor':opts.anchor||'start'});
+                if (opts.transform) t.setAttribute('transform', opts.transform);
+                t.textContent = text; svg.appendChild(t);
+            }
+            const ox=55, pw=370;
+            // Signal panel: y=[15..65]
+            const sy1=15, sh=50, smid=sy1+sh/2;
+            svg.appendChild(mkEl('line',{x1:ox,y1:smid,x2:ox+pw,y2:smid,stroke:'#444','stroke-dasharray':'3,3'}));
+            mkText(ox-5, smid+4, 'u(t)', {anchor:'end', size:'9', fill:'#61afef'});
+            // Chirp signal
+            let pts='';
+            for(let i=0;i<pw;i++){const t=i/pw*6,f=1+t*2; pts+=`${ox+i},${smid+Math.sin(2*Math.PI*f*t*0.3)*(sh/2-3)} `;}
+            svg.appendChild(mkEl('polyline',{points:pts.trim(),fill:'none',stroke:'#61afef','stroke-width':'1.5'}));
+            // Spectrogram panel: y=[80..215]
+            const sy2=80, sph=130;
+            // Y-axis
+            svg.appendChild(mkEl('line',{x1:ox,y1:sy2,x2:ox,y2:sy2+sph,stroke:'#888','stroke-width':'1'}));
+            mkText(18, sy2+sph/2, 'Frequency (f)', {anchor:'middle', size:'10', transform:'rotate(-90,18,'+(sy2+sph/2)+')'});
+            // X-axis
+            svg.appendChild(mkEl('line',{x1:ox,y1:sy2+sph,x2:ox+pw,y2:sy2+sph,stroke:'#888','stroke-width':'1'}));
+            mkText(ox+pw/2, sy2+sph+18, 'Time (t)', {anchor:'middle', size:'10'});
+            // Y ticks
+            for(let i=0;i<=4;i++){
+                const fy=sy2+sph-i*sph/4;
+                svg.appendChild(mkEl('line',{x1:ox-3,y1:fy,x2:ox,y2:fy,stroke:'#666'}));
+            }
+            mkText(ox-5, sy2+sph+3, 'low', {anchor:'end', size:'8', fill:'#666'});
+            mkText(ox-5, sy2+5, 'high', {anchor:'end', size:'8', fill:'#666'});
+            // X ticks
+            for(let i=0;i<=4;i++){
+                const tx=ox+i*pw/4;
+                svg.appendChild(mkEl('line',{x1:tx,y1:sy2+sph,x2:tx,y2:sy2+sph+4,stroke:'#666'}));
+            }
+            // Spectrogram blocks
+            const cols=38, rows=12;
+            for(let c=0;c<cols;c++){
+                const t=c/cols*6, pf=1+t*2;
+                for(let r=0;r<rows;r++){
+                    const f=(r+1)*0.85, d=Math.abs(f-pf), inten=Math.max(0,1-d*0.35);
+                    if(inten>0.05){
+                        svg.appendChild(mkEl('rect',{x:ox+1+c*(pw/cols), y:sy2+sph-1-(r+1)*(sph/rows),
+                            width:Math.max(1,pw/cols-1), height:Math.max(1,sph/rows-1),
+                            fill:'rgba(97,175,239,'+inten+')', rx:'1'}));
                     }
                 }
             }
+            mkText(ox+pw+5, sy2+sph/2, '|S|²', {size:'9'});
         })();
         </script>
-        <p class="fragment tiny-text center-text" style="color: #888; margin-top: 8px;">
-            Voice, music, EEG, seismic data: frequency content evolves in time.
-        </p>
     </section>
 
     <section>
@@ -354,35 +378,89 @@
 
     <section>
         <h2>Physics of Harmonics</h2>
-        <p class="small-text">Where do sines and cosines come from in physics?</p>
-        <div class="equation-box small-text" style="margin-top: 10px;">
-            Wave equation: $\quad\displaystyle\frac{\partial^2 u}{\partial t^2} = c^2 \frac{\partial^2 u}{\partial x^2}$
+        <p class="small-text">Where do sines and cosines come from? The <strong>wave equation</strong>:</p>
+        <div class="equation-box small-text" style="margin-top: 8px;">
+            $\displaystyle\frac{\partial^2 u}{\partial t^2} = c^2 \frac{\partial^2 u}{\partial x^2}$
         </div>
-        <p class="small-text fragment" style="margin-top: 10px;">Fixed boundary conditions on a string $\rightarrow$ only discrete frequencies survive:</p>
-        <div class="fragment" style="display: flex; justify-content: center; margin-top: 10px;">
-            <svg width="500" height="130" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
-                <!-- n=1 -->
-                <circle cx="20" cy="35" r="4" fill="#888"/>
-                <circle cx="180" cy="35" r="4" fill="#888"/>
-                <path d="M 20 35 Q 100 -5, 180 35" stroke="#61afef" stroke-width="2" fill="none"/>
-                <text x="100" y="60" fill="#61afef" font-size="12" text-anchor="middle">n = 1</text>
-                <!-- n=2 -->
-                <circle cx="200" cy="35" r="4" fill="#888"/>
-                <circle cx="360" cy="35" r="4" fill="#888"/>
-                <path d="M 200 35 Q 240 5, 280 35 Q 320 65, 360 35" stroke="#98c379" stroke-width="2" fill="none"/>
-                <text x="280" y="60" fill="#98c379" font-size="12" text-anchor="middle">n = 2</text>
-                <!-- n=3 -->
-                <circle cx="380" cy="35" r="4" fill="#888"/>
-                <circle cx="490" cy="35" r="4" fill="#888"/>
-                <path d="M 380 35 Q 398 15, 416 35 Q 434 55, 453 35 Q 471 15, 490 35" stroke="#e5c07b" stroke-width="2" fill="none"/>
-                <text x="435" y="60" fill="#e5c07b" font-size="12" text-anchor="middle">n = 3</text>
-                <!-- Caption -->
-                <text x="250" y="90" fill="#888" font-size="11" text-anchor="middle">Standing waves: $f_n = n \cdot f_1$ (harmonics)</text>
-                <text x="250" y="110" fill="#888" font-size="11" text-anchor="middle">Linear PDE → superposition → sum of modes</text>
-            </svg>
+        <div class="fragment" style="margin-top: 8px;">
+            <p class="small-text">Separation of variables: assume $u(x,t) = X(x)\,T(t)$</p>
+            <div class="equation-box tiny-text">
+                $\displaystyle\frac{X''}{X} = \frac{1}{c^2}\frac{T''}{T} = -\lambda \quad\Rightarrow\quad X'' + \lambda X = 0,\;\; T'' + c^2\lambda T = 0$
+            </div>
         </div>
-        <div class="fragment success-box tiny-text" style="margin-top: 10px;">
-            Fourier decomposition is natural because the wave equation is linear: each mode satisfies the equation, so their sum does too.
+        <div class="fragment" style="margin-top: 8px;">
+            <p class="small-text">Boundary conditions $u(0,t)=u(L,t)=0$ force $\lambda_n = (n\pi/L)^2$:</p>
+            <div class="equation-box tiny-text">
+                $X_n(x) = \sin\!\left(\tfrac{n\pi x}{L}\right),\quad T_n(t) = \cos(\omega_n t),\quad \omega_n = \tfrac{n\pi c}{L}$
+            </div>
+        </div>
+        <div class="fragment success-box tiny-text" style="margin-top: 8px;">
+            General solution by superposition: $\displaystyle u(x,t) = \sum_{n=1}^{\infty} a_n \sin\!\left(\tfrac{n\pi x}{L}\right) \cos(\omega_n t)$
+            <br>Linear PDE → each mode satisfies the equation → their sum does too.
+        </div>
+    </section>
+
+    <section>
+        <h2>Standing Waves on a String</h2>
+        <div id="standing-waves-plot" style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px;"></div>
+        <div style="display: flex; gap: 12px; margin-top: 6px; align-items: center;">
+            <div class="slider-container" style="flex:1;">
+                <label class="tiny-text" style="color:#61afef; min-width:25px;">a₁:</label>
+                <input type="range" id="sw-a1" min="0" max="1" step="0.01" value="1" style="accent-color:#61afef;">
+                <span id="sw-a1-val" class="tiny-text" style="color:#61afef; min-width:35px;">1.00</span>
+            </div>
+            <div class="slider-container" style="flex:1;">
+                <label class="tiny-text" style="color:#98c379; min-width:25px;">a₂:</label>
+                <input type="range" id="sw-a2" min="0" max="1" step="0.01" value="0" style="accent-color:#98c379;">
+                <span id="sw-a2-val" class="tiny-text" style="color:#98c379; min-width:35px;">0.00</span>
+            </div>
+            <div class="slider-container" style="flex:1;">
+                <label class="tiny-text" style="color:#e5c07b; min-width:25px;">a₃:</label>
+                <input type="range" id="sw-a3" min="0" max="1" step="0.01" value="0" style="accent-color:#e5c07b;">
+                <span id="sw-a3-val" class="tiny-text" style="color:#e5c07b; min-width:35px;">0.00</span>
+            </div>
+            <div class="slider-container" style="flex:1;">
+                <label class="tiny-text" style="color:#c678dd; min-width:25px;">a₄:</label>
+                <input type="range" id="sw-a4" min="0" max="1" step="0.01" value="0" style="accent-color:#c678dd;">
+                <span id="sw-a4-val" class="tiny-text" style="color:#c678dd; min-width:35px;">0.00</span>
+            </div>
+        </div>
+        <p class="tiny-text center-text" style="color: #888; margin-top: 4px;">
+            $u(x,t) = \sum a_n \sin(n\pi x/L)\cos(\omega_n t)$ &emsp;
+            <span style="color: #e5c07b;">━</span> superposition &emsp; thin = individual modes
+        </p>
+    </section>
+
+    <section>
+        <h2>The Fermi-Pasta-Ulam-Tsingou Problem</h2>
+        <div class="two-column" style="gap: 15px; align-items: flex-start;">
+            <div>
+                <div class="highlight-box tiny-text" style="padding: 10px;">
+                    <strong>1953, Los Alamos.</strong> Fermi, Pasta, Ulam, and Tsingou simulated a chain
+                    of masses connected by nonlinear springs on the MANIAC I computer. They expected
+                    energy to spread across all modes (thermalization). Instead, the energy returned
+                    almost perfectly to the initial mode.
+                </div>
+                <div class="equation-box tiny-text" style="margin-top: 8px;">
+                    $\ddot{x}_i = \underbrace{(x_{i+1} - 2x_i + x_{i-1})}_{\text{linear}} + \;\alpha\!\underbrace{\left[(x_{i+1}\! - x_i)^2 - (x_i\! - x_{i-1})^2\right]}_{\text{nonlinear}}$
+                </div>
+                <p class="tiny-text" style="margin-top: 6px; color: #888;">
+                    $\alpha = 0$: standard wave equation (superposition holds)<br>
+                    $\alpha > 0$: modes couple, energy transfers between them
+                </p>
+                <div class="tiny-text" style="margin-top: 6px;">
+                    <button id="fput-reset" style="font-size:0.65em; padding:2px 8px; border:1px solid #555; background:rgba(224,108,117,0.15); color:#e06c75; border-radius:4px; cursor:pointer;">Reset</button>
+                    <span style="margin-left: 8px; color:#888;" id="fput-time">t = 0</span>
+                </div>
+            </div>
+            <div>
+                <div id="fput-plot" style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 8px;"></div>
+            </div>
+        </div>
+        <div class="fragment principle-box tiny-text" style="margin-top: 6px;">
+            One of the earliest examples of <strong>computational scientific discovery</strong>: a numerical
+            experiment revealed near-recurrence that no one predicted, launching the study of nonlinear
+            dynamics and solitons.
         </div>
     </section>
 </section>
@@ -908,13 +986,22 @@ Reveal.initialize({
 });
 
 // ============ D3 INTERACTIVE PLOTS ============
+let swActive = false, fputActive = false;
 
 Reveal.on('slidechanged', event => {
+    swActive = false;
+    fputActive = false;
     if (event.currentSlide.querySelector('#fourier-plot') && !document.querySelector('#fourier-plot svg')) {
         initFourierPlot();
     }
     if (event.currentSlide.querySelector('#ar2-plot') && !document.querySelector('#ar2-plot svg')) {
         initAR2Plot();
+    }
+    if (event.currentSlide.querySelector('#standing-waves-plot')) {
+        initStandingWaves();
+    }
+    if (event.currentSlide.querySelector('#fput-plot')) {
+        initFPUT();
     }
 });
 
@@ -1068,6 +1155,178 @@ function initFourierPlot() {
     });
 
     update();
+}
+
+function initStandingWaves() {
+    swActive = true;
+    const container = d3.select('#standing-waves-plot');
+    container.selectAll('*').remove();
+    const W = 850, H = 280;
+    const M = {l:45, r:15, t:15, b:30};
+    const pw = W - M.l - M.r, ph = H - M.t - M.b;
+    const svg = container.append('svg').attr('width', W).attr('height', H);
+    const g = svg.append('g').attr('transform', `translate(${M.l},${M.t})`);
+    const xS = d3.scaleLinear().domain([0, 1]).range([0, pw]);
+    const yS = d3.scaleLinear().domain([-2.5, 2.5]).range([ph, 0]);
+    g.append('g').attr('class','axis').attr('transform',`translate(0,${ph})`).call(d3.axisBottom(xS).ticks(5));
+    g.append('g').attr('class','axis').call(d3.axisLeft(yS).ticks(5));
+    g.append('line').attr('x1',0).attr('x2',pw).attr('y1',yS(0)).attr('y2',yS(0)).attr('stroke','#444').attr('stroke-dasharray','3,3');
+    g.append('circle').attr('cx',xS(0)).attr('cy',yS(0)).attr('r',5).attr('fill','#888');
+    g.append('circle').attr('cx',xS(1)).attr('cy',yS(0)).attr('r',5).attr('fill','#888');
+    g.append('text').attr('x',pw/2).attr('y',ph+25).attr('text-anchor','middle').attr('fill','#888').attr('font-size','11px').text('x / L');
+    g.append('text').attr('x',-30).attr('y',ph/2).attr('text-anchor','middle').attr('fill','#888').attr('font-size','11px')
+      .attr('transform',`rotate(-90,-30,${ph/2})`).text('u(x, t)');
+    const colors = ['#61afef','#98c379','#e5c07b','#c678dd'];
+    const nModes = 4, nPts = 200;
+    const modePaths = [];
+    for (let n = 0; n < nModes; n++) {
+        modePaths.push(g.append('path').attr('fill','none').attr('stroke',colors[n]).attr('stroke-width',1.2).attr('opacity',0.4));
+    }
+    const sumPath = g.append('path').attr('fill','none').attr('stroke','#e5c07b').attr('stroke-width',3);
+    const lineFn = d3.line().x(d => xS(d.x)).y(d => yS(d.y));
+    let t = 0;
+    function animate() {
+        if (!swActive) return;
+        t += 0.03;
+        const a = [+document.getElementById('sw-a1').value, +document.getElementById('sw-a2').value,
+                    +document.getElementById('sw-a3').value, +document.getElementById('sw-a4').value];
+        for (let n = 0; n < 4; n++) document.getElementById('sw-a'+(n+1)+'-val').textContent = a[n].toFixed(2);
+        const mData = [[],[],[],[]]; const sData = [];
+        for (let i = 0; i <= nPts; i++) {
+            const x = i / nPts; let sum = 0;
+            for (let n = 0; n < nModes; n++) {
+                const k = n + 1;
+                const val = a[n] * Math.sin(k * Math.PI * x) * Math.cos(k * Math.PI * t);
+                mData[n].push({x, y: val}); sum += val;
+            }
+            sData.push({x, y: sum});
+        }
+        for (let n = 0; n < nModes; n++) {
+            modePaths[n].attr('d', lineFn(mData[n])).attr('opacity', a[n] > 0.01 ? 0.4 : 0);
+        }
+        sumPath.attr('d', lineFn(sData));
+        requestAnimationFrame(animate);
+    }
+    animate();
+}
+
+function initFPUT() {
+    fputActive = true;
+    const container = d3.select('#fput-plot');
+    container.selectAll('*').remove();
+    const W = 420, H = 320;
+    const svg = container.append('svg').attr('width', W).attr('height', H);
+    // Chain panel (top)
+    const cm = {l:35, r:10, t:20, b:10};
+    const cpw = W - cm.l - cm.r, cph = 120;
+    const gC = svg.append('g').attr('transform', `translate(${cm.l},${cm.t})`);
+    // Energy panel (bottom)
+    const ey0 = cm.t + cph + 30;
+    const em = {l:35, r:10, t:10, b:25};
+    const epw = W - em.l - em.r, eph = H - ey0 - em.t - em.b;
+    const gE = svg.append('g').attr('transform', `translate(${em.l},${ey0 + em.t})`);
+    // FPUT parameters
+    const N = 32, alpha = 0.25, dt = 0.04, SPF = 100;
+    let pos = new Float64Array(N), vel = new Float64Array(N), time = 0;
+    function resetState() {
+        time = 0;
+        for (let i = 0; i < N; i++) { pos[i] = Math.sin(Math.PI*(i+1)/(N+1)); vel[i] = 0; }
+    }
+    resetState();
+    // Force computation
+    function forces(p) {
+        const f = new Float64Array(N);
+        for (let i = 0; i < N; i++) {
+            const xp = i < N-1 ? p[i+1] : 0, xm = i > 0 ? p[i-1] : 0;
+            const dp = xp - p[i], dm = p[i] - xm;
+            f[i] = (xp - 2*p[i] + xm) + alpha*(dp*dp - dm*dm);
+        }
+        return f;
+    }
+    // RK4 integration step
+    function rkStep() {
+        const k1v = forces(pos), k1x = new Float64Array(vel);
+        const p2 = new Float64Array(N), v2 = new Float64Array(N);
+        for(let i=0;i<N;i++){p2[i]=pos[i]+.5*dt*k1x[i]; v2[i]=vel[i]+.5*dt*k1v[i];}
+        const k2v = forces(p2), k2x = new Float64Array(v2);
+        const p3 = new Float64Array(N), v3 = new Float64Array(N);
+        for(let i=0;i<N;i++){p3[i]=pos[i]+.5*dt*k2x[i]; v3[i]=vel[i]+.5*dt*k2v[i];}
+        const k3v = forces(p3), k3x = new Float64Array(v3);
+        const p4 = new Float64Array(N), v4 = new Float64Array(N);
+        for(let i=0;i<N;i++){p4[i]=pos[i]+dt*k3x[i]; v4[i]=vel[i]+dt*k3v[i];}
+        const k4v = forces(p4), k4x = new Float64Array(v4);
+        for(let i=0;i<N;i++){
+            pos[i]+=dt/6*(k1x[i]+2*k2x[i]+2*k3x[i]+k4x[i]);
+            vel[i]+=dt/6*(k1v[i]+2*k2v[i]+2*k3v[i]+k4v[i]);
+        }
+        time += dt;
+    }
+    // Compute mode energies
+    function modeEnergies(nM) {
+        const E = new Float64Array(nM), norm = Math.sqrt(2/(N+1));
+        for (let k = 0; k < nM; k++) {
+            let Q = 0, Qd = 0;
+            for (let i = 0; i < N; i++) {
+                const s = Math.sin((k+1)*Math.PI*(i+1)/(N+1));
+                Q += pos[i]*s; Qd += vel[i]*s;
+            }
+            Q *= norm; Qd *= norm;
+            const w = 2*Math.sin((k+1)*Math.PI/(2*(N+1)));
+            E[k] = 0.5*(Qd*Qd + w*w*Q*Q);
+        }
+        return E;
+    }
+    // Chain axes
+    const xC = d3.scaleLinear().domain([0,N+1]).range([0,cpw]);
+    const yC = d3.scaleLinear().domain([-1.5,1.5]).range([cph,0]);
+    gC.append('g').attr('class','axis').attr('transform',`translate(0,${cph})`).call(d3.axisBottom(xC).ticks(4).tickFormat(()=>''));
+    gC.append('g').attr('class','axis').call(d3.axisLeft(yC).ticks(3));
+    gC.append('line').attr('x1',0).attr('x2',cpw).attr('y1',yC(0)).attr('y2',yC(0)).attr('stroke','#444').attr('stroke-dasharray','3,3');
+    gC.append('text').attr('x',cpw/2).attr('y',-5).attr('text-anchor','middle').attr('fill','#888').attr('font-size','10px').text('Chain Displacement');
+    gC.append('circle').attr('cx',xC(0)).attr('cy',yC(0)).attr('r',3).attr('fill','#888');
+    gC.append('circle').attr('cx',xC(N+1)).attr('cy',yC(0)).attr('r',3).attr('fill','#888');
+    const chainLine = d3.line().x(d=>xC(d.i)).y(d=>yC(d.v));
+    const chainPath = gC.append('path').attr('fill','none').attr('stroke','#61afef').attr('stroke-width',2);
+    const dots = gC.selectAll('.cd').data(d3.range(N)).enter().append('circle').attr('r',2).attr('fill','#61afef');
+    // Energy axes
+    const nModes = 8;
+    const E0 = modeEnergies(nModes);
+    const totalE = E0.reduce((a,b)=>a+b,0);
+    const xE = d3.scaleBand().domain(d3.range(nModes)).range([0,epw]).padding(0.3);
+    const yE = d3.scaleLinear().domain([0,totalE*1.15]).range([eph,0]);
+    gE.append('g').attr('class','axis').attr('transform',`translate(0,${eph})`).call(d3.axisBottom(xE).tickFormat(i=>'E'+(i+1)));
+    gE.append('g').attr('class','axis').call(d3.axisLeft(yE).ticks(3));
+    gE.append('text').attr('x',epw/2).attr('y',-3).attr('text-anchor','middle').attr('fill','#888').attr('font-size','10px').text('Mode Energies');
+    const mColors = ['#61afef','#98c379','#e5c07b','#c678dd','#56b6c2','#d19a66','#e06c75','#be5046'];
+    const eBars = gE.selectAll('.eb').data(d3.range(nModes)).enter()
+        .append('rect').attr('x',i=>xE(i)).attr('width',xE.bandwidth())
+        .attr('fill',i=>mColors[i]).attr('opacity',0.8).attr('rx',2);
+    // Draw function
+    function draw() {
+        const chainData = [{i:0,v:0}];
+        for(let i=0;i<N;i++) chainData.push({i:i+1,v:pos[i]});
+        chainData.push({i:N+1,v:0});
+        chainPath.attr('d',chainLine(chainData));
+        dots.each(function(d){d3.select(this).attr('cx',xC(d+1)).attr('cy',yC(pos[d]));});
+        const E = modeEnergies(nModes);
+        eBars.each(function(d){
+            const h = eph - yE(Math.min(E[d], totalE*1.15));
+            d3.select(this).attr('y',yE(Math.min(E[d],totalE*1.15))).attr('height',Math.max(0,h));
+        });
+        document.getElementById('fput-time').textContent = 't = ' + time.toFixed(0);
+    }
+    function animate() {
+        if (!fputActive) return;
+        for(let s=0;s<SPF;s++) rkStep();
+        draw();
+        requestAnimationFrame(animate);
+    }
+    // Reset button
+    document.getElementById('fput-reset').addEventListener('click', () => {
+        resetState(); draw();
+    });
+    draw();
+    animate();
 }
 
 function initAR2Plot() {
