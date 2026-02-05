@@ -240,23 +240,20 @@
 
     <section>
         <h2>Interactive: Fourier Superposition</h2>
-        <div id="fourier-plot" style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px;"></div>
-        <div style="display: flex; gap: 20px; margin-top: 10px;">
-            <div class="slider-container" style="flex: 1;">
-                <label class="tiny-text">Freq 1:</label>
-                <input type="range" id="freq1" min="0.5" max="5" step="0.1" value="1" style="accent-color: #61afef;">
-                <span id="freq1-val" class="tiny-text" style="color: #61afef;">1.0</span>
-            </div>
-            <div class="slider-container" style="flex: 1;">
-                <label class="tiny-text">Freq 2:</label>
-                <input type="range" id="freq2" min="1" max="10" step="0.1" value="3" style="accent-color: #e06c75;">
-                <span id="freq2-val" class="tiny-text" style="color: #e06c75;">3.0</span>
-            </div>
+        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 6px;">
+            <span class="tiny-text" style="color: #888;">Target:</span>
+            <button class="ref-btn" data-ref="square" style="font-size:0.6em; padding:3px 10px; border:1px solid #61afef; background:rgba(97,175,239,0.15); color:#ccc; border-radius:4px; cursor:pointer;">Square</button>
+            <button class="ref-btn" data-ref="triangle" style="font-size:0.6em; padding:3px 10px; border:1px solid #555; background:rgba(255,255,255,0.08); color:#ccc; border-radius:4px; cursor:pointer; opacity:0.5;">Triangle</button>
+            <button class="ref-btn" data-ref="sawtooth" style="font-size:0.6em; padding:3px 10px; border:1px solid #555; background:rgba(255,255,255,0.08); color:#ccc; border-radius:4px; cursor:pointer; opacity:0.5;">Sawtooth</button>
+            <span style="flex:1;"></span>
+            <button id="fourier-reveal" style="font-size:0.6em; padding:3px 10px; border:1px solid #555; background:rgba(152,195,121,0.15); color:#98c379; border-radius:4px; cursor:pointer;">Show Answer</button>
+            <button id="fourier-reset" style="font-size:0.6em; padding:3px 10px; border:1px solid #555; background:rgba(224,108,117,0.15); color:#e06c75; border-radius:4px; cursor:pointer;">Reset</button>
         </div>
-        <p class="tiny-text center-text" style="color: #888; margin-top: 5px;">
-            <span style="color: #61afef;">&#9632;</span> $\sin(f_1 t)$ &emsp;
-            <span style="color: #e06c75;">&#9632;</span> $0.5\sin(f_2 t)$ &emsp;
-            <span style="color: #e5c07b;">&#9632;</span> sum
+        <div id="fourier-plot" style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px;"></div>
+        <p class="tiny-text center-text" style="color: #888; margin-top: 4px;">
+            <span style="color: #888;">- - -</span> target &emsp;
+            <span style="color: #e5c07b;">&#9473;</span> your approximation &emsp;
+            | &emsp; Drag the frequency bars to match the target signal
         </p>
     </section>
 
@@ -925,50 +922,151 @@ function initFourierPlot() {
     const container = d3.select('#fourier-plot');
     container.selectAll('*').remove();
 
-    const width = 750, height = 230;
-    const margin = {top: 15, right: 20, bottom: 25, left: 40};
+    const W = 900, H = 350;
+    const svg = container.append('svg').attr('width', W).attr('height', H);
 
-    const svg = container.append('svg').attr('width', width).attr('height', height);
-    const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+    // === TIME DOMAIN (left panel) ===
+    const TM = {l:45, r:10, t:25, b:30};
+    const TW = 480;
+    const tpw = TW - TM.l - TM.r, tph = H - TM.t - TM.b;
+    const gT = svg.append('g').attr('transform', `translate(${TM.l},${TM.t})`);
 
-    const x = d3.scaleLinear().domain([0, 4*Math.PI]).range([0, width - margin.left - margin.right]);
-    const y = d3.scaleLinear().domain([-2.5, 2.5]).range([height - margin.top - margin.bottom, 0]);
+    svg.append('defs').append('clipPath').attr('id','fourier-clip')
+       .append('rect').attr('width', tpw).attr('height', tph);
 
-    // Grid
-    g.append('line').attr('x1', 0).attr('x2', width - margin.left - margin.right)
-     .attr('y1', y(0)).attr('y2', y(0)).attr('stroke', '#444').attr('stroke-width', 1);
+    const xT = d3.scaleLinear().domain([0, 4*Math.PI]).range([0, tpw]);
+    const yT = d3.scaleLinear().domain([-2, 2]).range([tph, 0]);
 
-    g.append('g').attr('class', 'axis').attr('transform', `translate(0,${height - margin.top - margin.bottom})`)
-     .call(d3.axisBottom(x).ticks(6).tickFormat(d => (d/Math.PI).toFixed(0) + 'π'));
-    g.append('g').attr('class', 'axis').call(d3.axisLeft(y).ticks(5));
+    gT.append('g').attr('class','axis').attr('transform',`translate(0,${tph})`)
+      .call(d3.axisBottom(xT).ticks(6).tickFormat(d => (d/Math.PI).toFixed(0)+'π'));
+    gT.append('g').attr('class','axis').call(d3.axisLeft(yT).ticks(5));
+    gT.append('line').attr('x1',0).attr('x2',tpw)
+      .attr('y1',yT(0)).attr('y2',yT(0)).attr('stroke','#444');
+    gT.append('text').attr('x',tpw/2).attr('y',-8)
+      .attr('text-anchor','middle').attr('fill','#888').attr('font-size','11px')
+      .text('Time Domain — u(t)');
 
-    const line = d3.line().x(d => x(d.t)).y(d => y(d.v));
+    const gTclip = gT.append('g').attr('clip-path','url(#fourier-clip)');
+    const refPath = gTclip.append('path').attr('fill','none')
+      .attr('stroke','#888').attr('stroke-width',2).attr('stroke-dasharray','6,3');
+    const approxPath = gTclip.append('path').attr('fill','none')
+      .attr('stroke','#e5c07b').attr('stroke-width',2.5);
+    const lineFn = d3.line().x(d=>xT(d.t)).y(d=>yT(d.v));
 
-    const path1 = g.append('path').attr('fill', 'none').attr('stroke', '#61afef').attr('stroke-width', 1.5).attr('opacity', 0.5);
-    const path2 = g.append('path').attr('fill', 'none').attr('stroke', '#e06c75').attr('stroke-width', 1.5).attr('opacity', 0.5);
-    const pathSum = g.append('path').attr('fill', 'none').attr('stroke', '#e5c07b').attr('stroke-width', 2.5);
+    // === FREQUENCY DOMAIN (right panel) ===
+    const FM = {l:40, r:10, t:25, b:30};
+    const fxStart = TW + 35;
+    const FW = W - fxStart;
+    const fpw = FW - FM.l - FM.r, fph = H - FM.t - FM.b;
+    const gF = svg.append('g').attr('transform', `translate(${fxStart+FM.l},${FM.t})`);
+
+    const nH = 8;
+    const amps = new Array(nH).fill(0);
+
+    const refs = {
+        square:   k => k%2===1 ? 4/(Math.PI*k) : 0,
+        triangle: k => k%2===1 ? 8/(Math.PI*Math.PI*k*k)*Math.pow(-1,(k-1)/2) : 0,
+        sawtooth: k => -2/(Math.PI*k)*Math.pow(-1,k)
+    };
+    let curRef = 'square';
+
+    const fLabels = d3.range(1,nH+1).map(k => k===1 ? 'ω' : k+'ω');
+    const xF = d3.scaleBand().domain(d3.range(nH)).range([0,fpw]).padding(0.25);
+    const yF = d3.scaleLinear().domain([-1.5,1.5]).range([fph,0]);
+
+    gF.append('g').attr('class','axis').attr('transform',`translate(0,${fph})`)
+      .call(d3.axisBottom(xF).tickFormat(i => fLabels[i]));
+    gF.append('g').attr('class','axis').call(d3.axisLeft(yF).ticks(5));
+    gF.append('line').attr('x1',0).attr('x2',fpw)
+      .attr('y1',yF(0)).attr('y2',yF(0)).attr('stroke','#555');
+    gF.append('text').attr('x',fpw/2).attr('y',-8)
+      .attr('text-anchor','middle').attr('fill','#888').attr('font-size','11px')
+      .text('Frequency Components — aₖ');
+
+    // Target bar outlines (dashed)
+    const refBars = gF.selectAll('.rb').data(d3.range(nH)).enter()
+      .append('rect').attr('x', i=>xF(i)).attr('width', xF.bandwidth())
+      .attr('fill','none').attr('stroke','#888').attr('stroke-width',1.5)
+      .attr('stroke-dasharray','4,2').attr('rx',2);
+
+    // User amplitude bars
+    const bars = gF.selectAll('.ub').data(d3.range(nH)).enter()
+      .append('rect').attr('x', i=>xF(i)).attr('width', xF.bandwidth())
+      .attr('fill','#61afef').attr('opacity',0.7).attr('rx',2)
+      .attr('y', yF(0)).attr('height',0);
+
+    // Drag handles (circles at bar tops)
+    const handles = gF.selectAll('.hd').data(d3.range(nH)).enter()
+      .append('circle').attr('cx', i=>xF(i)+xF.bandwidth()/2)
+      .attr('cy', yF(0)).attr('r',5)
+      .attr('fill','#61afef').attr('stroke','#fff').attr('stroke-width',1.5)
+      .style('pointer-events','none');
+
+    // Invisible drag targets covering each column
+    gF.selectAll('.dt').data(d3.range(nH)).enter()
+      .append('rect')
+      .attr('x', i=>xF(i)-3).attr('width', xF.bandwidth()+6)
+      .attr('y',0).attr('height',fph)
+      .attr('fill','transparent').attr('cursor','ns-resize')
+      .call(d3.drag()
+        .container(gF.node())
+        .on('start drag', function(event, d) {
+            if(event.sourceEvent) event.sourceEvent.stopPropagation();
+            amps[d] = Math.max(-1.5, Math.min(1.5, yF.invert(event.y)));
+            update();
+        })
+      );
 
     function update() {
-        const f1 = +document.getElementById('freq1').value;
-        const f2 = +document.getElementById('freq2').value;
-        document.getElementById('freq1-val').textContent = f1.toFixed(1);
-        document.getElementById('freq2-val').textContent = f2.toFixed(1);
-
-        const d1 = [], d2 = [], ds = [];
-        for (let t = 0; t <= 4*Math.PI; t += 0.03) {
-            const v1 = Math.sin(f1*t);
-            const v2 = 0.5*Math.sin(f2*t);
-            d1.push({t, v: v1});
-            d2.push({t, v: v2});
-            ds.push({t, v: v1 + v2});
+        const z = yF(0);
+        // Update user bars
+        bars.each(function(d) {
+            const top = yF(amps[d]);
+            d3.select(this).attr('y', Math.min(z,top))
+              .attr('height', Math.max(0.5, Math.abs(top-z)));
+        });
+        // Update handles
+        handles.each(function(d) { d3.select(this).attr('cy', yF(amps[d])); });
+        // Update target outlines
+        const fn = refs[curRef];
+        refBars.each(function(d) {
+            const a = fn(d+1);
+            if(Math.abs(a)<0.001){ d3.select(this).attr('height',0); return; }
+            const top = yF(a);
+            d3.select(this).attr('y', Math.min(z,top)).attr('height', Math.abs(top-z));
+        });
+        // Update time domain curves
+        const ad=[], rd=[];
+        for(let t=0; t<=4*Math.PI; t+=0.02){
+            let av=0, rv=0;
+            for(let i=0;i<nH;i++){ const k=i+1; av+=amps[i]*Math.sin(k*t); rv+=fn(k)*Math.sin(k*t); }
+            ad.push({t, v:av}); rd.push({t, v:rv});
         }
-        path1.attr('d', line(d1));
-        path2.attr('d', line(d2));
-        pathSum.attr('d', line(ds));
+        refPath.attr('d', lineFn(rd));
+        approxPath.attr('d', lineFn(ad));
     }
 
-    document.getElementById('freq1').oninput = update;
-    document.getElementById('freq2').oninput = update;
+    // Reference signal buttons
+    document.querySelectorAll('.ref-btn').forEach(btn => {
+        btn.addEventListener('click', function(){
+            curRef = this.dataset.ref;
+            document.querySelectorAll('.ref-btn').forEach(b => {
+                b.style.opacity = b===this ? '1' : '0.5';
+                b.style.borderColor = b===this ? '#61afef' : '#555';
+                b.style.background = b===this ? 'rgba(97,175,239,0.15)' : 'rgba(255,255,255,0.08)';
+            });
+            update();
+        });
+    });
+    document.getElementById('fourier-reset')?.addEventListener('click', () => {
+        amps.fill(0); update();
+    });
+    document.getElementById('fourier-reveal')?.addEventListener('click', () => {
+        const fn = refs[curRef];
+        for(let i=0;i<nH;i++) amps[i] = fn(i+1);
+        update();
+    });
+
     update();
 }
 
