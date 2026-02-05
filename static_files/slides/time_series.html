@@ -433,33 +433,46 @@
 
     <section>
         <h2>The Fermi-Pasta-Ulam-Tsingou Problem</h2>
-        <div class="two-column" style="gap: 15px; align-items: flex-start;">
-            <div>
-                <div class="highlight-box tiny-text" style="padding: 10px;">
-                    <strong>1953, Los Alamos.</strong> Fermi, Pasta, Ulam, and Tsingou simulated a chain
-                    of masses connected by nonlinear springs on the MANIAC I computer. They expected
-                    energy to spread across all modes (thermalization). Instead, the energy returned
-                    almost perfectly to the initial mode.
-                </div>
-                <div class="equation-box tiny-text" style="margin-top: 8px;">
-                    $\ddot{x}_i = \underbrace{(x_{i+1} - 2x_i + x_{i-1})}_{\text{linear}} + \;\alpha\!\underbrace{\left[(x_{i+1}\! - x_i)^2 - (x_i\! - x_{i-1})^2\right]}_{\text{nonlinear}}$
-                </div>
-                <p class="tiny-text" style="margin-top: 6px; color: #888;">
-                    $\alpha = 0$: standard wave equation (superposition holds)<br>
-                    $\alpha > 0$: modes couple, energy transfers between them
-                </p>
-                <div class="tiny-text" style="margin-top: 6px;">
-                    <button id="fput-reset" style="font-size:0.65em; padding:2px 8px; border:1px solid #555; background:rgba(224,108,117,0.15); color:#e06c75; border-radius:4px; cursor:pointer;">Reset</button>
-                    <span style="margin-left: 8px; color:#888;" id="fput-time">t = 0</span>
-                </div>
-            </div>
-            <div>
-                <div id="fput-plot" style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 8px;"></div>
-            </div>
+        <div class="highlight-box tiny-text" style="padding: 10px;">
+            <strong>1953, Los Alamos.</strong> Fermi, Pasta, Ulam, and Tsingou simulated a chain
+            of masses connected by nonlinear springs on the MANIAC I computer. They expected
+            energy to spread across all modes (thermalization). Instead, the energy returned
+            almost perfectly to the initial mode.
         </div>
-        <div class="fragment principle-box tiny-text" style="margin-top: 6px;">
+        <div class="equation-box small-text" style="margin-top: 12px;">
+            $\ddot{x}_i = \underbrace{(x_{i+1} - 2x_i + x_{i-1})}_{\text{linear}} + \;\alpha\!\underbrace{\left[(x_{i+1}\! - x_i)^2 - (x_i\! - x_{i-1})^2\right]}_{\text{nonlinear}}$
+        </div>
+        <div class="fragment" style="margin-top: 12px;">
+            <p class="small-text" style="color: #aaa;">
+                $\alpha = 0$: standard wave equation, modes decouple, superposition holds
+            </p>
+            <p class="small-text" style="color: #aaa; margin-top: 4px;">
+                $\alpha > 0$: nonlinear coupling transfers energy between modes $\omega_n$
+            </p>
+        </div>
+        <div class="fragment" style="margin-top: 12px;">
+            <p class="small-text">Initial condition: all energy in mode $\omega_1$. What happens?</p>
+            <p class="small-text fragment" style="color: #e06c75; margin-top: 6px;">
+                Expected: energy spreads to all modes (thermalization, equipartition)
+            </p>
+            <p class="small-text fragment" style="color: #98c379; margin-top: 4px;">
+                Observed: energy returns to $\omega_1$ — <strong>near-perfect recurrence</strong>
+            </p>
+        </div>
+    </section>
+
+    <section>
+        <h2>FPUT: Energy Recurrence</h2>
+        <div id="fput-plot" style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px;"></div>
+        <div style="display: flex; align-items: center; gap: 15px; margin-top: 6px;">
+            <button id="fput-reset" style="font-size:0.65em; padding:3px 10px; border:1px solid #555; background:rgba(224,108,117,0.15); color:#e06c75; border-radius:4px; cursor:pointer;">Reset</button>
+            <span class="tiny-text" style="color:#888;" id="fput-time">t = 0</span>
+            <span style="flex:1;"></span>
+            <span class="tiny-text" style="color:#888;">N = 32 masses, &alpha; = 0.25, initial mode: $\omega_1$</span>
+        </div>
+        <div class="fragment principle-box tiny-text" style="margin-top: 8px;">
             One of the earliest examples of <strong>computational scientific discovery</strong>: a numerical
-            experiment revealed near-recurrence that no one predicted, launching the study of nonlinear
+            experiment revealed behavior that no one predicted, launching the study of nonlinear
             dynamics and solitons.
         </div>
     </section>
@@ -1214,19 +1227,19 @@ function initFPUT() {
     fputActive = true;
     const container = d3.select('#fput-plot');
     container.selectAll('*').remove();
-    const W = 420, H = 320;
+    const W = 850, H = 380;
     const svg = container.append('svg').attr('width', W).attr('height', H);
     // Chain panel (top)
-    const cm = {l:35, r:10, t:20, b:10};
-    const cpw = W - cm.l - cm.r, cph = 120;
+    const cm = {l:45, r:15, t:20, b:10};
+    const cpw = W - cm.l - cm.r, cph = 150;
     const gC = svg.append('g').attr('transform', `translate(${cm.l},${cm.t})`);
     // Energy panel (bottom)
-    const ey0 = cm.t + cph + 30;
-    const em = {l:35, r:10, t:10, b:25};
+    const ey0 = cm.t + cph + 35;
+    const em = {l:45, r:15, t:10, b:30};
     const epw = W - em.l - em.r, eph = H - ey0 - em.t - em.b;
     const gE = svg.append('g').attr('transform', `translate(${em.l},${ey0 + em.t})`);
     // FPUT parameters
-    const N = 32, alpha = 0.25, dt = 0.04, SPF = 100;
+    const N = 32, alpha = 0.25, dt = 0.04, SPF = 50;
     let pos = new Float64Array(N), vel = new Float64Array(N), time = 0;
     function resetState() {
         time = 0;
@@ -1279,24 +1292,25 @@ function initFPUT() {
     // Chain axes
     const xC = d3.scaleLinear().domain([0,N+1]).range([0,cpw]);
     const yC = d3.scaleLinear().domain([-1.5,1.5]).range([cph,0]);
-    gC.append('g').attr('class','axis').attr('transform',`translate(0,${cph})`).call(d3.axisBottom(xC).ticks(4).tickFormat(()=>''));
-    gC.append('g').attr('class','axis').call(d3.axisLeft(yC).ticks(3));
+    gC.append('g').attr('class','axis').attr('transform',`translate(0,${cph})`).call(d3.axisBottom(xC).ticks(5).tickFormat(()=>''));
+    gC.append('g').attr('class','axis').call(d3.axisLeft(yC).ticks(4));
     gC.append('line').attr('x1',0).attr('x2',cpw).attr('y1',yC(0)).attr('y2',yC(0)).attr('stroke','#444').attr('stroke-dasharray','3,3');
-    gC.append('text').attr('x',cpw/2).attr('y',-5).attr('text-anchor','middle').attr('fill','#888').attr('font-size','10px').text('Chain Displacement');
-    gC.append('circle').attr('cx',xC(0)).attr('cy',yC(0)).attr('r',3).attr('fill','#888');
-    gC.append('circle').attr('cx',xC(N+1)).attr('cy',yC(0)).attr('r',3).attr('fill','#888');
+    gC.append('text').attr('x',cpw/2).attr('y',-5).attr('text-anchor','middle').attr('fill','#888').attr('font-size','11px').text('Chain Displacement  x\u1D62');
+    gC.append('circle').attr('cx',xC(0)).attr('cy',yC(0)).attr('r',4).attr('fill','#888');
+    gC.append('circle').attr('cx',xC(N+1)).attr('cy',yC(0)).attr('r',4).attr('fill','#888');
     const chainLine = d3.line().x(d=>xC(d.i)).y(d=>yC(d.v));
     const chainPath = gC.append('path').attr('fill','none').attr('stroke','#61afef').attr('stroke-width',2);
-    const dots = gC.selectAll('.cd').data(d3.range(N)).enter().append('circle').attr('r',2).attr('fill','#61afef');
+    const dots = gC.selectAll('.cd').data(d3.range(N)).enter().append('circle').attr('r',2.5).attr('fill','#61afef');
     // Energy axes
     const nModes = 8;
+    const fLabels = ['ω\u2081','ω\u2082','ω\u2083','ω\u2084','ω\u2085','ω\u2086','ω\u2087','ω\u2088'];
     const E0 = modeEnergies(nModes);
     const totalE = E0.reduce((a,b)=>a+b,0);
-    const xE = d3.scaleBand().domain(d3.range(nModes)).range([0,epw]).padding(0.3);
+    const xE = d3.scaleBand().domain(d3.range(nModes)).range([0,epw]).padding(0.25);
     const yE = d3.scaleLinear().domain([0,totalE*1.15]).range([eph,0]);
-    gE.append('g').attr('class','axis').attr('transform',`translate(0,${eph})`).call(d3.axisBottom(xE).tickFormat(i=>'E'+(i+1)));
+    gE.append('g').attr('class','axis').attr('transform',`translate(0,${eph})`).call(d3.axisBottom(xE).tickFormat(i=>fLabels[i]));
     gE.append('g').attr('class','axis').call(d3.axisLeft(yE).ticks(3));
-    gE.append('text').attr('x',epw/2).attr('y',-3).attr('text-anchor','middle').attr('fill','#888').attr('font-size','10px').text('Mode Energies');
+    gE.append('text').attr('x',epw/2).attr('y',-5).attr('text-anchor','middle').attr('fill','#888').attr('font-size','11px').text('Energy per Mode');
     const mColors = ['#61afef','#98c379','#e5c07b','#c678dd','#56b6c2','#d19a66','#e06c75','#be5046'];
     const eBars = gE.selectAll('.eb').data(d3.range(nModes)).enter()
         .append('rect').attr('x',i=>xE(i)).attr('width',xE.bandwidth())
