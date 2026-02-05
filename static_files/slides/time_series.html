@@ -259,25 +259,21 @@
 
     <section>
         <h2>Short-Time Fourier Transform</h2>
-        <p class="small-text">What if the frequency content changes over time? Apply Fourier in sliding windows:</p>
-        <div class="two-column" style="margin-top: 8px; gap: 20px; align-items: flex-start;">
+        <p class="small-text">What if the frequency content changes over time? Spectrogram of a chirp signal:</p>
+        <div style="display: flex; justify-content: center; margin-top: 8px;">
+            <svg id="stft-svg" width="700" height="280" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+        </div>
+        <div class="two-column" style="margin-top: 10px; gap: 25px; align-items: flex-start;">
             <div>
                 <div class="equation-box tiny-text">
                     $\displaystyle S(t, f) = \left| \int_{-\infty}^{\infty} u(\tau)\, w(\tau - t)\, e^{-2\pi i f \tau}\, d\tau \right|^2$
                 </div>
-                <div class="fragment" style="margin-top: 10px; font-size: 0.65em; color: #aaa; line-height: 1.7;">
-                    <span style="color:#61afef;">$u(\tau)$</span> — the signal being analyzed<br>
-                    <span style="color:#98c379;">$w(\tau - t)$</span> — window function centered at time $t$<br>
-                    <span style="color:#e5c07b;">$e^{-2\pi i f\tau}$</span> — Fourier kernel probing frequency $f$<br>
-                    $|\cdot|^2$ — squared magnitude gives spectral <strong>power</strong><br>
-                    $S(t,f)$ — how much power at time $t$ and frequency $f$
-                </div>
-                <p class="fragment tiny-text" style="color: #888; margin-top: 10px;">
-                    Voice, music, EEG, seismic: frequency content evolves in time.
-                </p>
             </div>
-            <div>
-                <svg id="stft-svg" width="440" height="240" style="background: rgba(0,0,0,0.2); border-radius: 8px;"></svg>
+            <div style="font-size: 0.65em; color: #aaa; line-height: 1.6;">
+                <span style="color:#61afef;">$u(\tau)$</span> — signal &emsp;
+                <span style="color:#98c379;">$w(\tau - t)$</span> — window at time $t$ &emsp;
+                <span style="color:#e5c07b;">$e^{-2\pi i f\tau}$</span> — Fourier kernel at freq $f$ &emsp;
+                $|\cdot|^2$ — power
             </div>
         </div>
         <script>
@@ -294,41 +290,35 @@
                 if (opts.transform) t.setAttribute('transform', opts.transform);
                 t.textContent = text; svg.appendChild(t);
             }
-            const ox=55, pw=370;
-            // Signal panel: y=[15..65]
-            const sy1=15, sh=50, smid=sy1+sh/2;
+            const ox=60, pw=610;
+            // Signal panel: y=[12..70]
+            const sy1=12, sh=58, smid=sy1+sh/2;
             svg.appendChild(mkEl('line',{x1:ox,y1:smid,x2:ox+pw,y2:smid,stroke:'#444','stroke-dasharray':'3,3'}));
-            mkText(ox-5, smid+4, 'u(t)', {anchor:'end', size:'9', fill:'#61afef'});
-            // Chirp signal
+            mkText(ox-5, smid+4, 'u(t)', {anchor:'end', size:'10', fill:'#61afef'});
             let pts='';
             for(let i=0;i<pw;i++){const t=i/pw*6,f=1+t*2; pts+=`${ox+i},${smid+Math.sin(2*Math.PI*f*t*0.3)*(sh/2-3)} `;}
             svg.appendChild(mkEl('polyline',{points:pts.trim(),fill:'none',stroke:'#61afef','stroke-width':'1.5'}));
-            // Spectrogram panel: y=[80..215]
-            const sy2=80, sph=130;
-            // Y-axis
+            // Spectrogram panel: y=[85..245]
+            const sy2=85, sph=160;
             svg.appendChild(mkEl('line',{x1:ox,y1:sy2,x2:ox,y2:sy2+sph,stroke:'#888','stroke-width':'1'}));
-            mkText(18, sy2+sph/2, 'Frequency (f)', {anchor:'middle', size:'10', transform:'rotate(-90,18,'+(sy2+sph/2)+')'});
-            // X-axis
+            mkText(22, sy2+sph/2, 'Frequency (f)', {anchor:'middle', size:'11', transform:'rotate(-90,22,'+(sy2+sph/2)+')'});
             svg.appendChild(mkEl('line',{x1:ox,y1:sy2+sph,x2:ox+pw,y2:sy2+sph,stroke:'#888','stroke-width':'1'}));
-            mkText(ox+pw/2, sy2+sph+18, 'Time (t)', {anchor:'middle', size:'10'});
-            // Y ticks
+            mkText(ox+pw/2, sy2+sph+16, 'Time (t)', {anchor:'middle', size:'11'});
             for(let i=0;i<=4;i++){
                 const fy=sy2+sph-i*sph/4;
-                svg.appendChild(mkEl('line',{x1:ox-3,y1:fy,x2:ox,y2:fy,stroke:'#666'}));
+                svg.appendChild(mkEl('line',{x1:ox-4,y1:fy,x2:ox,y2:fy,stroke:'#666'}));
             }
-            mkText(ox-5, sy2+sph+3, 'low', {anchor:'end', size:'8', fill:'#666'});
-            mkText(ox-5, sy2+5, 'high', {anchor:'end', size:'8', fill:'#666'});
-            // X ticks
-            for(let i=0;i<=4;i++){
-                const tx=ox+i*pw/4;
+            mkText(ox-6, sy2+sph+3, 'low', {anchor:'end', size:'9', fill:'#666'});
+            mkText(ox-6, sy2+5, 'high', {anchor:'end', size:'9', fill:'#666'});
+            for(let i=0;i<=5;i++){
+                const tx=ox+i*pw/5;
                 svg.appendChild(mkEl('line',{x1:tx,y1:sy2+sph,x2:tx,y2:sy2+sph+4,stroke:'#666'}));
             }
-            // Spectrogram blocks
-            const cols=38, rows=12;
+            const cols=50, rows=16;
             for(let c=0;c<cols;c++){
                 const t=c/cols*6, pf=1+t*2;
                 for(let r=0;r<rows;r++){
-                    const f=(r+1)*0.85, d=Math.abs(f-pf), inten=Math.max(0,1-d*0.35);
+                    const f=(r+1)*0.7, d=Math.abs(f-pf), inten=Math.max(0,1-d*0.3);
                     if(inten>0.05){
                         svg.appendChild(mkEl('rect',{x:ox+1+c*(pw/cols), y:sy2+sph-1-(r+1)*(sph/rows),
                             width:Math.max(1,pw/cols-1), height:Math.max(1,sph/rows-1),
@@ -336,9 +326,44 @@
                     }
                 }
             }
-            mkText(ox+pw+5, sy2+sph/2, '|S|²', {size:'9'});
+            mkText(ox+pw+8, sy2+sph/2, '|S|²', {size:'10'});
         })();
         </script>
+    </section>
+
+    <section>
+        <h2>How the STFT Works</h2>
+        <p class="small-text">Slide a window along the signal; at each position, compute the Fourier transform:</p>
+        <div style="margin-top: 10px;">
+            <div class="equation-box small-text">
+                $\displaystyle S(t, f) = \left| \int_{-\infty}^{\infty} u(\tau)\, w(\tau - t)\, e^{-2\pi i f \tau}\, d\tau \right|^2$
+            </div>
+        </div>
+        <div class="two-column" style="margin-top: 12px; gap: 30px;">
+            <div>
+                <p class="small-text" style="margin-bottom: 6px;"><strong>Step by step:</strong></p>
+                <ol style="font-size: 0.7em; color: #aaa; line-height: 1.8; padding-left: 18px;">
+                    <li>Pick a time $t$. Center the window <span style="color:#98c379;">$w(\tau - t)$</span> there</li>
+                    <li>Multiply: $u(\tau) \cdot w(\tau - t)$ isolates a local segment</li>
+                    <li>The kernel <span style="color:#e5c07b;">$e^{-2\pi i f\tau}$</span> probes for frequency $f$ in that segment</li>
+                    <li>$|\cdot|^2$ gives the power → one pixel of the spectrogram</li>
+                    <li>Repeat for all $t$ and $f$ → full 2D map $S(t,f)$</li>
+                </ol>
+            </div>
+            <div>
+                <p class="small-text" style="margin-bottom: 6px;"><strong>The window $w$:</strong></p>
+                <p class="tiny-text" style="color: #aaa; line-height: 1.6;">
+                    A localized bump (e.g. Gaussian, Hann) that selects a short segment of the signal near time $t$.
+                </p>
+                <p class="tiny-text" style="color: #aaa; margin-top: 6px; line-height: 1.6;">
+                    <span style="color:#e5c07b;">Wide window</span> → good frequency resolution, poor time resolution<br>
+                    <span style="color:#e5c07b;">Narrow window</span> → good time resolution, poor frequency resolution
+                </p>
+                <div class="warning-box tiny-text" style="margin-top: 8px; padding: 8px;">
+                    This is the <strong>uncertainty principle</strong>: you cannot have perfect resolution in both time and frequency simultaneously.
+                </div>
+            </div>
+        </div>
     </section>
 
     <section>
