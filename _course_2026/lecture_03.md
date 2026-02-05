@@ -16,7 +16,7 @@ material:
   label: required
   url: /static_files/lectures/03/generalization-and-features.pdf
 - name: Machine Learning with Python Sklearn - Live Coding Tutorial
-  type: video
+  type: Video
   label: recommended
   url: https://www.youtube.com/watch?v=f-EFJXCzLsQ
 - name: Machine Learning with Python Sklearn - Live Coding Tutorial
