@@ -10,6 +10,10 @@ preparation:
   type: video
   label: recommended
   url: https://www.khanacademy.org/math/statistics-probability/probability-library
+- name: Chaotic Dynamical Systems
+  type: video
+  label: recommended
+  url: https://www.youtube.com/watch?v=PDeN3iCtyNY
 material:
 - name: Complex Systems and Probability Slides
   type: slides
