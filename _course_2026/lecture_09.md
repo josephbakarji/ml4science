@@ -6,10 +6,11 @@ type: lecture
 tldr: Extending sparse equation discovery to partial differential equations. Building
   PDE feature matrices from spatiotemporal data and discovering classical PDEs.
 preparation:
-- name: 'Steve Brunton: Sparse Identification of Nonlinear Dynamics (SINDy)'
-  type: video
+- name: Rudy, Brunton, Proctor & Kutz — Data-driven discovery of PDEs (Science Advances,
+    2017)
+  type: reading
   label: recommended
-  url: https://www.youtube.com/watch?v=NxAn0-cMtMo
+  url: https://doi.org/10.1126/sciadv.1602614
 material:
 - name: Lecture Slides (Parts 1 & 2)
   type: slides
