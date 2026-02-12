@@ -1,0 +1,1644 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Differential Equations from Data</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/night.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/monokai.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --accent-blue: #61afef;
+            --accent-green: #98c379;
+            --accent-yellow: #e5c07b;
+            --accent-red: #e06c75;
+            --accent-purple: #c678dd;
+            --accent-cyan: #56b6c2;
+        }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; }
+        .reveal h1 { font-size: 2.2em; }
+        .reveal h2 { font-size: 1.6em; color: var(--accent-blue); }
+        .reveal h3 { font-size: 1.3em; }
+        .reveal blockquote {
+            font-style: italic;
+            background: rgba(255,255,255,0.05);
+            padding: 20px 30px;
+            border-left: 4px solid #42affa;
+            width: 90%;
+            margin: 0 auto;
+            border-radius: 0 8px 8px 0;
+        }
+        .reveal .slides section { text-align: left; }
+        .reveal ul { display: block; }
+        .reveal li { margin: 0.5em 0; font-size: 0.85em; }
+        .center-text { text-align: center; }
+        .highlight-box {
+            background: rgba(66, 175, 250, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(66, 175, 250, 0.3);
+        }
+        .warning-box {
+            background: rgba(224, 108, 117, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(224, 108, 117, 0.3);
+        }
+        .success-box {
+            background: rgba(152, 195, 121, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(152, 195, 121, 0.3);
+        }
+        .principle-box {
+            background: rgba(198, 120, 221, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(198, 120, 221, 0.3);
+        }
+        .equation-box {
+            background: rgba(255,255,255,0.08);
+            padding: 12px 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 10px 0;
+            font-size: 0.85em;
+        }
+        .equation-box.large { font-size: 1.1em; padding: 18px 20px; }
+        .small-text { font-size: 0.75em; }
+        .tiny-text { font-size: 0.65em; }
+        pre code { font-size: 0.65em !important; line-height: 1.4 !important; }
+        .reveal pre { width: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .two-column { display: flex; gap: 30px; align-items: flex-start; }
+        .two-column > div { flex: 1; }
+        .three-column { display: flex; gap: 20px; }
+        .three-column > div { flex: 1; }
+        .slider-container {
+            display: flex; align-items: center; gap: 10px; margin: 5px 0;
+        }
+        .slider-container label { min-width: 100px; font-size: 0.8em; }
+        .slider-container input[type="range"] { flex: 1; }
+        .slider-container span { min-width: 50px; font-size: 0.8em; color: var(--accent-blue); }
+        svg text { fill: #abb2bf; font-size: 12px; }
+        .keyword { color: var(--accent-yellow); font-weight: bold; }
+        .em-blue { color: var(--accent-blue); }
+        .em-green { color: var(--accent-green); }
+        .em-red { color: var(--accent-red); }
+        .em-purple { color: var(--accent-purple); }
+        .em-cyan { color: var(--accent-cyan); }
+        table.comparison {
+            width: 100%; border-collapse: collapse; font-size: 0.75em; margin: 10px 0;
+        }
+        table.comparison th {
+            background: rgba(66, 175, 250, 0.2); padding: 8px 12px; text-align: left;
+            border-bottom: 2px solid rgba(66, 175, 250, 0.4);
+        }
+        table.comparison td { padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        table.comparison tr:hover td { background: rgba(255,255,255,0.03); }
+        .btn {
+            display: inline-block; padding: 6px 16px; border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08);
+            color: #ccc; cursor: pointer; font-size: 0.7em; transition: all 0.2s;
+        }
+        .btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+        .btn.active { background: rgba(66, 175, 250, 0.3); border-color: var(--accent-blue); color: #fff; }
+        .coeff-bar { transition: all 0.5s ease; }
+        /* SINDy algorithm slide */
+        .code-step {
+            background: rgba(0,0,0,0.3); border-radius: 4px; padding: 3px 7px;
+            border-left: 3px solid #444; font-family: monospace; font-size: 0.42em;
+            line-height: 1.35; transition: all 0.3s; opacity: 0.4; white-space: pre;
+            color: #abb2bf;
+        }
+        .code-step.active {
+            opacity: 1; border-left-color: var(--accent-green);
+            background: rgba(152, 195, 121, 0.08);
+        }
+        .code-step.done {
+            opacity: 0.7; border-left-color: var(--accent-blue);
+        }
+        .code-step .step-label {
+            color: var(--accent-yellow); font-weight: bold; font-size: 1.1em;
+        }
+        .sindy-eq-display {
+            font-family: monospace; font-size: 0.7em; color: var(--accent-green);
+            background: rgba(0,0,0,0.3); border-radius: 4px; padding: 4px 10px;
+            margin-top: 4px; min-height: 1.5em;
+        }
+        a.ref-link { color: var(--accent-cyan); text-decoration: none; border-bottom: 1px dotted var(--accent-cyan); }
+        a.ref-link:hover { color: #fff; }
+    </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ============================================ -->
+<!-- TITLE SLIDE -->
+<!-- ============================================ -->
+<section class="center-text" data-background-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
+    <h1>Learning Differential Equations<br>from Data</h1>
+    <p class="small-text" style="margin-top: 2em; color: #888;">
+        ML for Science and Engineering &mdash; Lecture 8
+    </p>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 1: RECAP AND MOTIVATION -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Where We Are</h2>
+        <div class="two-column">
+            <div>
+                <p class="small-text">So far we have modeled time series by mapping <span class="em-blue">previous steps to next steps</span>:</p>
+                <div class="equation-box">$x_{i+1} = f(x_i, x_{i-1}, \dots)$</div>
+                <p class="small-text fragment">Autoregressive models, ARIMA, function fitting on lagged variables.</p>
+            </div>
+            <div class="fragment">
+                <p class="small-text">Today: a fundamentally different approach. Model the <span class="keyword">derivative</span>:</p>
+                <div class="equation-box" style="border: 1px solid var(--accent-green);">$\dot{x} = f(x)$</div>
+                <p class="small-text">Discover the <span class="em-green">differential equation</span> that generates the data.</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Why Model Derivatives?</h2>
+        <blockquote style="margin-bottom: 20px;">
+            This is what Newton did. This is what everyone in the sciences has done for quite some time.
+        </blockquote>
+        <div class="fragment highlight-box small-text">
+            A differential equation $\dot{x} = f(x)$ says that the <span class="em-blue">same rule $f$</span> governs the system at <em>every</em> moment in time. It generalizes in time.
+        </div>
+        <div class="fragment principle-box small-text" style="margin-top: 15px;">
+            <strong>The dual relationship:</strong> In traditional physics, $f$ is known and $x$ is unknown (forward problem). Here, $x$ is known and $f$ is unknown (inverse problem).
+        </div>
+    </section>
+
+    <section>
+        <h2>A Brief History</h2>
+        <p class="small-text">Discovering equations from data is not new:</p>
+        <ul class="small-text">
+            <li class="fragment"><strong>1980s</strong> &mdash; <a class="ref-link" href="https://doi.org/10.1103/PhysRevLett.58.2387" target="_blank">Crutchfield &amp; McNamara (1987)</a>: early equation discovery from time series</li>
+            <li class="fragment"><strong>2016</strong> &mdash; <a class="ref-link" href="https://doi.org/10.1073/pnas.1517384113" target="_blank">Brunton, Proctor &amp; Kutz, <em>PNAS</em></a>: <span class="keyword">SINDy</span> (Sparse Identification of Nonlinear Dynamics)</li>
+            <li class="fragment"><strong>2017</strong> &mdash; <a class="ref-link" href="https://doi.org/10.1126/sciadv.1602614" target="_blank">Rudy et al., <em>Science Advances</em></a>: <span class="keyword">PDE-FIND</span> extends to partial differential equations</li>
+        </ul>
+        <div class="fragment success-box small-text" style="margin-top: 15px;">
+            The key idea: cast equation discovery as <span class="em-green">sparse linear regression</span> over a library of candidate terms.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 2: CASE STUDY & HYPOTHESIS -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Case Study: Predator-Prey Dynamics</h2>
+        <p class="small-text">Hudson Bay Company data (1900-1920): hare and lynx pelts traded.</p>
+        <div id="hudson-data-viz" style="display: flex; justify-content: center; margin-top: 10px;"></div>
+        <div style="text-align: center;">
+            <span class="tiny-text" style="color: var(--accent-blue);">&#9679; Hare (prey, $x$)</span>&nbsp;&nbsp;
+            <span class="tiny-text" style="color: var(--accent-red);">&#9679; Lynx (predator, $y$)</span>
+        </div>
+        <div class="fragment principle-box small-text" style="margin-top: 10px;">
+            Clear oscillations, two coupled variables. Can we <span class="em-purple">discover the governing equations</span> $\dot{x} = f(x,y)$, $\dot{y} = g(x,y)$ from the data alone?
+        </div>
+    </section>
+
+    <section>
+        <h2>Proposing a Hypothesis Class</h2>
+        <p class="small-text">We have two variables $x$ (prey) and $y$ (predator). Assume the dynamics can be written as a <span class="keyword">linear combination of candidate terms</span>:</p>
+        <div class="equation-box" style="font-size: 0.95em; margin-top: 15px;">
+            $\dot{x} = \theta_0 + \theta_1 x + \theta_2 y + \theta_3 x^2 + \theta_4 y^2 + \theta_5 xy + \theta_6 \sin(x) + \cdots$
+        </div>
+        <div class="fragment small-text" style="margin-top: 15px;">
+            <p>We don't know which terms matter. We include many candidates and let the algorithm <span class="em-green">select the active ones</span>.</p>
+        </div>
+        <div class="fragment highlight-box small-text" style="margin-top: 10px;">
+            <strong>Sneak peek:</strong> the true equations turn out to be $\dot{x} = \alpha x - \beta xy$ and $\dot{y} = \delta xy - \gamma y$. Only a few terms survive out of many candidates!
+        </div>
+    </section>
+
+    <section>
+        <h2>The Feature Library</h2>
+        <p class="small-text">The library encodes our <span class="keyword">hypothesis class</span>: which terms could appear in the equation?</p>
+        <table class="comparison" style="margin-top: 15px;">
+            <tr><th>Library choice</th><th>What it can discover</th></tr>
+            <tr><td>$[1, x, x^2, x^3]$</td><td>Polynomial ODEs</td></tr>
+            <tr><td>$[x, \sin(x), \cos(x)]$</td><td>Trigonometric dynamics (e.g. pendulum)</td></tr>
+            <tr><td>$[x, y, xy, x^2, y^2]$</td><td>Coupled 2D systems (e.g. Lotka-Volterra)</td></tr>
+            <tr><td>$[u, u_x, u_{xx}, u \cdot u_x]$</td><td>PDEs (diffusion, Burgers, etc.)</td></tr>
+        </table>
+        <div class="fragment warning-box small-text" style="margin-top: 10px;">
+            More features = more expressive, but harder to identify the right terms. This is where <span class="em-red">sparsity</span> comes in.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 3: COMPUTING DERIVATIVES FROM DATA -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Approximating $\dot{x}$ from Data</h2>
+        <p class="small-text">We need $\dot{x}$, but all we have are discrete samples $x(t_1), x(t_2), \dots, x(t_n)$.</p>
+        <div class="two-column small-text" style="margin-top: 15px;">
+            <div>
+                <p><span class="em-blue">Forward difference:</span></p>
+                <div class="equation-box">$\dot{x}(t_i) \approx \frac{x(t_{i+1}) - x(t_i)}{\Delta t}$</div>
+                <p class="fragment"><span class="em-green">Central difference:</span></p>
+                <div class="equation-box fragment">$\dot{x}(t_i) \approx \frac{x(t_{i+1}) - x(t_{i-1})}{2\Delta t}$</div>
+            </div>
+            <div id="deriv-viz" style="display: flex; justify-content: center;"></div>
+        </div>
+        <div style="max-width: 500px; margin: 5px auto 0 auto;">
+            <div class="slider-container">
+                <label>Noise:</label>
+                <input type="range" id="noise-slider" min="0" max="50" value="5" step="1">
+                <span id="noise-val">0.05</span>
+            </div>
+            <div style="text-align: center;">
+                <span class="tiny-text" style="color: var(--accent-cyan);">&#9644; True</span>&nbsp;
+                <span class="tiny-text" style="color: var(--accent-red);">&#9644; Forward</span>&nbsp;
+                <span class="tiny-text" style="color: var(--accent-green);">&#9644; Central</span>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Differentiation Methods</h2>
+        <table class="comparison">
+            <tr><th>Method</th><th>Accuracy</th><th>Noise sensitivity</th><th>Notes</th></tr>
+            <tr><td>Forward difference</td><td>$O(\Delta t)$</td><td class="em-red">High</td><td>Simplest</td></tr>
+            <tr><td>Central difference</td><td>$O(\Delta t^2)$</td><td class="em-red">High</td><td>Better accuracy</td></tr>
+            <tr><td>Savitzky-Golay</td><td>Depends on window</td><td class="em-green">Low</td><td>Smoothing + differentiation</td></tr>
+            <tr><td>Fourier / spectral</td><td>Spectral</td><td class="em-yellow">Medium</td><td>Global, periodic signals</td></tr>
+            <tr><td>Total variation</td><td>Regularized</td><td class="em-green">Low</td><td>For very noisy data</td></tr>
+        </table>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 4: BUILDING THE LINEAR SYSTEM -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>From Data Points to Equations</h2>
+        <p class="small-text">Focus on $x$ with a quadratic hypothesis: $\dot{x}(t_i) = \theta_0 + \theta_1 \, x(t_i) + \theta_2 \, x(t_i)^2$</p>
+        <p class="tiny-text" style="color: #888; margin: 4px 0;">Each data point gives one equation with the same unknowns $\theta_0, \theta_1, \theta_2$. Click to add:</p>
+        <div id="system-builder-viz" style="display: flex; justify-content: center;"></div>
+        <div style="text-align: center; margin-top: 4px;">
+            <span class="btn" onclick="systemBuilderStep()">Add Point</span>
+            <span class="btn" onclick="systemBuilderReset()">Reset</span>
+            <span class="tiny-text" id="system-count" style="margin-left: 10px; color: var(--accent-blue);"></span>
+        </div>
+    </section>
+
+    <section>
+        <h2>The System in Matrix Form</h2>
+        <p class="small-text">Stacking all $n$ equations from the data points:</p>
+        <div class="equation-box" style="font-size: 0.82em; padding: 12px 16px;">
+            $\underbrace{\begin{bmatrix} \dot{x}(t_1) \\ \dot{x}(t_2) \\ \dot{x}(t_3) \\ \vdots \\ \dot{x}(t_n) \end{bmatrix}}_{\dot{\mathbf{X}}}
+            =
+            \underbrace{\begin{bmatrix} 1 & x(t_1) & x(t_1)^2 \\ 1 & x(t_2) & x(t_2)^2 \\ 1 & x(t_3) & x(t_3)^2 \\ \vdots & \vdots & \vdots \\ 1 & x(t_n) & x(t_n)^2 \end{bmatrix}}_{\boldsymbol{\Phi}}
+            \underbrace{\begin{bmatrix} \theta_0 \\ \theta_1 \\ \theta_2 \end{bmatrix}}_{\boldsymbol{\theta}}$
+        </div>
+        <div class="fragment principle-box small-text" style="margin-top: 12px;">
+            $n$ equations, $3$ unknowns. When $n \gg 3$: <span class="em-purple">overdetermined</span>. This is just linear regression: $\dot{\mathbf{X}} = \boldsymbol{\Phi}\,\boldsymbol{\theta}$.
+        </div>
+    </section>
+
+    <section>
+        <h2>The General Feature Matrix $\boldsymbol{\Phi}\big(\mathbf{x}(t)\big)$</h2>
+        <p class="small-text">For an arbitrary library $\phi_0, \phi_1, \dots, \phi_m$:</p>
+        <div class="equation-box large">
+            $\underbrace{\begin{bmatrix} \dot{x}(t_1) \\ \dot{x}(t_2) \\ \vdots \\ \dot{x}(t_n) \end{bmatrix}}_{\dot{\mathbf{X}}}
+            =
+            \underbrace{\begin{bmatrix} \phi_0(x_1) & \phi_1(x_1) & \cdots & \phi_m(x_1) \\ \phi_0(x_2) & \phi_1(x_2) & \cdots & \phi_m(x_2) \\ \vdots & \vdots & \ddots & \vdots \\ \phi_0(x_n) & \phi_1(x_n) & \cdots & \phi_m(x_n) \end{bmatrix}}_{\boldsymbol{\Phi}\big(\mathbf{x}(t)\big)}
+            \underbrace{\begin{bmatrix} \theta_0 \\ \theta_1 \\ \vdots \\ \theta_m \end{bmatrix}}_{\boldsymbol{\theta}}$
+        </div>
+        <p class="small-text fragment" style="margin-top: 10px;">
+            Compact form: $\dot{\mathbf{X}} = \boldsymbol{\Phi}\big(\mathbf{x}(t)\big) \, \boldsymbol{\theta}$. Each $\phi_j$ could be $x$, $x^2$, $\sin(x)$, $xy$, etc.
+        </p>
+    </section>
+
+    <section>
+        <h2>The Least Squares Solution</h2>
+        <p class="small-text">Minimize the squared error between predicted and observed derivatives:</p>
+        <div class="equation-box large">
+            $\boldsymbol{\theta}^* = \arg\min_{\boldsymbol{\theta}} \left\| \boldsymbol{\Phi} \, \boldsymbol{\theta} - \dot{\mathbf{X}} \right\|_2^2$
+        </div>
+        <div class="fragment small-text" style="margin-top: 15px;">
+            <p>Closed-form solution via the <span class="em-blue">normal equations</span>:</p>
+            <div class="equation-box">
+                $\boldsymbol{\theta}^* = \left(\boldsymbol{\Phi}^\top \boldsymbol{\Phi}\right)^{-1} \boldsymbol{\Phi}^\top \dot{\mathbf{X}}$
+            </div>
+        </div>
+        <div class="fragment warning-box small-text" style="margin-top: 10px;">
+            This gives the best fit using <em>all</em> features. But many coefficients will be small and spurious. We need <span class="em-red">sparsification</span>.
+        </div>
+    </section>
+
+    <section>
+        <h2>Generalizing to Vector Systems</h2>
+        <p class="small-text">When $\mathbf{x} = (x_1, x_2, \dots, x_d)$ is a vector, each component gets its own equation but shares the <span class="em-blue">same library</span>:</p>
+        <div class="equation-box large">
+            $\dot{x}_k = \boldsymbol{\theta}_k^\top \boldsymbol{\phi}(\mathbf{x}), \quad k = 1, \dots, d$
+        </div>
+        <div class="fragment small-text" style="margin-top: 15px;">
+            <p>Compact matrix form:</p>
+            <div class="equation-box">
+                $\underbrace{\dot{\mathbf{X}}}_{\mathbb{R}^{n \times d}}
+                = \underbrace{\boldsymbol{\Phi}(\mathbf{X})}_{\mathbb{R}^{n \times p}} \;
+                \underbrace{\boldsymbol{\Theta}}_{\mathbb{R}^{p \times d}}$
+            </div>
+            <p>Where $n$ = data points, $d$ = state dimension, $p$ = library size. Sparsify each column of $\boldsymbol{\Theta}$ independently.</p>
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 5: SPARSIFICATION -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Approaches to Sparsity</h2>
+        <div class="two-column small-text">
+            <div>
+                <h3 style="color: var(--accent-cyan);">LASSO ($\ell_1$ regularization)</h3>
+                <div class="equation-box">$\min_\theta \|\Phi\theta - \dot{X}\|_2^2 + \lambda \|\theta\|_1$</div>
+                <p class="fragment">The $\ell_1$ penalty pushes small coefficients to exactly zero. We saw this with regularization.</p>
+            </div>
+            <div class="fragment">
+                <h3 style="color: var(--accent-yellow);">Sequential Thresholding (STLS)</h3>
+                <div class="equation-box">Repeat: solve, then set $|\theta_j| &lt; \lambda$ to zero</div>
+                <p>The approach used in the original SINDy paper. Simple, effective, interpretable.</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>SINDy in Python</h2>
+        <pre style="max-height: 580px !important;"><code class="language-python" data-trim data-noescape style="font-size: 0.75em !important; line-height: 1.4 !important; max-height: none !important;">
+import numpy as np
+# X: (n, 2) state measurements, dt: time step, threshold: sparsity knob
+dXdt = (X[2:] - X[:-2]) / (2 * dt)        # derivatives (central diff)
+
+# Feature library: [1, x, y, x², y², xy]
+x, y = X[1:-1, 0], X[1:-1, 1]
+Phi = np.column_stack([np.ones_like(x), x, y, x**2, y**2, x*y])
+
+Theta = np.linalg.lstsq(Phi, dXdt, rcond=None)[0]   # least squares
+
+# Sequential thresholding
+for _ in range(10):
+    small = np.abs(Theta) &lt; threshold
+    Theta[small] = 0
+    for j in range(2):                     # one column per variable
+        active = ~small[:, j]
+        if active.any():
+            Theta[active, j] = np.linalg.lstsq(
+                Phi[:, active], dXdt[:, j], rcond=None)[0]
+        </code></pre>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 6: SINDY INTERACTIVE -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>SINDy: Step by Step</h2>
+        <div style="display: flex; gap: 12px; height: 470px;">
+            <!-- Left: controls + plots -->
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                <div style="display: flex; flex-direction: column; gap: 2px;">
+                    <div style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
+                        <span class="btn" style="font-size:0.55em;padding:2px 7px;" onclick="sindyNextStep()">Step</span>
+                        <span class="btn" style="font-size:0.55em;padding:2px 7px;" onclick="sindyRunAll()">Run All</span>
+                        <span class="btn" style="font-size:0.55em;padding:2px 7px;" onclick="sindyFullReset()">Reset</span>
+                        <label class="tiny-text">$\lambda$:</label>
+                        <input type="range" id="sindy-thresh-slider" min="0" max="80" value="30" step="1" style="width:70px;" oninput="document.getElementById('sindy-thresh-val').textContent=(this.value/100).toFixed(2)">
+                        <span id="sindy-thresh-val" class="tiny-text" style="color:var(--accent-yellow);">0.30</span>
+                        <span id="sindy-status" class="tiny-text" style="color:var(--accent-blue);"></span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <label class="tiny-text">noise:</label>
+                        <input type="range" id="sindy-noise-slider" min="0" max="30" value="8" step="1" style="width:60px;" oninput="sindySetNoise(this.value)">
+                        <span id="sindy-noise-val" class="tiny-text" style="color:var(--accent-cyan);">0.08</span>
+                        <span class="btn" id="sindy-btn-syn" style="font-size:0.55em;padding:2px 7px;" onclick="sindySetData('synthetic')">Synthetic</span>
+                        <span class="btn" id="sindy-btn-real" style="font-size:0.55em;padding:2px 7px;" onclick="sindySetData('real')">Real Data</span>
+                    </div>
+                </div>
+                <div id="sindy-ts-plot" style="flex: 1; min-height: 0;"></div>
+                <div id="sindy-coeff-plot" style="flex: 1; min-height: 0;"></div>
+            </div>
+            <!-- Right: code steps + equations -->
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px; justify-content: center;">
+                <div class="code-step" id="cs1"><span class="step-label">Step 1:</span> Build feature library
+<span style="color:#e06c75">Phi</span> = [<span style="color:#98c379">1</span>, x, y, x<sup>2</sup>, y<sup>2</sup>, xy]
+<span style="color:#888"># n data points × 6 features</span></div>
+                <div class="code-step" id="cs2"><span class="step-label">Step 2:</span> Solve least squares
+<span style="color:#e06c75">theta</span> = lstsq(<span style="color:#e06c75">Phi</span>, X_dot)
+<span style="color:#888"># best fit using ALL features</span></div>
+                <div class="code-step" id="cs3"><span class="step-label">Step 3:</span> Threshold small coefficients
+<span style="color:#e06c75">theta</span>[|<span style="color:#e06c75">theta</span>| &lt; <span style="color:#d19a66">λ</span>] = 0
+<span style="color:#888"># enforce sparsity</span></div>
+                <div class="code-step" id="cs4"><span class="step-label">Step 4:</span> Re-solve for active terms
+active = |<span style="color:#e06c75">theta</span>| &gt; 0
+<span style="color:#e06c75">theta</span>[active] = lstsq(<span style="color:#e06c75">Phi</span>[:,active], X_dot)
+<span style="color:#888"># if changed, goto Step 2</span></div>
+                <div id="sindy-eq-x" class="sindy-eq-display" style="margin-top: 8px;"></div>
+                <div id="sindy-eq-y" class="sindy-eq-display" style="margin-top: 6px;"></div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Finding the Right Solution</h2>
+        <p class="small-text">SINDy converges, but is the answer correct? Several factors make this harder than it looks:</p>
+        <div class="two-column" style="margin-top: 10px;">
+            <div>
+                <div class="warning-box small-text fragment">
+                    <strong>1. Noise corrupts derivatives</strong><br>
+                    Small errors in $x(t)$ become large errors in $\dot{x}$. Noisy derivatives bias the least-squares solution and can activate spurious terms.
+                </div>
+                <div class="warning-box small-text fragment" style="margin-top: 8px;">
+                    <strong>2. $\lambda$ is a hyperparameter</strong><br>
+                    Too large $\rightarrow$ everything is zeroed out (trivial $\dot{x}=0$).<br>
+                    Too small $\rightarrow$ spurious terms survive (overfitting).
+                </div>
+            </div>
+            <div>
+                <div class="highlight-box small-text fragment">
+                    <strong>How do we measure "good"?</strong><br>
+                    Training error (MSE on data used to fit) always decreases with more terms. We need a metric that captures <span class="em-blue">generalization</span>.
+                </div>
+                <div class="principle-box small-text fragment" style="margin-top: 8px;">
+                    <strong>Train / test split</strong><br>
+                    Hold out the last portion of the time series. Fit on training data, evaluate on held-out test data. The best $\lambda$ minimizes <span class="em-purple">test error</span>.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Hyperparameter Tuning: $\lambda$ vs MSE</h2>
+        <div style="display: flex; gap: 12px; height: 410px;">
+            <!-- Left: controls + TS plot -->
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 3px;">
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <label class="tiny-text">$\lambda$:</label>
+                    <input type="range" id="hp-lambda-slider" min="0" max="100" value="30" step="1" style="width:100px;" oninput="hpSetLambda(this.value)">
+                    <span id="hp-lambda-val" class="tiny-text" style="color:var(--accent-yellow);">0.30</span>
+                    <span class="btn" style="font-size:0.55em;padding:2px 7px;" onclick="hpRun()">Run SINDy</span>
+                    <span class="btn" style="font-size:0.55em;padding:2px 7px;" onclick="hpClear()">Clear</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <label class="tiny-text">noise:</label>
+                    <input type="range" id="hp-noise-slider" min="0" max="30" value="8" step="1" style="width:80px;" oninput="hpSetNoise(this.value)">
+                    <span id="hp-noise-val" class="tiny-text" style="color:var(--accent-cyan);">0.08</span>
+                </div>
+                <div id="hp-ts-plot" style="flex: 1; min-height: 0;"></div>
+            </div>
+            <!-- Right: MSE plot -->
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                <div id="hp-mse-plot" style="flex: 1; min-height: 0;"></div>
+            </div>
+        </div>
+        <!-- Below the plots -->
+        <div style="display: flex; gap: 12px; margin-top: 4px;">
+            <div style="flex: 1;">
+                <div id="hp-eq-x" class="sindy-eq-display" style="font-size:0.55em;"></div>
+                <div id="hp-eq-y" class="sindy-eq-display" style="font-size:0.55em;"></div>
+            </div>
+            <div style="flex: 1;">
+                <div class="tiny-text" style="text-align:center; color:#888; margin-top: 4px;">
+                    Each dot = one SINDy run at that $\lambda$.<br>
+                    <span style="color:var(--accent-green);">&#9632; Train MSE</span>&nbsp;&nbsp;
+                    <span style="color:var(--accent-red);">&#9632; Test MSE</span>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- PART 2 DIVIDER -->
+<!-- ============================================ -->
+<section class="center-text" data-background-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
+    <h1>Part 2: From ODEs to PDEs</h1>
+    <p class="small-text" style="margin-top: 2em; color: #888;">
+        ML for Science and Engineering &mdash; Lecture 9
+    </p>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 7: EXTENSION TO PDEs -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>From ODEs to PDEs</h2>
+        <p class="small-text">What if our variable depends on <span class="em-blue">space and time</span>? $u(x, t)$</p>
+        <div class="equation-box large" style="margin-top: 15px;">
+            $\frac{\partial u}{\partial t} = f\!\left(u, \; \frac{\partial u}{\partial x}, \; \frac{\partial^2 u}{\partial x^2}, \; u \frac{\partial u}{\partial x}, \; \dots \right)$
+        </div>
+        <div class="fragment small-text" style="margin-top: 15px;">
+            <p>Same idea: the feature library now includes <span class="keyword">spatial derivatives</span>:</p>
+            <div class="equation-box">$\boldsymbol{\phi} = [1, \; u, \; u_x, \; u_{xx}, \; u^2, \; u \cdot u_x, \; u_{xxx}, \; \dots]$</div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Building the PDE Feature Matrix</h2>
+        <p class="small-text">At each grid point $(x_i, t_j)$, compute all candidate terms:</p>
+        <div class="equation-box">$u_t^{(i,j)} = \theta_1 \cdot u^{(i,j)} + \theta_2 \cdot u_x^{(i,j)} + \theta_3 \cdot u_{xx}^{(i,j)} + \theta_4 \cdot u^{(i,j)} u_x^{(i,j)} + \cdots$</div>
+        <div class="fragment small-text" style="margin-top: 15px;">
+            <p>Stack <em>all</em> interior grid points into one system. After sparsification:</p>
+        </div>
+        <div class="fragment success-box small-text" style="margin-top: 10px;">
+            Discover: $u_t = \alpha \, u_{xx}$ (the diffusion equation). Only $u_{xx}$ survives.
+        </div>
+    </section>
+
+    <section>
+        <h2>From Grid to System of Equations</h2>
+        <p class="small-text">Click interior points to build the system.</p>
+        <div class="equation-box tiny-text" style="padding: 5px 10px; margin-bottom: 4px;">
+            $u_t^{(i,j)} \approx \frac{u^{(i,j+1)} - u^{(i,j)}}{\Delta t}, \quad
+            u_x^{(i,j)} \approx \frac{u^{(i+1,j)} - u^{(i-1,j)}}{2\Delta x}, \quad
+            u_{xx}^{(i,j)} \approx \frac{u^{(i+1,j)} - 2u^{(i,j)} + u^{(i-1,j)}}{\Delta x^2}$
+        </div>
+        <div style="display: flex; gap: 10px; height: 380px;">
+            <div id="pde-grid-viz" style="flex: 0 0 auto;"></div>
+            <div id="pde-eq-panel" style="flex: 1; overflow-y: auto; font-family: monospace; font-size: 0.42em; line-height: 1.5; color: #ccc;">
+                <div style="color: var(--accent-yellow); margin-bottom: 3px;">System of equations:</div>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 2px;">
+            <span class="btn" style="font-size:0.55em;padding:2px 7px;" onclick="pdeReset()">Reset</span>
+            <span class="tiny-text" id="pde-eq-count" style="margin-left: 10px; color: var(--accent-blue);"></span>
+        </div>
+    </section>
+
+    <section>
+        <h2>Stacking into a Linear System</h2>
+        <p class="small-text">Each interior grid point gives one equation. Stack them all:</p>
+        <div class="equation-box" style="font-size: 0.78em; padding: 12px 16px;">
+            $\underbrace{\begin{bmatrix} u_t^{(2,1)} \\ u_t^{(3,1)} \\ u_t^{(2,2)} \\ \vdots \\ u_t^{(i,j)} \\ \vdots \end{bmatrix}}_{\dot{\mathbf{U}}}
+            =
+            \underbrace{\begin{bmatrix} u_x^{(2,1)} & u_{xx}^{(2,1)} \\ u_x^{(3,1)} & u_{xx}^{(3,1)} \\ u_x^{(2,2)} & u_{xx}^{(2,2)} \\ \vdots & \vdots \\ u_x^{(i,j)} & u_{xx}^{(i,j)} \\ \vdots & \vdots \end{bmatrix}}_{\boldsymbol{\Phi}}
+            \underbrace{\begin{bmatrix} \theta_1 \\ \theta_2 \end{bmatrix}}_{\boldsymbol{\theta}}$
+        </div>
+        <div class="fragment principle-box small-text" style="margin-top: 10px;">
+            Same structure as the ODE case: $\dot{\mathbf{U}} = \boldsymbol{\Phi}\,\boldsymbol{\theta}$. Solve with least squares, then sparsify. The surviving terms reveal the PDE.
+        </div>
+    </section>
+
+    <section>
+        <h2>PDEs You Can Discover from Data</h2>
+        <p class="small-text">With a richer library $[u, u_x, u_{xx}, u \cdot u_x, u_{xxx}, \dots]$, the same approach discovers many classical PDEs:</p>
+        <div class="small-text">
+            <table class="comparison">
+                <tr><th>Equation</th><th>Surviving features</th><th>Physics</th></tr>
+                <tr><td>Diffusion: $u_t = \alpha u_{xx}$</td><td>$u_{xx}$</td><td>Heat conduction</td></tr>
+                <tr><td>Advection: $u_t = -c \, u_x$</td><td>$u_x$</td><td>Wave transport</td></tr>
+                <tr><td>Burgers: $u_t = \nu u_{xx} - u \, u_x$</td><td>$u_{xx}$, $u \cdot u_x$</td><td>Shock formation</td></tr>
+                <tr><td>KdV: $u_t = -u \, u_x + \delta \, u_{xxx}$</td><td>$u \cdot u_x$, $u_{xxx}$</td><td>Solitons</td></tr>
+            </table>
+        </div>
+        <div class="fragment principle-box small-text" style="margin-top: 10px;">
+            The method is not limited to dynamics or nonlinear equations. It is really <strong>Sparse Identification of Differential Equations</strong> from data.
+        </div>
+        <p class="fragment tiny-text" style="margin-top: 8px; color: #888;">
+            <a class="ref-link" href="https://doi.org/10.1126/sciadv.1602614" target="_blank">Rudy, Brunton, Proctor &amp; Kutz, <em>Science Advances</em> (2017)</a> — PDE-FIND: the extension of SINDy to partial differential equations.
+        </p>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 9: PRACTICAL CONSIDERATIONS -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Practical Considerations</h2>
+        <div class="two-column small-text">
+            <div>
+                <h3 style="color: var(--accent-yellow);">Challenges</h3>
+                <ul>
+                    <li class="fragment">Noisy derivatives degrade results</li>
+                    <li class="fragment">Threshold $\lambda$ is a hyperparameter</li>
+                    <li class="fragment">Library must contain the right terms</li>
+                    <li class="fragment">Doesn't scale to very high-dimensional systems</li>
+                </ul>
+            </div>
+            <div>
+                <h3 style="color: var(--accent-green);">Strengths</h3>
+                <ul>
+                    <li class="fragment">Interpretable: output is an equation</li>
+                    <li class="fragment">Simple: linear regression + thresholding</li>
+                    <li class="fragment">Computationally cheap</li>
+                    <li class="fragment">Works with moderate data</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>SINDy in Context</h2>
+        <table class="comparison" style="margin-top: 15px;">
+            <tr><th>Approach</th><th>Hypothesis class</th><th>Interpretable?</th><th>Data needed</th></tr>
+            <tr><td>Neural network</td><td>Any continuous function</td><td class="em-red">No</td><td>Lots</td></tr>
+            <tr><td><strong>SINDy</strong></td><td>Sparse combination of known terms</td><td class="em-green">Yes</td><td>Moderate</td></tr>
+            <tr><td>Symbolic regression</td><td>Arbitrary expressions</td><td class="em-green">Yes</td><td>Moderate</td></tr>
+            <tr><td>Physics-informed NN</td><td>NN constrained by known PDE</td><td class="em-yellow">Partially</td><td>Less</td></tr>
+        </table>
+        <div class="fragment highlight-box small-text" style="margin-top: 10px;">
+            SINDy's appeal: <em>very easy to understand</em>. It's linear regression with sparsification. That's all it is.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SUMMARY -->
+<!-- ============================================ -->
+<section class="center-text" data-background-gradient="linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1a1a2e 100%)">
+    <h2 style="color: #fff;">Summary</h2>
+    <div class="three-column small-text" style="margin-top: 30px;">
+        <div class="highlight-box" style="text-align: center;">
+            <strong>1. Derivative</strong><br>Compute $\dot{x}$ from data.<br>Handle noise carefully.
+        </div>
+        <div class="success-box" style="text-align: center;">
+            <strong>2. Library</strong><br>Build $\boldsymbol{\Phi}(\mathbf{x})$ from candidate terms.<br>Encode your hypothesis.
+        </div>
+        <div class="principle-box" style="text-align: center;">
+            <strong>3. Sparsify</strong><br>Solve + threshold iteratively.<br>Discover the equation.
+        </div>
+    </div>
+    <div class="equation-box" style="margin-top: 30px; font-size: 1em;">
+        $\dot{\mathbf{X}} = \boldsymbol{\Phi}(\mathbf{X}) \, \boldsymbol{\theta} \quad \longrightarrow \quad$ discover $\boldsymbol{\theta}$ (sparse)
+    </div>
+    <p class="tiny-text" style="margin-top: 30px; color: #888;">
+        <a class="ref-link" href="https://doi.org/10.1073/pnas.1517384113" target="_blank">Brunton et al., PNAS (2016)</a> &nbsp;|&nbsp;
+        <a class="ref-link" href="https://doi.org/10.1126/sciadv.1602614" target="_blank">Rudy et al., Science Advances (2017)</a>
+    </p>
+</section>
+
+<!-- LOOKING AHEAD -->
+<section>
+    <h2>Looking Ahead</h2>
+    <ul class="small-text">
+        <li><strong>Next lecture:</strong> Symbolic regression &mdash; what if the library itself is unknown?</li>
+        <li><strong>Project idea:</strong> Find real-world time series data, apply SINDy, discover governing equations</li>
+    </ul>
+    <div class="warning-box small-text" style="margin-top: 20px;">
+        <strong>Homework:</strong> Apply SINDy to the predator-prey data. Discover the governing equations. Extend to a PDE (diffusion) using finite differences.
+    </div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/math/math.js"></script>
+<script>
+Reveal.initialize({
+    hash: true, slideNumber: true, transition: 'slide',
+    center: false, width: 1200, height: 700, margin: 0.04,
+    plugins: [RevealHighlight, RevealMath.KaTeX]
+});
+</script>
+
+<script>
+// =========================================================
+// MATRIX UTILITIES (for browser-native SINDy)
+// =========================================================
+function zeros(m, n) { return Array.from({length: m}, () => new Array(n).fill(0)); }
+function transpose(A) {
+    const m = A.length, n = A[0].length, B = zeros(n, m);
+    for (let i = 0; i < m; i++) for (let j = 0; j < n; j++) B[j][i] = A[i][j];
+    return B;
+}
+function matmul(A, B) {
+    const m = A.length, k = A[0].length, n = B[0].length, C = zeros(m, n);
+    for (let i = 0; i < m; i++) for (let j = 0; j < n; j++)
+        for (let p = 0; p < k; p++) C[i][j] += A[i][p] * B[p][j];
+    return C;
+}
+function matvec(A, x) {
+    const m = A.length, n = A[0].length, y = new Array(m).fill(0);
+    for (let i = 0; i < m; i++) for (let j = 0; j < n; j++) y[i] += A[i][j] * x[j];
+    return y;
+}
+function solve(A, b) {
+    const n = A.length;
+    const M = A.map((row, i) => [...row, b[i]]);
+    for (let col = 0; col < n; col++) {
+        let mx = col;
+        for (let r = col+1; r < n; r++) if (Math.abs(M[r][col]) > Math.abs(M[mx][col])) mx = r;
+        [M[col], M[mx]] = [M[mx], M[col]];
+        if (Math.abs(M[col][col]) < 1e-14) continue;
+        for (let r = col+1; r < n; r++) {
+            const f = M[r][col] / M[col][col];
+            for (let j = col; j <= n; j++) M[r][j] -= f * M[col][j];
+        }
+    }
+    const x = new Array(n).fill(0);
+    for (let i = n-1; i >= 0; i--) {
+        x[i] = M[i][n];
+        for (let j = i+1; j < n; j++) x[i] -= M[i][j] * x[j];
+        if (Math.abs(M[i][i]) > 1e-14) x[i] /= M[i][i]; else x[i] = 0;
+    }
+    return x;
+}
+function lstsq(Phi, b) {
+    const Pt = transpose(Phi);
+    return solve(matmul(Pt, Phi), matvec(Pt, b));
+}
+function lstsqActive(Phi, b, active) {
+    // Solve only for active columns
+    const cols = [];
+    active.forEach((a, i) => { if (a) cols.push(i); });
+    if (cols.length === 0) return new Array(Phi[0].length).fill(0);
+    const subPhi = Phi.map(row => cols.map(c => row[c]));
+    const subTheta = lstsq(subPhi, b);
+    const theta = new Array(Phi[0].length).fill(0);
+    cols.forEach((c, i) => { theta[c] = subTheta[i]; });
+    return theta;
+}
+
+// =========================================================
+// RK4 INTEGRATOR
+// =========================================================
+function rk4Integrate(f, x0, T, dt) {
+    const steps = Math.floor(T / dt);
+    const traj = [x0.slice()]; let x = x0.slice();
+    for (let i = 0; i < steps; i++) {
+        const k1 = f(x);
+        const k2 = f(x.map((v,j) => v + 0.5*dt*k1[j]));
+        const k3 = f(x.map((v,j) => v + 0.5*dt*k2[j]));
+        const k4 = f(x.map((v,j) => v + dt*k3[j]));
+        x = x.map((v,j) => v + (dt/6)*(k1[j]+2*k2[j]+2*k3[j]+k4[j]));
+        // Divergence guard
+        if (x.some(v => Math.abs(v) > 500)) { traj.push(x.slice()); break; }
+        traj.push(x.slice());
+    }
+    return traj;
+}
+
+// =========================================================
+// INTERACTIVE 1: Derivative from Noisy Data
+// =========================================================
+(function() {
+    const W = 380, H = 260;
+    const margin = {top: 15, right: 10, bottom: 25, left: 40};
+    const w = W - margin.left - margin.right;
+    const h2 = (H - margin.top - margin.bottom - 15) / 2;
+    const el = document.getElementById('deriv-viz');
+    if (!el) return;
+    const svg = d3.select('#deriv-viz').append('svg').attr('width', W).attr('height', H);
+    const gTop = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+    const gBot = svg.append('g').attr('transform', `translate(${margin.left},${margin.top + h2 + 18})`);
+    gTop.append('text').attr('x', -28).attr('y', h2/2).attr('text-anchor', 'middle')
+        .attr('transform', `rotate(-90, -28, ${h2/2})`).text('x(t)').style('font-size', '10px');
+    gBot.append('text').attr('x', -28).attr('y', h2/2).attr('text-anchor', 'middle')
+        .attr('transform', `rotate(-90, -28, ${h2/2})`).text('dx/dt').style('font-size', '10px');
+    function trueFunc(t) { return Math.sin(t) + 0.3*Math.sin(3*t); }
+    function trueDeriv(t) { return Math.cos(t) + 0.9*Math.cos(3*t); }
+    function update() {
+        const noiseLevel = +document.getElementById('noise-slider').value / 100;
+        document.getElementById('noise-val').textContent = noiseLevel.toFixed(2);
+        const nPts = 80, tMax = 2*Math.PI, dt = tMax/(nPts-1);
+        const data = [];
+        for (let i = 0; i < nPts; i++) {
+            const t = i*dt, noise = noiseLevel*(Math.random()*2-1);
+            data.push({t, x: trueFunc(t)+noise, xTrue: trueFunc(t), dxTrue: trueDeriv(t)});
+        }
+        for (let i = 0; i < nPts; i++) {
+            data[i].dxFwd = i < nPts-1 ? (data[i+1].x - data[i].x)/dt : data[i-1].dxFwd;
+            data[i].dxCen = (i > 0 && i < nPts-1) ? (data[i+1].x - data[i-1].x)/(2*dt) :
+                            (i === 0 ? data[i].dxFwd : data[i-1].dxCen);
+        }
+        const xs = d3.scaleLinear().domain([0, tMax]).range([0, w]);
+        const ysT = d3.scaleLinear().domain([-1.8, 1.8]).range([h2, 0]);
+        const dxAll = data.flatMap(d => [d.dxTrue, d.dxFwd, d.dxCen]);
+        const ext = d3.extent(dxAll), pad = (ext[1]-ext[0])*0.1||1;
+        const ysB = d3.scaleLinear().domain([ext[0]-pad, ext[1]+pad]).range([h2, 0]);
+        gTop.selectAll('.p').remove(); gBot.selectAll('.p').remove();
+        gTop.selectAll('.ax').remove(); gBot.selectAll('.ax').remove();
+        gTop.append('g').attr('class','ax').attr('transform',`translate(0,${h2})`).call(d3.axisBottom(xs).ticks(4)).selectAll('text').style('fill','#555');
+        gTop.append('g').attr('class','ax').call(d3.axisLeft(ysT).ticks(3)).selectAll('text').style('fill','#555');
+        gBot.append('g').attr('class','ax').attr('transform',`translate(0,${h2})`).call(d3.axisBottom(xs).ticks(4)).selectAll('text').style('fill','#555');
+        gBot.append('g').attr('class','ax').call(d3.axisLeft(ysB).ticks(3)).selectAll('text').style('fill','#555');
+        svg.selectAll('.ax path, .ax line').style('stroke','#444');
+        gTop.selectAll('.dot').data(data).join('circle').attr('class','p')
+            .attr('cx',d=>xs(d.t)).attr('cy',d=>ysT(d.x)).attr('r',1.8).attr('fill','var(--accent-blue)').attr('opacity',0.5);
+        const ln = (g, data, ys, acc, col, w2) => g.append('path').datum(data).attr('class','p')
+            .attr('d', d3.line().x(d=>xs(d.t)).y(d=>ys(acc(d)))).attr('fill','none').attr('stroke',col).attr('stroke-width',w2);
+        ln(gBot, data, ysB, d=>d.dxTrue, 'var(--accent-cyan)', 2);
+        ln(gBot, data, ysB, d=>d.dxFwd, 'var(--accent-red)', 1);
+        ln(gBot, data, ysB, d=>d.dxCen, 'var(--accent-green)', 1);
+    }
+    document.getElementById('noise-slider').addEventListener('input', update);
+    Reveal.on('slidechanged', e => { if (e.currentSlide.querySelector('#deriv-viz')) update(); });
+    setTimeout(update, 500);
+})();
+
+// =========================================================
+// INTERACTIVE 2: System of Equations Builder
+// =========================================================
+(function() {
+    const W = 800, H = 340;
+    const margin = {top: 10, right: 10, bottom: 25, left: 45};
+    const plotW = 380;
+    const el = document.getElementById('system-builder-viz');
+    if (!el) return;
+    const svg = d3.select('#system-builder-viz').append('svg').attr('width', W).attr('height', H);
+    const gPlot = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+    const gEq = svg.append('g').attr('transform', `translate(${plotW + 40},${margin.top + 5})`);
+    const nTotal = 12, tMax = 4, dt = tMax/(nTotal-1);
+    const allData = []; let xVal = 3.0;
+    for (let i = 0; i < nTotal; i++) {
+        const t = i*dt, dx = -0.5*xVal + 0.1*xVal*xVal;
+        allData.push({t, x: xVal, dx, idx: i}); xVal += dx*dt;
+    }
+    const pw = plotW - margin.left, ph = H - margin.top - margin.bottom;
+    const xs = d3.scaleLinear().domain([0, tMax]).range([0, pw]);
+    const ys = d3.scaleLinear().domain([-0.5, 4]).range([ph, 0]);
+    gPlot.append('g').attr('transform',`translate(0,${ph})`).call(d3.axisBottom(xs).ticks(5)).selectAll('text').style('fill','#555');
+    gPlot.append('g').call(d3.axisLeft(ys).ticks(5)).selectAll('text').style('fill','#555');
+    gPlot.selectAll('path, line').style('stroke','#444');
+    gPlot.append('text').attr('x', pw/2).attr('y', ph+22).attr('text-anchor','middle').text('t').style('font-size','10px');
+    gPlot.append('text').attr('x',-30).attr('y',ph/2).attr('text-anchor','middle')
+        .attr('transform',`rotate(-90,-30,${ph/2})`).text('x(t)').style('font-size','10px');
+    // Dimmed line + dots
+    gPlot.append('path').datum(allData).attr('d', d3.line().x(d=>xs(d.t)).y(d=>ys(d.x)))
+        .attr('fill','none').attr('stroke','var(--accent-blue)').attr('stroke-width',1).attr('opacity',0.15);
+    gPlot.selectAll('.dd').data(allData).join('circle').attr('class','dd')
+        .attr('cx',d=>xs(d.t)).attr('cy',d=>ys(d.x)).attr('r',5).attr('fill','var(--accent-blue)').attr('opacity',0.15);
+    gEq.append('text').attr('x',0).attr('y',0).text('System of equations:')
+        .style('font-size','11px').style('fill','var(--accent-yellow)');
+    // Arrowhead
+    svg.append('defs').append('marker').attr('id','ah').attr('viewBox','0 0 10 10')
+        .attr('refX',5).attr('refY',5).attr('markerWidth',6).attr('markerHeight',6)
+        .attr('orient','auto-start-reverse')
+        .append('path').attr('d','M 0 0 L 10 5 L 0 10 z').attr('fill','var(--accent-red)');
+    let step = 0;
+    window.systemBuilderStep = function() {
+        if (step >= nTotal - 1) return;
+        const d = allData[step];
+        gPlot.append('circle').attr('cx',xs(d.t)).attr('cy',ys(d.x)).attr('r',6)
+            .attr('fill','var(--accent-green)').attr('opacity',0).transition().duration(300).attr('opacity',0.9);
+        const al = 25, dn = d.dx/Math.sqrt(1+d.dx*d.dx), dd = 1/Math.sqrt(1+d.dx*d.dx);
+        gPlot.append('line').attr('x1',xs(d.t)).attr('y1',ys(d.x))
+            .attr('x2',xs(d.t)+al*dd).attr('y2',ys(d.x)-al*dn)
+            .attr('stroke','var(--accent-red)').attr('stroke-width',1.5).attr('marker-end','url(#ah)')
+            .attr('opacity',0).transition().duration(300).attr('opacity',0.7);
+        const y = 18 + step*16, xS = d.x.toFixed(1), dS = d.dx.toFixed(2);
+        gEq.append('text').attr('x',0).attr('y',y)
+            .style('font-size','10px').style('fill','#ccc').style('font-family','monospace')
+            .text(`${dS} = θ₀ + θ₁(${xS}) + θ₂(${xS})²`)
+            .attr('opacity',0).transition().duration(300).attr('opacity',1);
+        step++;
+        document.getElementById('system-count').textContent = `${step} equation${step>1?'s':''}, 3 unknowns`;
+    };
+    window.systemBuilderReset = function() {
+        step = 0;
+        gPlot.selectAll('circle:not(.dd)').remove();
+        gPlot.selectAll('line:not(.tick line)').remove();
+        gEq.selectAll('text:not(:first-child)').remove();
+        document.getElementById('system-count').textContent = '';
+    };
+})();
+
+// =========================================================
+// INTERACTIVE 3: Hudson Bay Data
+// =========================================================
+(function() {
+    const el = document.getElementById('hudson-data-viz');
+    if (!el) return;
+    const W = 600, H = 200;
+    const margin = {top: 15, right: 15, bottom: 30, left: 45};
+    const w = W-margin.left-margin.right, h = H-margin.top-margin.bottom;
+    const svg = d3.select('#hudson-data-viz').append('svg').attr('width',W).attr('height',H);
+    const g = svg.append('g').attr('transform',`translate(${margin.left},${margin.top})`);
+    const years = [1900,1901,1902,1903,1904,1905,1906,1907,1908,1909,1910,1911,1912,1913,1914,1915,1916,1917,1918,1919,1920];
+    const hare = [30,47,70,78,36,20,9,7,10,28,55,82,73,40,18,10,8,13,28,55,80];
+    const lynx = [4,7,12,25,44,36,15,5,3,4,6,12,22,38,50,32,12,5,4,5,8];
+    const xs = d3.scaleLinear().domain([1900,1920]).range([0,w]);
+    const ys = d3.scaleLinear().domain([0,90]).range([h,0]);
+    g.append('g').attr('transform',`translate(0,${h})`).call(d3.axisBottom(xs).ticks(5).tickFormat(d3.format('d')))
+        .selectAll('text').style('fill','#666');
+    g.append('g').call(d3.axisLeft(ys).ticks(5)).selectAll('text').style('fill','#666');
+    g.selectAll('.domain, .tick line').style('stroke','#444');
+    g.append('text').attr('x',w/2).attr('y',h+25).attr('text-anchor','middle').text('Year').style('font-size','10px');
+    g.append('text').attr('x',-30).attr('y',h/2).attr('text-anchor','middle')
+        .attr('transform',`rotate(-90,-30,${h/2})`).text('Population (thousands)').style('font-size','10px');
+    // Lines
+    const lineH = d3.line().x((_,i)=>xs(years[i])).y(d=>ys(d));
+    g.append('path').datum(hare).attr('d',lineH).attr('fill','none').attr('stroke','var(--accent-blue)').attr('stroke-width',2);
+    g.append('path').datum(lynx).attr('d',lineH).attr('fill','none').attr('stroke','var(--accent-red)').attr('stroke-width',2);
+    // Dots
+    years.forEach((yr,i) => {
+        g.append('circle').attr('cx',xs(yr)).attr('cy',ys(hare[i])).attr('r',3).attr('fill','var(--accent-blue)');
+        g.append('circle').attr('cx',xs(yr)).attr('cy',ys(lynx[i])).attr('r',3).attr('fill','var(--accent-red)');
+    });
+})();
+
+// =========================================================
+// INTERACTIVE 4: SINDy Algorithm (browser-native)
+// =========================================================
+(function() {
+    const el = document.getElementById('sindy-ts-plot');
+    if (!el) return;
+
+    // --- Mutable data state ---
+    let trueData=[], xArr=[], yArr=[], tArr=[];
+    let dxArr=[], dyArr=[], xMid=[], yMid=[];
+    let n=0, nd=0, curDt=0.2, curT=16, curX0=[4,2];
+    let useRealData = false, curNoise = 0.08;
+
+    // Hudson Bay data (thousands, 1900-1920)
+    const hareRaw = [30,47,70,78,36,20,9,7,10,28,55,82,73,40,18,10,8,13,28,55,80];
+    const lynxRaw = [4,7,12,25,44,36,15,5,3,4,6,12,22,38,50,32,12,5,4,5,8];
+    const realScale = 20; // divide by this to get ~0-4 range
+
+    function pseudoNoise(i, j) { return ((Math.sin(i*127.1+j*311.7)*43758.5453)%1)*2-1; }
+
+    function generateData() {
+        trueData=[]; xArr=[]; yArr=[]; tArr=[];
+        if (useRealData) {
+            curT = 20; curDt = 1;
+            for (let i = 0; i < hareRaw.length; i++) {
+                const x = hareRaw[i]/realScale, y = lynxRaw[i]/realScale;
+                trueData.push([x,y]); xArr.push(x); yArr.push(y); tArr.push(i);
+            }
+        } else {
+            const a=1.0, b=0.5, d=0.25, g=0.75, dtF=0.02;
+            curT = 16; curDt = 0.2;
+            const fine = rk4Integrate(s=>[a*s[0]-b*s[0]*s[1], d*s[0]*s[1]-g*s[1]], [4,2], curT, dtF);
+            const skip = Math.round(curDt/dtF);
+            for (let k = 0; k < fine.length; k += skip) {
+                const s = fine[k], t = k*dtF;
+                const nx = s[0] + curNoise*pseudoNoise(k,0)*s[0];
+                const ny = s[1] + curNoise*pseudoNoise(k,1)*s[1];
+                trueData.push([nx,ny]); xArr.push(nx); yArr.push(ny); tArr.push(t);
+            }
+        }
+        n = trueData.length;
+        curX0 = [xArr[0], yArr[0]];
+        dxArr=[]; dyArr=[]; xMid=[]; yMid=[];
+        for (let i = 1; i < n-1; i++) {
+            dxArr.push((xArr[i+1]-xArr[i-1])/(2*curDt));
+            dyArr.push((yArr[i+1]-yArr[i-1])/(2*curDt));
+            xMid.push(xArr[i]); yMid.push(yArr[i]);
+        }
+        nd = dxArr.length;
+    }
+
+    // Feature library: [1, x, y, x^2, y^2, xy]
+    const featureNames = ['1', 'x', 'y', 'x\u00B2', 'y\u00B2', 'xy'];
+    const nf = 6;
+    function buildPhi(xA, yA) {
+        const Phi = zeros(xA.length, nf);
+        for (let i = 0; i < xA.length; i++) {
+            const x = xA[i], y = yA[i];
+            Phi[i][0]=1; Phi[i][1]=x; Phi[i][2]=y; Phi[i][3]=x*x; Phi[i][4]=y*y; Phi[i][5]=x*y;
+        }
+        return Phi;
+    }
+
+    // --- Algorithm state ---
+    let Phi = null, thetaX = [], thetaY = [];
+    let activeX = [], activeY = [];
+    let sindyStep = 0, iteration = 0, converged = false, prevActiveX = null, prevActiveY = null;
+
+    function getThreshold() { return +document.getElementById('sindy-thresh-slider').value / 100; }
+    function randomTheta() { return Array.from({length: nf}, () => (Math.random()-0.5)*0.3); }
+
+    function initState() {
+        thetaX = randomTheta(); thetaY = randomTheta();
+        activeX = new Array(nf).fill(true); activeY = new Array(nf).fill(true);
+        Phi = null; sindyStep = 0; iteration = 0; converged = false; prevActiveX = null, prevActiveY = null;
+        setCodeHighlight(-1);
+        updateStatus('Random \u03B8 initialized');
+        updateTSPlot(); updateCoeffPlot(); updateEqDisplay();
+    }
+
+    function makeODE(tx, ty) {
+        return function(s) {
+            const phi = [1, s[0], s[1], s[0]*s[0], s[1]*s[1], s[0]*s[1]];
+            let dx = 0, dy = 0;
+            for (let j = 0; j < nf; j++) { dx += tx[j]*phi[j]; dy += ty[j]*phi[j]; }
+            return [dx, dy];
+        };
+    }
+
+    // --- Generate initial data ---
+    generateData();
+
+    // --- TS plot setup ---
+    const tsW = 520, tsH = 195;
+    const tsM = {top:12, right:10, bottom:28, left:45};
+    const tsiW = tsW-tsM.left-tsM.right, tsiH = tsH-tsM.top-tsM.bottom;
+    const tsSvg = d3.select('#sindy-ts-plot').append('svg').attr('width',tsW).attr('height',tsH);
+    const tsG = tsSvg.append('g').attr('transform',`translate(${tsM.left},${tsM.top})`);
+    const tsXS = d3.scaleLinear().domain([0, curT]).range([0, tsiW]);
+    const tsYS = d3.scaleLinear().domain([0, Math.max(...xArr,...yArr)*1.15]).range([tsiH, 0]);
+    const tsXAxis = tsG.append('g').attr('class','ts-xaxis').attr('transform',`translate(0,${tsiH})`);
+    const tsYAxis = tsG.append('g').attr('class','ts-yaxis');
+    tsXAxis.call(d3.axisBottom(tsXS).ticks(5)).selectAll('text').style('fill','#555');
+    tsYAxis.call(d3.axisLeft(tsYS).ticks(4)).selectAll('text').style('fill','#555');
+    tsG.selectAll('.domain, .tick line').style('stroke','#444');
+    tsG.append('text').attr('x',tsiW/2).attr('y',tsiH+24).attr('text-anchor','middle').text('time').style('font-size','11px');
+    tsG.append('text').attr('x',-30).attr('y',tsiH*0.35).attr('text-anchor','middle')
+        .text('x').style('font-size','11px').style('fill','var(--accent-blue)').style('font-weight','bold');
+    tsG.append('text').attr('x',-30).attr('y',tsiH*0.6).attr('text-anchor','middle')
+        .text('y').style('font-size','11px').style('fill','var(--accent-red)').style('font-weight','bold');
+    // Data elements (will be updated on data change)
+    const dataLineX = tsG.append('path').attr('fill','none').attr('stroke','var(--accent-blue)')
+        .attr('stroke-width',1).attr('opacity',0.25);
+    const dataLineY = tsG.append('path').attr('fill','none').attr('stroke','var(--accent-red)')
+        .attr('stroke-width',1).attr('opacity',0.25);
+    const dotsGrp = tsG.append('g'); // group for data dots
+    const predLineX = tsG.append('path').attr('fill','none').attr('stroke','var(--accent-blue)')
+        .attr('stroke-width',2).attr('stroke-dasharray','6,3');
+    const predLineY = tsG.append('path').attr('fill','none').attr('stroke','var(--accent-red)')
+        .attr('stroke-width',2).attr('stroke-dasharray','6,3');
+    tsG.append('text').attr('x',tsiW-5).attr('y',10).attr('text-anchor','end')
+        .text('dots = data, dashed = predicted').style('font-size','8px').style('fill','#666');
+
+    function drawDataPoints() {
+        tsXS.domain([0, curT]);
+        tsYS.domain([0, Math.max(...xArr,...yArr)*1.15]);
+        tsXAxis.call(d3.axisBottom(tsXS).ticks(5)).selectAll('text').style('fill','#555');
+        tsYAxis.call(d3.axisLeft(tsYS).ticks(4)).selectAll('text').style('fill','#555');
+        tsG.selectAll('.domain, .tick line').style('stroke','#444');
+        dataLineX.datum(trueData).attr('d', d3.line().x((_,i)=>tsXS(tArr[i])).y(d=>tsYS(d[0])));
+        dataLineY.datum(trueData).attr('d', d3.line().x((_,i)=>tsXS(tArr[i])).y(d=>tsYS(d[1])));
+        dotsGrp.selectAll('*').remove();
+        trueData.forEach((d,i) => {
+            dotsGrp.append('circle').attr('cx',tsXS(tArr[i])).attr('cy',tsYS(d[0]))
+                .attr('r',2.5).attr('fill','var(--accent-blue)').attr('opacity',0.6);
+            dotsGrp.append('circle').attr('cx',tsXS(tArr[i])).attr('cy',tsYS(d[1]))
+                .attr('r',2.5).attr('fill','var(--accent-red)').attr('opacity',0.6);
+        });
+    }
+    drawDataPoints();
+
+    // --- Coefficient bar chart ---
+    const cfW = 520, cfH = 215;
+    const cfM = {top: 10, right: 30, bottom: 28, left: 38};
+    const cfiW = cfW-cfM.left-cfM.right, cfiH = cfH-cfM.top-cfM.bottom;
+    const cfSvg = d3.select('#sindy-coeff-plot').append('svg').attr('width',cfW).attr('height',cfH);
+    const cfG = cfSvg.append('g').attr('transform',`translate(${cfM.left},${cfM.top})`);
+    const barH = cfiH / (nf * 2 + 1);
+    const cfXS = d3.scaleLinear().domain([-1.5, 1.5]).range([0, cfiW]);
+    cfG.append('g').attr('transform',`translate(0,${cfiH})`).call(d3.axisBottom(cfXS).ticks(5)).selectAll('text').style('fill','#555');
+    cfG.selectAll('.domain, .tick line').style('stroke','#444');
+    cfG.append('text').attr('x',cfiW/2).attr('y',cfiH+24).attr('text-anchor','middle')
+        .text('θ').style('font-size','12px');
+    cfG.append('line').attr('x1',cfXS(0)).attr('x2',cfXS(0)).attr('y1',0).attr('y2',cfiH).attr('stroke','#555');
+    const threshLineP = cfG.append('line').attr('y1',0).attr('y2',cfiH)
+        .attr('stroke','var(--accent-yellow)').attr('stroke-width',1).attr('stroke-dasharray','4,3');
+    const threshLineN = cfG.append('line').attr('y1',0).attr('y2',cfiH)
+        .attr('stroke','var(--accent-yellow)').attr('stroke-width',1).attr('stroke-dasharray','4,3');
+    cfG.append('text').attr('x',-5).attr('y', barH*3).attr('text-anchor','end').text('ẋ')
+        .style('font-size','10px').style('fill','var(--accent-blue)').style('font-weight','bold');
+    cfG.append('text').attr('x',-5).attr('y', barH*9.5).attr('text-anchor','end').text('ẏ')
+        .style('font-size','10px').style('fill','var(--accent-red)').style('font-weight','bold');
+    for (let i = 0; i < nf; i++) {
+        cfG.append('text').attr('x', cfiW+5).attr('y', barH*(i+0.7)).attr('text-anchor','start')
+            .text(featureNames[i]).style('font-size','9px').style('fill','#888');
+        cfG.append('text').attr('x', cfiW+5).attr('y', barH*(i+nf+1.7)).attr('text-anchor','start')
+            .text(featureNames[i]).style('font-size','9px').style('fill','#888');
+    }
+    const barsX = cfG.selectAll('.bx').data(new Array(nf).fill(0)).join('rect').attr('class','bx')
+        .attr('y', (_,i)=>barH*i+1).attr('height',barH-2).attr('x',cfXS(0)).attr('width',0)
+        .attr('fill','var(--accent-blue)').attr('opacity',0.7).attr('rx',2);
+    const barsY = cfG.selectAll('.by').data(new Array(nf).fill(0)).join('rect').attr('class','by')
+        .attr('y', (_,i)=>barH*(i+nf+1)+1).attr('height',barH-2).attr('x',cfXS(0)).attr('width',0)
+        .attr('fill','var(--accent-red)').attr('opacity',0.7).attr('rx',2);
+    cfG.append('line').attr('x1',0).attr('x2',cfiW).attr('y1',barH*nf+barH/2).attr('y2',barH*nf+barH/2)
+        .attr('stroke','#444').attr('stroke-dasharray','2,2');
+
+    // --- Update functions ---
+    function updateTSPlot() {
+        try {
+            const predDt = Math.min(curDt, 0.05);
+            const pred = rk4Integrate(makeODE(thetaX, thetaY), curX0, curT, predDt);
+            const yMax = tsYS.domain()[1];
+            predLineX.datum(pred).attr('d', d3.line().x((_,i)=>tsXS(i*predDt)).y(d=>tsYS(Math.max(0,Math.min(d[0],yMax*1.2)))));
+            predLineY.datum(pred).attr('d', d3.line().x((_,i)=>tsXS(i*predDt)).y(d=>tsYS(Math.max(0,Math.min(d[1],yMax*1.2)))));
+        } catch(e) { predLineX.attr('d',''); predLineY.attr('d',''); }
+    }
+
+    function updateCoeffPlot() {
+        const lam = getThreshold();
+        threshLineP.attr('x1',cfXS(lam)).attr('x2',cfXS(lam));
+        threshLineN.attr('x1',cfXS(-lam)).attr('x2',cfXS(-lam));
+        function updateBars(bars, theta, act) {
+            bars.data(theta).transition().duration(400)
+                .attr('x', d => d >= 0 ? cfXS(0) : cfXS(d))
+                .attr('width', d => Math.abs(cfXS(d) - cfXS(0)))
+                .attr('opacity', (d,i) => act[i] && Math.abs(d) > 0.001 ? 0.8 : 0.15);
+        }
+        updateBars(barsX, thetaX, activeX);
+        updateBars(barsY, thetaY, activeY);
+    }
+
+    function updateEqDisplay() {
+        const fmt = (t, names) => {
+            const parts = [];
+            t.forEach((v,i) => { if (Math.abs(v) > 0.01) parts.push(`${v>0&&parts.length?'+':''}${v.toFixed(2)}${names[i]==='1'?'':' '+names[i]}`); });
+            return parts.length ? parts.join(' ') : '0';
+        };
+        const fNames = ['', 'x', 'y', 'x\u00B2', 'y\u00B2', 'xy'];
+        document.getElementById('sindy-eq-x').textContent = `\u1E8B = ${fmt(thetaX, fNames)}`;
+        document.getElementById('sindy-eq-y').textContent = `\u1E8F = ${fmt(thetaY, fNames)}`;
+    }
+
+    function setCodeHighlight(step) {
+        for (let i = 1; i <= 4; i++) {
+            const el = document.getElementById('cs'+i);
+            el.classList.remove('active','done');
+            if (i === step) el.classList.add('active');
+            else if (i < step) el.classList.add('done');
+        }
+    }
+
+    function updateStatus(msg) {
+        document.getElementById('sindy-status').textContent = `Iter ${iteration} | ${msg}`;
+    }
+
+    // --- Data switching ---
+    function reloadData() {
+        generateData(); drawDataPoints(); initState();
+    }
+
+    function updateDataBtnStyles() {
+        const synBtn = document.getElementById('sindy-btn-syn');
+        const realBtn = document.getElementById('sindy-btn-real');
+        synBtn.classList.toggle('active', !useRealData);
+        realBtn.classList.toggle('active', useRealData);
+    }
+
+    window.sindySetData = function(mode) {
+        useRealData = (mode === 'real');
+        updateDataBtnStyles();
+        // Disable noise slider for real data
+        document.getElementById('sindy-noise-slider').disabled = useRealData;
+        reloadData();
+    };
+
+    window.sindySetNoise = function(val) {
+        curNoise = val / 100;
+        document.getElementById('sindy-noise-val').textContent = curNoise.toFixed(2);
+        if (!useRealData) reloadData();
+    };
+
+    // --- Step logic ---
+    window.sindyNextStep = function() {
+        if (converged) return;
+        const lam = getThreshold();
+        switch(sindyStep) {
+            case 0:
+                Phi = buildPhi(xMid, yMid);
+                sindyStep = 1; setCodeHighlight(1);
+                updateStatus('Library built (' + nd + '\u00D7' + nf + ')');
+                break;
+            case 1:
+                thetaX = activeX.every(Boolean) ? lstsq(Phi, dxArr) : lstsqActive(Phi, dxArr, activeX);
+                thetaY = activeY.every(Boolean) ? lstsq(Phi, dyArr) : lstsqActive(Phi, dyArr, activeY);
+                sindyStep = 2; setCodeHighlight(2);
+                updateTSPlot(); updateCoeffPlot(); updateEqDisplay();
+                updateStatus('Least squares solved');
+                break;
+            case 2:
+                prevActiveX = activeX.slice();
+                prevActiveY = activeY.slice();
+                for (let i = 0; i < nf; i++) {
+                    if (Math.abs(thetaX[i]) < lam) { thetaX[i] = 0; activeX[i] = false; }
+                    if (Math.abs(thetaY[i]) < lam) { thetaY[i] = 0; activeY[i] = false; }
+                }
+                sindyStep = 3; setCodeHighlight(3);
+                updateCoeffPlot(); updateEqDisplay();
+                updateStatus('Thresholded (\u03BB=' + lam.toFixed(2) + ')');
+                break;
+            case 3:
+                thetaX = lstsqActive(Phi, dxArr, activeX);
+                thetaY = lstsqActive(Phi, dyArr, activeY);
+                iteration++;
+                const newActiveX = thetaX.map(v => Math.abs(v) >= lam);
+                const newActiveY = thetaY.map(v => Math.abs(v) >= lam);
+                const xConverged = prevActiveX && prevActiveX.every((v,i) => v === activeX[i]) && newActiveX.every((v,i) => v === activeX[i]);
+                const yConverged = prevActiveY && prevActiveY.every((v,i) => v === activeY[i]) && newActiveY.every((v,i) => v === activeY[i]);
+                if (xConverged && yConverged) {
+                    converged = true; sindyStep = 4; setCodeHighlight(4);
+                    updateStatus('Converged!');
+                } else {
+                    sindyStep = 1; setCodeHighlight(4);
+                    updateStatus('Re-solved, iterating...');
+                }
+                updateTSPlot(); updateCoeffPlot(); updateEqDisplay();
+                break;
+        }
+    };
+
+    window.sindyRunAll = function() {
+        if (sindyStep === 0) sindyNextStep();
+        let safety = 0;
+        while (!converged && safety < 40) { sindyNextStep(); safety++; }
+    };
+
+    window.sindyFullReset = function() { initState(); };
+
+    // Initialize
+    updateDataBtnStyles();
+    initState();
+})();
+
+// =========================================================
+// INTERACTIVE 5: Hyperparameter Tuning (lambda vs MSE)
+// =========================================================
+(function() {
+    const el = document.getElementById('hp-ts-plot');
+    if (!el) return;
+
+    // --- Data generation (same LV system) ---
+    const a=1.0, b=0.5, d2=0.25, g2=0.75, dtF=0.02;
+    let hpNoise = 0.08, hpDt = 0.2, hpT = 16;
+    let allX=[], allY=[], allT=[], nTotal=0, nTrain=0, nTest=20;
+
+    function pseudoNoise(i,j) { return ((Math.sin(i*127.1+j*311.7)*43758.5453)%1)*2-1; }
+
+    function hpGenerateData() {
+        allX=[]; allY=[]; allT=[];
+        const fine = rk4Integrate(s=>[a*s[0]-b*s[0]*s[1], d2*s[0]*s[1]-g2*s[1]], [4,2], hpT, dtF);
+        const skip = Math.round(hpDt/dtF);
+        for (let k = 0; k < fine.length; k += skip) {
+            const s = fine[k], t = k*dtF;
+            allX.push(s[0] + hpNoise*pseudoNoise(k,0)*s[0]);
+            allY.push(s[1] + hpNoise*pseudoNoise(k,1)*s[1]);
+            allT.push(t);
+        }
+        nTotal = allX.length;
+        nTrain = nTotal - nTest;
+    }
+    hpGenerateData();
+
+    const nf = 6;
+    const featureNames = ['1','x','y','x\u00B2','y\u00B2','xy'];
+    function buildPhi2(xA, yA) {
+        const P = zeros(xA.length, nf);
+        for (let i = 0; i < xA.length; i++) {
+            const x=xA[i], y=yA[i];
+            P[i][0]=1; P[i][1]=x; P[i][2]=y; P[i][3]=x*x; P[i][4]=y*y; P[i][5]=x*y;
+        }
+        return P;
+    }
+
+    function runSINDyFull(lam, xA, yA, dxA, dyA) {
+        const Phi = buildPhi2(xA, yA);
+        let thetaX = lstsq(Phi, dxA), thetaY = lstsq(Phi, dyA);
+        let actX = new Array(nf).fill(true), actY = new Array(nf).fill(true);
+        for (let iter = 0; iter < 20; iter++) {
+            const prevActX = actX.slice(), prevActY = actY.slice();
+            for (let i = 0; i < nf; i++) {
+                if (Math.abs(thetaX[i]) < lam) { thetaX[i]=0; actX[i]=false; }
+                if (Math.abs(thetaY[i]) < lam) { thetaY[i]=0; actY[i]=false; }
+            }
+            thetaX = lstsqActive(Phi, dxA, actX);
+            thetaY = lstsqActive(Phi, dyA, actY);
+            if (prevActX.every((v,i) => v===actX[i]) && prevActY.every((v,i) => v===actY[i])) break;
+        }
+        return {thetaX, thetaY};
+    }
+
+    function computeMSE(thetaX, thetaY, xA, yA, dxA, dyA) {
+        const Phi = buildPhi2(xA, yA);
+        let mse = 0;
+        for (let i = 0; i < xA.length; i++) {
+            let predX=0, predY=0;
+            for (let j=0; j<nf; j++) { predX += thetaX[j]*Phi[i][j]; predY += thetaY[j]*Phi[i][j]; }
+            mse += (predX-dxA[i])**2 + (predY-dyA[i])**2;
+        }
+        return mse / (2*xA.length);
+    }
+
+    // Derivative arrays
+    function getDerivs(xA, yA, dt) {
+        const dx=[], dy=[], xM=[], yM=[];
+        for (let i=1; i<xA.length-1; i++) {
+            dx.push((xA[i+1]-xA[i-1])/(2*dt));
+            dy.push((yA[i+1]-yA[i-1])/(2*dt));
+            xM.push(xA[i]); yM.push(yA[i]);
+        }
+        return {dx,dy,xM,yM};
+    }
+
+    // --- Stored results ---
+    let results = []; // {lam, trainMSE, testMSE, thetaX, thetaY}
+    let curThetaX = new Array(nf).fill(0), curThetaY = new Array(nf).fill(0);
+
+    // --- TS plot (left) ---
+    const tsW=520, tsH=340;
+    const tsM={top:12, right:10, bottom:28, left:45};
+    const tsiW=tsW-tsM.left-tsM.right, tsiH=tsH-tsM.top-tsM.bottom;
+    const tsSvg = d3.select('#hp-ts-plot').append('svg').attr('width',tsW).attr('height',tsH);
+    const tsG = tsSvg.append('g').attr('transform',`translate(${tsM.left},${tsM.top})`);
+    const tsXS = d3.scaleLinear().domain([0, hpT]).range([0, tsiW]);
+    const tsYS = d3.scaleLinear().domain([0, Math.max(...allX,...allY)*1.15]).range([tsiH, 0]);
+    const tsXAxis = tsG.append('g').attr('transform',`translate(0,${tsiH})`);
+    const tsYAxis = tsG.append('g');
+    tsXAxis.call(d3.axisBottom(tsXS).ticks(5)).selectAll('text').style('fill','#555');
+    tsYAxis.call(d3.axisLeft(tsYS).ticks(4)).selectAll('text').style('fill','#555');
+    tsG.selectAll('.domain, .tick line').style('stroke','#444');
+    tsG.append('text').attr('x',tsiW/2).attr('y',tsiH+24).attr('text-anchor','middle').text('time').style('font-size','11px');
+    tsG.append('text').attr('x',-30).attr('y',tsiH*0.35).attr('text-anchor','middle')
+        .text('x').style('font-size','11px').style('fill','var(--accent-blue)').style('font-weight','bold');
+    tsG.append('text').attr('x',-30).attr('y',tsiH*0.6).attr('text-anchor','middle')
+        .text('y').style('font-size','11px').style('fill','var(--accent-red)').style('font-weight','bold');
+    // Train/test shading
+    const testStartT = allT[nTrain];
+    tsG.append('rect').attr('class','test-shade')
+        .attr('x', tsXS(testStartT)).attr('y', 0)
+        .attr('width', tsiW - tsXS(testStartT)).attr('height', tsiH)
+        .attr('fill','var(--accent-red)').attr('opacity',0.06);
+    tsG.append('text').attr('x', tsXS(testStartT)+4).attr('y', 14)
+        .text('test').style('font-size','9px').style('fill','var(--accent-red)').attr('opacity',0.7);
+    tsG.append('text').attr('x', tsXS(testStartT)-4).attr('y', 14).attr('text-anchor','end')
+        .text('train').style('font-size','9px').style('fill','var(--accent-green)').attr('opacity',0.7);
+    // Data dots
+    const dotsGrp = tsG.append('g');
+    const predLineX = tsG.append('path').attr('fill','none').attr('stroke','var(--accent-blue)')
+        .attr('stroke-width',2).attr('stroke-dasharray','6,3');
+    const predLineY = tsG.append('path').attr('fill','none').attr('stroke','var(--accent-red)')
+        .attr('stroke-width',2).attr('stroke-dasharray','6,3');
+
+    function drawTSData() {
+        tsXS.domain([0, hpT]);
+        tsYS.domain([0, Math.max(...allX,...allY)*1.15]);
+        tsXAxis.call(d3.axisBottom(tsXS).ticks(5)).selectAll('text').style('fill','#555');
+        tsYAxis.call(d3.axisLeft(tsYS).ticks(4)).selectAll('text').style('fill','#555');
+        tsG.selectAll('.domain, .tick line').style('stroke','#444');
+        // Update test shading
+        const tst = allT[nTrain];
+        tsG.select('.test-shade').attr('x', tsXS(tst)).attr('width', tsiW - tsXS(tst));
+        dotsGrp.selectAll('*').remove();
+        for (let i=0; i<nTotal; i++) {
+            const isTest = i >= nTrain;
+            dotsGrp.append('circle').attr('cx',tsXS(allT[i])).attr('cy',tsYS(allX[i]))
+                .attr('r', isTest?3.5:2.5).attr('fill','var(--accent-blue)')
+                .attr('opacity', isTest?0.9:0.5)
+                .attr('stroke', isTest?'#fff':'none').attr('stroke-width', isTest?1:0);
+            dotsGrp.append('circle').attr('cx',tsXS(allT[i])).attr('cy',tsYS(allY[i]))
+                .attr('r', isTest?3.5:2.5).attr('fill','var(--accent-red)')
+                .attr('opacity', isTest?0.9:0.5)
+                .attr('stroke', isTest?'#fff':'none').attr('stroke-width', isTest?1:0);
+        }
+    }
+    drawTSData();
+
+    function updateTSPred() {
+        try {
+            const ode = function(s) {
+                const phi = [1, s[0], s[1], s[0]*s[0], s[1]*s[1], s[0]*s[1]];
+                let dx=0, dy=0;
+                for (let j=0; j<nf; j++) { dx+=curThetaX[j]*phi[j]; dy+=curThetaY[j]*phi[j]; }
+                return [dx, dy];
+            };
+            const predDt = Math.min(hpDt, 0.05);
+            const pred = rk4Integrate(ode, [allX[0],allY[0]], hpT, predDt);
+            const yMax = tsYS.domain()[1];
+            predLineX.datum(pred).attr('d', d3.line().x((_,i)=>tsXS(i*predDt)).y(d=>tsYS(Math.max(0,Math.min(d[0],yMax*1.2)))));
+            predLineY.datum(pred).attr('d', d3.line().x((_,i)=>tsXS(i*predDt)).y(d=>tsYS(Math.max(0,Math.min(d[1],yMax*1.2)))));
+        } catch(e) { predLineX.attr('d',''); predLineY.attr('d',''); }
+    }
+
+    // --- MSE plot (right) ---
+    const mW=520, mH=420;
+    const mM={top:15, right:15, bottom:35, left:55};
+    const miW=mW-mM.left-mM.right, miH=mH-mM.top-mM.bottom;
+    const mSvg = d3.select('#hp-mse-plot').append('svg').attr('width',mW).attr('height',mH);
+    const mG = mSvg.append('g').attr('transform',`translate(${mM.left},${mM.top})`);
+    const mXS = d3.scaleLinear().domain([0, 1.0]).range([0, miW]);
+    const mYS = d3.scaleLinear().domain([0, 5]).range([miH, 0]);
+    const mXAxis = mG.append('g').attr('transform',`translate(0,${miH})`);
+    const mYAxis = mG.append('g');
+    mXAxis.call(d3.axisBottom(mXS).ticks(5)).selectAll('text').style('fill','#555');
+    mYAxis.call(d3.axisLeft(mYS).ticks(5)).selectAll('text').style('fill','#555');
+    mG.selectAll('.domain, .tick line').style('stroke','#444');
+    mG.append('text').attr('x',miW/2).attr('y',miH+30).attr('text-anchor','middle').text('λ').style('font-size','12px');
+    mG.append('text').attr('x',-40).attr('y',miH/2).attr('text-anchor','middle')
+        .attr('transform',`rotate(-90,-40,${miH/2})`).text('MSE').style('font-size','11px');
+    // Lambda indicator line
+    const lamLine = mG.append('line').attr('y1',0).attr('y2',miH)
+        .attr('stroke','var(--accent-yellow)').attr('stroke-width',1.5).attr('stroke-dasharray','4,3').attr('opacity',0.6);
+    // Dot groups
+    const trainDotsGrp = mG.append('g');
+    const testDotsGrp = mG.append('g');
+    const trainLineGrp = mG.append('path').attr('fill','none').attr('stroke','var(--accent-green)')
+        .attr('stroke-width',1.5).attr('opacity',0.5);
+    const testLineGrp = mG.append('path').attr('fill','none').attr('stroke','var(--accent-red)')
+        .attr('stroke-width',1.5).attr('opacity',0.5);
+
+    function updateMSEPlot() {
+        if (results.length === 0) return;
+        // Auto-scale
+        const allMSE = results.flatMap(r => [r.trainMSE, r.testMSE]);
+        const mseMax = Math.max(1, d3.max(allMSE)*1.15);
+        const lamMax = Math.max(1.0, d3.max(results, r=>r.lam)*1.1);
+        mXS.domain([0, lamMax]);
+        mYS.domain([0, mseMax]);
+        mXAxis.call(d3.axisBottom(mXS).ticks(5)).selectAll('text').style('fill','#555');
+        mYAxis.call(d3.axisLeft(mYS).ticks(5)).selectAll('text').style('fill','#555');
+        mG.selectAll('.domain, .tick line').style('stroke','#444');
+        // Sort by lambda for lines
+        const sorted = [...results].sort((a,b) => a.lam - b.lam);
+        // Train dots + line
+        trainDotsGrp.selectAll('circle').data(results).join('circle')
+            .attr('cx', d=>mXS(d.lam)).attr('cy', d=>mYS(d.trainMSE))
+            .attr('r', 4).attr('fill','var(--accent-green)').attr('opacity',0.8);
+        testDotsGrp.selectAll('circle').data(results).join('circle')
+            .attr('cx', d=>mXS(d.lam)).attr('cy', d=>mYS(d.testMSE))
+            .attr('r', 4).attr('fill','var(--accent-red)').attr('opacity',0.8);
+        trainLineGrp.datum(sorted).attr('d', d3.line().x(d=>mXS(d.lam)).y(d=>mYS(d.trainMSE)));
+        testLineGrp.datum(sorted).attr('d', d3.line().x(d=>mXS(d.lam)).y(d=>mYS(d.testMSE)));
+    }
+
+    function updateEqs() {
+        const fmt = (t) => {
+            const names = ['', 'x', 'y', 'x\u00B2', 'y\u00B2', 'xy'];
+            const parts = [];
+            t.forEach((v,i) => { if (Math.abs(v)>0.01) parts.push(`${v>0&&parts.length?'+':''}${v.toFixed(2)}${names[i]==='1'?'':' '+names[i]}`); });
+            return parts.length ? parts.join(' ') : '0';
+        };
+        document.getElementById('hp-eq-x').textContent = `\u1E8B = ${fmt(curThetaX)}`;
+        document.getElementById('hp-eq-y').textContent = `\u1E8F = ${fmt(curThetaY)}`;
+    }
+
+    // --- Controls ---
+    let curLam = 0.30;
+
+    window.hpSetLambda = function(val) {
+        curLam = val / 100;
+        document.getElementById('hp-lambda-val').textContent = curLam.toFixed(2);
+        lamLine.attr('x1', mXS(curLam)).attr('x2', mXS(curLam));
+    };
+
+    window.hpRun = function() {
+        // Train on first nTrain points
+        const trainX = allX.slice(0, nTrain), trainY = allY.slice(0, nTrain);
+        const testX = allX.slice(nTrain-1), testY = allY.slice(nTrain-1); // overlap by 1 for central diff
+        const trD = getDerivs(trainX, trainY, hpDt);
+        const teD = getDerivs(testX, testY, hpDt);
+        const {thetaX, thetaY} = runSINDyFull(curLam, trD.xM, trD.yM, trD.dx, trD.dy);
+        const trainMSE = computeMSE(thetaX, thetaY, trD.xM, trD.yM, trD.dx, trD.dy);
+        const testMSE = computeMSE(thetaX, thetaY, teD.xM, teD.yM, teD.dx, teD.dy);
+        // Check if this lambda already exists - replace it
+        const existing = results.findIndex(r => Math.abs(r.lam - curLam) < 0.001);
+        const entry = {lam: curLam, trainMSE, testMSE, thetaX, thetaY};
+        if (existing >= 0) results[existing] = entry; else results.push(entry);
+        curThetaX = thetaX; curThetaY = thetaY;
+        updateTSPred(); updateMSEPlot(); updateEqs();
+        lamLine.attr('x1', mXS(curLam)).attr('x2', mXS(curLam));
+    };
+
+    window.hpClear = function() {
+        results = [];
+        curThetaX = new Array(nf).fill(0); curThetaY = new Array(nf).fill(0);
+        trainDotsGrp.selectAll('circle').remove();
+        testDotsGrp.selectAll('circle').remove();
+        trainLineGrp.attr('d',''); testLineGrp.attr('d','');
+        predLineX.attr('d',''); predLineY.attr('d','');
+        document.getElementById('hp-eq-x').textContent = '';
+        document.getElementById('hp-eq-y').textContent = '';
+    };
+
+    window.hpSetNoise = function(val) {
+        hpNoise = val / 100;
+        document.getElementById('hp-noise-val').textContent = hpNoise.toFixed(2);
+        hpGenerateData(); drawTSData(); window.hpClear();
+    };
+
+    // Init lambda line
+    lamLine.attr('x1', mXS(curLam)).attr('x2', mXS(curLam));
+})();
+
+// =========================================================
+// INTERACTIVE 6: PDE Grid — build system of equations
+// =========================================================
+(function() {
+    const el = document.getElementById('pde-grid-viz');
+    if (!el) return;
+    const W = 380, H = 380;
+    const margin = {top: 15, right: 10, bottom: 30, left: 40};
+    const w = W-margin.left-margin.right, h = H-margin.top-margin.bottom;
+    const svg = d3.select('#pde-grid-viz').append('svg').attr('width',W).attr('height',H);
+    const g = svg.append('g').attr('transform',`translate(${margin.left},${margin.top})`);
+    const nx=8, nt=8, cW=w/nx, cH=h/nt;
+    g.append('text').attr('x',w/2).attr('y',h+25).attr('text-anchor','middle').text('Space (xᵢ)').style('font-size','10px');
+    g.append('text').attr('x',-28).attr('y',h/2).attr('text-anchor','middle')
+        .attr('transform',`rotate(-90,-28,${h/2})`).text('Time (tⱼ)').style('font-size','10px');
+    for (let i = 0; i < nx; i++) {
+        g.append('text').attr('x', i*cW+cW/2).attr('y', h+14).attr('text-anchor','middle')
+            .text(i+1).style('font-size','8px').style('fill','#666');
+    }
+    for (let j = 0; j < nt; j++) {
+        g.append('text').attr('x', -6).attr('y', (nt-1-j)*cH+cH/2+3).attr('text-anchor','end')
+            .text(j+1).style('font-size','8px').style('fill','#666');
+    }
+    const td = [];
+    for (let j = 0; j < nt; j++) for (let i = 0; i < nx; i++) {
+        const x=i/(nx-1), t=j/(nt-1);
+        td.push({i,j,u: Math.exp(-2*t)*Math.sin(Math.PI*x)+0.3*Math.exp(-8*t)*Math.sin(2*Math.PI*x)});
+    }
+    const cs = d3.scaleSequential(d3.interpolateInferno).domain([-0.1,1.1]);
+    const labelsGrp = g.append('g');
+    let selectedPts = new Set();
+
+    const cells = g.selectAll('.c').data(td).join('rect').attr('class','c')
+        .attr('x',d=>d.i*cW+1).attr('y',d=>(nt-1-d.j)*cH+1).attr('width',cW-2).attr('height',cH-2)
+        .attr('fill',d=>cs(d.u)).attr('stroke','none').attr('rx',2).style('cursor','pointer')
+        .on('click', (_,d) => {
+            const key = `${d.i},${d.j}`;
+            // Need j < nt-1 for forward diff in time, and i not on boundary
+            if (d.i===0||d.i===nx-1||d.j===nt-1) return;
+            if (selectedPts.has(key)) return;
+            selectedPts.add(key);
+            // Highlight stencil: center, spatial neighbors, forward time neighbor
+            cells.attr('stroke','none');
+            [{i:d.i,j:d.j,c:'var(--accent-green)'},{i:d.i-1,j:d.j,c:'var(--accent-blue)'},
+             {i:d.i+1,j:d.j,c:'var(--accent-blue)'},{i:d.i,j:d.j+1,c:'var(--accent-yellow)'}].forEach(s => {
+                cells.filter(c=>c.i===s.i&&c.j===s.j).attr('stroke',s.c).attr('stroke-width',2.5);
+            });
+            // Show u^(i,j) labels INSIDE the cells
+            labelsGrp.selectAll('*').remove();
+            const pts = [
+                {i:d.i, j:d.j, label:`u(${d.i+1},${d.j+1})`, col:'var(--accent-green)'},
+                {i:d.i-1, j:d.j, label:`u(${d.i},${d.j+1})`, col:'var(--accent-blue)'},
+                {i:d.i+1, j:d.j, label:`u(${d.i+2},${d.j+1})`, col:'var(--accent-blue)'},
+                {i:d.i, j:d.j+1, label:`u(${d.i+1},${d.j+2})`, col:'var(--accent-yellow)'}
+            ];
+            pts.forEach(p => {
+                labelsGrp.append('text')
+                    .attr('x', p.i*cW+cW/2).attr('y', (nt-1-p.j)*cH+cH/2+3)
+                    .attr('text-anchor','middle').text(p.label)
+                    .style('font-size','6.5px').style('fill', p.col).style('font-weight','bold')
+                    .style('pointer-events','none');
+            });
+            // Mark selected with a small dot
+            g.append('circle').attr('class','sel-dot')
+                .attr('cx', d.i*cW+cW/2).attr('cy', (nt-1-d.j)*cH+cH/2)
+                .attr('r', 2.5).attr('fill','var(--accent-green)').attr('opacity',0.9);
+            addEquation(d.i, d.j);
+        });
+
+    const eqPanel = document.getElementById('pde-eq-panel');
+    let eqCount = 0;
+
+    function u(a,b) { return `u<sup>(${a},${b})</sup>`; }
+
+    function addEquation(i, j) {
+        eqCount++;
+        const line = document.createElement('div');
+        line.style.marginBottom = '1px';
+        line.style.whiteSpace = 'nowrap';
+        const ii = i+1, jj = j+1;
+        // Forward diff: (u^(i,j+1) - u^(i,j))/Δt = θ₁·[u^(i+1,j)-u^(i-1,j)]/2Δx + θ₂·[u^(i+1,j)-2u^(i,j)+u^(i-1,j)]/Δx²
+        line.innerHTML =
+            `<span style="color:var(--accent-yellow)">[${u(ii,jj+1)}−${u(ii,jj)}]</span>` +
+            `<span style="color:#666">/Δt</span>` +
+            ` = θ₁` +
+            `<span style="color:var(--accent-blue)">[${u(ii+1,jj)}−${u(ii-1,jj)}]</span>` +
+            `<span style="color:#666">/2Δx</span>` +
+            ` + θ₂` +
+            `<span style="color:var(--accent-blue)">[${u(ii+1,jj)}−2${u(ii,jj)}+${u(ii-1,jj)}]</span>` +
+            `<span style="color:#666">/Δx²</span>`;
+        eqPanel.appendChild(line);
+        document.getElementById('pde-eq-count').textContent = `${eqCount} equation${eqCount>1?'s':''}, 2 unknowns`;
+    }
+
+    window.pdeReset = function() {
+        selectedPts.clear(); eqCount = 0;
+        cells.attr('stroke','none');
+        labelsGrp.selectAll('*').remove();
+        g.selectAll('.sel-dot').remove();
+        eqPanel.innerHTML = '<div style="color: var(--accent-yellow); margin-bottom: 3px;">System of equations:</div>';
+        document.getElementById('pde-eq-count').textContent = '';
+    };
+})();
+</script>
+</body>
+</html>
