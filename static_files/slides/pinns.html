@@ -1,0 +1,1686 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics-Informed Neural Networks</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/night.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/monokai.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --accent-blue: #61afef;
+            --accent-green: #98c379;
+            --accent-yellow: #e5c07b;
+            --accent-red: #e06c75;
+            --accent-purple: #c678dd;
+            --accent-cyan: #56b6c2;
+        }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; }
+        .reveal h1 { font-size: 2.2em; }
+        .reveal h2 { font-size: 1.6em; color: var(--accent-blue); }
+        .reveal h3 { font-size: 1.3em; }
+        .reveal blockquote {
+            font-style: italic; background: rgba(255,255,255,0.05);
+            padding: 20px 30px; border-left: 4px solid #42affa; width: 90%;
+            margin: 0 auto; border-radius: 0 8px 8px 0;
+        }
+        .reveal .slides section { text-align: left; }
+        .reveal ul { display: block; }
+        .reveal li { margin: 0.5em 0; font-size: 0.85em; }
+        .center-text { text-align: center; }
+        .highlight-box {
+            background: rgba(66, 175, 250, 0.15); padding: 15px 20px;
+            border-radius: 8px; margin: 15px 0; border: 1px solid rgba(66, 175, 250, 0.3);
+        }
+        .warning-box {
+            background: rgba(224, 108, 117, 0.15); padding: 15px 20px;
+            border-radius: 8px; margin: 15px 0; border: 1px solid rgba(224, 108, 117, 0.3);
+        }
+        .success-box {
+            background: rgba(152, 195, 121, 0.15); padding: 15px 20px;
+            border-radius: 8px; margin: 15px 0; border: 1px solid rgba(152, 195, 121, 0.3);
+        }
+        .principle-box {
+            background: rgba(198, 120, 221, 0.15); padding: 15px 20px;
+            border-radius: 8px; margin: 15px 0; border: 1px solid rgba(198, 120, 221, 0.3);
+        }
+        .equation-box {
+            background: rgba(255,255,255,0.08); padding: 12px 15px;
+            border-radius: 8px; text-align: center; margin: 10px 0; font-size: 0.85em;
+        }
+        .equation-box.large { font-size: 1.1em; padding: 18px 20px; }
+        .small-text { font-size: 0.75em; }
+        .tiny-text { font-size: 0.65em; }
+        pre code { font-size: 0.65em !important; line-height: 1.4 !important; }
+        .reveal pre { width: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .two-column { display: flex; gap: 30px; align-items: flex-start; }
+        .two-column > div { flex: 1; }
+        .three-column { display: flex; gap: 20px; }
+        .three-column > div { flex: 1; }
+        .slider-container {
+            display: flex; align-items: center; gap: 10px; margin: 5px 0;
+        }
+        .slider-container label { min-width: 80px; font-size: 0.75em; }
+        .slider-container input[type="range"] { flex: 1; }
+        .slider-container span { min-width: 45px; font-size: 0.75em; color: var(--accent-blue); }
+        svg text { fill: #abb2bf; font-size: 12px; }
+        .keyword { color: var(--accent-yellow); font-weight: bold; }
+        .em-blue { color: var(--accent-blue); }
+        .em-green { color: var(--accent-green); }
+        .em-red { color: var(--accent-red); }
+        .em-purple { color: var(--accent-purple); }
+        .em-cyan { color: var(--accent-cyan); }
+        table.comparison {
+            width: 100%; border-collapse: collapse; font-size: 0.75em; margin: 10px 0;
+        }
+        table.comparison th {
+            background: rgba(66, 175, 250, 0.2); padding: 8px 12px; text-align: left;
+            border-bottom: 2px solid rgba(66, 175, 250, 0.4);
+        }
+        table.comparison td { padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        table.comparison tr:hover td { background: rgba(255,255,255,0.03); }
+        .btn {
+            display: inline-block; padding: 6px 16px; border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08);
+            color: #ccc; cursor: pointer; font-size: 0.7em; transition: all 0.2s;
+        }
+        .btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+        .btn.active { background: rgba(66, 175, 250, 0.3); border-color: var(--accent-blue); color: #fff; }
+        a.ref-link { color: var(--accent-cyan); text-decoration: none; border-bottom: 1px dotted var(--accent-cyan); }
+        a.ref-link:hover { color: #fff; }
+        /* PINN-specific */
+        .loss-legend { font-size: 0.6em; display: flex; gap: 15px; margin-top: 4px; }
+        .loss-legend span { display: flex; align-items: center; gap: 4px; }
+        .loss-legend .swatch { width: 14px; height: 3px; display: inline-block; }
+        .mode-btn {
+            display: inline-block; padding: 4px 14px; border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05);
+            color: #888; cursor: pointer; font-size: 0.65em; transition: all 0.2s; margin-right: 4px;
+        }
+        .mode-btn.active { background: rgba(97, 175, 239, 0.3); border-color: var(--accent-blue); color: #fff; }
+    </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ============================================ -->
+<!-- TITLE SLIDE -->
+<!-- ============================================ -->
+<section class="center-text" data-background-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
+    <h1 style="font-size: 2em;">Physics-Informed Neural Networks</h1>
+    <p style="color: var(--accent-cyan); font-size: 1.1em; margin-top: 0.5em;">From Residual Minimization to Deep Learning for PDEs</p>
+    <p class="small-text" style="margin-top: 2em; color: #888;">ML for Science and Engineering &mdash; Lecture 20</p>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 1: THE PDE PROBLEM -->
+<!-- ============================================ -->
+<section>
+    <!-- 1.1 The Problem -->
+    <section>
+        <h2>The Problem We Want to Solve</h2>
+        <div class="two-column">
+            <div>
+                <p class="small-text">Given a PDE on domain \(\Omega\):</p>
+                <div class="equation-box large">
+                    \(\mathcal{N}[u](x, t) = 0, \quad (x,t) \in \Omega\)
+                </div>
+                <p class="small-text">with boundary/initial conditions:</p>
+                <div class="equation-box">
+                    \(\mathcal{B}[u](x, t) = g(x, t), \quad (x,t) \in \partial\Omega\)
+                </div>
+                <p class="small-text fragment">Find \(u(x, t)\) that satisfies both the PDE and the conditions.</p>
+            </div>
+            <div class="fragment">
+                <p class="small-text" style="color: var(--accent-yellow);">Concrete example: the heat equation</p>
+                <div class="equation-box">
+                    \(\frac{\partial u}{\partial t} = \alpha \frac{\partial^2 u}{\partial x^2}\)
+                </div>
+                <p class="tiny-text">
+                    IC: \(u(x, 0) = \sin(\pi x)\)<br>
+                    BC: \(u(0, t) = u(1, t) = 0\)
+                </p>
+                <div class="highlight-box small-text">
+                    Exact solution: \(u(x,t) = e^{-\alpha \pi^2 t} \sin(\pi x)\)
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 1.2 Where We Are -->
+    <section>
+        <h2>Where We Are in the Course</h2>
+        <div class="three-column" style="margin-top: 20px;">
+            <div class="highlight-box small-text">
+                <strong style="color: var(--accent-blue);">Modeling</strong><br>
+                ODEs/PDEs, dynamical systems, numerical methods
+                <div class="tiny-text" style="color: #888; margin-top: 5px;">Lectures 4&ndash;7</div>
+            </div>
+            <div class="success-box small-text">
+                <strong style="color: var(--accent-green);">Data-Driven Discovery</strong><br>
+                SINDy, PDE-FIND, symbolic regression
+                <div class="tiny-text" style="color: #888; margin-top: 5px;">Lectures 8&ndash;12</div>
+            </div>
+            <div class="principle-box small-text">
+                <strong style="color: var(--accent-purple);">Deep Learning</strong><br>
+                NNs, CNNs, RNNs, PyTorch
+                <div class="tiny-text" style="color: #888; margin-top: 5px;">Lectures 16&ndash;19</div>
+            </div>
+        </div>
+        <div class="equation-box large fragment" style="margin-top: 25px;">
+            <span style="color: var(--accent-yellow);">Today:</span> Combine <span class="em-purple">neural networks</span> with <span class="em-blue">physical laws</span> to solve and discover PDEs
+        </div>
+    </section>
+
+    <!-- 1.3 Basis Functions -->
+    <section>
+        <h2>The Classical Approach: Basis Functions</h2>
+        <p class="small-text">Propose a solution as a linear combination of known functions:</p>
+        <div class="equation-box large">
+            \(u(x, t) = \sum_{i=1}^{N} a_i \, \phi_i(x, t)\)
+        </div>
+        <div class="two-column fragment" style="margin-top: 15px;">
+            <div class="small-text">
+                <p><span class="em-blue">Fourier modes:</span> \(\phi_i(x) = \sin(i\pi x / L)\)</p>
+                <p><span class="em-green">Polynomials:</span> Legendre, Chebyshev</p>
+                <p><span class="em-purple">FEM shape functions:</span> piecewise linear on a mesh</p>
+            </div>
+            <div class="highlight-box small-text">
+                The idea: choose a <span class="keyword">hypothesis class</span>, then determine the coefficients \(a_i\) from the data and the PDE.
+            </div>
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 2: RESIDUAL MINIMIZATION -->
+<!-- ============================================ -->
+<section>
+    <!-- 2.1 Defining the Residual -->
+    <section>
+        <h2>Defining the Residual</h2>
+        <p class="small-text">Substitute the hypothesis into the PDE. For the heat equation:</p>
+        <div class="equation-box large">
+            \(\mathcal{R}(x, t;\, a_i) = \sum_{i} a_i \frac{\partial \phi_i}{\partial t} - \alpha \sum_{i} a_i \frac{\partial^2 \phi_i}{\partial x^2}\)
+        </div>
+        <div class="warning-box small-text fragment" style="margin-top: 15px;">
+            If \(u\) is the <em>exact</em> solution, \(\mathcal{R} = 0\) everywhere.
+            For an approximate solution, we want \(\mathcal{R}\) as small as possible.
+        </div>
+        <div class="principle-box small-text fragment">
+            This is the central idea: <span class="keyword">measure how well a candidate solution satisfies the PDE</span>, then minimize that error.
+        </div>
+    </section>
+
+    <!-- 2.2 Collocation Methods -->
+    <section>
+        <h2>Collocation Methods</h2>
+        <div class="two-column">
+            <div class="small-text">
+                <p>Choose a set of <span class="em-red">collocation points</span> \(\{(x_k, t_k)\}\) in the domain.</p>
+                <p class="fragment">Evaluate the residual at those points and minimize:</p>
+                <div class="equation-box fragment">
+                    \(\min_{a_i} \sum_{k=1}^{N_r} \mathcal{R}(x_k, t_k;\, a_i)^2\)
+                </div>
+                <div class="highlight-box fragment" style="font-size: 0.7em;">
+                    This is the <span class="keyword">method of weighted residuals</span> / collocation method. Well-established in applied math.
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <svg width="340" height="280" viewBox="0 0 340 280">
+                    <rect x="40" y="20" width="260" height="220" fill="none" stroke="#555" stroke-width="2" rx="4"/>
+                    <text x="170" y="260" text-anchor="middle" fill="#888" font-size="11">Domain Ω</text>
+                    <text x="20" y="135" text-anchor="middle" fill="#888" font-size="11" transform="rotate(-90,20,135)">t</text>
+                    <text x="170" y="275" text-anchor="middle" fill="#888" font-size="11">x</text>
+                    <!-- Collocation points (red) -->
+                    <circle cx="100" cy="80" r="4" fill="#e06c75" opacity="0.7"/>
+                    <circle cx="180" cy="60" r="4" fill="#e06c75" opacity="0.7"/>
+                    <circle cx="250" cy="100" r="4" fill="#e06c75" opacity="0.7"/>
+                    <circle cx="80" cy="150" r="4" fill="#e06c75" opacity="0.7"/>
+                    <circle cx="200" cy="130" r="4" fill="#e06c75" opacity="0.7"/>
+                    <circle cx="150" cy="170" r="4" fill="#e06c75" opacity="0.7"/>
+                    <circle cx="230" cy="190" r="4" fill="#e06c75" opacity="0.7"/>
+                    <circle cx="120" cy="200" r="4" fill="#e06c75" opacity="0.7"/>
+                    <circle cx="270" cy="150" r="4" fill="#e06c75" opacity="0.7"/>
+                    <!-- Boundary/data points (green) -->
+                    <circle cx="40" cy="50" r="4" fill="#98c379"/>
+                    <circle cx="40" cy="100" r="4" fill="#98c379"/>
+                    <circle cx="40" cy="150" r="4" fill="#98c379"/>
+                    <circle cx="40" cy="200" r="4" fill="#98c379"/>
+                    <circle cx="300" cy="50" r="4" fill="#98c379"/>
+                    <circle cx="300" cy="100" r="4" fill="#98c379"/>
+                    <circle cx="300" cy="150" r="4" fill="#98c379"/>
+                    <circle cx="300" cy="200" r="4" fill="#98c379"/>
+                    <!-- IC points -->
+                    <circle cx="80" cy="240" r="4" fill="#98c379"/>
+                    <circle cx="140" cy="240" r="4" fill="#98c379"/>
+                    <circle cx="200" cy="240" r="4" fill="#98c379"/>
+                    <circle cx="260" cy="240" r="4" fill="#98c379"/>
+                    <!-- Legend -->
+                    <circle cx="60" cy="12" r="4" fill="#e06c75" opacity="0.7"/>
+                    <text x="70" y="16" fill="#ccc" font-size="10">Collocation (residual)</text>
+                    <circle cx="210" cy="12" r="4" fill="#98c379"/>
+                    <text x="220" y="16" fill="#ccc" font-size="10">Boundary / IC (data)</text>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2.3 Adding Data -->
+    <section>
+        <h2>Adding Data: The Combined Loss</h2>
+        <p class="small-text">Given observations \((x_j, t_j, u_j^{\text{data}})\), find coefficients by minimizing:</p>
+        <div class="equation-box large" style="font-size: 0.95em;">
+            \(\mathcal{L}(a_i) = \underbrace{\sum_{j=1}^{N_d} \left[ u_j^{\text{data}} - \sum_i a_i \phi_i(x_j, t_j) \right]^2}_{\color{#98c379}{\text{Data-fitting term}}} + \underbrace{\sum_{k=1}^{N_r} \mathcal{R}(x_k, t_k;\, a_i)^2}_{\color{#e06c75}{\text{Physics residual term}}}\)
+        </div>
+        <div class="principle-box small-text fragment" style="margin-top: 15px;">
+            This is the key insight: <span class="keyword">combine data-fitting with physical constraints in a single objective</span>. The data pulls the solution toward observations; the residual ensures physical consistency everywhere.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 3: INTERACTIVE BASIS FUNCTION MIXER -->
+<!-- ============================================ -->
+<section>
+    <!-- 3.1 Interactive -->
+    <section>
+        <h2>Interactive: Basis Function Mixer</h2>
+        <p class="tiny-text" style="margin-bottom: 5px;">PDE: \(u'' + \pi^2 u = 0\) on \([0,1]\). Exact solution: \(u(x) = \sin(\pi x)\). Adjust coefficients to minimize the residual.</p>
+        <div id="basis-mixer-viz" style="width: 100%; height: 460px;"></div>
+    </section>
+
+    <!-- 3.2 Transition -->
+    <section>
+        <h2>From Linear to Universal Approximation</h2>
+        <div class="two-column">
+            <div>
+                <p class="small-text">The basis expansion is <span class="em-blue">linear in \(a_i\)</span> and limited to the chosen \(\phi_i\).</p>
+                <div class="equation-box">
+                    \(u(x) = \sum_{i=1}^N a_i \, \phi_i(x)\)
+                </div>
+                <p class="small-text fragment" style="margin-top: 15px;">What if we had a <em>universal</em> hypothesis that could learn any shape?</p>
+            </div>
+            <div class="fragment">
+                <div class="equation-box large" style="margin-top: 30px;">
+                    \(\sum_i a_i \, \phi_i(x) \;\longrightarrow\; u_\theta(x)\)
+                </div>
+                <div class="success-box small-text" style="margin-top: 15px;">
+                    <span class="keyword">Neural networks</span> are universal approximators. We don't need to choose basis functions &mdash; the network <em>learns</em> them.
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 4: THE PINN FRAMEWORK -->
+<!-- ============================================ -->
+<section>
+    <!-- 4.1 NN as Approximator -->
+    <section>
+        <h2>The PINN: Neural Network as Solution</h2>
+        <div class="two-column">
+            <div>
+                <p class="small-text">Replace the basis expansion with a neural network:</p>
+                <div class="equation-box large">
+                    \(u(x, t) \approx u_\theta(x, t)\)
+                </div>
+                <p class="small-text fragment" style="margin-top: 10px;">where \(\theta = \{W_1, b_1, W_2, b_2, \ldots\}\) are the network weights and biases.</p>
+                <div class="highlight-box small-text fragment">
+                    The network directly outputs the solution value at <em>any point</em> in the domain. No mesh needed.
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <!-- Simple MLP diagram -->
+                <svg width="320" height="300" viewBox="0 0 320 300">
+                    <!-- Input layer -->
+                    <text x="40" y="20" text-anchor="middle" fill="#888" font-size="11">Input</text>
+                    <circle cx="40" cy="110" r="16" fill="rgba(97,175,239,0.2)" stroke="#61afef" stroke-width="2"/>
+                    <text x="40" y="114" text-anchor="middle" fill="#61afef" font-size="12" font-weight="bold">x</text>
+                    <circle cx="40" cy="190" r="16" fill="rgba(97,175,239,0.2)" stroke="#61afef" stroke-width="2"/>
+                    <text x="40" y="194" text-anchor="middle" fill="#61afef" font-size="12" font-weight="bold">t</text>
+                    <!-- Hidden 1 -->
+                    <text x="140" y="20" text-anchor="middle" fill="#888" font-size="11">Hidden</text>
+                    <circle cx="140" cy="60" r="12" fill="rgba(198,120,221,0.2)" stroke="#c678dd" stroke-width="1.5"/>
+                    <circle cx="140" cy="110" r="12" fill="rgba(198,120,221,0.2)" stroke="#c678dd" stroke-width="1.5"/>
+                    <circle cx="140" cy="150" r="12" fill="rgba(198,120,221,0.2)" stroke="#c678dd" stroke-width="1.5"/>
+                    <text x="140" y="186" fill="#888" font-size="18" text-anchor="middle">&#8942;</text>
+                    <circle cx="140" cy="220" r="12" fill="rgba(198,120,221,0.2)" stroke="#c678dd" stroke-width="1.5"/>
+                    <circle cx="140" cy="260" r="12" fill="rgba(198,120,221,0.2)" stroke="#c678dd" stroke-width="1.5"/>
+                    <!-- Hidden 2 -->
+                    <text x="220" y="20" text-anchor="middle" fill="#888" font-size="11">Hidden</text>
+                    <circle cx="220" cy="60" r="12" fill="rgba(198,120,221,0.2)" stroke="#c678dd" stroke-width="1.5"/>
+                    <circle cx="220" cy="110" r="12" fill="rgba(198,120,221,0.2)" stroke="#c678dd" stroke-width="1.5"/>
+                    <circle cx="220" cy="150" r="12" fill="rgba(198,120,221,0.2)" stroke="#c678dd" stroke-width="1.5"/>
+                    <text x="220" y="186" fill="#888" font-size="18" text-anchor="middle">&#8942;</text>
+                    <circle cx="220" cy="220" r="12" fill="rgba(198,120,221,0.2)" stroke="#c678dd" stroke-width="1.5"/>
+                    <circle cx="220" cy="260" r="12" fill="rgba(198,120,221,0.2)" stroke="#c678dd" stroke-width="1.5"/>
+                    <!-- Output -->
+                    <text x="300" y="20" text-anchor="middle" fill="#888" font-size="11">Output</text>
+                    <circle cx="300" cy="150" r="16" fill="rgba(152,195,121,0.2)" stroke="#98c379" stroke-width="2"/>
+                    <text x="300" y="154" text-anchor="middle" fill="#98c379" font-size="11" font-weight="bold">u<tspan font-size="8" dy="3">θ</tspan></text>
+                    <!-- Connections (sample) -->
+                    <line x1="56" y1="110" x2="128" y2="60" stroke="#555" stroke-width="0.7"/>
+                    <line x1="56" y1="110" x2="128" y2="110" stroke="#555" stroke-width="0.7"/>
+                    <line x1="56" y1="110" x2="128" y2="150" stroke="#555" stroke-width="0.7"/>
+                    <line x1="56" y1="110" x2="128" y2="220" stroke="#555" stroke-width="0.7"/>
+                    <line x1="56" y1="110" x2="128" y2="260" stroke="#555" stroke-width="0.7"/>
+                    <line x1="56" y1="190" x2="128" y2="60" stroke="#555" stroke-width="0.7"/>
+                    <line x1="56" y1="190" x2="128" y2="110" stroke="#555" stroke-width="0.7"/>
+                    <line x1="56" y1="190" x2="128" y2="150" stroke="#555" stroke-width="0.7"/>
+                    <line x1="56" y1="190" x2="128" y2="220" stroke="#555" stroke-width="0.7"/>
+                    <line x1="56" y1="190" x2="128" y2="260" stroke="#555" stroke-width="0.7"/>
+                    <line x1="152" y1="60" x2="208" y2="60" stroke="#555" stroke-width="0.7"/>
+                    <line x1="152" y1="110" x2="208" y2="110" stroke="#555" stroke-width="0.7"/>
+                    <line x1="152" y1="150" x2="208" y2="150" stroke="#555" stroke-width="0.7"/>
+                    <line x1="152" y1="220" x2="208" y2="220" stroke="#555" stroke-width="0.7"/>
+                    <line x1="152" y1="260" x2="208" y2="260" stroke="#555" stroke-width="0.7"/>
+                    <line x1="232" y1="60" x2="284" y2="150" stroke="#555" stroke-width="0.7"/>
+                    <line x1="232" y1="110" x2="284" y2="150" stroke="#555" stroke-width="0.7"/>
+                    <line x1="232" y1="150" x2="284" y2="150" stroke="#555" stroke-width="0.7"/>
+                    <line x1="232" y1="220" x2="284" y2="150" stroke="#555" stroke-width="0.7"/>
+                    <line x1="232" y1="260" x2="284" y2="150" stroke="#555" stroke-width="0.7"/>
+                    <!-- Activation label -->
+                    <text x="180" y="290" text-anchor="middle" fill="#c678dd" font-size="10">tanh activation</text>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4.2 Automatic Differentiation -->
+    <section>
+        <h2>Automatic Differentiation: The Key Enabler</h2>
+        <div class="two-column">
+            <div class="small-text">
+                <p>For PDE residuals, we need derivatives of \(u_\theta\) with respect to inputs \(x, t\).</p>
+                <p class="fragment"><span class="keyword">Automatic differentiation</span> computes these <em>exactly</em> through the computational graph.</p>
+                <div class="highlight-box fragment" style="font-size: 0.9em;">
+                    Unlike finite differences, AD gives exact derivatives (up to floating point). No mesh or grid needed.
+                </div>
+            </div>
+            <div class="fragment">
+                <div class="equation-box" style="font-size: 0.8em;">
+                    Forward: \((x, t) \xrightarrow{W_1, b_1} h_1 \xrightarrow{W_2, b_2} \cdots \xrightarrow{} u_\theta\)
+                </div>
+                <div class="equation-box" style="font-size: 0.8em; margin-top: 8px;">
+                    AD: \(\frac{\partial u_\theta}{\partial x},\; \frac{\partial u_\theta}{\partial t},\; \frac{\partial^2 u_\theta}{\partial x^2},\; \ldots\)
+                </div>
+                <div class="principle-box small-text" style="margin-top: 10px;">
+                    PINNs became practical only with modern frameworks (PyTorch, TensorFlow) that have built-in AD.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4.3 The PINN Loss -->
+    <section>
+        <h2>The PINN Loss Function</h2>
+        <div class="equation-box large">
+            \(\mathcal{L}(\theta) = \lambda_d \, \mathcal{L}_{\text{data}} + \lambda_r \, \mathcal{L}_{\text{residual}} + \lambda_b \, \mathcal{L}_{\text{boundary}}\)
+        </div>
+        <div class="three-column" style="margin-top: 15px;">
+            <div class="success-box" style="font-size: 0.7em;">
+                <strong style="color: var(--accent-green);">Data</strong><br>
+                \(\frac{1}{N_d}\sum_j \left[u_\theta(x_j, t_j) - u_j^{\text{data}}\right]^2\)
+            </div>
+            <div class="warning-box" style="font-size: 0.7em;">
+                <strong style="color: var(--accent-red);">Residual</strong><br>
+                \(\frac{1}{N_r}\sum_k \left[\mathcal{N}[u_\theta](x_k, t_k)\right]^2\)
+            </div>
+            <div class="highlight-box" style="font-size: 0.7em;">
+                <strong style="color: var(--accent-blue);">Boundary/IC</strong><br>
+                \(\frac{1}{N_b}\sum_m \left[u_\theta(x_m, t_m) - g_m\right]^2\)
+            </div>
+        </div>
+        <p class="small-text fragment" style="margin-top: 12px;">The weights \(\lambda_d, \lambda_r, \lambda_b\) balance the three objectives. Getting this balance right is one of the main challenges.</p>
+    </section>
+
+    <!-- 4.4 Comparison Table -->
+    <section>
+        <h2>PINN vs Classical Methods</h2>
+        <table class="comparison">
+            <tr><th></th><th>Classical (FEM / FD)</th><th>PINN</th></tr>
+            <tr><td><strong>Domain</strong></td><td>Mesh or grid required</td><td>Mesh-free (collocation points)</td></tr>
+            <tr><td><strong>Basis</strong></td><td>Pre-selected (polynomials, FEM)</td><td>Learned by network</td></tr>
+            <tr><td><strong>Derivatives</strong></td><td>Finite differences / weak form</td><td>Automatic differentiation</td></tr>
+            <tr><td><strong>Data</strong></td><td>Hard to incorporate</td><td>Natural (add data loss term)</td></tr>
+            <tr><td><strong>High dimensions</strong></td><td>Curse of dimensionality</td><td>Better scaling (in principle)</td></tr>
+            <tr><td><strong>Accuracy</strong></td><td>Can reach \(10^{-10}\) and below</td><td>Typically \(10^{-3}\) to \(10^{-5}\)</td></tr>
+            <tr><td><strong>Cost</strong></td><td>Fast for well-posed problems</td><td>Expensive training</td></tr>
+        </table>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 5: ARCHITECTURE DETAILS -->
+<!-- ============================================ -->
+<section>
+    <!-- 5.1 Architecture -->
+    <section>
+        <h2>Typical PINN Architecture</h2>
+        <ul class="small-text">
+            <li><strong>Input:</strong> spatial + temporal coordinates \((x, t)\) or \((x_1, \ldots, x_d, t)\)</li>
+            <li><strong>Hidden layers:</strong> 3&ndash;6 fully connected layers, 20&ndash;50 neurons each</li>
+            <li><strong>Activation:</strong> \(\tanh\) (smooth, infinitely differentiable)</li>
+            <li><strong>Output:</strong> solution \(u(x,t)\) (scalar, or vector for systems)</li>
+        </ul>
+        <div class="warning-box small-text fragment" style="margin-top: 15px;">
+            <span class="keyword">ReLU is NOT suitable for PINNs</span>: its second derivative is zero everywhere. The PDE residual for any second-order PDE would carry no gradient signal through ReLU activations.
+        </div>
+        <div class="highlight-box small-text fragment">
+            Common choices: \(\tanh\), \(\sin\) (SIREN networks), or swish. All are smooth and have nonzero higher-order derivatives.
+        </div>
+    </section>
+
+    <!-- 5.2 Training Loop -->
+    <section>
+        <h2>The Training Loop</h2>
+        <pre><code class="language-python" style="font-size: 0.72em !important; line-height: 1.4 !important;">for epoch in range(N):
+    # Sample collocation points in the domain
+    x_r, t_r = random_points_in_domain(N_collocation)
+
+    # Forward pass + PDE residual (via automatic differentiation)
+    u_pred = network(x_data, t_data)
+    residual = compute_PDE_residual(network, x_r, t_r)
+
+    # Combined loss
+    loss = MSE(u_pred, u_data) + lambda_r * MSE(residual, 0)
+
+    # Standard backpropagation + optimizer step
+    loss.backward()
+    optimizer.step()</code></pre>
+        <div class="highlight-box small-text fragment">
+            Collocation points can be <span class="keyword">resampled every epoch</span> (stochastic collocation) or kept fixed. Resampling helps explore the domain more thoroughly.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- PART 1 SUMMARY -->
+<!-- ============================================ -->
+<section data-background-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
+    <h2 style="color: #fff; text-align: center;">Part 1 Summary</h2>
+    <div class="three-column" style="margin-top: 20px;">
+        <div class="highlight-box small-text">
+            <strong>1. Residual</strong><br>
+            Define \(\mathcal{R} = \mathcal{N}[u]\) for your PDE. Evaluate at collocation points. Minimize.
+        </div>
+        <div class="success-box small-text">
+            <strong>2. Replace basis with NN</strong><br>
+            \(u_\theta(x,t)\) as universal approximator. AD gives exact derivatives.
+        </div>
+        <div class="principle-box small-text">
+            <strong>3. Combined loss</strong><br>
+            \(\mathcal{L} = \mathcal{L}_{\text{data}} + \mathcal{L}_{\text{residual}} + \mathcal{L}_{\text{boundary}}\)
+        </div>
+    </div>
+    <div class="equation-box" style="margin-top: 25px; font-size: 1em;">
+        \(u(x,t) \approx u_\theta(x,t), \qquad \min_\theta \; \mathcal{L}(\theta)\)
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PART 2 DIVIDER -->
+<!-- ============================================ -->
+<section class="center-text" data-background-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
+    <h1>Part 2: PINNs in Practice</h1>
+    <p class="small-text" style="margin-top: 2em; color: #888;">
+        ML for Science and Engineering &mdash; Lecture 21
+    </p>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 6: FORWARD PROBLEMS -->
+<!-- ============================================ -->
+<section>
+    <!-- 6.1 Forward Problem -->
+    <section>
+        <h2>Forward Problem: Solving a Known PDE</h2>
+        <p class="small-text">When the PDE and all parameters are known, and we have no interior data:</p>
+        <div class="equation-box large">
+            \(\mathcal{L}(\theta) = \mathcal{L}_{\text{residual}} + \mathcal{L}_{\text{boundary}} + \mathcal{L}_{\text{IC}}\)
+        </div>
+        <div class="two-column fragment" style="margin-top: 15px;">
+            <div class="small-text">
+                <p><span class="em-cyan">Example:</span> solve the ODE</p>
+                <div class="equation-box">
+                    \(u'(x) + u(x) = 0, \quad u(0) = 1\)
+                </div>
+                <p>Exact solution: \(u(x) = e^{-x}\)</p>
+            </div>
+            <div class="highlight-box small-text">
+                The network learns the solution purely from the equation and boundary/initial conditions. No data from the solution itself is needed.
+            </div>
+        </div>
+    </section>
+
+    <!-- 6.2 PINN Training Demo -->
+    <section>
+        <h2>PINN Training Demo</h2>
+        <p class="tiny-text" style="margin-bottom: 2px;">
+            ODE: \(u' + \alpha u = 0,\; u(0)=1\). A 1-hidden-layer neural network trained in real time.
+            <span class="mode-btn active" onclick="pinnSetMode('forward')" id="mode-fwd-btn">Forward</span>
+            <span class="mode-btn" onclick="pinnSetMode('inverse')" id="mode-inv-btn">Inverse</span>
+            <span id="pinn-alpha-display" class="tiny-text" style="color: var(--accent-yellow); margin-left: 10px;"></span>
+        </p>
+        <div id="pinn-training-viz" style="width: 100%; height: 420px;"></div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 7: INVERSE PROBLEMS -->
+<!-- ============================================ -->
+<section>
+    <!-- 7.1 Inverse Problem Concept -->
+    <section>
+        <h2>Inverse Problem: Discovering Parameters</h2>
+        <p class="small-text">We observe data for \(u(x)\) and know the PDE form, but some parameters are unknown.</p>
+        <div class="two-column" style="margin-top: 10px;">
+            <div>
+                <p class="small-text"><span class="em-cyan">Example:</span> \(u' + \alpha u = 0\), we observe \(u\) at several points, \(\alpha\) is unknown.</p>
+                <div class="equation-box" style="font-size: 0.9em;">
+                    \(\mathcal{L}(\theta, \alpha) = \mathcal{L}_{\text{data}}(\theta) + \mathcal{L}_{\text{residual}}(\theta, \alpha)\)
+                </div>
+                <div class="principle-box small-text fragment">
+                    Both \(\theta\) (network weights) and \(\alpha\) (physical parameter) are optimized <em>simultaneously</em> via gradient descent.
+                </div>
+            </div>
+            <div class="fragment">
+                <div class="success-box small-text">
+                    <strong>This is where PINNs truly shine:</strong> inverse problems are notoriously difficult with classical methods, but natural with PINNs.
+                </div>
+                <p class="tiny-text" style="margin-top: 10px; color: #888;">Try the <span class="em-blue">Inverse</span> mode in the demo (previous slide) to see this in action.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7.2 More on Inverse -->
+    <section>
+        <h2>Inverse Problems: Applications</h2>
+        <ul class="small-text">
+            <li><strong>Material properties:</strong> discover diffusivity \(\alpha\) from temperature data</li>
+            <li><strong>Fluid dynamics:</strong> infer viscosity from velocity measurements</li>
+            <li><strong>Epidemiology:</strong> estimate infection rates from case data</li>
+            <li><strong>Structural health:</strong> locate damage from vibration data</li>
+        </ul>
+        <div class="highlight-box small-text fragment" style="margin-top: 15px;">
+            <strong>Key advantage:</strong> PINNs handle noisy, sparse, and heterogeneous data naturally. The physics residual acts as a <span class="keyword">regularizer</span>, preventing overfitting to noise.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 8: PYTORCH IMPLEMENTATION -->
+<!-- ============================================ -->
+<section>
+    <!-- 8.1 Network + Residual -->
+    <section>
+        <h2>PyTorch: Network + Residual</h2>
+        <pre><code class="language-python" style="font-size: 0.68em !important; line-height: 1.35 !important;">class PINN(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(2, 20), nn.Tanh(),
+            nn.Linear(20, 20), nn.Tanh(),
+            nn.Linear(20, 1)
+        )
+    def forward(self, x, t):
+        return self.net(torch.cat([x, t], dim=1))
+
+def pde_residual(model, x, t, alpha=0.01):
+    x.requires_grad_(True)
+    t.requires_grad_(True)
+    u = model(x, t)
+    u_t = torch.autograd.grad(u, t, grad_outputs=torch.ones_like(u),
+                               create_graph=True)[0]
+    u_x = torch.autograd.grad(u, x, grad_outputs=torch.ones_like(u),
+                               create_graph=True)[0]
+    u_xx = torch.autograd.grad(u_x, x, grad_outputs=torch.ones_like(u_x),
+                                create_graph=True)[0]
+    return u_t - alpha * u_xx  # Heat equation residual</code></pre>
+        <div class="success-box tiny-text fragment">
+            <code>create_graph=True</code> in <code>autograd.grad</code> preserves the computation graph so we can backpropagate <em>through</em> the derivatives.
+        </div>
+    </section>
+
+    <!-- 8.2 Training Loop -->
+    <section>
+        <h2>PyTorch: Training Loop</h2>
+        <pre><code class="language-python" style="font-size: 0.68em !important; line-height: 1.35 !important;">model = PINN()
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+
+# Optional: make alpha trainable for inverse problems
+# alpha = torch.tensor([0.5], requires_grad=True)
+# optimizer = Adam(list(model.parameters()) + [alpha], lr=1e-3)
+
+for epoch in range(10000):
+    optimizer.zero_grad()
+
+    # Data loss (boundary + initial conditions)
+    u_pred = model(x_data, t_data)
+    loss_data = F.mse_loss(u_pred, u_data)
+
+    # Residual loss at collocation points
+    res = pde_residual(model, x_coll, t_coll, alpha=0.01)
+    loss_res = torch.mean(res ** 2)
+
+    # Total loss
+    loss = loss_data + loss_res
+    loss.backward()
+    optimizer.step()</code></pre>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 9: TRAINING CHALLENGES -->
+<!-- ============================================ -->
+<section>
+    <!-- 9.1 Why PINNs Fail -->
+    <section>
+        <h2>Why PINNs Can Fail</h2>
+        <div class="warning-box small-text">
+            <strong style="color: var(--accent-red);">1. Spectral bias</strong><br>
+            Neural networks learn low-frequency components first and struggle with high-frequency features. Solutions with sharp gradients or multi-scale behavior are hard.
+        </div>
+        <div class="warning-box small-text fragment">
+            <strong style="color: var(--accent-red);">2. Loss balancing</strong><br>
+            \(\mathcal{L}_{\text{data}}\) and \(\mathcal{L}_{\text{residual}}\) can differ by orders of magnitude. One term dominates training, the other is ignored.
+        </div>
+        <div class="warning-box small-text fragment">
+            <strong style="color: var(--accent-red);">3. Optimization landscape</strong><br>
+            The combined loss can have sharp, narrow minima. Standard optimizers (Adam, L-BFGS) may get stuck or converge slowly.
+        </div>
+        <p class="tiny-text fragment" style="color: #888; margin-top: 10px;">
+            Ref: Wang, Yu &amp; Perdikaris, <em>"When and why PINNs fail to train"</em>, JCP (2022)
+        </p>
+    </section>
+
+    <!-- 9.2 Spectral Bias Demo -->
+    <section>
+        <h2>Spectral Bias in Action</h2>
+        <p class="tiny-text" style="margin-bottom: 3px;">
+            Target: \(f(x) = \sin(x) + 0.5\sin(5x) + 0.3\sin(10x)\). Watch how the network captures low frequencies first.
+        </p>
+        <div id="spectral-bias-viz" style="width: 100%; height: 430px;"></div>
+    </section>
+
+    <!-- 9.3 Loss Balancing -->
+    <section>
+        <h2>Loss Balancing Strategies</h2>
+        <table class="comparison">
+            <tr><th>Strategy</th><th>How it works</th><th>Reference</th></tr>
+            <tr>
+                <td><strong>Fixed weights</strong></td>
+                <td>\(\mathcal{L} = \lambda_d \mathcal{L}_{\text{data}} + \lambda_r \mathcal{L}_{\text{res}}\) (manual tuning)</td>
+                <td class="tiny-text">Raissi et al. (2019)</td>
+            </tr>
+            <tr>
+                <td><strong>Learning rate annealing</strong></td>
+                <td>Adjust \(\lambda\) based on gradient magnitudes of each loss term</td>
+                <td class="tiny-text">Wang et al. (2021)</td>
+            </tr>
+            <tr>
+                <td><strong>NTK-based weighting</strong></td>
+                <td>Use Neural Tangent Kernel eigenvalues to balance convergence rates</td>
+                <td class="tiny-text">Wang et al. (2022)</td>
+            </tr>
+            <tr>
+                <td><strong>Self-adaptive weights</strong></td>
+                <td>Make \(\lambda\) a trainable parameter optimized alongside \(\theta\)</td>
+                <td class="tiny-text">McClenny &amp; Brainerd (2023)</td>
+            </tr>
+        </table>
+        <div class="highlight-box small-text fragment">
+            No single strategy works universally. This remains an active research area. Start with fixed weights and tune manually.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 10: PINN VARIANTS -->
+<!-- ============================================ -->
+<section>
+    <!-- 10.1 Fourier Features -->
+    <section>
+        <h2>Fourier Feature Networks</h2>
+        <p class="small-text">Map inputs through random Fourier features <em>before</em> the network:</p>
+        <div class="equation-box large">
+            \(\gamma(x) = \begin{bmatrix} \cos(2\pi B x) \\ \sin(2\pi B x) \end{bmatrix}, \quad B \sim \mathcal{N}(0, \sigma^2)\)
+        </div>
+        <p class="small-text fragment" style="margin-top: 10px;">Feed \(\gamma(x)\) into the network instead of raw \(x\). The random matrix \(B\) controls the frequency scale.</p>
+        <div class="success-box small-text fragment">
+            This one modification can <span class="keyword">dramatically improve</span> PINN performance on problems with multi-scale solutions, by overcoming spectral bias.
+        </div>
+        <p class="tiny-text fragment" style="color: #888;">
+            Ref: Tancik et al., <em>"Fourier Features Let Networks Learn High Frequency Functions"</em>, NeurIPS (2020)
+        </p>
+    </section>
+
+    <!-- 10.2 Other Variants -->
+    <section>
+        <h2>Other PINN Variants</h2>
+        <ul class="small-text">
+            <li><strong style="color: var(--accent-purple);">hp-VPINNs:</strong> Variational PINNs using test functions (weak form instead of strong form). Domain decomposition with local test functions for better accuracy.</li>
+            <li><strong style="color: var(--accent-blue);">cPINNs:</strong> Conservative PINNs that enforce conservation laws at subdomain interfaces.</li>
+            <li><strong style="color: var(--accent-green);">XPINNs:</strong> Extended PINNs with domain decomposition for large or complex domains.</li>
+            <li><strong style="color: var(--accent-cyan);">Causal PINNs:</strong> Enforce temporal causality during training: solve earlier times before later times, respecting the arrow of time.</li>
+        </ul>
+        <div class="principle-box small-text fragment">
+            The PINN framework is <span class="keyword">modular</span>: each variant addresses a specific limitation while keeping the core residual-minimization idea intact.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 11: WHEN TO USE PINNs -->
+<!-- ============================================ -->
+<section>
+    <h2>When to Use PINNs (and When Not To)</h2>
+    <div class="two-column">
+        <div class="success-box small-text">
+            <strong style="color: var(--accent-green);">PINNs shine when:</strong>
+            <ul style="font-size: 0.9em;">
+                <li>Sparse or noisy data + known physics</li>
+                <li>Inverse problems (parameter discovery)</li>
+                <li>High-dimensional PDEs</li>
+                <li>Complex geometries (mesh-free)</li>
+                <li>Multi-physics coupling</li>
+                <li>Transfer learning across conditions</li>
+            </ul>
+        </div>
+        <div class="warning-box small-text">
+            <strong style="color: var(--accent-red);">Classical methods are better when:</strong>
+            <ul style="font-size: 0.9em;">
+                <li>Well-posed forward problem, known PDE</li>
+                <li>Very high accuracy needed (\(10^{-8}\))</li>
+                <li>Real-time inference (training is slow)</li>
+                <li>Low-dimensional, simple geometry</li>
+                <li>Well-established solver exists</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- SUMMARY -->
+<!-- ============================================ -->
+<section data-background-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
+    <h2 style="color: #fff; text-align: center;">Summary</h2>
+    <div class="three-column" style="margin-top: 15px;">
+        <div class="highlight-box small-text">
+            <strong>1. Classical roots</strong><br>
+            Basis expansion + residual minimization (collocation methods). A long tradition in applied math.
+        </div>
+        <div class="success-box small-text">
+            <strong>2. PINNs</strong><br>
+            Replace basis with a neural network. Use AD for derivatives. Combine data + physics in one loss.
+        </div>
+        <div class="principle-box small-text">
+            <strong>3. Challenges</strong><br>
+            Spectral bias, loss balancing, optimization difficulties. Active research on variants and fixes.
+        </div>
+    </div>
+    <div class="equation-box" style="margin-top: 20px;">
+        \(\mathcal{L}(\theta) = \mathcal{L}_{\text{data}} + \mathcal{L}_{\text{residual}} + \mathcal{L}_{\text{boundary}}\)
+    </div>
+    <div class="tiny-text" style="margin-top: 15px; text-align: center; color: #888;">
+        <a class="ref-link" href="https://doi.org/10.1016/j.jcp.2018.10.045">Raissi, Perdikaris &amp; Karniadakis, JCP (2019)</a> &nbsp;|&nbsp;
+        <a class="ref-link" href="https://doi.org/10.1038/s42254-021-00314-5">Karniadakis et al., Nature Rev. Physics (2021)</a><br>
+        <a class="ref-link" href="https://doi.org/10.1016/j.jcp.2021.110768">Wang, Yu &amp; Perdikaris, JCP (2022)</a> &nbsp;|&nbsp;
+        <a class="ref-link" href="https://arxiv.org/abs/2006.10739">Tancik et al., NeurIPS (2020)</a>
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- LOOKING AHEAD -->
+<!-- ============================================ -->
+<section>
+    <h2>Looking Ahead</h2>
+    <p class="small-text">PINNs learn <em>one solution</em> for <em>one</em> PDE instance. What if we want to learn the <strong>solution operator</strong>?</p>
+    <div class="equation-box large fragment" style="margin-top: 20px;">
+        PINN: &nbsp; \(f \mapsto u_\theta\) &nbsp; (one input &rarr; one solution)
+        <br><br>
+        Neural Operator: &nbsp; \(\mathcal{G}_\theta: f \mapsto u\) &nbsp; (any input function &rarr; solution)
+    </div>
+    <div class="highlight-box small-text fragment" style="margin-top: 15px;">
+        <strong>Next lectures:</strong> Neural operators (DeepONets, Fourier Neural Operators) learn a <span class="keyword">family of solutions</span> at once. Train once, evaluate for any new input instantly.
+    </div>
+</section>
+
+</div><!-- end .slides -->
+</div><!-- end .reveal -->
+
+<!-- ============================================ -->
+<!-- REVEAL.JS SCRIPTS -->
+<!-- ============================================ -->
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/math/math.js"></script>
+<script>
+Reveal.initialize({
+    hash: true, slideNumber: true, transition: 'slide',
+    center: false, width: 1200, height: 700, margin: 0.04,
+    plugins: [RevealHighlight, RevealMath.KaTeX]
+});
+</script>
+
+<!-- ============================================ -->
+<!-- INTERACTIVE 1: BASIS FUNCTION MIXER -->
+<!-- ============================================ -->
+<script>
+(function() {
+    const el = document.getElementById('basis-mixer-viz');
+    if (!el) return;
+
+    const W = 1100, H = 440;
+    const margin = {top: 15, right: 20, bottom: 40, left: 50};
+    const plotW = 650, plotH = H - margin.top - margin.bottom;
+    const ctrlX = plotW + margin.left + 40;
+
+    const svg = d3.select(el).append('svg')
+        .attr('width', W).attr('height', H)
+        .attr('viewBox', `0 0 ${W} ${H}`);
+
+    const PI = Math.PI;
+    const N_PLOT = 200;
+    const xDomain = [0, 1];
+    const k2 = PI * PI; // PDE: u'' + pi^2 u = 0
+
+    // State
+    let coeffs = [1.0, 0.0, 0.0, 0.0];
+    let nColl = 15;
+
+    // Scales
+    const xScale = d3.scaleLinear().domain(xDomain).range([margin.left, margin.left + plotW]);
+    const yScale = d3.scaleLinear().domain([-2, 2]).range([margin.top + plotH, margin.top]);
+
+    // Axes
+    svg.append('g').attr('transform', `translate(0,${margin.top + plotH})`)
+        .call(d3.axisBottom(xScale).ticks(5)).selectAll('text').style('fill','#888');
+    svg.append('g').attr('transform', `translate(${margin.left},0)`)
+        .call(d3.axisLeft(yScale).ticks(5)).selectAll('text').style('fill','#888');
+    svg.selectAll('.domain, .tick line').style('stroke','#555');
+
+    // Axis labels
+    svg.append('text').attr('x', margin.left + plotW/2).attr('y', H - 2)
+        .attr('text-anchor','middle').attr('fill','#888').attr('font-size','12px').text('x');
+
+    // Basis functions
+    function basis(i, x) { return Math.sin((i+1) * PI * x); }
+    function basisDD(i, x) { return -((i+1)*PI)*((i+1)*PI) * Math.sin((i+1) * PI * x); }
+    function combinedU(x) { return coeffs.reduce((s, a, i) => s + a * basis(i, x), 0); }
+    function combinedUDD(x) { return coeffs.reduce((s, a, i) => s + a * basisDD(i, x), 0); }
+    function residual(x) { return combinedUDD(x) + k2 * combinedU(x); }
+
+    // Line generator
+    const line = d3.line().x(d => xScale(d[0])).y(d => yScale(d[1]));
+
+    // Target (exact solution)
+    const targetData = d3.range(N_PLOT).map(i => {
+        const x = i / (N_PLOT - 1);
+        return [x, Math.sin(PI * x)];
+    });
+    svg.append('path').datum(targetData).attr('d', line)
+        .attr('fill','none').attr('stroke','var(--accent-cyan)').attr('stroke-width',2)
+        .attr('stroke-dasharray','6,3').attr('opacity',0.7);
+
+    // Combined u path
+    const uPath = svg.append('path').attr('fill','none')
+        .attr('stroke','var(--accent-blue)').attr('stroke-width',2.5);
+
+    // Residual bars group
+    const resGroup = svg.append('g');
+
+    // Loss display
+    const lossText = svg.append('text').attr('x', ctrlX).attr('y', margin.top + 15)
+        .attr('fill','var(--accent-yellow)').attr('font-size','13px').attr('font-weight','bold');
+    const residualLabel = svg.append('text').attr('x', ctrlX).attr('y', margin.top + 32)
+        .attr('fill','#888').attr('font-size','10px');
+
+    // Legend
+    svg.append('line').attr('x1', ctrlX).attr('y1', margin.top + 50).attr('x2', ctrlX+25).attr('y2', margin.top + 50)
+        .attr('stroke','var(--accent-cyan)').attr('stroke-width',2).attr('stroke-dasharray','6,3');
+    svg.append('text').attr('x', ctrlX+30).attr('y', margin.top + 54).attr('fill','#aaa').attr('font-size','10px').text('Exact: sin(πx)');
+    svg.append('line').attr('x1', ctrlX).attr('y1', margin.top + 67).attr('x2', ctrlX+25).attr('y2', margin.top + 67)
+        .attr('stroke','var(--accent-blue)').attr('stroke-width',2.5);
+    svg.append('text').attr('x', ctrlX+30).attr('y', margin.top + 71).attr('fill','#aaa').attr('font-size','10px').text('Your u(x)');
+
+    // Sliders
+    const sliderNames = ['a₁ sin(πx)', 'a₂ sin(2πx)', 'a₃ sin(3πx)', 'a₄ sin(4πx)'];
+    const sliderColors = ['#61afef', '#98c379', '#c678dd', '#e5c07b'];
+    const sliderStartY = margin.top + 100;
+
+    sliderNames.forEach((name, i) => {
+        const y = sliderStartY + i * 55;
+        const fg = svg.append('foreignObject').attr('x', ctrlX - 5).attr('y', y).attr('width', 380).attr('height', 48);
+        const div = fg.append('xhtml:div').style('display','flex').style('align-items','center').style('gap','8px');
+        div.append('xhtml:label').style('min-width','90px').style('font-size','0.7em')
+            .style('color', sliderColors[i]).text(name);
+        const inp = div.append('xhtml:input').attr('type','range').attr('min','-1.5').attr('max','1.5')
+            .attr('step','0.05').attr('value', coeffs[i])
+            .style('flex','1').style('width','160px');
+        const val = div.append('xhtml:span').style('min-width','35px').style('font-size','0.7em')
+            .style('color', sliderColors[i]).text(coeffs[i].toFixed(2));
+        inp.on('input', function() {
+            coeffs[i] = +this.value;
+            val.text(coeffs[i].toFixed(2));
+            update();
+        });
+    });
+
+    // Collocation slider
+    const collY = sliderStartY + 4 * 55 + 15;
+    const collFg = svg.append('foreignObject').attr('x', ctrlX - 5).attr('y', collY).attr('width', 380).attr('height', 48);
+    const collDiv = collFg.append('xhtml:div').style('display','flex').style('align-items','center').style('gap','8px');
+    collDiv.append('xhtml:label').style('min-width','90px').style('font-size','0.7em').style('color','#e06c75').text('Collocation');
+    const collInp = collDiv.append('xhtml:input').attr('type','range').attr('min','3').attr('max','40')
+        .attr('step','1').attr('value', nColl).style('flex','1').style('width','160px');
+    const collVal = collDiv.append('xhtml:span').style('min-width','35px').style('font-size','0.7em')
+        .style('color','#e06c75').text(nColl);
+    collInp.on('input', function() {
+        nColl = +this.value;
+        collVal.text(nColl);
+        update();
+    });
+
+    function update() {
+        // Update u path
+        const uData = d3.range(N_PLOT).map(i => {
+            const x = i / (N_PLOT - 1);
+            return [x, combinedU(x)];
+        });
+        uPath.datum(uData).attr('d', line);
+
+        // Collocation points and residual bars
+        const collPts = d3.range(nColl).map(i => (i + 1) / (nColl + 1));
+        const resData = collPts.map(x => ({x, r: residual(x)}));
+
+        const bars = resGroup.selectAll('line.res-bar').data(resData);
+        bars.enter().append('line').attr('class','res-bar')
+            .merge(bars)
+            .attr('x1', d => xScale(d.x)).attr('x2', d => xScale(d.x))
+            .attr('y1', d => yScale(0)).attr('y2', d => yScale(d.r * 0.3))
+            .attr('stroke','var(--accent-red)').attr('stroke-width', 2).attr('opacity', 0.6);
+        bars.exit().remove();
+
+        const dots = resGroup.selectAll('circle.res-dot').data(resData);
+        dots.enter().append('circle').attr('class','res-dot')
+            .merge(dots)
+            .attr('cx', d => xScale(d.x)).attr('cy', yScale(0))
+            .attr('r', 3).attr('fill','var(--accent-red)').attr('opacity', 0.8);
+        dots.exit().remove();
+
+        // Loss
+        const loss = resData.reduce((s, d) => s + d.r * d.r, 0) / nColl;
+        lossText.text(`Loss = ${loss < 0.001 ? loss.toExponential(2) : loss.toFixed(3)}`);
+        residualLabel.text(loss < 0.01 ? '(excellent fit!)' : loss < 1 ? '(getting closer...)' : '(keep adjusting!)');
+    }
+
+    update();
+})();
+</script>
+
+<!-- ============================================ -->
+<!-- NEURAL NETWORK UTILITIES (shared) -->
+<!-- ============================================ -->
+<script>
+// Simple 1-hidden-layer neural network for browser demos
+function createNN(H) {
+    const nn = {
+        H: H,
+        w1: new Float64Array(H),
+        b1: new Float64Array(H),
+        w2: new Float64Array(H),
+        b2: 0,
+        // Adam state
+        mw1: new Float64Array(H), vw1: new Float64Array(H),
+        mb1: new Float64Array(H), vb1: new Float64Array(H),
+        mw2: new Float64Array(H), vw2: new Float64Array(H),
+        mb2: 0, vb2: 0,
+        t: 0
+    };
+    // Xavier init
+    const s1 = Math.sqrt(2.0 / 2);
+    const s2 = Math.sqrt(2.0 / H);
+    for (let i = 0; i < H; i++) {
+        nn.w1[i] = randn() * s1;
+        nn.b1[i] = randn() * 0.1;
+        nn.w2[i] = randn() * s2;
+    }
+    nn.b2 = 0;
+    return nn;
+}
+
+function randn() {
+    let u = 0, v = 0;
+    while (u === 0) u = Math.random();
+    while (v === 0) v = Math.random();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+function nnForward(nn, x) {
+    let u = nn.b2;
+    for (let i = 0; i < nn.H; i++) {
+        u += nn.w2[i] * Math.tanh(nn.w1[i] * x + nn.b1[i]);
+    }
+    return u;
+}
+
+function nnDeriv(nn, x) {
+    // du/dx = sum w2[i] * sech^2(w1[i]*x + b1[i]) * w1[i]
+    let dudx = 0;
+    for (let i = 0; i < nn.H; i++) {
+        const h = Math.tanh(nn.w1[i] * x + nn.b1[i]);
+        const s = 1 - h * h;
+        dudx += nn.w2[i] * s * nn.w1[i];
+    }
+    return dudx;
+}
+
+function nnAdamUpdate(nn, grads, lr, beta1, beta2, eps) {
+    beta1 = beta1 || 0.9; beta2 = beta2 || 0.999; eps = eps || 1e-8;
+    nn.t++;
+    const bc1 = 1 - Math.pow(beta1, nn.t);
+    const bc2 = 1 - Math.pow(beta2, nn.t);
+
+    for (let i = 0; i < nn.H; i++) {
+        // w1
+        nn.mw1[i] = beta1 * nn.mw1[i] + (1-beta1) * grads.dw1[i];
+        nn.vw1[i] = beta2 * nn.vw1[i] + (1-beta2) * grads.dw1[i] * grads.dw1[i];
+        nn.w1[i] -= lr * (nn.mw1[i]/bc1) / (Math.sqrt(nn.vw1[i]/bc2) + eps);
+        // b1
+        nn.mb1[i] = beta1 * nn.mb1[i] + (1-beta1) * grads.db1[i];
+        nn.vb1[i] = beta2 * nn.vb1[i] + (1-beta2) * grads.db1[i] * grads.db1[i];
+        nn.b1[i] -= lr * (nn.mb1[i]/bc1) / (Math.sqrt(nn.vb1[i]/bc2) + eps);
+        // w2
+        nn.mw2[i] = beta1 * nn.mw2[i] + (1-beta1) * grads.dw2[i];
+        nn.vw2[i] = beta2 * nn.vw2[i] + (1-beta2) * grads.dw2[i] * grads.dw2[i];
+        nn.w2[i] -= lr * (nn.mw2[i]/bc1) / (Math.sqrt(nn.vw2[i]/bc2) + eps);
+    }
+    // b2
+    nn.mb2 = beta1 * nn.mb2 + (1-beta1) * grads.db2;
+    nn.vb2 = beta2 * nn.vb2 + (1-beta2) * grads.db2 * grads.db2;
+    nn.b2 -= lr * (nn.mb2/bc1) / (Math.sqrt(nn.vb2/bc2) + eps);
+}
+</script>
+
+<!-- ============================================ -->
+<!-- INTERACTIVE 2+3: PINN TRAINING DEMO -->
+<!-- ============================================ -->
+<script>
+(function() {
+    const el = document.getElementById('pinn-training-viz');
+    if (!el) return;
+
+    const W = 1100, H = 410;
+    const m = {top: 10, right: 15, bottom: 35, left: 45};
+    const gap = 70;
+    const pw = (W - m.left - m.right - gap) / 2;
+    const ph = H - m.top - m.bottom - 45; // leave room for controls
+
+    const svg = d3.select(el).append('svg').attr('width', W).attr('height', H)
+        .attr('viewBox', `0 0 ${W} ${H}`);
+
+    // Config
+    const xMax = 3.0;
+    const trueAlpha = 1.0;
+    let mode = 'forward'; // 'forward' or 'inverse'
+    let nColl = 20;
+    let nHidden = 15;
+    let alpha = trueAlpha; // known in forward, learned in inverse
+    let alphaEst = 0.3; // initial guess for inverse
+    let nn, lossHistory, step, running, interval;
+
+    // Data for inverse mode
+    const invDataX = [0, 0.3, 0.6, 1.0, 1.5, 2.0, 2.5, 3.0];
+    const invDataU = invDataX.map(x => Math.exp(-x));
+
+    // Scales - solution plot
+    const x1L = m.left, x1R = m.left + pw;
+    const xS = d3.scaleLinear().domain([0, xMax]).range([x1L, x1R]);
+    const yS = d3.scaleLinear().domain([-0.2, 1.3]).range([m.top + ph, m.top]);
+
+    // Scales - loss plot
+    const x2L = m.left + pw + gap, x2R = x2L + pw;
+    let lossXS = d3.scaleLinear().domain([0, 500]).range([x2L, x2R]);
+    const lossYS = d3.scaleLog().domain([1e-6, 10]).range([m.top + ph, m.top]).clamp(true);
+
+    // Axes - solution
+    const solXAxis = svg.append('g').attr('transform', `translate(0,${m.top + ph})`);
+    const solYAxis = svg.append('g').attr('transform', `translate(${x1L},0)`);
+    function drawSolAxes() {
+        solXAxis.call(d3.axisBottom(xS).ticks(5));
+        solYAxis.call(d3.axisLeft(yS).ticks(5));
+        solXAxis.selectAll('text').style('fill','#888');
+        solYAxis.selectAll('text').style('fill','#888');
+    }
+    drawSolAxes();
+    svg.append('text').attr('x', (x1L + x1R)/2).attr('y', m.top + ph + 30)
+        .attr('text-anchor','middle').attr('fill','#888').attr('font-size','11px').text('x');
+    svg.append('text').attr('x', (x1L + x1R)/2).attr('y', m.top - 2)
+        .attr('text-anchor','middle').attr('fill','var(--accent-blue)').attr('font-size','11px').text('Solution');
+
+    // Axes - loss
+    const lossXAxisG = svg.append('g').attr('transform', `translate(0,${m.top + ph})`);
+    const lossYAxisG = svg.append('g').attr('transform', `translate(${x2L},0)`);
+    function drawLossAxes() {
+        lossXAxisG.call(d3.axisBottom(lossXS).ticks(5));
+        lossYAxisG.call(d3.axisLeft(lossYS).ticks(5, '.0e'));
+        lossXAxisG.selectAll('text').style('fill','#888');
+        lossYAxisG.selectAll('text').style('fill','#888');
+    }
+    drawLossAxes();
+    svg.selectAll('.domain, .tick line').style('stroke','#555');
+    svg.append('text').attr('x', (x2L + x2R)/2).attr('y', m.top + ph + 30)
+        .attr('text-anchor','middle').attr('fill','#888').attr('font-size','11px').text('Training step');
+    svg.append('text').attr('x', (x2L + x2R)/2).attr('y', m.top - 2)
+        .attr('text-anchor','middle').attr('fill','var(--accent-yellow)').attr('font-size','11px').text('Loss (log scale)');
+
+    // True solution
+    const trueLine = d3.line().x(d => xS(d[0])).y(d => yS(d[1]));
+    const trueData = d3.range(200).map(i => {
+        const x = (i / 199) * xMax;
+        return [x, Math.exp(-trueAlpha * x)];
+    });
+    svg.append('path').datum(trueData).attr('d', trueLine)
+        .attr('fill','none').attr('stroke','var(--accent-cyan)').attr('stroke-width',2)
+        .attr('stroke-dasharray','6,3').attr('opacity',0.6);
+
+    // IC point
+    svg.append('circle').attr('cx', xS(0)).attr('cy', yS(1)).attr('r', 5)
+        .attr('fill','var(--accent-green)').attr('stroke','#fff').attr('stroke-width',1);
+
+    // Inverse data points (hidden initially)
+    const invDotsG = svg.append('g').style('display','none');
+    invDataX.forEach((x, i) => {
+        if (i === 0) return; // skip IC, already shown
+        invDotsG.append('circle').attr('cx', xS(x)).attr('cy', yS(invDataU[i])).attr('r', 4)
+            .attr('fill','var(--accent-green)').attr('opacity', 0.8);
+    });
+
+    // NN prediction path
+    const nnPath = svg.append('path').attr('fill','none')
+        .attr('stroke','var(--accent-blue)').attr('stroke-width', 2.5);
+
+    // Collocation dots
+    const collG = svg.append('g');
+
+    // Loss lines
+    const lossLineFn = d3.line().defined(d => d[1] > 0).x(d => lossXS(d[0])).y(d => lossYS(d[1]));
+    const dataLossPath = svg.append('path').attr('fill','none')
+        .attr('stroke','var(--accent-green)').attr('stroke-width',1.5).attr('opacity',0.8);
+    const resLossPath = svg.append('path').attr('fill','none')
+        .attr('stroke','var(--accent-red)').attr('stroke-width',1.5).attr('opacity',0.8);
+    const totalLossPath = svg.append('path').attr('fill','none')
+        .attr('stroke','var(--accent-yellow)').attr('stroke-width',2);
+
+    // Loss legend
+    const legY = m.top + ph + 12;
+    svg.append('line').attr('x1', x2L+5).attr('y1', legY).attr('x2', x2L+20).attr('y2', legY)
+        .attr('stroke','var(--accent-green)').attr('stroke-width',1.5);
+    svg.append('text').attr('x', x2L+24).attr('y', legY+3).attr('fill','#aaa').attr('font-size','9px').text('Data');
+    svg.append('line').attr('x1', x2L+60).attr('y1', legY).attr('x2', x2L+75).attr('y2', legY)
+        .attr('stroke','var(--accent-red)').attr('stroke-width',1.5);
+    svg.append('text').attr('x', x2L+79).attr('y', legY+3).attr('fill','#aaa').attr('font-size','9px').text('Residual');
+    svg.append('line').attr('x1', x2L+130).attr('y1', legY).attr('x2', x2L+145).attr('y2', legY)
+        .attr('stroke','var(--accent-yellow)').attr('stroke-width',2);
+    svg.append('text').attr('x', x2L+149).attr('y', legY+3).attr('fill','#aaa').attr('font-size','9px').text('Total');
+
+    // Step counter
+    const stepText = svg.append('text').attr('x', x1R - 5).attr('y', m.top + 15)
+        .attr('text-anchor','end').attr('fill','#888').attr('font-size','11px');
+
+    // Controls (via foreignObject)
+    const ctrlY = m.top + ph + 17;
+    const ctrlFO = svg.append('foreignObject').attr('x', m.left).attr('y', ctrlY).attr('width', pw + 20).attr('height', 40);
+    const ctrlDiv = ctrlFO.append('xhtml:div').style('display','flex').style('gap','6px').style('align-items','center');
+
+    const btnStyle = 'padding:3px 12px; border-radius:4px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.08); color:#ccc; cursor:pointer; font-size:0.65em;';
+
+    const stepBtn = ctrlDiv.append('xhtml:button').attr('style', btnStyle).text('Step');
+    const runBtn = ctrlDiv.append('xhtml:button').attr('style', btnStyle).text('Run');
+    const resetBtn = ctrlDiv.append('xhtml:button').attr('style', btnStyle).text('Reset');
+
+    ctrlDiv.append('xhtml:span').style('font-size','0.6em').style('color','#888').style('margin-left','8px').text('Coll:');
+    const collSlider = ctrlDiv.append('xhtml:input').attr('type','range').attr('min','5').attr('max','50')
+        .attr('value', nColl).style('width','80px');
+    const collLabel = ctrlDiv.append('xhtml:span').style('font-size','0.6em').style('color','var(--accent-red)').text(nColl);
+
+    ctrlDiv.append('xhtml:span').style('font-size','0.6em').style('color','#888').style('margin-left','8px').text('Neurons:');
+    const neuronSlider = ctrlDiv.append('xhtml:input').attr('type','range').attr('min','5').attr('max','30')
+        .attr('value', nHidden).style('width','80px');
+    const neuronLabel = ctrlDiv.append('xhtml:span').style('font-size','0.6em').style('color','var(--accent-purple)').text(nHidden);
+
+    // Collocation points
+    function genColl() { return d3.range(nColl).map(i => (i + 0.5) * xMax / nColl); }
+    let xColl = genColl();
+
+    function init() {
+        nn = createNN(nHidden);
+        lossHistory = [];
+        step = 0;
+        running = false;
+        alphaEst = 0.3;
+        // Adam state for alpha
+        nn.mAlpha = 0; nn.vAlpha = 0;
+        xColl = genColl();
+        updatePlots();
+    }
+
+    function trainStep() {
+        const H = nn.H;
+        const lr = 0.005;
+        const grads = { dw1: new Float64Array(H), db1: new Float64Array(H),
+                        dw2: new Float64Array(H), db2: 0 };
+        let dAlpha = 0;
+        let lossData = 0, lossRes = 0;
+        const curAlpha = mode === 'forward' ? trueAlpha : alphaEst;
+
+        // --- Data loss ---
+        if (mode === 'forward') {
+            // Just IC: u(0) = 1
+            const u0 = nnForward(nn, 0);
+            const err = u0 - 1;
+            lossData = err * err;
+            // Gradients of u(0) w.r.t params
+            for (let i = 0; i < H; i++) {
+                const h = Math.tanh(nn.b1[i]); // w1*0 + b1 = b1
+                const s = 1 - h * h;
+                grads.dw2[i] += 2 * err * h;
+                grads.db1[i] += 2 * err * nn.w2[i] * s;
+                // dw1: w2[i]*s*x = 0 (x=0)
+            }
+            grads.db2 += 2 * err;
+        } else {
+            // Inverse: multiple data points
+            for (let j = 0; j < invDataX.length; j++) {
+                const x = invDataX[j];
+                const uPred = nnForward(nn, x);
+                const err = uPred - invDataU[j];
+                lossData += err * err;
+                for (let i = 0; i < H; i++) {
+                    const h = Math.tanh(nn.w1[i] * x + nn.b1[i]);
+                    const s = 1 - h * h;
+                    grads.dw2[i] += 2 * err * h;
+                    grads.dw1[i] += 2 * err * nn.w2[i] * s * x;
+                    grads.db1[i] += 2 * err * nn.w2[i] * s;
+                }
+                grads.db2 += 2 * err;
+            }
+            lossData /= invDataX.length;
+            const invN = invDataX.length;
+            for (let i = 0; i < H; i++) { grads.dw2[i] /= 1; grads.dw1[i] /= 1; grads.db1[i] /= 1; }
+            // Note: we accumulated 2*err*... for each point, need to normalize
+            const scale = 1.0 / invN;
+            for (let i = 0; i < H; i++) {
+                grads.dw2[i] *= scale;
+                grads.dw1[i] *= scale;
+                grads.db1[i] *= scale;
+            }
+            grads.db2 *= scale;
+        }
+
+        // --- Residual loss ---
+        // PDE: u' + alpha * u = 0 => residual = u'(x) + alpha * u(x)
+        for (let k = 0; k < xColl.length; k++) {
+            const x = xColl[k];
+            const u = nnForward(nn, x);
+            const up = nnDeriv(nn, x);
+            const r = up + curAlpha * u;
+            lossRes += r * r;
+
+            const rFactor = 2 * r / nColl;
+            for (let i = 0; i < H; i++) {
+                const h = Math.tanh(nn.w1[i] * x + nn.b1[i]);
+                const s = 1 - h * h;
+                // dr/dw2[i] = s*w1[i] + alpha*h
+                grads.dw2[i] += rFactor * (s * nn.w1[i] + curAlpha * h);
+                // dr/db2 = alpha
+                // dr/dw1[i] = w2[i]*s*(1 + alpha*x - 2*h*w1[i]*x)
+                grads.dw1[i] += rFactor * nn.w2[i] * s * (1 + curAlpha * x - 2 * h * nn.w1[i] * x);
+                // dr/db1[i] = w2[i]*s*(alpha - 2*w1[i]*h)
+                grads.db1[i] += rFactor * nn.w2[i] * s * (curAlpha - 2 * nn.w1[i] * h);
+            }
+            grads.db2 += rFactor * curAlpha;
+
+            if (mode === 'inverse') {
+                // dr/dalpha = u
+                dAlpha += rFactor * u;
+            }
+        }
+        lossRes /= nColl;
+
+        // Gradient clipping
+        const clipVal = 5.0;
+        for (let i = 0; i < H; i++) {
+            grads.dw1[i] = Math.max(-clipVal, Math.min(clipVal, grads.dw1[i]));
+            grads.db1[i] = Math.max(-clipVal, Math.min(clipVal, grads.db1[i]));
+            grads.dw2[i] = Math.max(-clipVal, Math.min(clipVal, grads.dw2[i]));
+        }
+        grads.db2 = Math.max(-clipVal, Math.min(clipVal, grads.db2));
+
+        nnAdamUpdate(nn, grads, lr);
+
+        // Update alpha in inverse mode
+        if (mode === 'inverse') {
+            dAlpha = Math.max(-clipVal, Math.min(clipVal, dAlpha));
+            nn.mAlpha = 0.9 * nn.mAlpha + 0.1 * dAlpha;
+            nn.vAlpha = 0.999 * nn.vAlpha + 0.001 * dAlpha * dAlpha;
+            const bc1 = 1 - Math.pow(0.9, nn.t);
+            const bc2 = 1 - Math.pow(0.999, nn.t);
+            alphaEst -= 0.005 * (nn.mAlpha / bc1) / (Math.sqrt(nn.vAlpha / bc2) + 1e-8);
+            alphaEst = Math.max(0.01, Math.min(5.0, alphaEst));
+        }
+
+        step++;
+        lossHistory.push({step, data: lossData, res: lossRes, total: lossData + lossRes});
+    }
+
+    function updatePlots() {
+        // NN prediction
+        const pts = d3.range(200).map(i => {
+            const x = (i / 199) * xMax;
+            return [x, nnForward(nn, x)];
+        });
+        nnPath.datum(pts).attr('d', trueLine);
+
+        // Collocation dots
+        const cdots = collG.selectAll('circle').data(xColl);
+        cdots.enter().append('circle').merge(cdots)
+            .attr('cx', d => xS(d)).attr('cy', yS(0)).attr('r', 2.5)
+            .attr('fill','var(--accent-red)').attr('opacity', 0.5);
+        cdots.exit().remove();
+
+        // Loss plot
+        if (lossHistory.length > 0) {
+            const maxStep = Math.max(500, lossHistory[lossHistory.length-1].step);
+            lossXS.domain([0, maxStep]);
+            drawLossAxes();
+            svg.selectAll('.domain, .tick line').style('stroke','#555');
+
+            dataLossPath.datum(lossHistory.map(d => [d.step, d.data])).attr('d', lossLineFn);
+            resLossPath.datum(lossHistory.map(d => [d.step, d.res])).attr('d', lossLineFn);
+            totalLossPath.datum(lossHistory.map(d => [d.step, d.total])).attr('d', lossLineFn);
+        }
+
+        stepText.text(`Step: ${step}`);
+
+        // Alpha display
+        const alphaDisp = document.getElementById('pinn-alpha-display');
+        if (mode === 'inverse') {
+            const err = Math.abs(alphaEst - trueAlpha);
+            const col = err < 0.05 ? 'var(--accent-green)' : 'var(--accent-yellow)';
+            alphaDisp.innerHTML = `Estimated &alpha; = <span style="color:${col}">${alphaEst.toFixed(3)}</span> (true = ${trueAlpha.toFixed(1)})`;
+        } else {
+            alphaDisp.textContent = '';
+        }
+    }
+
+    // Button handlers
+    stepBtn.on('click', () => { trainStep(); updatePlots(); });
+    runBtn.on('click', () => {
+        if (running) { clearInterval(interval); running = false; runBtn.text('Run'); return; }
+        running = true; runBtn.text('Pause');
+        interval = setInterval(() => {
+            for (let i = 0; i < 5; i++) trainStep();
+            updatePlots();
+            if (step > 5000) { clearInterval(interval); running = false; runBtn.text('Run'); }
+        }, 50);
+    });
+    resetBtn.on('click', () => {
+        if (running) { clearInterval(interval); running = false; runBtn.text('Run'); }
+        init();
+    });
+    collSlider.on('input', function() {
+        nColl = +this.value; collLabel.text(nColl);
+        xColl = genColl(); updatePlots();
+    });
+    neuronSlider.on('input', function() {
+        nHidden = +this.value; neuronLabel.text(nHidden);
+        if (running) { clearInterval(interval); running = false; runBtn.text('Run'); }
+        init();
+    });
+
+    // Mode toggle (called from HTML buttons)
+    window.pinnSetMode = function(m) {
+        mode = m;
+        document.getElementById('mode-fwd-btn').className = 'mode-btn' + (m === 'forward' ? ' active' : '');
+        document.getElementById('mode-inv-btn').className = 'mode-btn' + (m === 'inverse' ? ' active' : '');
+        invDotsG.style('display', m === 'inverse' ? null : 'none');
+        if (running) { clearInterval(interval); running = false; runBtn.text('Run'); }
+        init();
+    };
+
+    init();
+})();
+</script>
+
+<!-- ============================================ -->
+<!-- INTERACTIVE 4: SPECTRAL BIAS VISUALIZATION -->
+<!-- ============================================ -->
+<script>
+(function() {
+    const el = document.getElementById('spectral-bias-viz');
+    if (!el) return;
+
+    const W = 1100, H = 420;
+    const m = {top: 10, right: 15, bottom: 35, left: 45};
+    const gap = 70;
+    const pw = (W - m.left - m.right - gap) / 2;
+    const ph = H - m.top - m.bottom - 45;
+
+    const svg = d3.select(el).append('svg').attr('width', W).attr('height', H)
+        .attr('viewBox', `0 0 ${W} ${H}`);
+
+    // Target function: sin(x) + 0.5*sin(5x) + 0.3*sin(10x)
+    const freqs = [1, 5, 10];
+    const amps = [1.0, 0.5, 0.3];
+    const targetFn = x => amps.reduce((s, a, i) => s + a * Math.sin(freqs[i] * x), 0);
+    const xMin = 0, xMax = 2 * Math.PI;
+
+    const nHidden = 30;
+    let nn, step, lossHistory, running, interval;
+
+    // Training data: uniform grid
+    const nTrain = 80;
+    const trainX = d3.range(nTrain).map(i => xMin + (i + 0.5) * (xMax - xMin) / nTrain);
+    const trainY = trainX.map(targetFn);
+
+    // Scales - function plot
+    const x1L = m.left, x1R = m.left + pw;
+    const xS = d3.scaleLinear().domain([xMin, xMax]).range([x1L, x1R]);
+    const yS = d3.scaleLinear().domain([-2, 2]).range([m.top + ph, m.top]);
+
+    // Scales - bar chart
+    const x2L = m.left + pw + gap, x2R = x2L + pw;
+    const barScale = d3.scaleLinear().domain([0, 1.2]).range([0, ph]);
+    const barXS = d3.scaleBand().domain(['f=1','f=5','f=10']).range([x2L + 20, x2R - 20]).padding(0.3);
+
+    // Axes - function
+    svg.append('g').attr('transform', `translate(0,${m.top + ph})`).call(d3.axisBottom(xS).ticks(5))
+        .selectAll('text').style('fill','#888');
+    svg.append('g').attr('transform', `translate(${x1L},0)`).call(d3.axisLeft(yS).ticks(5))
+        .selectAll('text').style('fill','#888');
+    svg.selectAll('.domain, .tick line').style('stroke','#555');
+    svg.append('text').attr('x', (x1L + x1R)/2).attr('y', m.top + ph + 30)
+        .attr('text-anchor','middle').attr('fill','#888').attr('font-size','11px').text('x');
+    svg.append('text').attr('x', (x1L + x1R)/2).attr('y', m.top - 2)
+        .attr('text-anchor','middle').attr('fill','var(--accent-blue)').attr('font-size','11px').text('Function Fit');
+
+    // Bar chart axes
+    svg.append('g').attr('transform', `translate(0,${m.top + ph})`).call(d3.axisBottom(barXS))
+        .selectAll('text').style('fill','#888');
+    svg.append('text').attr('x', (x2L + x2R)/2).attr('y', m.top - 2)
+        .attr('text-anchor','middle').attr('fill','var(--accent-purple)').attr('font-size','11px').text('Frequency Amplitudes');
+
+    // Target function line
+    const lineFn = d3.line().x(d => xS(d[0])).y(d => yS(d[1]));
+    const nPlot = 300;
+    const targetData = d3.range(nPlot).map(i => {
+        const x = xMin + i * (xMax - xMin) / (nPlot - 1);
+        return [x, targetFn(x)];
+    });
+    svg.append('path').datum(targetData).attr('d', lineFn)
+        .attr('fill','none').attr('stroke','var(--accent-cyan)').attr('stroke-width',2)
+        .attr('stroke-dasharray','6,3').attr('opacity',0.6);
+
+    // NN fit line
+    const nnPath = svg.append('path').attr('fill','none')
+        .attr('stroke','var(--accent-blue)').attr('stroke-width',2.5);
+
+    // Target amplitude bars (outlines)
+    const barColors = ['var(--accent-blue)', 'var(--accent-green)', 'var(--accent-red)'];
+    const barLabels = ['f=1', 'f=5', 'f=10'];
+    barLabels.forEach((label, i) => {
+        const bx = barXS(label);
+        const bw = barXS.bandwidth() / 2 - 2;
+        // Target outline
+        svg.append('rect')
+            .attr('x', bx).attr('y', m.top + ph - barScale(amps[i]))
+            .attr('width', bw).attr('height', barScale(amps[i]))
+            .attr('fill','none').attr('stroke','#888').attr('stroke-width',1.5)
+            .attr('stroke-dasharray','4,2');
+    });
+
+    // NN amplitude bars
+    const nnBars = barLabels.map((label, i) => {
+        const bx = barXS(label) + barXS.bandwidth() / 2;
+        const bw = barXS.bandwidth() / 2 - 2;
+        return svg.append('rect')
+            .attr('x', bx).attr('y', m.top + ph)
+            .attr('width', bw).attr('height', 0)
+            .attr('fill', barColors[i]).attr('opacity', 0.7);
+    });
+
+    // Legend
+    svg.append('line').attr('x1', x1L+5).attr('y1', m.top + 15).attr('x2', x1L+25).attr('y2', m.top + 15)
+        .attr('stroke','var(--accent-cyan)').attr('stroke-width',2).attr('stroke-dasharray','6,3');
+    svg.append('text').attr('x', x1L+30).attr('y', m.top + 19).attr('fill','#aaa').attr('font-size','10px').text('Target');
+    svg.append('line').attr('x1', x1L+80).attr('y1', m.top + 15).attr('x2', x1L+100).attr('y2', m.top + 15)
+        .attr('stroke','var(--accent-blue)').attr('stroke-width',2.5);
+    svg.append('text').attr('x', x1L+105).attr('y', m.top + 19).attr('fill','#aaa').attr('font-size','10px').text('NN fit');
+    // Bar chart legend
+    svg.append('rect').attr('x', x2R-120).attr('y', m.top + 8).attr('width', 12).attr('height', 8)
+        .attr('fill','none').attr('stroke','#888').attr('stroke-dasharray','4,2');
+    svg.append('text').attr('x', x2R-104).attr('y', m.top + 16).attr('fill','#aaa').attr('font-size','9px').text('Target');
+    svg.append('rect').attr('x', x2R-55).attr('y', m.top + 8).attr('width', 12).attr('height', 8)
+        .attr('fill','var(--accent-blue)').attr('opacity',0.7);
+    svg.append('text').attr('x', x2R-39).attr('y', m.top + 16).attr('fill','#aaa').attr('font-size','9px').text('NN');
+
+    // Step/loss text
+    const infoText = svg.append('text').attr('x', x1R - 5).attr('y', m.top + 15)
+        .attr('text-anchor','end').attr('fill','#888').attr('font-size','11px');
+
+    // Controls
+    const ctrlY = m.top + ph + 17;
+    const ctrlFO = svg.append('foreignObject').attr('x', m.left).attr('y', ctrlY).attr('width', pw).attr('height', 35);
+    const ctrlDiv = ctrlFO.append('xhtml:div').style('display','flex').style('gap','6px').style('align-items','center');
+    const btnStyle = 'padding:3px 12px; border-radius:4px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.08); color:#ccc; cursor:pointer; font-size:0.65em;';
+    const stepBtn = ctrlDiv.append('xhtml:button').attr('style', btnStyle).text('Step (x10)');
+    const runBtn = ctrlDiv.append('xhtml:button').attr('style', btnStyle).text('Run');
+    const resetBtn = ctrlDiv.append('xhtml:button').attr('style', btnStyle).text('Reset');
+
+    // Compute Fourier amplitude at a specific frequency
+    function fourierAmp(fn, freq) {
+        const N = 200;
+        let sinSum = 0;
+        for (let i = 0; i < N; i++) {
+            const x = xMin + i * (xMax - xMin) / N;
+            sinSum += fn(x) * Math.sin(freq * x);
+        }
+        return Math.abs(2 * sinSum / N);
+    }
+
+    function init() {
+        nn = createNN(nHidden);
+        step = 0;
+        running = false;
+        updatePlots();
+    }
+
+    function trainSteps(n) {
+        const H = nn.H;
+        const lr = 0.002;
+        for (let iter = 0; iter < n; iter++) {
+            const grads = { dw1: new Float64Array(H), db1: new Float64Array(H),
+                            dw2: new Float64Array(H), db2: 0 };
+            let loss = 0;
+            for (let k = 0; k < nTrain; k++) {
+                const x = trainX[k];
+                const u = nnForward(nn, x);
+                const err = u - trainY[k];
+                loss += err * err;
+                const factor = 2 * err / nTrain;
+                for (let i = 0; i < H; i++) {
+                    const h = Math.tanh(nn.w1[i] * x + nn.b1[i]);
+                    const s = 1 - h * h;
+                    grads.dw2[i] += factor * h;
+                    grads.dw1[i] += factor * nn.w2[i] * s * x;
+                    grads.db1[i] += factor * nn.w2[i] * s;
+                }
+                grads.db2 += factor;
+            }
+            // Clip
+            for (let i = 0; i < H; i++) {
+                grads.dw1[i] = Math.max(-5, Math.min(5, grads.dw1[i]));
+                grads.db1[i] = Math.max(-5, Math.min(5, grads.db1[i]));
+                grads.dw2[i] = Math.max(-5, Math.min(5, grads.dw2[i]));
+            }
+            grads.db2 = Math.max(-5, Math.min(5, grads.db2));
+            nnAdamUpdate(nn, grads, lr);
+            step++;
+        }
+    }
+
+    function updatePlots() {
+        // NN fit
+        const pts = d3.range(nPlot).map(i => {
+            const x = xMin + i * (xMax - xMin) / (nPlot - 1);
+            return [x, nnForward(nn, x)];
+        });
+        nnPath.datum(pts).attr('d', lineFn);
+
+        // Frequency amplitudes
+        const nnFn = x => nnForward(nn, x);
+        freqs.forEach((freq, i) => {
+            const amp = fourierAmp(nnFn, freq);
+            const bh = barScale(Math.min(amp, 1.2));
+            nnBars[i].attr('y', m.top + ph - bh).attr('height', bh);
+        });
+
+        // Info
+        let loss = 0;
+        for (let k = 0; k < nTrain; k++) {
+            const err = nnForward(nn, trainX[k]) - trainY[k];
+            loss += err * err;
+        }
+        loss /= nTrain;
+        infoText.text(`Step: ${step}  Loss: ${loss < 0.001 ? loss.toExponential(2) : loss.toFixed(4)}`);
+    }
+
+    stepBtn.on('click', () => { trainSteps(10); updatePlots(); });
+    runBtn.on('click', () => {
+        if (running) { clearInterval(interval); running = false; runBtn.text('Run'); return; }
+        running = true; runBtn.text('Pause');
+        interval = setInterval(() => {
+            trainSteps(10);
+            updatePlots();
+            if (step > 10000) { clearInterval(interval); running = false; runBtn.text('Run'); }
+        }, 50);
+    });
+    resetBtn.on('click', () => {
+        if (running) { clearInterval(interval); running = false; runBtn.text('Run'); }
+        init();
+    });
+
+    init();
+})();
+</script>
+
+</body>
+</html>
