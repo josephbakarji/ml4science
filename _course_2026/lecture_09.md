@@ -15,6 +15,9 @@ material:
 - name: Lecture Slides (Parts 1 & 2)
   type: slides
   url: /static_files/slides/sindy.html
+- name: PDE FIND
+  type: video
+  url: https://www.youtube.com/watch?v=oI3grKBxkqM
 hide_from_announcments: false
 folder: 09_system_identification
 ---
