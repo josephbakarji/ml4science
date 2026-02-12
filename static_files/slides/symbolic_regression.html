@@ -1,0 +1,877 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Symbolic Regression</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/night.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/monokai.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --accent-blue: #61afef;
+            --accent-green: #98c379;
+            --accent-yellow: #e5c07b;
+            --accent-red: #e06c75;
+            --accent-purple: #c678dd;
+            --accent-cyan: #56b6c2;
+        }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; }
+        .reveal h1 { font-size: 2.2em; }
+        .reveal h2 { font-size: 1.6em; color: var(--accent-blue); }
+        .reveal h3 { font-size: 1.3em; }
+        .reveal blockquote {
+            font-style: italic; background: rgba(255,255,255,0.05);
+            padding: 20px 30px; border-left: 4px solid #42affa; width: 90%;
+            margin: 0 auto; border-radius: 0 8px 8px 0;
+        }
+        .reveal .slides section { text-align: left; }
+        .reveal ul { display: block; }
+        .reveal li { margin: 0.5em 0; font-size: 0.85em; }
+        .center-text { text-align: center; }
+        .highlight-box {
+            background: rgba(66, 175, 250, 0.15); padding: 15px 20px;
+            border-radius: 8px; margin: 15px 0; border: 1px solid rgba(66, 175, 250, 0.3);
+        }
+        .warning-box {
+            background: rgba(224, 108, 117, 0.15); padding: 15px 20px;
+            border-radius: 8px; margin: 15px 0; border: 1px solid rgba(224, 108, 117, 0.3);
+        }
+        .success-box {
+            background: rgba(152, 195, 121, 0.15); padding: 15px 20px;
+            border-radius: 8px; margin: 15px 0; border: 1px solid rgba(152, 195, 121, 0.3);
+        }
+        .principle-box {
+            background: rgba(198, 120, 221, 0.15); padding: 15px 20px;
+            border-radius: 8px; margin: 15px 0; border: 1px solid rgba(198, 120, 221, 0.3);
+        }
+        .equation-box {
+            background: rgba(255,255,255,0.08); padding: 12px 15px;
+            border-radius: 8px; text-align: center; margin: 10px 0; font-size: 0.85em;
+        }
+        .equation-box.large { font-size: 1.1em; padding: 18px 20px; }
+        .small-text { font-size: 0.75em; }
+        .tiny-text { font-size: 0.65em; }
+        pre code { font-size: 0.65em !important; line-height: 1.4 !important; }
+        .reveal pre { width: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .two-column { display: flex; gap: 30px; align-items: flex-start; }
+        .two-column > div { flex: 1; }
+        .three-column { display: flex; gap: 20px; }
+        .three-column > div { flex: 1; }
+        svg text { fill: #abb2bf; font-size: 12px; }
+        .keyword { color: var(--accent-yellow); font-weight: bold; }
+        .em-blue { color: var(--accent-blue); }
+        .em-green { color: var(--accent-green); }
+        .em-red { color: var(--accent-red); }
+        .em-purple { color: var(--accent-purple); }
+        .em-cyan { color: var(--accent-cyan); }
+        table.comparison {
+            width: 100%; border-collapse: collapse; font-size: 0.75em; margin: 10px 0;
+        }
+        table.comparison th {
+            background: rgba(66, 175, 250, 0.2); padding: 8px 12px; text-align: left;
+            border-bottom: 2px solid rgba(66, 175, 250, 0.4);
+        }
+        table.comparison td { padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        table.comparison tr:hover td { background: rgba(255,255,255,0.03); }
+        .btn {
+            display: inline-block; padding: 6px 16px; border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08);
+            color: #ccc; cursor: pointer; font-size: 0.7em; transition: all 0.2s;
+        }
+        .btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+        .btn.active { background: rgba(66, 175, 250, 0.3); border-color: var(--accent-blue); color: #fff; }
+        a.ref-link { color: var(--accent-cyan); text-decoration: none; border-bottom: 1px dotted var(--accent-cyan); }
+        a.ref-link:hover { color: #fff; }
+        /* Tree node styles */
+        .tree-node circle { stroke-width: 2px; }
+        .tree-node text { fill: #fff; font-size: 11px; font-weight: bold; text-anchor: middle; dominant-baseline: central; }
+        .tree-link { fill: none; stroke: #555; stroke-width: 1.5px; }
+    </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ============================================ -->
+<!-- TITLE SLIDE -->
+<!-- ============================================ -->
+<section class="center-text" data-background-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
+    <h1>Symbolic Regression</h1>
+    <p style="font-size: 0.9em; color: var(--accent-green); margin-top: 0.5em;">Discovering Equations with Genetic Programming</p>
+    <p class="small-text" style="margin-top: 2em; color: #888;">
+        ML for Science and Engineering &mdash; Lecture 12
+    </p>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 1: MOTIVATION -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>The Limits of Fixed Libraries</h2>
+        <div class="two-column">
+            <div>
+                <p class="small-text">In SINDy, we chose a <span class="em-blue">fixed library</span> of candidate terms:</p>
+                <div class="equation-box">$\dot{x} = \theta_1 x + \theta_2 x^2 + \theta_3 \sin(x) + \cdots$</div>
+                <p class="small-text fragment">This works when we have a good guess about what terms might appear.</p>
+            </div>
+            <div class="fragment">
+                <p class="small-text">But what if the true equation is:</p>
+                <div class="equation-box" style="border: 1px solid var(--accent-red);">$y = \frac{\sin(x^2)}{1 + e^{-x}}$</div>
+                <p class="small-text">No finite polynomial library will contain this term. We need to <span class="keyword">search over functional forms</span> themselves.</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>What is Symbolic Regression?</h2>
+        <blockquote style="margin-bottom: 15px;">
+            Given data $(x, y)$, find a mathematical expression $f$ such that $y \approx f(x)$.
+        </blockquote>
+        <div class="three-column small-text" style="margin-top: 15px;">
+            <div class="highlight-box fragment" style="text-align: center;">
+                <strong>Linear Regression</strong><br>
+                Fix form: $y = ax + b$<br>Search over: $a, b$
+            </div>
+            <div class="principle-box fragment" style="text-align: center;">
+                <strong>SINDy</strong><br>
+                Fix library: $[1, x, x^2, \sin x]$<br>Search over: $\theta$
+            </div>
+            <div class="success-box fragment" style="text-align: center;">
+                <strong>Symbolic Regression</strong><br>
+                Fix nothing<br>Search over: <em>all expressions</em>
+            </div>
+        </div>
+        <div class="fragment warning-box small-text" style="margin-top: 10px;">
+            The search space is enormous: all possible compositions of $+, -, \times, \div, \sin, \cos, \exp, \log, \dots$ applied to variables and constants.
+        </div>
+    </section>
+
+    <section>
+        <h2>A Brief History</h2>
+        <ul class="small-text">
+            <li class="fragment"><strong>1992</strong> &mdash; <a class="ref-link" href="https://en.wikipedia.org/wiki/Genetic_programming" target="_blank">John Koza</a>: Genetic Programming. Evolving computer programs (trees) via natural selection.</li>
+            <li class="fragment"><strong>2009</strong> &mdash; <a class="ref-link" href="https://doi.org/10.1126/science.1165893" target="_blank">Schmidt &amp; Lipson, <em>Science</em></a>: Distilling free-form natural laws from experimental data. Rediscovered Newton's laws from pendulum data.</li>
+            <li class="fragment"><strong>2023</strong> &mdash; <a class="ref-link" href="https://doi.org/10.48550/arXiv.2305.01582" target="_blank">Cranmer, <em>PySR</em></a>: High-performance symbolic regression combining evolutionary search with modern optimizations.</li>
+        </ul>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 2: TREE REPRESENTATION -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Expressions as Trees</h2>
+        <p class="small-text">Every mathematical expression has a natural <span class="keyword">tree structure</span>:</p>
+        <div style="display: flex; gap: 20px; align-items: center; margin-top: 10px;">
+            <div style="flex: 1;">
+                <div class="equation-box large">$x + \sin(y)$</div>
+                <p class="small-text fragment" style="margin-top: 10px;">
+                    <span class="em-purple">Internal nodes</span> = operators ($+, \sin$)<br>
+                    <span class="em-green">Leaves</span> = variables ($x, y$) or constants
+                </p>
+            </div>
+            <div id="tree-example-1" style="flex: 1; display: flex; justify-content: center;"></div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Interactive: Expression Trees</h2>
+        <p class="small-text">Click an expression to see its tree representation:</p>
+        <div style="display: flex; gap: 5px; flex-wrap: wrap; margin: 8px 0;">
+            <span class="btn expr-btn active" onclick="showTree('add_sin')">$x + \sin(y)$</span>
+            <span class="btn expr-btn" onclick="showTree('lv')">$\alpha x - \beta xy$</span>
+            <span class="btn expr-btn" onclick="showTree('logistic')">$\frac{x}{1 + e^{-x}}$</span>
+            <span class="btn expr-btn" onclick="showTree('nested')">$\sin(x^2) + 0.5$</span>
+        </div>
+        <div style="display: flex; gap: 20px; height: 380px;">
+            <div id="tree-interactive" style="flex: 1; display: flex; justify-content: center;"></div>
+            <div style="flex: 0 0 250px; display: flex; flex-direction: column; justify-content: center;">
+                <div id="tree-info" class="highlight-box small-text">
+                    <div><strong>Nodes:</strong> <span id="tree-node-count">3</span></div>
+                    <div><strong>Depth:</strong> <span id="tree-depth">2</span></div>
+                    <div><strong>Operators:</strong> <span id="tree-ops">+, sin</span></div>
+                    <div style="margin-top: 8px;"><strong>Expression:</strong></div>
+                    <div id="tree-expr" style="color: var(--accent-green); font-family: monospace; margin-top: 4px;">x + sin(y)</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>The Search Space</h2>
+        <p class="small-text">With $k$ operators and $v$ variables, the number of possible trees of depth $d$ grows <span class="em-red">super-exponentially</span>:</p>
+        <table class="comparison" style="margin-top: 10px;">
+            <tr><th>Depth</th><th>Approximate # trees</th><th>Example</th></tr>
+            <tr><td>1</td><td>$\sim v$ (just variables)</td><td>$x$</td></tr>
+            <tr><td>2</td><td>$\sim k \cdot v^2$</td><td>$x + y$</td></tr>
+            <tr><td>3</td><td>$\sim k^3 \cdot v^4$</td><td>$\sin(x) + y \cdot z$</td></tr>
+            <tr><td>5</td><td>$> 10^{10}$</td><td>Complex nested expressions</td></tr>
+        </table>
+        <div class="fragment principle-box small-text" style="margin-top: 10px;">
+            Exhaustive search is impossible. We need a <span class="em-purple">heuristic search</span> strategy. Genetic algorithms are a natural fit: they evolve a population of trees.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 3: GENETIC ALGORITHM -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>The Genetic Algorithm</h2>
+        <p class="small-text">Inspired by biological evolution: a population of candidate solutions evolves over generations.</p>
+        <div class="three-column small-text" style="margin-top: 15px;">
+            <div class="highlight-box fragment" style="text-align: center;">
+                <strong>1. Initialize</strong><br>Random population of expression trees
+            </div>
+            <div class="success-box fragment" style="text-align: center;">
+                <strong>2. Evaluate</strong><br>Fitness = how well each tree fits the data
+            </div>
+            <div class="principle-box fragment" style="text-align: center;">
+                <strong>3. Evolve</strong><br>Select, crossover, mutate. Repeat.
+            </div>
+        </div>
+        <div class="equation-box fragment" style="margin-top: 15px;">
+            $\text{fitness}(f) = \underbrace{\text{MSE}(f, \text{data})}_{\text{accuracy}} + \alpha \cdot \underbrace{|f|}_{\text{complexity}}$
+        </div>
+    </section>
+
+    <section>
+        <h2>Selection</h2>
+        <p class="small-text"><span class="keyword">Tournament selection</span>: pick $k$ individuals at random, keep the best one.</p>
+        <div id="selection-viz" style="display: flex; justify-content: center; margin-top: 10px;"></div>
+        <div class="fragment small-text" style="margin-top: 10px;">
+            <p>Other strategies: roulette wheel (probability proportional to fitness), rank selection, elitism (always keep the best).</p>
+        </div>
+    </section>
+
+    <section>
+        <h2>Crossover: Swapping Subtrees</h2>
+        <p class="small-text">Pick a random subtree in each parent, swap them to create offspring:</p>
+        <div id="crossover-viz" style="display: flex; justify-content: center; margin-top: 10px;"></div>
+        <div class="fragment highlight-box small-text" style="margin-top: 10px;">
+            Crossover combines <span class="em-blue">structural features</span> from both parents. A good subtree from one parent can be transplanted into another context.
+        </div>
+    </section>
+
+    <section>
+        <h2>Mutation: Random Changes</h2>
+        <p class="small-text">With some probability, randomly alter part of a tree:</p>
+        <div class="two-column small-text" style="margin-top: 10px;">
+            <div>
+                <div class="highlight-box">
+                    <strong>Point mutation</strong><br>
+                    Change one node: $+ \to \times$, or $x \to y$, or $0.5 \to 0.3$
+                </div>
+                <div class="highlight-box fragment">
+                    <strong>Subtree mutation</strong><br>
+                    Replace a subtree with a new random one
+                </div>
+            </div>
+            <div>
+                <div class="warning-box fragment">
+                    <strong>Hoist mutation</strong><br>
+                    Replace tree with one of its own subtrees (simplification)
+                </div>
+                <div class="success-box fragment">
+                    <strong>Constant optimization</strong><br>
+                    Fine-tune numeric constants via gradient descent
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>The Full Loop</h2>
+        <pre style="max-height: 500px !important;"><code class="language-python" data-trim data-noescape style="font-size: 0.62em !important; line-height: 1.35 !important; max-height: none !important;">
+population = [random_tree() for _ in range(pop_size)]
+
+for generation in range(max_generations):
+    # Evaluate fitness
+    for tree in population:
+        tree.fitness = mse(tree, data) + alpha * tree.size
+
+    # Selection + reproduction
+    offspring = []
+    while len(offspring) < pop_size:
+        p1 = tournament_select(population, k=5)
+        p2 = tournament_select(population, k=5)
+        c1, c2 = crossover(p1, p2)
+        c1 = maybe_mutate(c1, rate=0.1)
+        c2 = maybe_mutate(c2, rate=0.1)
+        offspring.extend([c1, c2])
+
+    # Elitism: keep best from previous generation
+    population = elites(population, n=5) + offspring
+        </code></pre>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 4: INTERACTIVE EVOLUTION -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Watch Evolution in Action</h2>
+        <p class="small-text">Target: discover $f(x)$ from noisy data. Watch the population evolve.</p>
+        <div style="display: flex; gap: 10px; height: 430px;">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 3px;">
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <span class="btn" style="font-size:0.55em;padding:2px 7px;" onclick="gpStep()">Step</span>
+                    <span class="btn" style="font-size:0.55em;padding:2px 7px;" onclick="gpRun10()">Run 10</span>
+                    <span class="btn" style="font-size:0.55em;padding:2px 7px;" onclick="gpReset()">Reset</span>
+                    <span class="tiny-text" id="gp-gen" style="color:var(--accent-yellow);"></span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <label class="tiny-text">target:</label>
+                    <select id="gp-target" style="font-size:0.6em; background:#222; color:#ccc; border:1px solid #555; border-radius:3px;" onchange="gpReset()">
+                        <option value="sinx">sin(x)</option>
+                        <option value="x2">x&sup2;</option>
+                        <option value="xsinx" selected>x&middot;sin(x)</option>
+                        <option value="exp">e&sup1;&frasl;&sup2; &middot; x&sup2;</option>
+                    </select>
+                </div>
+                <div id="gp-fit-plot" style="flex: 1; min-height: 0;"></div>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 3px;">
+                <div id="gp-mse-plot" style="flex: 1; min-height: 0;"></div>
+                <div class="highlight-box" style="padding: 6px 10px;">
+                    <div class="tiny-text"><strong>Best expression:</strong></div>
+                    <div id="gp-best-expr" style="font-family: monospace; font-size: 0.6em; color: var(--accent-green); min-height: 1.2em;"></div>
+                    <div class="tiny-text" style="margin-top: 2px;">MSE: <span id="gp-best-mse" style="color: var(--accent-yellow);"></span> | Size: <span id="gp-best-size" style="color: var(--accent-cyan);"></span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 5: PARETO FRONT -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>The Accuracy-Complexity Tradeoff</h2>
+        <p class="small-text">More complex expressions fit better, but are they really better?</p>
+        <div class="two-column small-text" style="margin-top: 10px;">
+            <div>
+                <table class="comparison">
+                    <tr><th>Expression</th><th>MSE</th><th>Size</th></tr>
+                    <tr><td>$0.3$</td><td>2.40</td><td>1</td></tr>
+                    <tr><td>$0.9x$</td><td>0.85</td><td>3</td></tr>
+                    <tr><td>$x \sin(x)$</td><td>0.001</td><td>5</td></tr>
+                    <tr><td>$x \sin(x) + 0.001x^3 - \cdots$</td><td>0.0009</td><td>15</td></tr>
+                </table>
+            </div>
+            <div class="fragment">
+                <div class="principle-box">
+                    <strong>Pareto front</strong>: the set of solutions where you cannot improve accuracy without increasing complexity (or vice versa).
+                </div>
+                <p class="fragment" style="margin-top: 10px;">The "knee" of the Pareto front often reveals the <span class="em-green">true equation</span>: a sharp drop in error for minimal complexity increase.</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>PySR: Modern Symbolic Regression</h2>
+        <pre style="max-height: 500px !important;"><code class="language-python" data-trim data-noescape style="font-size: 0.65em !important; line-height: 1.4 !important; max-height: none !important;">
+from pysr import PySRRegressor
+import numpy as np
+
+X = np.random.randn(100, 2)      # two input variables
+y = X[:, 0] * np.sin(X[:, 1])    # true relationship
+
+model = PySRRegressor(
+    niterations=100,
+    binary_operators=["+", "-", "*", "/"],
+    unary_operators=["sin", "cos", "exp"],
+    populations=20,               # parallel populations
+    maxsize=25,                   # max expression complexity
+)
+
+model.fit(X, y)
+print(model)                      # Pareto front of equations
+        </code></pre>
+        <div class="fragment small-text" style="margin-top: 8px;">
+            <p>PySR outputs a <span class="em-green">Pareto front</span> of equations ranked by complexity vs. loss. Uses Julia backend for speed.</p>
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 6: PRACTICAL CONSIDERATIONS -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Challenges and Solutions</h2>
+        <div class="two-column small-text">
+            <div>
+                <h3 style="color: var(--accent-red);">Challenges</h3>
+                <ul>
+                    <li class="fragment"><strong>Bloat</strong>: trees grow large without improving fitness</li>
+                    <li class="fragment"><strong>Premature convergence</strong>: population loses diversity</li>
+                    <li class="fragment"><strong>Constants</strong>: hard to evolve precise numeric values</li>
+                    <li class="fragment"><strong>Runtime</strong>: expensive for large datasets</li>
+                </ul>
+            </div>
+            <div>
+                <h3 style="color: var(--accent-green);">Solutions</h3>
+                <ul>
+                    <li class="fragment">Parsimony pressure, tree depth limits</li>
+                    <li class="fragment">Multiple populations, island model</li>
+                    <li class="fragment">Gradient-based constant optimization</li>
+                    <li class="fragment">Parallelization, batching, Julia/C++</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Symbolic Regression in Context</h2>
+        <table class="comparison" style="margin-top: 15px;">
+            <tr><th>Method</th><th>Search space</th><th>Interpretable?</th><th>Extrapolates?</th></tr>
+            <tr><td>Neural network</td><td>Weights of fixed architecture</td><td class="em-red">No</td><td class="em-red">Poorly</td></tr>
+            <tr><td>SINDy</td><td>Coefficients of fixed library</td><td class="em-green">Yes</td><td class="em-green">If correct</td></tr>
+            <tr><td><strong>Symbolic regression</strong></td><td>All expressions</td><td class="em-green">Yes</td><td class="em-green">If correct</td></tr>
+            <tr><td>Physics-informed NN</td><td>NN + known PDE constraint</td><td class="em-yellow">Partially</td><td class="em-yellow">Somewhat</td></tr>
+        </table>
+        <div class="fragment highlight-box small-text" style="margin-top: 10px;">
+            Symbolic regression is the most <em>flexible</em> equation discovery method, but also the most <em>computationally expensive</em>. Use SINDy when you have a good library guess. Use SR when you do not.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SUMMARY -->
+<!-- ============================================ -->
+<section class="center-text" data-background-gradient="linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1a1a2e 100%)">
+    <h2 style="color: #fff;">Summary</h2>
+    <div class="three-column small-text" style="margin-top: 30px;">
+        <div class="highlight-box" style="text-align: center;">
+            <strong>1. Represent</strong><br>Expressions as trees.<br>Operators + variables + constants.
+        </div>
+        <div class="success-box" style="text-align: center;">
+            <strong>2. Evolve</strong><br>Genetic algorithm: select, crossover, mutate over generations.
+        </div>
+        <div class="principle-box" style="text-align: center;">
+            <strong>3. Select</strong><br>Pareto front: accuracy vs. complexity. Find the knee.
+        </div>
+    </div>
+    <div class="equation-box" style="margin-top: 30px; font-size: 1em;">
+        Data $\longrightarrow$ evolve expression trees $\longrightarrow$ discover $f(x)$
+    </div>
+    <p class="tiny-text" style="margin-top: 30px; color: #888;">
+        <a class="ref-link" href="https://doi.org/10.1126/science.1165893" target="_blank">Schmidt &amp; Lipson, Science (2009)</a> &nbsp;|&nbsp;
+        <a class="ref-link" href="https://github.com/MilesCranmer/PySR" target="_blank">PySR (Cranmer, 2023)</a>
+    </p>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/math/math.js"></script>
+<script>
+Reveal.initialize({
+    hash: true, slideNumber: true, transition: 'slide',
+    center: false, width: 1200, height: 700, margin: 0.04,
+    plugins: [RevealHighlight, RevealMath.KaTeX]
+});
+</script>
+
+<script>
+// =========================================================
+// TREE RENDERING UTILITY
+// =========================================================
+function renderTree(containerId, treeData, W, H) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    el.innerHTML = '';
+    const svg = d3.select('#'+containerId).append('svg').attr('width', W).attr('height', H);
+    const g = svg.append('g').attr('transform', `translate(${W/2}, 25)`);
+    const root = d3.hierarchy(treeData);
+    const treeLayout = d3.tree().size([W - 80, H - 60]);
+    treeLayout(root);
+    // Center horizontally
+    const xOff = 0;
+    // Links
+    g.selectAll('.tree-link').data(root.links()).join('path').attr('class','tree-link')
+        .attr('d', d3.linkVertical().x(d => d.x - W/2 + 40).y(d => d.y));
+    // Nodes
+    const nodes = g.selectAll('.tree-node').data(root.descendants()).join('g').attr('class','tree-node')
+        .attr('transform', d => `translate(${d.x - W/2 + 40},${d.y})`);
+    nodes.append('circle')
+        .attr('r', d => d.children ? 20 : 16)
+        .attr('fill', d => d.children ? 'var(--accent-purple)' : 'var(--accent-green)')
+        .attr('stroke', d => d.children ? 'var(--accent-purple)' : 'var(--accent-green)')
+        .attr('opacity', 0.85);
+    nodes.append('text').text(d => d.data.name);
+}
+
+// Tree definitions
+const trees = {
+    add_sin: {
+        name: '+', children: [
+            {name: 'x'},
+            {name: 'sin', children: [{name: 'y'}]}
+        ]
+    },
+    lv: {
+        name: '-', children: [
+            {name: '*', children: [{name: 'α'}, {name: 'x'}]},
+            {name: '*', children: [{name: 'β'}, {name: '*', children: [{name: 'x'}, {name: 'y'}]}]}
+        ]
+    },
+    logistic: {
+        name: '/', children: [
+            {name: 'x'},
+            {name: '+', children: [
+                {name: '1'},
+                {name: 'exp', children: [{name: '-', children: [{name: 'x'}]}]}
+            ]}
+        ]
+    },
+    nested: {
+        name: '+', children: [
+            {name: 'sin', children: [{name: '*', children: [{name: 'x'}, {name: 'x'}]}]},
+            {name: '0.5'}
+        ]
+    }
+};
+
+const treeInfo = {
+    add_sin: {nodes: 4, depth: 2, ops: '+, sin', expr: 'x + sin(y)'},
+    lv: {nodes: 7, depth: 4, ops: '-, *, *', expr: 'αx - βxy'},
+    logistic: {nodes: 6, depth: 3, ops: '/, +, exp, -', expr: 'x / (1 + exp(-x))'},
+    nested: {nodes: 5, depth: 3, ops: '+, sin, *', expr: 'sin(x²) + 0.5'}
+};
+
+// Static example tree
+setTimeout(() => renderTree('tree-example-1', trees.add_sin, 300, 200), 300);
+
+// Interactive tree
+let currentTree = 'add_sin';
+function showTree(key) {
+    currentTree = key;
+    document.querySelectorAll('.expr-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    renderTree('tree-interactive', trees[key], 500, 360);
+    const info = treeInfo[key];
+    document.getElementById('tree-node-count').textContent = info.nodes;
+    document.getElementById('tree-depth').textContent = info.depth;
+    document.getElementById('tree-ops').textContent = info.ops;
+    document.getElementById('tree-expr').textContent = info.expr;
+}
+setTimeout(() => showTree('add_sin'), 400);
+
+// =========================================================
+// INTERACTIVE: Selection visualization
+// =========================================================
+(function() {
+    const el = document.getElementById('selection-viz');
+    if (!el) return;
+    const W = 800, H = 200;
+    const svg = d3.select('#selection-viz').append('svg').attr('width', W).attr('height', H);
+    const pop = Array.from({length: 12}, (_, i) => ({
+        id: i, fitness: Math.random() * 4 + 0.1, x: 40 + i * 62
+    }));
+    const ys = d3.scaleLinear().domain([0, 5]).range([H - 30, 10]);
+    pop.forEach(p => {
+        svg.append('rect').attr('x', p.x - 12).attr('y', ys(p.fitness))
+            .attr('width', 24).attr('height', H - 30 - ys(p.fitness))
+            .attr('fill', 'var(--accent-blue)').attr('opacity', 0.5).attr('rx', 3);
+        svg.append('text').attr('x', p.x).attr('y', ys(p.fitness) - 5)
+            .attr('text-anchor', 'middle').text(p.fitness.toFixed(1))
+            .style('font-size', '9px').style('fill', '#888');
+    });
+    // Highlight tournament of 3
+    const tourn = [2, 5, 9];
+    const best = tourn.reduce((a, b) => pop[a].fitness < pop[b].fitness ? a : b);
+    tourn.forEach(i => {
+        svg.append('rect').attr('x', pop[i].x - 14).attr('y', ys(pop[i].fitness) - 2)
+            .attr('width', 28).attr('height', H - 28 - ys(pop[i].fitness))
+            .attr('fill', i === best ? 'var(--accent-green)' : 'var(--accent-yellow)')
+            .attr('opacity', i === best ? 0.8 : 0.4).attr('rx', 3);
+    });
+    svg.append('text').attr('x', W/2).attr('y', H - 5).attr('text-anchor', 'middle')
+        .text('Population (bars = fitness, lower is better). Yellow = tournament, green = winner.')
+        .style('font-size', '10px').style('fill', '#888');
+})();
+
+// =========================================================
+// INTERACTIVE: Crossover visualization
+// =========================================================
+(function() {
+    const el = document.getElementById('crossover-viz');
+    if (!el) return;
+    const W = 900, H = 250;
+    const svg = d3.select('#crossover-viz').append('svg').attr('width', W).attr('height', H);
+    // Parent 1: x + sin(y)
+    const p1 = {name: '+', children: [{name: 'x'}, {name: 'sin', children: [{name: 'y'}]}]};
+    // Parent 2: y * cos(x)
+    const p2 = {name: '*', children: [{name: 'y'}, {name: 'cos', children: [{name: 'x'}]}]};
+    // Child: x + cos(x)  (swapped sin(y) for cos(x))
+    const c1 = {name: '+', children: [{name: 'x'}, {name: 'cos', children: [{name: 'x'}]}]};
+
+    function drawMiniTree(g, tree, W2, H2, highlightNode) {
+        const root = d3.hierarchy(tree);
+        d3.tree().size([W2 - 40, H2 - 40])(root);
+        g.selectAll('.tl').data(root.links()).join('path').attr('class','tl')
+            .attr('d', d3.linkVertical().x(d => d.x).y(d => d.y + 15))
+            .attr('fill','none').attr('stroke','#555').attr('stroke-width',1.5);
+        const nodes = g.selectAll('.tn').data(root.descendants()).join('g').attr('class','tn')
+            .attr('transform', d => `translate(${d.x},${d.y + 15})`);
+        nodes.append('circle').attr('r', 14)
+            .attr('fill', (d, i) => {
+                if (highlightNode !== undefined && d.data.name === highlightNode) return 'var(--accent-red)';
+                return d.children ? 'var(--accent-purple)' : 'var(--accent-green)';
+            }).attr('opacity', 0.85);
+        nodes.append('text').text(d => d.data.name)
+            .style('fill','#fff').style('font-size','10px').style('text-anchor','middle').style('dominant-baseline','central');
+    }
+
+    // Parent 1
+    const g1 = svg.append('g').attr('transform', 'translate(20, 15)');
+    g1.append('text').attr('x', 70).attr('y', -5).text('Parent 1').style('font-size','10px').style('fill','var(--accent-blue)').style('text-anchor','middle');
+    drawMiniTree(g1, p1, 140, 180, 'sin');
+
+    // Parent 2
+    const g2 = svg.append('g').attr('transform', 'translate(240, 15)');
+    g2.append('text').attr('x', 70).attr('y', -5).text('Parent 2').style('font-size','10px').style('fill','var(--accent-blue)').style('text-anchor','middle');
+    drawMiniTree(g2, p2, 140, 180, 'cos');
+
+    // Arrow
+    svg.append('text').attr('x', 460).attr('y', 110).text('\u2192').style('font-size','30px').style('fill','var(--accent-yellow)').style('text-anchor','middle');
+
+    // Child
+    const g3 = svg.append('g').attr('transform', 'translate(520, 15)');
+    g3.append('text').attr('x', 70).attr('y', -5).text('Child').style('font-size','10px').style('fill','var(--accent-green)').style('text-anchor','middle');
+    drawMiniTree(g3, c1, 140, 180, 'cos');
+
+    svg.append('text').attr('x', W/2).attr('y', H - 8).attr('text-anchor', 'middle')
+        .text('Swap subtree sin(y) with cos(x)')
+        .style('font-size', '10px').style('fill', '#888');
+})();
+
+// =========================================================
+// INTERACTIVE: GP Evolution
+// =========================================================
+(function() {
+    const el = document.getElementById('gp-fit-plot');
+    if (!el) return;
+
+    // Target functions
+    const targets = {
+        sinx: {fn: x => Math.sin(x), label: 'sin(x)'},
+        x2: {fn: x => x*x, label: 'x²'},
+        xsinx: {fn: x => x*Math.sin(x), label: 'x·sin(x)'},
+        exp: {fn: x => Math.exp(-0.5*x*x), label: 'exp(-x²/2)'}
+    };
+
+    // Simple expression tree system
+    const ops = ['+', '-', '*', 'sin', 'cos'];
+    function randLeaf() { return Math.random() < 0.6 ? {op: 'x'} : {op: 'c', val: (Math.random()*4-2)}; }
+    function randTree(depth) {
+        if (depth <= 0 || Math.random() < 0.3) return randLeaf();
+        const op = ops[Math.floor(Math.random()*ops.length)];
+        if (op === 'sin' || op === 'cos') return {op, children: [randTree(depth-1)]};
+        return {op, children: [randTree(depth-1), randTree(depth-1)]};
+    }
+    function evalTree(t, x) {
+        if (t.op === 'x') return x;
+        if (t.op === 'c') return t.val;
+        const a = t.children ? evalTree(t.children[0], x) : 0;
+        const b = t.children && t.children[1] ? evalTree(t.children[1], x) : 0;
+        switch(t.op) {
+            case '+': return a + b;
+            case '-': return a - b;
+            case '*': return a * b;
+            case 'sin': return Math.sin(a);
+            case 'cos': return Math.cos(a);
+        }
+        return 0;
+    }
+    function treeSize(t) { return 1 + (t.children ? t.children.reduce((s, c) => s + treeSize(c), 0) : 0); }
+    function treeStr(t) {
+        if (t.op === 'x') return 'x';
+        if (t.op === 'c') return t.val.toFixed(2);
+        if (t.op === 'sin' || t.op === 'cos') return `${t.op}(${treeStr(t.children[0])})`;
+        return `(${treeStr(t.children[0])} ${t.op} ${treeStr(t.children[1])})`;
+    }
+    function cloneTree(t) {
+        const c = {op: t.op};
+        if (t.val !== undefined) c.val = t.val;
+        if (t.children) c.children = t.children.map(cloneTree);
+        return c;
+    }
+    function allNodes(t) { const r = [t]; if (t.children) t.children.forEach(c => r.push(...allNodes(c))); return r; }
+    function mutate(t) {
+        t = cloneTree(t);
+        const nodes = allNodes(t);
+        const n = nodes[Math.floor(Math.random()*nodes.length)];
+        if (!n.children) { // leaf
+            if (Math.random() < 0.5) { n.op = 'x'; delete n.val; }
+            else { n.op = 'c'; n.val = Math.random()*4-2; }
+        } else {
+            const validOps = n.children.length === 1 ? ['sin','cos'] : ['+','-','*'];
+            n.op = validOps[Math.floor(Math.random()*validOps.length)];
+        }
+        return t;
+    }
+    function crossover(a, b) {
+        a = cloneTree(a); b = cloneTree(b);
+        const na = allNodes(a), nb = allNodes(b);
+        const pa = na[Math.floor(Math.random()*na.length)];
+        const pb = nb[Math.floor(Math.random()*nb.length)];
+        // Swap content
+        const tmp = {op: pa.op, val: pa.val, children: pa.children};
+        pa.op = pb.op; pa.val = pb.val; pa.children = pb.children;
+        pb.op = tmp.op; pb.val = tmp.val; pb.children = tmp.children;
+        return [a, b];
+    }
+
+    // Data
+    let xData = [], yData = [], targetFn = targets.xsinx.fn;
+    function genData() {
+        xData = []; yData = [];
+        for (let i = 0; i < 40; i++) {
+            const x = -3 + 6*i/39;
+            xData.push(x);
+            yData.push(targetFn(x) + (Math.random()-0.5)*0.15);
+        }
+    }
+
+    function mse(tree) {
+        let s = 0;
+        for (let i = 0; i < xData.length; i++) {
+            const v = evalTree(tree, xData[i]);
+            if (!isFinite(v)) return 1e6;
+            s += (v - yData[i])**2;
+        }
+        return s / xData.length;
+    }
+
+    // Population
+    let pop = [], gen = 0, mseHistory = [];
+    const POP_SIZE = 80;
+
+    function initPop() {
+        const sel = document.getElementById('gp-target');
+        targetFn = targets[sel.value].fn;
+        genData();
+        pop = Array.from({length: POP_SIZE}, () => randTree(3));
+        gen = 0; mseHistory = [];
+        pop.forEach(t => { t._mse = mse(t); t._size = treeSize(t); });
+        updatePlots();
+    }
+
+    function tournSelect() {
+        let best = null;
+        for (let i = 0; i < 5; i++) {
+            const c = pop[Math.floor(Math.random()*pop.length)];
+            if (!best || c._mse + 0.02*c._size < best._mse + 0.02*best._size) best = c;
+        }
+        return best;
+    }
+
+    function step() {
+        const offspring = [];
+        // Elitism
+        pop.sort((a, b) => a._mse - b._mse);
+        for (let i = 0; i < 5; i++) offspring.push(cloneTree(pop[i]));
+        while (offspring.length < POP_SIZE) {
+            const p1 = tournSelect(), p2 = tournSelect();
+            let [c1, c2] = crossover(p1, p2);
+            if (Math.random() < 0.15) c1 = mutate(c1);
+            if (Math.random() < 0.15) c2 = mutate(c2);
+            // Depth limit
+            if (treeSize(c1) < 30) offspring.push(c1);
+            if (treeSize(c2) < 30 && offspring.length < POP_SIZE) offspring.push(c2);
+        }
+        pop = offspring.slice(0, POP_SIZE);
+        pop.forEach(t => { t._mse = mse(t); t._size = treeSize(t); });
+        gen++;
+        const bestMSE = Math.min(...pop.map(t => t._mse));
+        mseHistory.push(bestMSE);
+        updatePlots();
+    }
+
+    // Plots
+    const fW = 520, fH = 350;
+    const fM = {top: 12, right: 10, bottom: 28, left: 45};
+    const fiW = fW-fM.left-fM.right, fiH = fH-fM.top-fM.bottom;
+    const fSvg = d3.select('#gp-fit-plot').append('svg').attr('width', fW).attr('height', fH);
+    const fG = fSvg.append('g').attr('transform', `translate(${fM.left},${fM.top})`);
+    const fXS = d3.scaleLinear().domain([-3, 3]).range([0, fiW]);
+    const fYS = d3.scaleLinear().domain([-4, 4]).range([fiH, 0]);
+    fG.append('g').attr('transform', `translate(0,${fiH})`).call(d3.axisBottom(fXS).ticks(5)).selectAll('text').style('fill','#555');
+    fG.append('g').call(d3.axisLeft(fYS).ticks(5)).selectAll('text').style('fill','#555');
+    fG.selectAll('.domain, .tick line').style('stroke','#444');
+    fG.append('text').attr('x', fiW/2).attr('y', fiH+24).attr('text-anchor','middle').text('x').style('font-size','11px');
+    const dataDotsGrp = fG.append('g');
+    const targetLine = fG.append('path').attr('fill','none').attr('stroke','var(--accent-cyan)').attr('stroke-width',2);
+    const bestLine = fG.append('path').attr('fill','none').attr('stroke','var(--accent-green)').attr('stroke-width',2).attr('stroke-dasharray','6,3');
+
+    // MSE plot
+    const mW = 520, mH = 280;
+    const mM = {top: 12, right: 10, bottom: 28, left: 55};
+    const miW = mW-mM.left-mM.right, miH = mH-mM.top-mM.bottom;
+    const mSvg = d3.select('#gp-mse-plot').append('svg').attr('width', mW).attr('height', mH);
+    const mG = mSvg.append('g').attr('transform', `translate(${mM.left},${mM.top})`);
+    const mXS = d3.scaleLinear().domain([0, 10]).range([0, miW]);
+    const mYS = d3.scaleLog().domain([0.01, 10]).range([miH, 0]).clamp(true);
+    const mXAxis = mG.append('g').attr('transform', `translate(0,${miH})`);
+    const mYAxis = mG.append('g');
+    mG.append('text').attr('x', miW/2).attr('y', miH+24).attr('text-anchor','middle').text('Generation').style('font-size','11px');
+    mG.append('text').attr('x',-40).attr('y',miH/2).attr('text-anchor','middle')
+        .attr('transform',`rotate(-90,-40,${miH/2})`).text('Best MSE').style('font-size','11px');
+    const mseLine = mG.append('path').attr('fill','none').attr('stroke','var(--accent-yellow)').attr('stroke-width',2);
+
+    function updatePlots() {
+        // Data dots
+        dataDotsGrp.selectAll('circle').data(xData).join('circle')
+            .attr('cx', (_, i) => fXS(xData[i])).attr('cy', (_, i) => fYS(yData[i]))
+            .attr('r', 2.5).attr('fill', 'var(--accent-blue)').attr('opacity', 0.5);
+        // Target line
+        const tPts = []; for (let x = -3; x <= 3; x += 0.05) tPts.push({x, y: targetFn(x)});
+        targetLine.datum(tPts).attr('d', d3.line().x(d => fXS(d.x)).y(d => fYS(d.y)));
+        // Best individual
+        pop.sort((a, b) => a._mse - b._mse);
+        const best = pop[0];
+        const bPts = []; for (let x = -3; x <= 3; x += 0.05) {
+            const v = evalTree(best, x);
+            bPts.push({x, y: Math.max(-5, Math.min(5, v))});
+        }
+        bestLine.datum(bPts).attr('d', d3.line().x(d => fXS(d.x)).y(d => fYS(d.y)));
+        // MSE history
+        if (mseHistory.length > 0) {
+            mXS.domain([0, Math.max(10, mseHistory.length)]);
+            const mseMin = Math.max(1e-4, d3.min(mseHistory)*0.5);
+            const mseMax = d3.max(mseHistory)*2;
+            mYS.domain([mseMin, mseMax]);
+            mXAxis.call(d3.axisBottom(mXS).ticks(5)).selectAll('text').style('fill','#555');
+            mYAxis.call(d3.axisLeft(mYS).ticks(4, '.2g')).selectAll('text').style('fill','#555');
+            mG.selectAll('.domain, .tick line').style('stroke','#444');
+            mseLine.datum(mseHistory).attr('d', d3.line().x((_, i) => mXS(i+1)).y(d => mYS(d)));
+        }
+        // Info
+        document.getElementById('gp-gen').textContent = `Generation ${gen}`;
+        document.getElementById('gp-best-expr').textContent = treeStr(best);
+        document.getElementById('gp-best-mse').textContent = best._mse.toFixed(4);
+        document.getElementById('gp-best-size').textContent = best._size;
+    }
+
+    window.gpStep = step;
+    window.gpRun10 = function() { for (let i = 0; i < 10; i++) step(); };
+    window.gpReset = initPop;
+
+    initPop();
+})();
+</script>
+</body>
+</html>

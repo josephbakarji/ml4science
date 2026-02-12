@@ -52,6 +52,7 @@ permalink: references/
 - [Discovering Dynamics - LAGRANGE (1993)](https://books.google.com.lb/books?hl=en&lr=&id=TrqjBQAAQBAJ&oi=fnd&pg=PA97&ots=v4V7RR2SXq&sig=YuDfN-K8YEATgFvuQHuXONICJiA&redir_esc=y#v=onepage&q&f=false)
 - [Orthogonal least squares methods and their application to non-linear system identification - a.k.a. NARMAX (1989)](https://eprints.soton.ac.uk/251147/1/IJC1989_50_5.pdf)
 - [Equations of Motion from a Data Series (1987)](https://csc.ucdavis.edu/~cmg/papers/EoMfaDS.ComplexSystems1987.pdf)
+- [Data-Driven Discovery of Physical Laws (1981)](https://onlinelibrary.wiley.com/doi/epdf/10.1111/j.1551-6708.1981.tb00869.x)
 
 
 ### Talks & Lectures
