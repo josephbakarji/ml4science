@@ -1,6 +1,6 @@
 ---
 lecture_num: 08
-title: 'SINDy Part 1: From Data to Differential Equations'
+title: Sparse Identification of Differential Equations, Part 1
 date: '2026-02-10T08:00:00+03:00'
 type: lecture
 tldr: Discovering governing equations from data using sparse regression. Building
@@ -16,13 +16,15 @@ material:
 - name: Lecture Slides (Parts 1 & 2)
   type: slides
   url: /static_files/slides/sindy.html
-- name: 'Steve Brunton: Sparse Identification of Nonlinear Dynamics (SINDy)'
+- name: Sparse Nonlinear Dynamics Models with SINDy, Part 1
   type: video
   url: https://www.youtube.com/watch?v=NxAn0oglMVw
-- name: 'Steve Brunton: SINDy with Control (SINDYc)'
+- name: 'Sparse Nonlinear Dynamics Models with SINDy, Part 2: Training Data & Disambiguating
+    Models'
   type: video
   url: https://www.youtube.com/watch?v=8-hoWTJwmrE
-- name: 'Steve Brunton: SINDy Algorithm Details'
+- name: 'Sparse Nonlinear Dynamics Models with SINDy, Part 3: Effective Coordinates
+    for Parsimonious Models'
   type: video
   url: https://www.youtube.com/watch?v=1vrsBg92Xzo
 hide_from_announcments: false

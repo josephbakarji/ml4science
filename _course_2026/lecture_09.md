@@ -1,6 +1,6 @@
 ---
 lecture_num: 09
-title: 'SINDy Part 2: Extension to PDEs'
+title: Sparse Identification of Differential Equations, Part 2
 date: '2026-02-12T08:00:00+03:00'
 type: lecture
 tldr: Extending sparse equation discovery to partial differential equations. Building
