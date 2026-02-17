@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Requirements</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/night.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/monokai.css">
+    <style>
+        :root {
+            --accent-blue: #61afef;
+            --accent-green: #98c379;
+            --accent-yellow: #e5c07b;
+            --accent-red: #e06c75;
+            --accent-purple: #c678dd;
+            --accent-cyan: #56b6c2;
+        }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; }
+        .reveal h1 { font-size: 2.0em; }
+        .reveal h2 { font-size: 1.4em; color: var(--accent-blue); }
+        .reveal h3 { font-size: 1.1em; }
+        .reveal blockquote {
+            font-style: italic;
+            background: rgba(255,255,255,0.05);
+            padding: 12px 20px;
+            border-left: 4px solid #42affa;
+            width: 90%;
+            margin: 0 auto;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.75em;
+        }
+        .reveal .slides section { text-align: left; }
+        .reveal ul { display: block; }
+        .reveal li { margin: 0.3em 0; font-size: 0.75em; }
+        .center-text { text-align: center; }
+        .highlight-box {
+            background: rgba(66, 175, 250, 0.15);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid rgba(66, 175, 250, 0.3);
+        }
+        .warning-box {
+            background: rgba(224, 108, 117, 0.15);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid rgba(224, 108, 117, 0.3);
+        }
+        .success-box {
+            background: rgba(152, 195, 121, 0.15);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid rgba(152, 195, 121, 0.3);
+        }
+        .principle-box {
+            background: rgba(198, 120, 221, 0.15);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid rgba(198, 120, 221, 0.3);
+        }
+        .small-text { font-size: 0.7em; }
+        .tiny-text { font-size: 0.6em; }
+        pre code { font-size: 0.65em !important; line-height: 1.4 !important; }
+        .reveal pre { width: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .two-column { display: flex; gap: 30px; align-items: flex-start; }
+        .two-column > div { flex: 1; }
+        .three-column { display: flex; gap: 20px; }
+        .three-column > div { flex: 1; }
+        .keyword { color: var(--accent-yellow); font-weight: bold; }
+        .em-blue { color: var(--accent-blue); }
+        .em-green { color: var(--accent-green); }
+        .em-red { color: var(--accent-red); }
+        .em-purple { color: var(--accent-purple); }
+        .em-cyan { color: var(--accent-cyan); }
+        table.comparison {
+            width: 100%; border-collapse: collapse; font-size: 0.68em; margin: 8px 0;
+        }
+        table.comparison th {
+            background: rgba(66, 175, 250, 0.2); padding: 8px 12px; text-align: left;
+            border-bottom: 2px solid rgba(66, 175, 250, 0.4);
+        }
+        table.comparison td { padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        table.comparison tr:hover td { background: rgba(255,255,255,0.03); }
+
+        /* Timeline */
+        .timeline-item {
+            display: flex; gap: 12px; margin: 5px 0; font-size: 0.7em;
+            align-items: flex-start;
+        }
+        .timeline-week {
+            min-width: 65px; color: var(--accent-blue); font-weight: bold;
+            font-size: 0.85em;
+        }
+        .timeline-desc { flex: 1; }
+        .timeline-due {
+            color: var(--accent-red); font-size: 0.8em; font-weight: bold;
+        }
+
+        /* Numbered steps */
+        .step-num {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 26px; height: 26px; border-radius: 50%;
+            background: rgba(66, 175, 250, 0.3); color: #fff;
+            font-weight: bold; font-size: 0.7em; margin-right: 8px;
+            flex-shrink: 0;
+        }
+        .step-row {
+            display: flex; align-items: flex-start; margin: 6px 0;
+            font-size: 0.73em;
+        }
+        .step-content { flex: 1; }
+
+        /* Grade pill */
+        .grade-pill {
+            display: inline-block; padding: 3px 12px; border-radius: 12px;
+            font-size: 0.75em; font-weight: bold; margin: 2px 4px;
+        }
+        .grade-pill.high { background: rgba(152, 195, 121, 0.3); color: var(--accent-green); }
+        .grade-pill.mid  { background: rgba(229, 192, 123, 0.3); color: var(--accent-yellow); }
+        .grade-pill.low  { background: rgba(224, 108, 117, 0.3); color: var(--accent-red); }
+    </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ============================================ -->
+<!-- TITLE SLIDE -->
+<!-- ============================================ -->
+<section class="center-text" data-background-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
+    <h1>Project Requirements</h1>
+    <p style="margin-top: 1em; color: var(--accent-yellow); font-size: 1.1em;">
+        Defining Your Research Question
+    </p>
+    <p class="small-text" style="margin-top: 2em; color: #888;">
+        ML for Science and Engineering
+    </p>
+    <p class="tiny-text" style="color: #666;">
+        From data to paper: scope, methods, iteration, and writing
+    </p>
+</section>
+
+
+<!-- ============================================ -->
+<!-- OVERVIEW -->
+<!-- ============================================ -->
+<section>
+<section>
+    <h2>What Is the Project?</h2>
+    <div class="highlight-box">
+        <p class="small-text">
+            A <span class="keyword">research paper</span> where you ask a scientific question,
+            collect or generate data, apply machine learning methods with scientific inductive biases,
+            iterate on your approach, and write up the results at conference quality.
+        </p>
+    </div>
+    <ul>
+        <li>Teams of 2 students</li>
+        <li>40% of your course grade</li>
+        <li>Final deliverable: 6&ndash;9 page paper + oral presentation</li>
+        <li>The journey matters as much as the destination</li>
+    </ul>
+    <div class="principle-box" style="margin-top: 10px;">
+        <p class="small-text">
+            The goal is not to reproduce someone else's result.
+            It is to <em>create something new</em>, however small the contribution.
+        </p>
+    </div>
+</section>
+
+<section>
+    <h2>Assessment Breakdown</h2>
+    <table class="comparison">
+        <tr>
+            <th>Component</th>
+            <th>Weight</th>
+            <th>Due</th>
+        </tr>
+        <tr>
+            <td>Pre-Proposal (Slack)</td>
+            <td rowspan="2">5% (combined)</td>
+            <td>Next Tuesday</td>
+        </tr>
+        <tr>
+            <td>Progress Report</td>
+            <td>Mid-semester</td>
+        </tr>
+        <tr>
+            <td>Final Paper + Presentation</td>
+            <td>30%</td>
+            <td>End of semester</td>
+        </tr>
+    </table>
+    <p class="small-text" style="margin-top: 10px;">
+        Weekly check-ins throughout: you tell me your plan, I give feedback, you execute.
+    </p>
+</section>
+</section>
+
+
+<!-- ============================================ -->
+<!-- PRE-PROPOSAL -->
+<!-- ============================================ -->
+<section>
+<section>
+    <h2>Pre-Proposal: Due Next Tuesday</h2>
+    <p class="small-text">One page. Submit on Slack. I will give feedback in class so everyone learns.</p>
+
+    <div class="step-row">
+        <span class="step-num">1</span>
+        <div class="step-content"><span class="keyword">Introduction</span> &mdash; What question are you trying to answer? Why does it matter?</div>
+    </div>
+    <div class="step-row">
+        <span class="step-num">2</span>
+        <div class="step-content"><span class="keyword">Dataset</span> &mdash; What data will you use? Real or synthetic? Where does it come from?</div>
+    </div>
+    <div class="step-row">
+        <span class="step-num">3</span>
+        <div class="step-content"><span class="keyword">Methods</span> &mdash; Rough idea of the ML/modeling approach (SINDy, PINNs, neural ODEs, etc.)</div>
+    </div>
+    <div class="step-row">
+        <span class="step-num">4</span>
+        <div class="step-content"><span class="keyword">References</span> &mdash; At least 3&ndash;5 papers you have read or will read</div>
+    </div>
+
+    <div class="warning-box" style="margin-top: 10px;">
+        <p class="small-text">
+            Citations are not decoration. They show that you have engaged with existing work and know where your contribution fits.
+        </p>
+    </div>
+</section>
+</section>
+
+
+<!-- ============================================ -->
+<!-- SCOPE: SCIENCE + ML -->
+<!-- ============================================ -->
+<section>
+<section>
+    <h2>Project Scope</h2>
+    <p class="small-text">Your project must sit at the intersection of two things:</p>
+    <div class="two-column" style="margin-top: 10px;">
+        <div>
+            <div class="highlight-box">
+                <h3 style="margin-top: 0; color: var(--accent-blue);">Scientific Modeling</h3>
+                <ul class="small-text">
+                    <li>A system governed by physical/biological/engineering principles</li>
+                    <li>Inductive biases: conservation laws, symmetries, spatio-temporal structure</li>
+                    <li>You must <em>use</em> these biases, not ignore them</li>
+                </ul>
+            </div>
+        </div>
+        <div>
+            <div class="success-box">
+                <h3 style="margin-top: 0; color: var(--accent-green);">Machine Learning</h3>
+                <ul class="small-text">
+                    <li>Data-driven methods from this course or beyond</li>
+                    <li>Proper handling of training/test data</li>
+                    <li>Hyperparameter tuning, model comparison</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="principle-box" style="margin-top: 10px;">
+        <p class="small-text">
+            What distinguishes this from a generic ML project: the ML model must be
+            <em>informed by the science</em>. Including an interaction term because predators eat prey
+            is a physics-informed decision. That is what we are looking for.
+        </p>
+    </div>
+</section>
+
+<section>
+    <h2>Scientific Inductive Biases</h2>
+    <p class="small-text">
+        The science determines what constraints you bring to the model.
+        You are not just fitting a black box.
+    </p>
+    <table class="comparison">
+        <tr><th>Domain</th><th>Example Inductive Bias</th><th>How It Enters the Model</th></tr>
+        <tr>
+            <td>Ecology</td>
+            <td>Species interact multiplicatively</td>
+            <td>Include <span class="em-blue">xy</span> terms in SINDy library</td>
+        </tr>
+        <tr>
+            <td>Fluid dynamics</td>
+            <td>Conservation of mass/momentum</td>
+            <td>Constrain PDE structure, divergence-free fields</td>
+        </tr>
+        <tr>
+            <td>Robotics</td>
+            <td>Newtonian mechanics (F = ma)</td>
+            <td>Lagrangian or Hamiltonian neural network</td>
+        </tr>
+        <tr>
+            <td>Epidemiology</td>
+            <td>Compartmental structure (SIR)</td>
+            <td>Constrain ODE topology to known compartments</td>
+        </tr>
+        <tr>
+            <td>Climate</td>
+            <td>Energy balance, radiative forcing</td>
+            <td>Physics-informed loss terms in PINN</td>
+        </tr>
+    </table>
+    <p class="small-text" style="margin-top: 10px;">
+        Think about your system: what do you <em>know</em> that should constrain what you <em>learn</em>?
+    </p>
+</section>
+</section>
+
+
+<!-- ============================================ -->
+<!-- DATA -->
+<!-- ============================================ -->
+<section>
+<section>
+    <h2>Choosing Your Data</h2>
+    <div class="two-column">
+        <div>
+            <div class="highlight-box">
+                <h3 style="margin-top: 0; color: var(--accent-blue);">Synthetic Data</h3>
+                <ul class="small-text">
+                    <li>Simulate a known model, add noise</li>
+                    <li>Contribution is <em>methodological</em>: you improve or compare algorithms</li>
+                    <li>Good for: benchmarking, ablation studies, controlled experiments</li>
+                    <li>You know the ground truth</li>
+                </ul>
+            </div>
+        </div>
+        <div>
+            <div class="success-box">
+                <h3 style="margin-top: 0; color: var(--accent-green);">Real Data</h3>
+                <ul class="small-text">
+                    <li>Lab measurements, sensor data, field observations, public datasets</li>
+                    <li>Contribution is <em>applied</em>: you discover something about the system</li>
+                    <li>Messier, harder, more rewarding</li>
+                    <li>You learn about the domain, not just the algorithm</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="principle-box" style="margin-top: 10px;">
+        <p class="small-text">
+            <span class="em-green">Real data is preferred</span> and will earn more points.
+            But synthetic data with a genuine methodological contribution is also valuable.
+        </p>
+    </div>
+</section>
+
+<section>
+    <h2>Where to Find Real Data</h2>
+    <ul>
+        <li><span class="keyword">Your own lab</span> &mdash; if you are in a research group, use your own measurements</li>
+        <li><span class="keyword">Public repositories</span> &mdash; UCI ML Repository, Kaggle, PhysioNet, NOAA, NASA Earthdata</li>
+        <li><span class="keyword">Paper reproductions</span> &mdash; many papers share their data; start from a paper you find interesting</li>
+        <li><span class="keyword">Simulation + real hybrid</span> &mdash; simulate a model, validate against real measurements</li>
+    </ul>
+    <p class="small-text" style="margin-top: 8px; color: #aaa;">
+        Temporal, spatial, or spatio-temporal data is ideal for this course.
+        Think: time series, video, sensor arrays, climate records, biological trajectories.
+    </p>
+</section>
+</section>
+
+
+<!-- ============================================ -->
+<!-- READING PAPERS -->
+<!-- ============================================ -->
+<section>
+<section>
+    <h2>Reading Papers</h2>
+    <p class="small-text">
+        The single most important skill you will develop in this course.
+    </p>
+    <div class="highlight-box">
+        <p class="small-text">
+            There are no courses on how to read papers. You learn by doing it.
+            The more you read, the better your sense of what matters, what is interesting,
+            and where your work fits.
+        </p>
+    </div>
+    <h3 style="margin-top: 12px;">How to Read a Paper (Shallow Pass)</h3>
+    <div class="step-row">
+        <span class="step-num">1</span>
+        <div class="step-content">Read the <span class="keyword">abstract</span> and <span class="keyword">introduction</span> carefully</div>
+    </div>
+    <div class="step-row">
+        <span class="step-num">2</span>
+        <div class="step-content">Skim the <span class="keyword">method</span>: what are the inputs, outputs, assumptions?</div>
+    </div>
+    <div class="step-row">
+        <span class="step-num">3</span>
+        <div class="step-content">Look at the <span class="keyword">figures and tables</span>: what story are they telling?</div>
+    </div>
+    <div class="step-row">
+        <span class="step-num">4</span>
+        <div class="step-content">Read the <span class="keyword">conclusion</span>: what did they find? What remains open?</div>
+    </div>
+    <p class="small-text" style="margin-top: 10px; color: #aaa;">
+        You do not need to understand every equation on the first pass. Get the gist.
+        Understand what question they asked and how they answered it.
+    </p>
+</section>
+
+<section>
+    <h2>Where to Start</h2>
+    <ul>
+        <li>The <span class="em-blue">SINDy paper</span> (Brunton et al., 2016) and its citation graph</li>
+        <li>The <span class="em-blue">PDE-FIND paper</span> (Rudy et al., 2017)</li>
+        <li>The <span class="em-blue">PINNs paper</span> (Raissi et al., 2019)</li>
+        <li>Follow citations forward: who built on these methods? What is the latest?</li>
+        <li>Use <span class="keyword">Google Scholar</span>, <span class="keyword">Semantic Scholar</span>, or <span class="keyword">Connected Papers</span></li>
+    </ul>
+    <div class="principle-box" style="margin-top: 10px;">
+        <p class="small-text">
+            You can use an LLM to help navigate the literature. It is your new search engine.
+            But you still need to <em>read the papers themselves</em>.
+            The LLM summary is not the paper.
+        </p>
+    </div>
+</section>
+</section>
+
+
+<!-- ============================================ -->
+<!-- ITERATION -->
+<!-- ============================================ -->
+<section>
+<section>
+    <h2>Iteration: The Core Requirement</h2>
+    <div class="principle-box">
+        <p class="small-text">
+            What I evaluate is not whether you found the right answer.
+            <br>It is <em>how you got there</em>.
+        </p>
+    </div>
+    <p style="font-size: 0.85em; margin-top: 15px;">
+        The iterative process, which we can call <span class="keyword">circular thinking</span>:
+    </p>
+    <div style="text-align: center; margin: 10px 0;">
+        <svg width="450" height="180" viewBox="0 0 500 200">
+            <!-- Circular arrows -->
+            <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#61afef"/>
+                </marker>
+            </defs>
+            <!-- Boxes -->
+            <rect x="10" y="70" width="100" height="50" rx="8" fill="rgba(66,175,250,0.2)" stroke="#61afef" stroke-width="1"/>
+            <text x="60" y="100" text-anchor="middle" fill="#61afef" font-size="13">Define</text>
+            <text x="60" y="113" text-anchor="middle" fill="#61afef" font-size="11">features</text>
+
+            <rect x="140" y="70" width="100" height="50" rx="8" fill="rgba(152,195,121,0.2)" stroke="#98c379" stroke-width="1"/>
+            <text x="190" y="100" text-anchor="middle" fill="#98c379" font-size="13">Train</text>
+            <text x="190" y="113" text-anchor="middle" fill="#98c379" font-size="11">model</text>
+
+            <rect x="270" y="70" width="100" height="50" rx="8" fill="rgba(229,192,123,0.2)" stroke="#e5c07b" stroke-width="1"/>
+            <text x="320" y="100" text-anchor="middle" fill="#e5c07b" font-size="13">Evaluate</text>
+            <text x="320" y="113" text-anchor="middle" fill="#e5c07b" font-size="11">results</text>
+
+            <rect x="400" y="70" width="90" height="50" rx="8" fill="rgba(198,120,221,0.2)" stroke="#c678dd" stroke-width="1"/>
+            <text x="445" y="100" text-anchor="middle" fill="#c678dd" font-size="13">Reflect</text>
+            <text x="445" y="113" text-anchor="middle" fill="#c678dd" font-size="11">&amp; revise</text>
+
+            <!-- Forward arrows -->
+            <line x1="112" y1="95" x2="138" y2="95" stroke="#61afef" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            <line x1="242" y1="95" x2="268" y2="95" stroke="#98c379" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            <line x1="372" y1="95" x2="398" y2="95" stroke="#e5c07b" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+            <!-- Return arrow (bottom) -->
+            <path d="M 445 122 L 445 160 L 60 160 L 60 122" fill="none" stroke="#c678dd" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrowhead)"/>
+            <text x="250" y="178" text-anchor="middle" fill="#c678dd" font-size="12">iterate</text>
+        </svg>
+    </div>
+    <p class="small-text" style="color: #aaa;">
+        You are not expected to converge on the first try. You are expected to <em>try, fail, learn, and try again</em>.
+    </p>
+</section>
+
+<section>
+    <h2>Document Everything</h2>
+    <p class="small-text">
+        Every time you sit down to work on the project, write down what you did.
+    </p>
+    <div class="highlight-box">
+        <h3 style="margin-top: 0; font-size: 0.85em;">The Iteration Log (Appendix)</h3>
+        <ul class="small-text">
+            <li>What you tried and what hyperparameters you set</li>
+            <li>What worked and what failed</li>
+            <li>What decision you made and <em>why</em></li>
+            <li>If you consulted an LLM: what you asked, what it suggested, whether you followed it</li>
+            <li>What you plan to try next</li>
+        </ul>
+    </div>
+    <p class="small-text" style="margin-top: 10px;">
+        This may be 10&ndash;20 pages. It is your research notebook. It goes in the appendix of your paper.
+    </p>
+    <div class="warning-box">
+        <p class="small-text">
+            <span class="em-red">Knowing what failed is sometimes more important than knowing what worked.</span>
+            Documenting failures saves others (and your future self) from repeating the same mistakes.
+        </p>
+    </div>
+</section>
+
+<section>
+    <h2>Separating Your Decisions from the LLM's</h2>
+    <p class="small-text">
+        I need to be able to tell what <em>you</em> decided vs. what the tool decided.
+    </p>
+    <div class="two-column">
+        <div>
+            <div class="success-box">
+                <h3 style="margin-top: 0; font-size: 0.85em; color: var(--accent-green);">Good</h3>
+                <p class="small-text">
+                    "Results didn't extrapolate well. I hypothesized that multiple initial conditions
+                    would give a distribution of solutions. Tested with 10 ICs. Confirmed: ensemble
+                    reduces variance by 40%."
+                </p>
+            </div>
+        </div>
+        <div>
+            <div class="warning-box">
+                <h3 style="margin-top: 0; font-size: 0.85em; color: var(--accent-red);">Bad</h3>
+                <p class="small-text">
+                    "Asked ChatGPT what to do. It said try more initial conditions.
+                    Did that. Got better results."
+                </p>
+            </div>
+        </div>
+    </div>
+    <p class="small-text" style="margin-top: 8px; color: #aaa;">
+        You can use the LLM to brainstorm. But the junction where you stop, think, and choose a direction:
+        that is where the learning happens. Make those junctions visible.
+    </p>
+</section>
+</section>
+
+
+<!-- ============================================ -->
+<!-- THE PAPER -->
+<!-- ============================================ -->
+<section>
+<section>
+    <h2>The Paper</h2>
+    <table class="comparison">
+        <tr><th>Element</th><th>Details</th></tr>
+        <tr><td>Length</td><td>6&ndash;9 pages (main body), appendix unlimited</td></tr>
+        <tr><td>Format</td><td>Conference style (NeurIPS, ICML, or similar LaTeX template)</td></tr>
+        <tr><td>Sections</td><td>Abstract, Introduction, Methods, Results, Discussion, References</td></tr>
+        <tr><td>Figures</td><td>High quality, informative, well-captioned</td></tr>
+        <tr><td>Appendix</td><td>Iteration log, additional experiments, LLM interaction notes</td></tr>
+    </table>
+    <div class="principle-box" style="margin-top: 10px;">
+        <p class="small-text">
+            The standard: could this be submitted to a workshop or conference?
+            It does not need to be perfect. But it should be <em>genuine</em>.
+        </p>
+    </div>
+</section>
+
+<section>
+    <h2>Writing Quality</h2>
+    <blockquote>
+        If you're writing something, you need to captivate me.
+        I need to look at it, and I need to enjoy it.
+    </blockquote>
+    <p style="font-size: 0.85em; margin-top: 20px;">
+        Go read papers at top venues: NeurIPS, ICLR, Nature, Science, PNAS, Journal of Computational Physics.
+        See how they write. Clear, precise, to the point.
+    </p>
+    <div class="warning-box" style="margin-top: 10px;">
+        <h3 style="margin-top: 0; font-size: 0.85em; color: var(--accent-red);">The Raised Baseline</h3>
+        <p class="small-text">
+            Ten years ago, a good paper from a course like this was impressive.
+            Now you have tools that help you write, code, and find references.
+            <strong>The baseline has shifted.</strong>
+            A merely competent paper is now the minimum. What impresses is depth, originality,
+            and the evidence that you struggled with the problem and won.
+        </p>
+    </div>
+</section>
+
+<section>
+    <h2>Using LLMs for Writing</h2>
+    <div class="two-column">
+        <div>
+            <div class="success-box">
+                <h3 style="margin-top: 0; font-size: 0.85em;">Use LLMs To:</h3>
+                <ul class="small-text">
+                    <li>Edit and refine your prose</li>
+                    <li>Check grammar and structure</li>
+                    <li>Brainstorm outlines</li>
+                    <li>Debug code</li>
+                    <li>Find related references</li>
+                </ul>
+            </div>
+        </div>
+        <div>
+            <div class="warning-box">
+                <h3 style="margin-top: 0; font-size: 0.85em;">Do Not:</h3>
+                <ul class="small-text">
+                    <li>Let it write your paper</li>
+                    <li>Submit text you haven't read word by word</li>
+                    <li>Include sentences you cannot explain</li>
+                    <li>Use it to avoid thinking</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="principle-box" style="margin-top: 10px;">
+        <p class="small-text">
+            The paper should read as <em>your voice</em>, informed by <em>your thinking</em>.
+            If a sentence sounds impressive but you cannot explain what it means, delete it.
+        </p>
+    </div>
+</section>
+</section>
+
+
+<!-- ============================================ -->
+<!-- WHAT GETS GRADED -->
+<!-- ============================================ -->
+<section>
+<section>
+    <h2>What Gets a Good Grade</h2>
+    <div class="two-column">
+        <div>
+            <p class="small-text"><span class="grade-pill high">A</span></p>
+            <ul class="small-text">
+                <li>Clear question, well-motivated</li>
+                <li>Real data or meaningful synthetic benchmark</li>
+                <li>Scientific inductive biases actively used</li>
+                <li>Thorough iteration log showing real struggle</li>
+                <li>Well-written, captivating paper</li>
+                <li>Surprise me with an insight</li>
+            </ul>
+        </div>
+        <div>
+            <p class="small-text"><span class="grade-pill low">D/F</span></p>
+            <ul class="small-text">
+                <li>Vague question, no motivation</li>
+                <li>Bare minimum effort, obvious shortcuts</li>
+                <li>No iteration documented</li>
+                <li>LLM-generated slop: fluent text, confused content</li>
+                <li>No evidence of understanding the method</li>
+                <li>Cannot defend the work orally</li>
+            </ul>
+        </div>
+    </div>
+    <p class="small-text" style="margin-top: 8px; color: #aaa;">
+        There is no middle ground. Mediocre work in an age of powerful tools is a choice, and it shows.
+    </p>
+</section>
+</section>
+
+
+<!-- ============================================ -->
+<!-- TIMELINE -->
+<!-- ============================================ -->
+<section>
+<section>
+    <h2>Timeline</h2>
+    <div class="timeline-item">
+        <span class="timeline-week">Week 1</span>
+        <div class="timeline-desc">
+            <span class="timeline-due">Pre-proposal on Slack</span><br>
+            <span class="tiny-text">Idea, dataset, rough methods, 3+ references. I give feedback in class.</span>
+        </div>
+    </div>
+    <div class="timeline-item">
+        <span class="timeline-week">Week 2</span>
+        <div class="timeline-desc">
+            <span class="timeline-due">Formal proposal (1 page)</span><br>
+            <span class="tiny-text">Refined question, confirmed data source, concrete plan. Graded (5%).</span>
+        </div>
+    </div>
+    <div class="timeline-item">
+        <span class="timeline-week">Weeks 3&ndash;6</span>
+        <div class="timeline-desc">
+            Weekly check-ins: present your plan for the week, report progress, get feedback.<br>
+            <span class="tiny-text">Start your iteration log. First results. Pivots are expected.</span>
+        </div>
+    </div>
+    <div class="timeline-item">
+        <span class="timeline-week">Week 7</span>
+        <div class="timeline-desc">
+            <span class="timeline-due">Progress report (5%)</span><br>
+            <span class="tiny-text">Current state, preliminary results, updated plan for remainder.</span>
+        </div>
+    </div>
+    <div class="timeline-item">
+        <span class="timeline-week">Weeks 8&ndash;12</span>
+        <div class="timeline-desc">
+            Continued iteration. Refinement. Writing begins in parallel.<br>
+            <span class="tiny-text">Weekly check-ins continue. Paper takes shape.</span>
+        </div>
+    </div>
+    <div class="timeline-item">
+        <span class="timeline-week">Final</span>
+        <div class="timeline-desc">
+            <span class="timeline-due">Paper + Presentation (30%)</span><br>
+            <span class="tiny-text">6&ndash;9 page paper, oral presentation + Q&amp;A to the class.</span>
+        </div>
+    </div>
+</section>
+</section>
+
+
+<!-- ============================================ -->
+<!-- THE WHY -->
+<!-- ============================================ -->
+<section>
+<section>
+    <h2>Why This Format?</h2>
+    <blockquote>
+        Learning is when you try to do something new of your own. You come up with an idea.
+        You craft it. You fail. Then you realize there is a better way.
+    </blockquote>
+    <p style="font-size: 0.85em; margin-top: 20px;">
+        I am not assigning you a problem to solve. I am asking you to <em>find</em> a problem.
+    </p>
+    <ul>
+        <li>The act of choosing teaches you about problem selection</li>
+        <li>The act of failing teaches you about methods</li>
+        <li>The act of iterating teaches you about research</li>
+        <li>The act of writing teaches you about clarity of thought</li>
+    </ul>
+    <div class="principle-box" style="margin-top: 10px;">
+        <p class="small-text">
+            A student who chooses a project, discovers it doesn't work, and pivots has learned
+            more than a student who executes a prescribed plan perfectly.
+        </p>
+    </div>
+</section>
+
+<section>
+    <h2>The Opportunity</h2>
+    <p class="small-text">
+        We are at a junction.
+    </p>
+    <ul>
+        <li>You have access to tools that let you <span class="em-green">prototype ideas in hours</span>, not weeks</li>
+        <li>You can <span class="em-green">read, search, and navigate literature</span> faster than any previous generation</li>
+        <li>You can <span class="em-green">write, debug, and iterate</span> with an AI collaborator at your side</li>
+    </ul>
+    <p style="font-size: 0.85em; margin-top: 15px;">
+        The barrier to <em>trying</em> has almost disappeared.
+        <br>The barrier to <em>excellence</em> has not.
+    </p>
+    <div class="highlight-box" style="margin-top: 10px;">
+        <p class="small-text">
+            You can, today, go home and create something new that no one has created before.
+            The question is: will you?
+        </p>
+    </div>
+</section>
+</section>
+
+
+<!-- ============================================ -->
+<!-- PROJECT IDEAS -->
+<!-- ============================================ -->
+<section>
+<section>
+    <h2>Project Ideas (Starting Points)</h2>
+    <p class="small-text" style="color: #aaa;">These are suggestions, not prescriptions. The best projects come from your own questions.</p>
+    <div class="three-column" style="margin-top: 10px;">
+        <div>
+            <h3 style="font-size: 0.8em; color: var(--accent-blue);">Equation Discovery</h3>
+            <ul class="tiny-text">
+                <li>SINDy on real ecological or epidemiological data</li>
+                <li>PDE-FIND on fluid flow measurements</li>
+                <li>Symbolic regression for empirical scaling laws</li>
+                <li>Compare SINDy vs. symbolic regression on same system</li>
+            </ul>
+        </div>
+        <div>
+            <h3 style="font-size: 0.8em; color: var(--accent-green);">Physics-Informed ML</h3>
+            <ul class="tiny-text">
+                <li>PINN for inverse problems (parameter estimation)</li>
+                <li>Neural ODE with conservation constraints</li>
+                <li>Hamiltonian/Lagrangian neural networks for mechanical systems</li>
+                <li>Surrogate modeling for expensive simulations</li>
+            </ul>
+        </div>
+        <div>
+            <h3 style="font-size: 0.8em; color: var(--accent-purple);">Data-Driven Dynamics</h3>
+            <ul class="tiny-text">
+                <li>DMD/Koopman analysis of video data</li>
+                <li>Infer equations from pendulum/double pendulum video</li>
+                <li>Weather or climate time series forecasting</li>
+                <li>Sensor data from robotics or biomechanics</li>
+            </ul>
+        </div>
+    </div>
+</section>
+</section>
+
+
+<!-- ============================================ -->
+<!-- SUMMARY -->
+<!-- ============================================ -->
+<section class="center-text" data-background-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
+    <h2 style="color: var(--accent-yellow);">Summary</h2>
+    <div style="text-align: left; max-width: 700px; margin: 20px auto;">
+        <div class="step-row">
+            <span class="step-num">1</span>
+            <div class="step-content"><span class="keyword">Next Tuesday</span>: Pre-proposal on Slack</div>
+        </div>
+        <div class="step-row">
+            <span class="step-num">2</span>
+            <div class="step-content">Science + ML at the intersection, with inductive biases</div>
+        </div>
+        <div class="step-row">
+            <span class="step-num">3</span>
+            <div class="step-content">Real data preferred; synthetic with methodology contribution OK</div>
+        </div>
+        <div class="step-row">
+            <span class="step-num">4</span>
+            <div class="step-content">Read papers. Follow citation graphs. Build intuition.</div>
+        </div>
+        <div class="step-row">
+            <span class="step-num">5</span>
+            <div class="step-content">Iterate, document, iterate. The log is as important as the paper.</div>
+        </div>
+        <div class="step-row">
+            <span class="step-num">6</span>
+            <div class="step-content">Write well. Use LLMs as editors, not authors. Surprise me.</div>
+        </div>
+    </div>
+    <p class="small-text" style="margin-top: 30px; color: #888;">
+        Full requirements: <a href="/project/" style="color: var(--accent-cyan);">ml4science.com/project</a>
+    </p>
+</section>
+
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/math/math.js"></script>
+<script>
+Reveal.initialize({
+    hash: true,
+    slideNumber: true,
+    transition: 'slide',
+    center: false,
+    width: 1200,
+    height: 700,
+    margin: 0.04,
+    plugins: [RevealHighlight, RevealMath.KaTeX]
+});
+</script>
+</body>
+</html>
