@@ -6,6 +6,7 @@ layout: page
 
 <div class="course-lectures">
 {% for lecture in site.course_2026 %}
+{% unless lecture.hidden %}
 <div class="lecture-card">
     <div class="lecture-header" onclick="toggleLecture2026(this)">
         <span class="lecture-number">{{ lecture.lecture_num }}</span>
@@ -98,6 +99,7 @@ layout: page
         {% endif %}
     </div>
 </div>
+{% endunless %}
 {% endfor %}
 </div>
 

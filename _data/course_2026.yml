@@ -330,6 +330,7 @@
     type: video
     url: https://www.youtube.com/watch?v=G_hIppUWcsc
   hide_from_announcments: false
+  hidden: true
   folder: 20_review_pinns_intro
 - lecture_num: '21'
   title: Physics-Informed Neural Networks, Part 2
@@ -349,4 +350,5 @@
     type: slides
     url: /static_files/slides/pinns.html
   hide_from_announcments: false
+  hidden: true
   folder: 21_pinns
