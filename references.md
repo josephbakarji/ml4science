@@ -21,6 +21,7 @@ permalink: references/
 - A parallel computing take on scientific machine learning: [Parallel Computing and Scientific Machine Learning (SciML): Methods and Applications](https://book.sciml.ai/)
 - [MIT ML Courses](https://deeplearning.mit.edu/)
 - [FastAI](https://course.fast.ai/)
+- [Physics Informed Machine Learning (by Steve Brunton)](https://www.youtube.com/playlist?list=PLMrJAkhIeNNQ0BaKuBKY43k4xMo6NSbBa)
 - [Modern applications of machine learning in quantum sciences](https://arxiv.org/abs/2204.04198)
 
 ## 🧪 Scientific ML Resources

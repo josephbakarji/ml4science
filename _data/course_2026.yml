@@ -288,11 +288,12 @@
   hide_from_announcments: false
   folder: 09_system_identification
 - lecture_num: '10'
-  title: Project Requirements and Expectations
+  title: Project Requirements + Symbolic Regression
   date: '2026-02-17T08:00:00+03:00'
   type: lecture
-  tldr: Defining your research project. Scope, data, scientific inductive biases,
-    iteration as core requirement, writing quality, and timeline.
+  tldr: Project requirements and expectations, followed by discovering equations as
+    expression trees using genetic algorithms. Selection, crossover, mutation, Pareto-optimal
+    complexity-accuracy tradeoffs, and PySR.
   material:
   - name: Project Requirements Slides
     type: slides
@@ -300,20 +301,14 @@
   - name: Full Project Requirements
     type: notes
     url: /project/
-  hide_from_announcments: false
-  folder: 10_sindy
-- lecture_num: '12'
-  title: Quiz Correction + Symbolic Regression
-  date: '2026-02-24T08:00:00+03:00'
-  type: lecture
-  tldr: Discovering equations as expression trees using genetic algorithms. Selection,
-    crossover, mutation, Pareto-optimal complexity-accuracy tradeoffs, and PySR.
-  material:
-  - name: Lecture Slides
+  - name: Symbolic Regression Slides
     type: slides
     url: /static_files/slides/symbolic_regression.html
+  - name: 'Python Symbolic Regression (PySR)'
+    type: video
+    url: https://www.youtube.com/watch?v=df43V4OjMVs
   hide_from_announcments: false
-  folder: 12_symbolic_regression
+  folder: 10_sindy
 - lecture_num: '20'
   title: Physics-Informed Neural Networks, Part 1
   date: '2026-03-26T08:00:00+03:00'
