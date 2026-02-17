@@ -307,6 +307,11 @@
   - name: 'Python Symbolic Regression (PySR)'
     type: video
     url: https://www.youtube.com/watch?v=df43V4OjMVs
+  assignments:
+  - name: 'Problem Set 3: Project Pre-Proposal and Neural Networks'
+    type: homework
+    label: required
+    url: /assignments/assignment_3/
   hide_from_announcments: false
   folder: 10_sindy
 - lecture_num: '20'
