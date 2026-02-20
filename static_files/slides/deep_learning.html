@@ -1,0 +1,1568 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to Deep Learning</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/night.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/monokai.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --accent-blue: #61afef;
+            --accent-green: #98c379;
+            --accent-yellow: #e5c07b;
+            --accent-red: #e06c75;
+            --accent-purple: #c678dd;
+            --accent-cyan: #56b6c2;
+        }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; }
+        .reveal h1 { font-size: 1.8em; }
+        .reveal h2 { font-size: 1.3em; color: var(--accent-blue); }
+        .reveal h3 { font-size: 1.1em; }
+        .reveal blockquote {
+            font-style: italic;
+            background: rgba(255,255,255,0.05);
+            padding: 12px 20px;
+            border-left: 4px solid var(--accent-purple);
+            width: 90%;
+            margin: 0 auto;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.75em;
+        }
+        .reveal .slides section { text-align: left; font-size: 0.85em; }
+        .reveal ul { display: block; }
+        .reveal li { margin: 0.3em 0; font-size: 0.85em; }
+        .center-text { text-align: center; }
+        .keyword { color: var(--accent-yellow); font-weight: bold; }
+        .em-blue { color: var(--accent-blue); }
+        .em-green { color: var(--accent-green); }
+        .em-red { color: var(--accent-red); }
+        .em-purple { color: var(--accent-purple); }
+        .em-cyan { color: var(--accent-cyan); }
+        .highlight-box {
+            background: rgba(97, 175, 239, 0.12);
+            padding: 10px 14px; border-radius: 8px; margin: 8px 0;
+            border-left: 4px solid var(--accent-blue);
+        }
+        .warning-box {
+            background: rgba(224, 108, 117, 0.12);
+            padding: 10px 14px; border-radius: 8px; margin: 8px 0;
+            border-left: 4px solid var(--accent-red);
+        }
+        .success-box {
+            background: rgba(152, 195, 121, 0.12);
+            padding: 10px 14px; border-radius: 8px; margin: 8px 0;
+            border-left: 4px solid var(--accent-green);
+        }
+        .principle-box {
+            background: rgba(198, 120, 221, 0.12);
+            padding: 10px 14px; border-radius: 8px; margin: 8px 0;
+            border-left: 4px solid var(--accent-purple);
+        }
+        .equation-box {
+            background: rgba(255,255,255,0.08);
+            padding: 8px 12px; border-radius: 8px;
+            text-align: center; margin: 8px 0; font-size: 0.78em;
+        }
+        .small-text { font-size: 0.7em; }
+        .tiny-text { font-size: 0.58em; }
+        pre code { font-size: 0.65em !important; line-height: 1.4 !important; }
+        .reveal pre { width: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .two-column { display: flex; gap: 20px; align-items: flex-start; }
+        .two-column > div { flex: 1; }
+        .three-column { display: flex; gap: 20px; }
+        .three-column > div { flex: 1; }
+        .slider-container {
+            display: flex; align-items: center; gap: 6px; margin: 3px 0;
+        }
+        .slider-container label { min-width: 55px; font-size: 0.7em; }
+        .slider-container input[type="range"] { flex: 1; }
+        .slider-container span { min-width: 40px; font-size: 0.7em; color: var(--accent-blue); }
+        svg text { fill: #abb2bf; font-size: 12px; }
+        .author-info { font-size: 0.7em; color: #8b949e; }
+        .styled-table {
+            width: 100%; border-collapse: collapse; font-size: 0.8em;
+        }
+        .styled-table th {
+            background: rgba(97, 175, 239, 0.15);
+            color: var(--accent-blue); padding: 10px; text-align: left;
+            border-bottom: 2px solid var(--accent-blue);
+        }
+        .styled-table td {
+            padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .styled-table tr:hover td { background: rgba(255,255,255,0.03); }
+        .control-panel {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; padding: 8px 12px; margin: 6px 0;
+        }
+        button.demo-btn {
+            background: rgba(97, 175, 239, 0.2);
+            border: 1px solid var(--accent-blue);
+            color: var(--accent-blue);
+            padding: 4px 10px; border-radius: 5px;
+            cursor: pointer; font-size: 0.7em;
+            transition: background 0.15s;
+        }
+        button.demo-btn:hover { background: rgba(97, 175, 239, 0.35); }
+        button.demo-btn.active { background: var(--accent-blue); color: #0d1117; }
+        .reveal a.ref-link {
+            color: var(--accent-cyan); text-decoration: none;
+            border-bottom: 1px dotted var(--accent-cyan);
+        }
+        .reveal a.ref-link:hover { color: #fff; border-bottom-color: #fff; }
+        .timeline-item {
+            display: flex; gap: 10px; margin: 5px 0; align-items: flex-start;
+        }
+        .timeline-year {
+            min-width: 42px; flex-shrink: 0; font-weight: bold; color: var(--accent-yellow);
+            font-size: 0.68em;
+        }
+        .timeline-desc { font-size: 0.6em; }
+    </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ============================================================ -->
+<!-- TITLE SLIDE -->
+<!-- ============================================================ -->
+<section data-background-gradient="linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1a1a2e 100%)">
+    <h1 style="font-size: 2em;">Introduction to Deep Learning</h1>
+    <p style="color: var(--accent-purple); font-size: 1.2em; font-weight: 400;">
+        From Linear Regression to Neural Networks
+    </p>
+    <br>
+    <p class="author-info">
+        ML for Science and Engineering &mdash; Lecture 11<br>
+        Joseph Bakarji
+    </p>
+</section>
+
+<!-- ============================================================ -->
+<!-- PART 1: INTELLIGENCE, SELF-ORGANIZATION, AND NEURONS -->
+<!-- ============================================================ -->
+
+<!-- SELF-ORGANIZATION INTRO -->
+<section data-background-color="#0d1117">
+    <h2>Why Does Deep Learning Work?</h2>
+    <div class="two-column">
+        <div>
+            <p class="small-text">The success of deep learning reveals two underappreciated principles about intelligence:</p>
+            <ul>
+                <li class="fragment"><span class="keyword">Self-organization</span>: intelligence emerges from simple elements that learn to coordinate</li>
+                <li class="fragment"><span class="keyword">Data-driven adaptation</span>: enabling a system to learn from its environment is more powerful than encoding rules</li>
+            </ul>
+        </div>
+        <div class="fragment">
+            <div class="principle-box">
+                <strong style="color: var(--accent-purple);">Core Insight</strong><br>
+                <span class="small-text">Deep networks are collections of simple elements that collaborate to process inputs and predict outputs. Their power comes not from any single element, but from their collective adaptation to data.</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- RULES VS ADAPTATION -->
+<section data-background-color="#0d1117">
+    <h2>Rules vs. the Ability to Learn</h2>
+    <div class="two-column">
+        <div>
+            <h3 style="color: var(--accent-red);">Rule-Based Approach</h3>
+            <ul class="tiny-text">
+                <li>Encode expert knowledge as explicit rules</li>
+                <li>Define what to do in each situation</li>
+                <li>Brittle when the environment changes</li>
+                <li>Cannot adapt to unseen contexts</li>
+            </ul>
+        </div>
+        <div>
+            <h3 style="color: var(--accent-green);">Learning-Based Approach</h3>
+            <ul class="tiny-text">
+                <li>Give the system the <em>ability</em> to learn</li>
+                <li>Let it adapt to its environment autonomously</li>
+                <li>Flexible in complex, unpredictable settings</li>
+                <li>More powerful when you cannot predict every case</li>
+            </ul>
+        </div>
+    </div>
+    <div class="fragment">
+        <blockquote>
+            Do you teach your children rigid rules for every situation, or do you give them the ability to adapt to any context they might encounter?
+        </blockquote>
+    </div>
+</section>
+
+<!-- THE INTELLECTUAL MILIEU -->
+<section data-background-color="#0d1117">
+    <h2>The Intellectual Milieu of the 1940s</h2>
+    <p class="tiny-text">An extraordinary convergence of ideas set the stage for artificial intelligence:</p>
+    <div class="two-column tiny-text" style="margin-top: 6px;">
+        <div>
+            <ul>
+                <li><a class="ref-link" href="https://plato.stanford.edu/entries/principia-mathematica/" target="_blank">Russell &amp; Whitehead</a> showed in <em>Principia Mathematica</em> (1910-1913) that mathematics derives from formal logic. If logic is universal, and machines can perform logic...</li>
+                <li class="fragment"><a class="ref-link" href="https://en.wikipedia.org/wiki/First_Draft_of_a_Report_on_the_EDVAC" target="_blank">Von Neumann</a> designed the stored-program computer (EDVAC, 1945), using McCulloch-Pitts neurons as the conceptual model.</li>
+                <li class="fragment"><a class="ref-link" href="https://en.wikipedia.org/wiki/Norbert_Wiener" target="_blank">Norbert Wiener</a> founded <em>cybernetics</em> (1948): feedback, control, and communication in animals and machines.</li>
+            </ul>
+        </div>
+        <div class="fragment">
+            <div class="highlight-box" style="font-size: 0.9em;">
+                <strong>The reasoning:</strong><br><br>
+                Logic can express any computation.<br>
+                Neurons perform logical operations.<br>
+                Therefore, networks of neurons can compute anything.<br><br>
+                <span style="color: var(--accent-yellow);">This launched AI as a field.</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- WALTER PITTS STORY -->
+<section data-background-color="#0d1117">
+    <h2>Walter Pitts and the Dream of Logical Intelligence</h2>
+    <div class="two-column">
+        <div>
+            <p class="tiny-text">Walter Pitts was a self-taught, homeless teenager from Detroit who, at age 12, walked into a lecture by Bertrand Russell and found errors in <em>Principia Mathematica</em>. Russell invited Pitts to study with him.</p>
+            <p class="tiny-text fragment">Pitts met Warren McCulloch, a neurophysiologist asking: <span class="em-cyan">how does the brain compute?</span> They combined propositional logic with neural anatomy to create the first formal neuron model.</p>
+            <p class="tiny-text fragment">Their 1943 paper showed that networks of binary threshold units could implement <em>any</em> logical function, founding both neural networks and digital computing theory.</p>
+        </div>
+        <div>
+            <div class="principle-box tiny-text">
+                <strong style="color: var(--accent-purple);">The Macy Conferences (1946-1953)</strong><br>
+                McCulloch chaired interdisciplinary meetings with von Neumann, Wiener, Pitts, Bateson, and Margaret Mead. Here <em>cybernetics</em> crystallized, and the ideas that would become AI, information theory, and cognitive science were debated.
+                <br><br>
+                <a class="ref-link" href="https://en.wikipedia.org/wiki/Macy_conferences" target="_blank">Macy Conferences</a> &middot;
+                <a class="ref-link" href="https://nautil.us/the-man-who-tried-to-redeem-the-world-with-logic-235253/" target="_blank">The Story of Walter Pitts (Nautilus)</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- McCULLOCH-PITTS: THE MATH -->
+<section data-background-color="#0d1117">
+    <h2>The McCulloch-Pitts Neuron (1943)</h2>
+    <div class="two-column" style="align-items: flex-start; gap: 12px;">
+        <div style="flex: 0.42;">
+            <p class="tiny-text">A binary threshold unit:</p>
+            <div class="equation-box" style="font-size: 0.72em; margin: 4px 0;">
+                \( y = \begin{cases} 1 & \text{if } \sum_i w_i x_i \geq \theta \\ 0 & \text{otherwise} \end{cases} \)
+            </div>
+            <p class="tiny-text" style="margin-top: 4px;">
+                Click inputs to toggle. Use sliders or gate presets below.
+            </p>
+        </div>
+        <div style="flex: 0.58;">
+            <div id="mp-demo"></div>
+        </div>
+    </div>
+</section>
+
+<!-- HODGKIN-HUXLEY EXPERIMENTAL CONTEXT -->
+<section data-background-color="#0d1117">
+    <h2>From Theory to Biology: The Squid Giant Axon</h2>
+    <div class="two-column">
+        <div>
+            <p class="tiny-text">While McCulloch-Pitts modeled neurons as logical abstractions, experimentalists studied the real thing. The <span class="keyword">squid giant axon</span> (1000x thicker than human axons) was large enough to insert electrodes inside.</p>
+            <div class="timeline-item fragment">
+                <span class="timeline-year">1939</span>
+                <span class="timeline-desc">Cole &amp; Curtis develop <span class="em-cyan">voltage clamp</span>: hold membrane potential fixed, measure current.</span>
+            </div>
+            <div class="timeline-item fragment">
+                <span class="timeline-year">1952</span>
+                <span class="timeline-desc">Hodgkin &amp; Huxley fit ODEs to voltage clamp data with gating variables \(m, h, n\) governed by first-order kinetics.</span>
+            </div>
+            <div class="timeline-item fragment">
+                <span class="timeline-year">1963</span>
+                <span class="timeline-desc"><a class="ref-link" href="https://www.nobelprize.org/prizes/medicine/1963/speedread/" target="_blank">Nobel Prize</a> for Hodgkin, Huxley, and Eccles.</span>
+            </div>
+        </div>
+        <div class="fragment">
+            <div class="highlight-box tiny-text">
+                <strong>A triumph of scientific modeling:</strong> Hodgkin and Huxley had no computers. They solved the ODEs by hand with a desk calculator, predicting the action potential shape before it could be measured at full resolution.
+                <br><br>
+                <a class="ref-link" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3424716/" target="_blank">Historical Perspective (PMC)</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- HODGKIN-HUXLEY MODEL + INTERACTIVE -->
+<section data-background-color="#0d1117">
+    <h2>The Hodgkin-Huxley Model</h2>
+    <div class="equation-box" style="font-size: 0.55em; margin: 3px 0;">
+        \( C_m \frac{dV}{dt} = I_{\text{ext}} - g_{Na} m^3 h (V - E_{Na}) - g_K n^4 (V - E_K) - g_L (V - E_L) \)
+    </div>
+    <div class="two-column" style="margin-top: 4px;">
+        <div>
+            <p class="tiny-text">The <span class="em-cyan">gating variables</span> \(m, h, n \in [0,1]\) model ion channel opening probabilities. Na\(^+\) channels need 3 activation gates (\(m^3\)) and 1 inactivation gate (\(h\)); K\(^+\) channels need 4 gates (\(n^4\)). Each satisfies:</p>
+            <div class="equation-box" style="font-size: 0.55em; margin: 3px 0;">
+                \( \frac{dx}{dt} = \alpha_x(V)(1-x) - \beta_x(V)x \)
+            </div>
+            <p class="tiny-text">where \(\alpha_x, \beta_x\) are voltage-dependent rate functions that H&amp;H fit to experimental data as combinations of exponentials and rationals, e.g.:</p>
+            <div class="equation-box" style="font-size: 0.5em; margin: 3px 0;">
+                \( \alpha_m(V) = \frac{0.1(V+40)}{1 - e^{-(V+40)/10}} \)
+            </div>
+        </div>
+        <div>
+            <p class="tiny-text center-text" style="margin-bottom: 2px;"><strong>Inject current:</strong></p>
+            <div id="hh-demo" style="text-align: center;"></div>
+            <p class="tiny-text center-text" style="margin: 2px 0 0;"><strong>Rate functions \(\alpha_m, \beta_m\):</strong></p>
+            <div id="hh-alpha-plot" style="text-align: center;"></div>
+        </div>
+    </div>
+</section>
+
+<!-- TWO VIEWS COMPARISON -->
+<section data-background-color="#0d1117">
+    <h2>Two Views of the Neuron</h2>
+    <table class="styled-table">
+        <thead>
+            <tr><th></th><th>McCulloch-Pitts (1943)</th><th>Hodgkin-Huxley (1952)</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><span class="em-cyan">Nature</span></td><td>Computational / Logical</td><td>Dynamical / Physical</td></tr>
+            <tr><td><span class="em-cyan">Output</span></td><td>Binary: 0 or 1</td><td>Continuous voltage \(V(t)\)</td></tr>
+            <tr><td><span class="em-cyan">Time</span></td><td>Instantaneous</td><td>Evolves via coupled ODEs</td></tr>
+            <tr><td><span class="em-cyan">Parameters</span></td><td>Weights \(w_i\), threshold \(\theta\)</td><td>Conductances, Nernst potentials, gating kinetics</td></tr>
+            <tr><td><span class="em-cyan">Discovery</span></td><td>Theoretical construction from logic</td><td>Fit from voltage clamp experiments</td></tr>
+            <tr><td><span class="em-cyan">Legacy</span></td><td>Neural networks, deep learning, AI</td><td>Computational neuroscience, biophysics</td></tr>
+        </tbody>
+    </table>
+    <div class="fragment principle-box small-text" style="margin-top: 10px;">
+        Modern deep learning descends from the McCulloch-Pitts tradition: simplified, computational units whose power comes from <em>collective self-organization</em>, not biological fidelity. The architecture matters less than the ability to adapt.
+    </div>
+</section>
+
+<!-- TRANSITION TO LINEAR MODELS -->
+<section data-background-gradient="linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1a1a2e 100%)">
+    <h2 style="color: #fff; text-align: center;">From Linear Models<br>to Deep Networks</h2>
+    <p class="center-text" style="color: var(--accent-purple); font-size: 0.9em;">
+        Building the mathematical foundations
+    </p>
+</section>
+
+<!-- ============================================================ -->
+<!-- PART 2: LINEAR MODELS TO DEEP NETWORKS -->
+<!-- ============================================================ -->
+
+<!-- THE LINEAR HYPOTHESIS -->
+<section data-background-color="#0d1117">
+    <h2>The Linear Hypothesis</h2>
+    <p class="small-text">The simplest supervised learning model assumes a linear relationship between inputs and outputs:</p>
+    <div class="equation-box" style="font-size: 1em;">
+        \( \hat{y} = f_\mathbf{w}(\mathbf{x}) = \mathbf{w} \cdot \boldsymbol{\phi}(\mathbf{x}) = \sum_{j=1}^p w_j \phi_j(\mathbf{x}) \)
+    </div>
+    <div class="two-column" style="margin-top: 15px;">
+        <div>
+            <p class="small-text">The feature vector \(\boldsymbol{\phi}(\mathbf{x})\) encodes our assumptions about the data:</p>
+            <div class="small-text" style="margin-top: 5px;">
+                <p>\(\boldsymbol{\phi}(\mathbf{x}) = [1, x]\) &nbsp; (linear)</p>
+                <p>\(\boldsymbol{\phi}(\mathbf{x}) = [1, x, x^2, x^3]\) &nbsp; (polynomial)</p>
+                <p>\(\boldsymbol{\phi}(\mathbf{x}) = [1, x, \sin(3x)]\) &nbsp; (custom)</p>
+                <p style="color: var(--accent-yellow);">\(\boldsymbol{\phi}(\mathbf{x}) = \;?\;?\;?\) &nbsp; (what if we could <em>learn</em> this?)</p>
+            </div>
+        </div>
+        <div>
+            <div class="highlight-box small-text">
+                <strong>Recall:</strong> We split data into training, validation, and test sets to select features and evaluate generalization. The question remains: how do we choose \(\boldsymbol{\phi}\)?
+            </div>
+            <p class="small-text fragment" style="margin-top: 10px;">Neural networks answer this question by <span class="keyword">learning the features</span> directly from data.</p>
+        </div>
+    </div>
+</section>
+
+<!-- LINEAR PREDICTOR: NETWORK VIEW -->
+<section data-background-color="#0d1117">
+    <h2>Linear Predictor: Network View</h2>
+    <div class="two-column">
+        <div>
+            <p class="small-text">For multiple inputs and outputs:</p>
+            <div class="equation-box">
+                \( \hat{\mathbf{y}} = W\mathbf{x} + \mathbf{b} \)
+            </div>
+            <p class="small-text">In index notation:</p>
+            <div class="equation-box" style="font-size: 0.8em;">
+                \( \hat{y}_i = \sum_{j=1}^n W_{ij} x_j + b_i \)
+            </div>
+            <p class="small-text">where \(W \in \mathbb{R}^{m \times n}\), \(\mathbf{b} \in \mathbb{R}^m\).</p>
+            <p class="small-text fragment">Each output is a <span class="em-blue">weighted sum</span> of all inputs. The network diagram makes this structure visible:</p>
+        </div>
+        <div>
+            <div id="linear-net-svg" class="center-text"></div>
+        </div>
+    </div>
+</section>
+
+<!-- ACTIVATION FUNCTIONS -->
+<section data-background-color="#0d1117">
+    <h2>Activation Functions</h2>
+    <p class="small-text">To introduce nonlinearity, we pass the linear output through an <span class="keyword">activation function</span> \(f\):</p>
+    <div class="equation-box">
+        \( \hat{\mathbf{y}} = f(W\mathbf{x} + \mathbf{b}) \)
+    </div>
+    <div style="margin-top: 10px;">
+        <div class="slider-container">
+            <label>Function:</label>
+            <button class="demo-btn active" onclick="setActivation('sigmoid')">Sigmoid</button>
+            <button class="demo-btn" onclick="setActivation('relu')">ReLU</button>
+            <button class="demo-btn" onclick="setActivation('tanh')">Tanh</button>
+            <button class="demo-btn" onclick="setActivation('leaky')">Leaky ReLU</button>
+        </div>
+        <div id="activation-plot" class="center-text"></div>
+    </div>
+</section>
+
+<!-- SINGLE HIDDEN LAYER -->
+<section data-background-color="#0d1117">
+    <h2>The Neural Network</h2>
+    <div class="two-column">
+        <div>
+            <p class="small-text">A single hidden layer:</p>
+            <div class="equation-box">
+                \( \hat{\mathbf{y}} = f\bigl(W_2 \;f(W_1 \mathbf{x} + \mathbf{b}_1) + \mathbf{b}_2\bigr) \)
+            </div>
+            <ul class="small-text">
+                <li class="fragment">\(\mathbf{v} = f(W_1 \mathbf{x} + \mathbf{b}_1)\) &mdash; hidden activations</li>
+                <li class="fragment">\(\hat{\mathbf{y}} = f(W_2 \mathbf{v} + \mathbf{b}_2)\) &mdash; output</li>
+                <li class="fragment">The hidden layer learns a <span class="keyword">feature representation</span> \(\mathbf{v} = \phi(\mathbf{x})\)</li>
+            </ul>
+            <div class="fragment success-box small-text" style="margin-top: 10px;">
+                Instead of hand-crafting \(\phi(\mathbf{x})\), the network <em>learns</em> it from data.
+            </div>
+        </div>
+        <div>
+            <div id="nn-1hidden-svg" class="center-text"></div>
+        </div>
+    </div>
+</section>
+
+<!-- DEEP NETWORKS -->
+<section data-background-color="#0d1117">
+    <h2>Going Deep</h2>
+    <p class="small-text">Stack multiple hidden layers to build hierarchical representations:</p>
+    <div class="equation-box">
+        \( \hat{\mathbf{y}} = f\bigl(W_L \;f(\cdots f(W_2 \;f(W_1 \mathbf{x}))\cdots)\bigr) \)
+    </div>
+    <div id="deep-net-svg" class="center-text" style="margin-top: 10px;"></div>
+    <div class="two-column small-text" style="margin-top: 5px;">
+        <div>
+            <p>\(\mathbf{v}^{(1)} = f(W_1\mathbf{x} + \mathbf{b}_1)\)</p>
+            <p>\(\mathbf{v}^{(2)} = f(W_2\mathbf{v}^{(1)} + \mathbf{b}_2)\)</p>
+        </div>
+        <div>
+            <p>\(\mathbf{v}^{(3)} = f(W_3\mathbf{v}^{(2)} + \mathbf{b}_3)\)</p>
+            <p>\(\hat{\mathbf{y}} = f(W_4\mathbf{v}^{(3)} + \mathbf{b}_4)\)</p>
+        </div>
+    </div>
+</section>
+
+<!-- WHY DEPTH -->
+<section data-background-color="#0d1117">
+    <h2>Why Depth? Hierarchical Feature Learning</h2>
+    <div class="highlight-box small-text">
+        Deep networks learn features at increasing levels of abstraction, from simple edges to complex concepts.
+    </div>
+    <div class="three-column" style="margin-top: 15px; text-align: center;">
+        <div>
+            <h3 style="font-size: 0.9em; color: var(--accent-green);">Layer 1</h3>
+            <p class="small-text">Edges, gradients,<br>simple patterns</p>
+        </div>
+        <div>
+            <h3 style="font-size: 0.9em; color: var(--accent-yellow);">Layer 2-3</h3>
+            <p class="small-text">Textures, parts,<br>local combinations</p>
+        </div>
+        <div>
+            <h3 style="font-size: 0.9em; color: var(--accent-red);">Deeper Layers</h3>
+            <p class="small-text">Objects, faces,<br>semantic concepts</p>
+        </div>
+    </div>
+    <p class="fragment tiny-text" style="margin-top: 15px; color: var(--accent-purple);">
+        Reference: Lee et al., "Unsupervised learning of hierarchical representations with convolutional deep belief networks," Communications of the ACM (2011).
+    </p>
+</section>
+
+<!-- TRANSITION -->
+<section data-background-gradient="linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1a1a2e 100%)">
+    <h2 style="color: #fff; text-align: center;">Training Neural Networks</h2>
+    <p class="center-text" style="color: var(--accent-purple); font-size: 0.9em;">
+        Loss functions, gradients, and backpropagation
+    </p>
+</section>
+
+<!-- ============================================================ -->
+<!-- PART 3: TRAINING -->
+<!-- ============================================================ -->
+
+<!-- LOSS FUNCTIONS -->
+<section data-background-color="#0d1117">
+    <h2>Loss Functions</h2>
+    <h3 style="font-size: 1em; color: var(--accent-green);">Regression (MSE)</h3>
+    <div class="equation-box">
+        \( \mathcal{L}_{\text{MSE}} = \frac{1}{n}\sum_{i=1}^n \|\hat{\mathbf{y}}^{(i)} - \mathbf{y}^{(i)}\|^2 \)
+    </div>
+    <p class="tiny-text" style="margin-top: 4px;">Squared distance between predictions and targets. Differentiable everywhere, standard for continuous outputs.</p>
+    <h3 style="font-size: 1em; color: var(--accent-yellow); margin-top: 10px;">Classification (Binary Cross-Entropy)</h3>
+    <div class="equation-box" style="font-size: 0.65em;">
+        \( \mathcal{L}_{\text{BCE}} = -\frac{1}{n}\sum_{i=1}^n \bigl[y^{(i)}\log\hat{y}^{(i)} + (1-y^{(i)})\log(1-\hat{y}^{(i)})\bigr] \)
+    </div>
+    <p class="tiny-text" style="margin-top: 4px;">Measures how well predicted probabilities match binary labels. Derived from maximum likelihood of Bernoulli distribution.</p>
+    <div class="fragment highlight-box small-text" style="margin-top: 10px;">
+        <strong>Objective:</strong> Find weights \(\hat{W} = \arg\min_{W} \mathcal{L}(W)\). No closed-form solution for neural networks — we use gradient descent.
+    </div>
+</section>
+
+<!-- GRADIENT DESCENT -->
+<section data-background-color="#0d1117">
+    <h2>Gradient Descent</h2>
+    <div class="two-column">
+        <div>
+            <p class="small-text">Update rule for each parameter matrix:</p>
+            <div class="equation-box">
+                \( W \leftarrow W - \alpha \frac{\partial \mathcal{L}}{\partial W} \)
+            </div>
+            <ul class="small-text">
+                <li>\(\alpha\) is the <span class="keyword">learning rate</span></li>
+                <li>The gradient \(\nabla_W \mathcal{L}\) points toward steepest increase</li>
+                <li>We step in the <em>opposite</em> direction</li>
+            </ul>
+            <div class="fragment warning-box small-text" style="margin-top: 10px;">
+                <strong>Non-convexity:</strong> Neural network loss surfaces have many local minima and saddle points.
+            </div>
+        </div>
+        <div>
+            <p class="tiny-text center-text" style="margin-bottom: 2px;">Loss landscape \(\mathcal{L}(w_1, w_2)\) — dark = low loss (minimum)</p>
+            <div id="gd-plot" class="center-text"></div>
+            <div class="control-panel center-text" style="margin-top: 5px;">
+                <button class="demo-btn" onclick="stepGD()">Step</button>
+                <button class="demo-btn" onclick="resetGD()">Reset</button>
+                <div class="slider-container" style="justify-content: center; margin-top: 5px;">
+                    <label>LR (α):</label>
+                    <input type="range" id="gd-lr" min="1" max="50" value="10" oninput="updateGDLR()">
+                    <span id="gd-lr-val">0.10</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- BACKPROPAGATION -->
+<section data-background-color="#0d1117">
+    <h2>Backpropagation</h2>
+    <p class="small-text">The chain rule applied layer by layer, reusing intermediate gradients:</p>
+    <div class="equation-box" style="font-size: 0.75em;">
+        \( \frac{\partial \mathcal{L}}{\partial W^{[k]}} = \frac{\partial \mathcal{L}}{\partial \hat{y}} \cdot \frac{\partial \hat{y}}{\partial \mathbf{z}^{[L]}} \cdot \frac{\partial \mathbf{z}^{[L]}}{\partial \mathbf{v}^{[L-1]}} \cdots \frac{\partial \mathbf{z}^{[k]}}{\partial W^{[k]}} \)
+    </div>
+    <div class="two-column" style="margin-top: 15px;">
+        <div>
+            <h3 style="font-size: 1em; color: var(--accent-green);">Forward Pass</h3>
+            <div class="small-text">
+                <p>\(\mathbf{z}^{[l]} = W^{[l]}\mathbf{v}^{[l-1]} + \mathbf{b}^{[l]}\)</p>
+                <p>\(\mathbf{v}^{[l]} = f(\mathbf{z}^{[l]})\)</p>
+                <p>Compute and <em>store</em> each layer's activations.</p>
+            </div>
+        </div>
+        <div>
+            <h3 style="font-size: 1em; color: var(--accent-red);">Backward Pass</h3>
+            <div class="small-text">
+                <p>Start: \(\delta^{[L]} = \frac{\partial \mathcal{L}}{\partial \mathbf{z}^{[L]}}\)</p>
+                <p>Propagate: \(\delta^{[l]} = (W^{[l+1]})^\top \delta^{[l+1]} \odot f'(\mathbf{z}^{[l]})\)</p>
+                <p>Gradients: \(\frac{\partial \mathcal{L}}{\partial W^{[l]}} = \delta^{[l]}(\mathbf{v}^{[l-1]})^\top\)</p>
+            </div>
+        </div>
+    </div>
+    <div class="fragment success-box small-text" style="margin-top: 10px;">
+        Backpropagation computes all gradients in one backward sweep, with cost proportional to the forward pass.
+    </div>
+</section>
+
+<!-- BACKPROP EXAMPLE -->
+<section data-background-color="#0d1117">
+    <h2>Backpropagation: Concrete Example</h2>
+    <p class="tiny-text">A 1-hidden-layer network: \(x \xrightarrow{w_1} v = f(w_1 x + b_1) \xrightarrow{w_2} \hat{y} = w_2 v + b_2\). Let \(f = \text{ReLU}\), \(x = 2\), \(y = 1\).</p>
+    <div class="two-column" style="margin-top: 8px;">
+        <div>
+            <h3 style="font-size: 0.95em; color: var(--accent-green);">Forward Pass</h3>
+            <div class="small-text" style="line-height: 1.6;">
+                <p>\(z_1 = w_1 x + b_1 = 0.5 \cdot 2 + 0.1 = 1.1\)</p>
+                <p>\(v = \text{ReLU}(1.1) = 1.1\)</p>
+                <p>\(\hat{y} = w_2 v + b_2 = 0.8 \cdot 1.1 + 0 = 0.88\)</p>
+                <p>\(\mathcal{L} = (\hat{y} - y)^2 = (0.88 - 1)^2 = 0.0144\)</p>
+            </div>
+        </div>
+        <div>
+            <h3 style="font-size: 0.95em; color: var(--accent-red);">Backward Pass</h3>
+            <div class="small-text" style="line-height: 1.6;">
+                <p>\(\frac{\partial \mathcal{L}}{\partial \hat{y}} = 2(\hat{y} - y) = -0.24\)</p>
+                <p>\(\frac{\partial \mathcal{L}}{\partial w_2} = \frac{\partial \mathcal{L}}{\partial \hat{y}} \cdot v = -0.24 \cdot 1.1 = -0.264\)</p>
+                <p>\(\frac{\partial \mathcal{L}}{\partial v} = \frac{\partial \mathcal{L}}{\partial \hat{y}} \cdot w_2 = -0.24 \cdot 0.8 = -0.192\)</p>
+                <p>\(\frac{\partial \mathcal{L}}{\partial w_1} = \frac{\partial \mathcal{L}}{\partial v} \cdot f'(z_1) \cdot x = -0.192 \cdot 1 \cdot 2 = -0.384\)</p>
+            </div>
+        </div>
+    </div>
+    <div class="fragment highlight-box tiny-text" style="margin-top: 8px;">
+        <strong>SGD update</strong> (α = 0.1): \(w_1 \leftarrow 0.5 - 0.1(-0.384) = 0.538\), \(w_2 \leftarrow 0.8 - 0.1(-0.264) = 0.826\). Each step moves weights to reduce loss.
+    </div>
+</section>
+
+<!-- SGD VARIANTS -->
+<section data-background-color="#0d1117">
+    <h2>Stochastic Gradient Descent and Variants</h2>
+    <div class="two-column">
+        <div>
+            <table class="styled-table" style="font-size: 0.7em;">
+                <thead><tr><th>Method</th><th>Update Rule</th></tr></thead>
+                <tbody>
+                    <tr><td><span class="em-blue">SGD</span></td><td>\(W \leftarrow W - \alpha \nabla_W \mathcal{L}_{\text{batch}}\)</td></tr>
+                    <tr><td><span class="em-green">Momentum</span></td><td>\(v \leftarrow \beta v + \nabla \mathcal{L}\), \(W \leftarrow W - \alpha v\)</td></tr>
+                    <tr><td><span class="em-yellow">Adam</span></td><td>Adaptive learning rates per parameter</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <div class="highlight-box small-text">
+                <strong>Mini-batch SGD:</strong> Instead of computing the gradient over the entire dataset, use a random subset (batch) at each step. Faster, and the noise helps escape local minima.
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PYTORCH CODE -->
+<section data-background-color="#0d1117">
+    <h2>Training in Practice: PyTorch</h2>
+    <pre><code class="python" data-trim>
+import torch
+import torch.nn as nn
+import torch.optim as optim
+
+class Net(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(1, 20)
+        self.fc2 = nn.Linear(20, 15)
+        self.fc3 = nn.Linear(15, 1)
+
+    def forward(self, x):
+        x = torch.relu(self.fc1(x))
+        x = torch.relu(self.fc2(x))
+        return self.fc3(x)
+
+net = Net()
+criterion = nn.MSELoss()
+optimizer = optim.Adam(net.parameters(), lr=0.01)
+
+for epoch in range(5000):
+    output = net(x_train)
+    loss = criterion(output, y_train)
+    loss.backward()          # Backpropagation
+    optimizer.step()         # Update weights
+    optimizer.zero_grad()    # Reset gradients
+    </code></pre>
+</section>
+
+<!-- UNIVERSAL APPROXIMATION (moved here after PyTorch code) -->
+<section data-background-color="#0d1117">
+    <h2>Universal Approximation in Action</h2>
+    <p class="tiny-text">A single hidden layer with enough neurons can approximate any continuous function (<em>Cybenko, 1989; Hornik et al., 1989</em>). The network trains via the SGD loop above. Increase neurons to improve the fit:</p>
+    <div class="two-column" style="gap: 10px;">
+        <div style="flex: 1.3;">
+            <div class="control-panel" style="text-align: center;">
+                <div class="slider-container" style="justify-content: center;">
+                    <label>Neurons:</label>
+                    <input type="range" id="ua-neurons" min="1" max="30" value="3" oninput="updateUA()">
+                    <span id="ua-neurons-val">3</span>
+                </div>
+                <div class="slider-container" style="justify-content: center;">
+                    <label>Target:</label>
+                    <button class="demo-btn active" onclick="setUATarget('sin')">sin(x)</button>
+                    <button class="demo-btn" onclick="setUATarget('step')">Step</button>
+                    <button class="demo-btn" onclick="setUATarget('sincos')">sin(cos(x²))</button>
+                </div>
+            </div>
+            <div id="ua-plot" class="center-text"></div>
+        </div>
+        <div style="flex: 0.7;">
+            <div class="highlight-box tiny-text" style="margin-top: 6px;">
+                <strong>Architecture:</strong><br>
+                <code style="color: var(--accent-cyan);">1 → N → 1</code> (sigmoid activations)<br><br>
+                <strong>Training:</strong> 800 epochs of SGD on 30 sample points, LR = 0.005<br><br>
+                <strong>Loss (MSE):</strong> <span id="ua-loss" style="color: var(--accent-yellow);">—</span>
+            </div>
+            <div id="ua-loss-plot" class="center-text" style="margin-top: 4px;"></div>
+        </div>
+    </div>
+</section>
+
+<!-- OVERFITTING -->
+<section data-background-color="#0d1117">
+    <h2>Overfitting and Regularization</h2>
+    <div class="two-column">
+        <div>
+            <p class="small-text">When a model memorizes training data but fails on new data:</p>
+            <div id="overfit-plot" class="center-text"></div>
+        </div>
+        <div>
+            <h3 style="font-size: 1em; color: var(--accent-green);">Regularization Strategies</h3>
+            <ul class="small-text">
+                <li><span class="keyword">Weight decay</span> (L2): \(\mathcal{L}_{\text{reg}} = \mathcal{L} + \lambda\|W\|^2\)</li>
+                <li class="fragment"><span class="keyword">Dropout</span>: randomly zero out neurons during training</li>
+                <li class="fragment"><span class="keyword">Early stopping</span>: stop when validation loss starts increasing</li>
+                <li class="fragment"><span class="keyword">Data augmentation</span>: increase effective dataset size</li>
+            </ul>
+            <pre class="fragment"><code class="python" data-trim style="font-size: 0.6em !important;">
+# Weight decay in PyTorch
+optimizer = optim.Adam(net.parameters(),
+                       lr=0.01, weight_decay=1e-3)
+            </code></pre>
+        </div>
+    </div>
+</section>
+
+<!-- TRANSITION -->
+<section data-background-gradient="linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1a1a2e 100%)">
+    <h2 style="color: #fff; text-align: center;">Beyond the Basics</h2>
+    <p class="center-text" style="color: var(--accent-purple); font-size: 0.9em;">
+        Architectures that encode structure
+    </p>
+</section>
+
+<!-- ============================================================ -->
+<!-- PART 4: ARCHITECTURES -->
+<!-- ============================================================ -->
+
+<!-- NEURAL NETWORK ZOO -->
+<section data-background-color="#0d1117">
+    <h2>The Neural Network Zoo</h2>
+    <p class="small-text">Different architectures encode different <span class="keyword">inductive biases</span> about the structure of data:</p>
+    <table class="styled-table" style="font-size: 0.75em;">
+        <thead><tr><th>Architecture</th><th>Bias / Assumption</th><th>Application</th></tr></thead>
+        <tbody>
+            <tr><td><span class="em-blue">Fully Connected (MLP)</span></td><td>No structure assumed</td><td>Tabular data, function approximation</td></tr>
+            <tr><td><span class="em-green">Convolutional (CNN)</span></td><td>Spatial locality, translation invariance</td><td>Images, spatial data</td></tr>
+            <tr><td><span class="em-yellow">Recurrent (RNN)</span></td><td>Sequential dependence</td><td>Time series, language</td></tr>
+            <tr><td><span class="em-purple">Autoencoder</span></td><td>Low-dimensional latent structure</td><td>Compression, denoising</td></tr>
+            <tr><td><span class="em-cyan">Transformer</span></td><td>Attention over all positions</td><td>Language, vision, multimodal</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- AUTO-ENCODERS -->
+<section data-background-color="#0d1117">
+    <h2>Auto-Encoders</h2>
+    <p class="tiny-text">Learn a compressed representation by training the network to reconstruct its own input. The <span class="keyword">bottleneck</span> forces the network to discover the most important features.</p>
+    <div class="two-column" style="gap: 12px; margin-top: 6px;">
+        <div style="flex: 0.55;">
+            <div class="equation-box" style="font-size: 0.75em;">
+                \( \mathcal{L} = \|\mathbf{x} - \hat{\mathbf{x}}\|^2, \quad \hat{\mathbf{x}} = g_\theta(\underbrace{f_\phi(\mathbf{x})}_{\mathbf{z}}) \)
+            </div>
+            <ul class="tiny-text" style="margin-top: 6px;">
+                <li><span class="em-blue">Encoder</span>: \(\mathbf{z} = f_\phi(\mathbf{x}) \in \mathbb{R}^d\) — compressed representation</li>
+                <li><span class="em-green">Decoder</span>: \(\hat{\mathbf{x}} = g_\theta(\mathbf{z}) \in \mathbb{R}^n\) — reconstruction</li>
+                <li>If \(f, g\) are linear, the AE learns the <span class="keyword">SVD</span>: same subspace as PCA</li>
+            </ul>
+            <div class="fragment principle-box tiny-text" style="margin-top: 8px;">
+                <strong>Example: MNIST denoising.</strong> Train on corrupted digits, reconstruct clean ones. The 2D latent space \(\mathbf{z} \in \mathbb{R}^2\) clusters digits by identity — the network discovers digit features without labels.
+            </div>
+        </div>
+        <div style="flex: 0.45;">
+            <div id="ae-svg" class="center-text"></div>
+        </div>
+    </div>
+</section>
+
+<!-- CNNs -->
+<section data-background-color="#0d1117">
+    <h2>Convolutional Neural Networks</h2>
+    <p class="tiny-text">Instead of connecting every input to every hidden unit, CNNs use <span class="keyword">local filters</span> (kernels) that slide across the input. A 2D convolution:</p>
+    <div class="equation-box" style="font-size: 0.7em; margin: 4px 0;">
+        \( (\mathbf{K} * \mathbf{X})_{ij} = \sum_{m=0}^{k-1}\sum_{n=0}^{k-1} K_{mn} \cdot X_{i+m,\, j+n} \)
+    </div>
+    <div class="two-column" style="margin-top: 6px;">
+        <div style="flex: 0.55;">
+            <ul class="tiny-text">
+                <li><span class="em-blue">Convolution</span>: slide a \(k \times k\) kernel across the image. Same kernel everywhere → <span class="keyword">weight sharing</span></li>
+                <li><span class="em-green">Pooling</span> (max or average): reduce spatial dimensions, e.g. \(2 \times 2\) max-pool halves width and height</li>
+                <li><span class="em-yellow">Stack</span>: Conv → ReLU → Pool → Conv → ReLU → Pool → Flatten → FC</li>
+            </ul>
+            <div class="fragment principle-box tiny-text" style="margin-top: 8px;">
+                <strong>Parameter savings:</strong> A 5×5 kernel on a 28×28 image has 25 weights, vs. 784×hidden for a fully connected layer. Translation invariance is built in.
+            </div>
+        </div>
+        <div style="flex: 0.45;">
+            <div id="cnn-svg" class="center-text"></div>
+        </div>
+    </div>
+</section>
+
+<!-- RNNs -->
+<section data-background-color="#0d1117">
+    <h2>Recurrent Neural Networks</h2>
+    <p class="tiny-text">Process sequences by maintaining a <span class="keyword">hidden state</span> that carries information across time steps:</p>
+    <div class="two-column" style="gap: 12px; margin-top: 4px;">
+        <div style="flex: 0.55;">
+            <div class="equation-box" style="font-size: 0.7em; margin: 4px 0;">
+                \( \mathbf{h}_{t+1} = f(W_h \mathbf{h}_t + W_x \mathbf{x}_t + \mathbf{b}_h) \)
+            </div>
+            <div class="equation-box" style="font-size: 0.7em; margin: 4px 0;">
+                \( \hat{\mathbf{y}}_t = W_y \mathbf{h}_t + \mathbf{b}_y \)
+            </div>
+            <ul class="tiny-text" style="margin-top: 6px;">
+                <li>\(\mathbf{x}_t\) — input at time \(t\); \(\mathbf{h}_t\) — hidden state (memory)</li>
+                <li>\(W_h, W_x, W_y\) — shared across all time steps</li>
+                <li>\(\hat{\mathbf{y}}_t\) — prediction at time \(t\) (e.g. next value \(\mathbf{x}_{t+1}\))</li>
+            </ul>
+            <div class="fragment success-box tiny-text" style="margin-top: 8px;">
+                <strong>ODE connection:</strong> Euler's method \(\mathbf{y}_{n+1} = \mathbf{y}_n + h\,f(\mathbf{y}_n)\) is a recurrence with fixed "weights." RNNs learn the recurrence from data.
+            </div>
+        </div>
+        <div style="flex: 0.45;">
+            <div id="rnn-svg" class="center-text"></div>
+        </div>
+    </div>
+</section>
+
+<!-- SUMMARY -->
+<section data-background-gradient="linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1a1a2e 100%)">
+    <h2 style="color: #fff;">Summary</h2>
+    <div class="two-column small-text">
+        <div>
+            <ul>
+                <li>Deep learning succeeds through <span class="keyword">self-organization</span>: simple elements adapting collectively to data</li>
+                <li>Neural networks are compositions of linear maps and nonlinearities: \(\hat{y} = f(W_L\cdots f(W_1\mathbf{x}))\)</li>
+                <li><span class="em-blue">Backpropagation</span> computes gradients efficiently via the chain rule</li>
+            </ul>
+        </div>
+        <div>
+            <ul>
+                <li>Architecture encodes <span class="em-purple">inductive bias</span>: CNNs for spatial data, RNNs for sequences</li>
+                <li><span class="em-green">Regularization</span> prevents overfitting: weight decay, dropout, early stopping</li>
+                <li>The hidden layer learns features; depth enables hierarchical abstraction</li>
+            </ul>
+        </div>
+    </div>
+    <div class="fragment" style="margin-top: 20px;">
+        <div class="principle-box small-text">
+            The power of deep learning is not in any specific architecture, but in enabling systems to learn from data autonomously.
+        </div>
+    </div>
+</section>
+
+<!-- REFERENCES -->
+<section data-background-color="#0d1117">
+    <h2>References &amp; Resources</h2>
+    <ul class="small-text">
+        <li>McCulloch &amp; Pitts, "A Logical Calculus of the Ideas Immanent in Nervous Activity" (1943)</li>
+        <li>Hodgkin &amp; Huxley, "A quantitative description of membrane current..." J. Physiol. (1952)</li>
+        <li>Goodfellow, Bengio, Courville. <em>Deep Learning</em>. MIT Press (2016).</li>
+        <li><a class="ref-link" href="https://nautil.us/the-man-who-tried-to-redeem-the-world-with-logic-235253/" target="_blank">The Man Who Tried to Redeem the World with Logic</a> (Nautilus, on Walter Pitts)</li>
+        <li><a class="ref-link" href="https://cs231n.github.io/" target="_blank">Stanford CS231n</a> &middot;
+            <a class="ref-link" href="https://pytorch.org/tutorials/" target="_blank">PyTorch Tutorials</a> &middot;
+            <a class="ref-link" href="https://playground.tensorflow.org/" target="_blank">TensorFlow Playground</a></li>
+    </ul>
+</section>
+
+</div><!-- end slides -->
+</div><!-- end reveal -->
+
+<!-- ============================================================ -->
+<!-- SCRIPTS -->
+<!-- ============================================================ -->
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js"></script>
+<script>
+Reveal.initialize({
+    hash: true, slideNumber: 'c/t',
+    width: 1100, height: 650, margin: 0.04,
+    transition: 'slide',
+    transitionSpeed: 'default',
+    backgroundTransition: 'fade',
+    plugins: [RevealMath.KaTeX, RevealHighlight]
+});
+</script>
+
+<script>
+// ============================================================
+// 1. McCulloch-Pitts Neuron: Full Interactive with SVG + KaTeX Diagram
+// ============================================================
+(function() {
+    const container = d3.select('#mp-demo');
+    let w1 = 1, w2 = 1, theta = 1.5, x1 = 1, x2 = 0;
+
+    const gatePresets = {
+        'AND':  { w1: 1, w2: 1, theta: 1.5 },
+        'OR':   { w1: 1, w2: 1, theta: 0.5 },
+        'NAND': { w1: -1, w2: -1, theta: -1.5 },
+        'NOR':  { w1: -1, w2: -1, theta: -0.5 }
+    };
+
+    function render() {
+        container.html('');
+        const wrapper = container.append('div').style('display', 'flex').style('flex-direction', 'column').style('gap', '2px').style('align-items', 'center');
+
+        // SVG neuron diagram
+        const svgW = 340, svgH = 150;
+        const svg = wrapper.append('svg').attr('width', svgW).attr('height', svgH);
+
+        // Arrow marker
+        svg.append('defs').append('marker').attr('id', 'mp-arrow')
+            .attr('viewBox', '0 0 10 10').attr('refX', 9).attr('refY', 5)
+            .attr('markerWidth', 6).attr('markerHeight', 6).attr('orient', 'auto')
+            .append('path').attr('d', 'M 0 0 L 10 5 L 0 10 Z').attr('fill', '#abb2bf');
+
+        const sum = w1 * x1 + w2 * x2;
+        const output = sum >= theta ? 1 : 0;
+
+        // Layout positions
+        const inputX = 45, neuronX = 175, outX = 295;
+        const neuronY = 75, inputY = [45, 105];
+        const nodeR = 18, neuronR = 28;
+
+        // Input nodes (clickable)
+        inputY.forEach((iy, i) => {
+            const val = i === 0 ? x1 : x2;
+            const col = val ? '#98c379' : '#e06c75';
+            svg.append('circle').attr('cx', inputX).attr('cy', iy).attr('r', nodeR)
+                .attr('fill', val ? 'rgba(152,195,121,0.25)' : 'rgba(224,108,117,0.15)')
+                .attr('stroke', col).attr('stroke-width', 2)
+                .attr('cursor', 'pointer')
+                .on('click', () => { if (i === 0) x1 = 1 - x1; else x2 = 1 - x2; render(); });
+            katexLabel(svg, inputX, iy, 'x_' + (i+1) + '\\!=\\!' + val, col, 12);
+        });
+
+        // Click hint
+        svg.append('text').attr('x', inputX).attr('y', 16).attr('text-anchor', 'middle')
+            .style('fill', '#8b949e').style('font-size', '8px').text('(click)');
+
+        // Edges with KaTeX weight labels
+        inputY.forEach((iy, i) => {
+            const wVal = i === 0 ? w1 : w2;
+            const targetY = neuronY + (i === 0 ? -10 : 10);
+            svg.append('line').attr('x1', inputX + nodeR + 2).attr('y1', iy)
+                .attr('x2', neuronX - neuronR - 2).attr('y2', targetY)
+                .style('stroke', '#abb2bf').style('stroke-width', 2).attr('marker-end', 'url(#mp-arrow)');
+            const mx = (inputX + nodeR + neuronX - neuronR) / 2;
+            const my = (iy + targetY) / 2 - 8;
+            katexLabel(svg, mx, my, 'w_' + (i+1) + '\\!=\\!' + wVal.toFixed(1), '#e5c07b', 11);
+        });
+
+        // Neuron body
+        svg.append('circle').attr('cx', neuronX).attr('cy', neuronY).attr('r', neuronR)
+            .attr('fill', 'rgba(97,175,239,0.15)').attr('stroke', '#61afef').attr('stroke-width', 2);
+        katexLabel(svg, neuronX, neuronY - 6, '\\sum \\geq \\theta', '#61afef', 11);
+        katexLabel(svg, neuronX, neuronY + 10, sum.toFixed(1) + '\\geq' + theta.toFixed(1) + '?', '#8b949e', 9, 100);
+
+        // Output edge + node
+        svg.append('line').attr('x1', neuronX + neuronR + 2).attr('y1', neuronY)
+            .attr('x2', outX - nodeR - 2).attr('y2', neuronY)
+            .style('stroke', '#abb2bf').style('stroke-width', 2).attr('marker-end', 'url(#mp-arrow)');
+        const outCol = output ? '#98c379' : '#e06c75';
+        svg.append('circle').attr('cx', outX).attr('cy', neuronY).attr('r', nodeR)
+            .attr('fill', output ? 'rgba(152,195,121,0.25)' : 'rgba(224,108,117,0.15)')
+            .attr('stroke', outCol).attr('stroke-width', 2);
+        katexLabel(svg, outX, neuronY, 'y\\!=\\!' + output, outCol, 13);
+
+        // Controls: side-by-side layout (sliders left, step plot right)
+        const ctrl = wrapper.append('div').style('display', 'flex').style('gap', '10px')
+            .style('width', '100%').style('max-width', '340px').style('align-items', 'flex-start');
+
+        const leftCtrl = ctrl.append('div').style('flex', '1');
+
+        // Gate presets
+        const presetDiv = leftCtrl.append('div').style('margin-bottom', '3px').style('display', 'flex').style('align-items', 'center').style('gap', '4px');
+        presetDiv.append('span').style('font-size', '0.65em').style('color', '#8b949e').text('Presets:');
+        Object.keys(gatePresets).forEach(g => {
+            presetDiv.append('button').attr('class', 'demo-btn').style('margin', '0 2px 2px 0')
+                .text(g)
+                .on('click', () => {
+                    const p = gatePresets[g];
+                    w1 = p.w1; w2 = p.w2; theta = p.theta;
+                    render();
+                });
+        });
+
+        // Sliders with plain-text labels (more readable than tiny KaTeX)
+        function addSlider(parent, label, val, min, max, step, cb) {
+            const row = parent.append('div').attr('class', 'slider-container');
+            row.append('label').style('min-width', '28px').style('font-size', '0.7em').html(label);
+            row.append('input').attr('type', 'range')
+                .attr('min', min).attr('max', max).attr('step', step).attr('value', val)
+                .on('input', function() { cb(+this.value); render(); });
+            row.append('span').style('min-width', '32px').text(val.toFixed(1));
+        }
+        addSlider(leftCtrl, 'w<sub>1</sub>', w1, -2, 2, 0.1, v => { w1 = v; });
+        addSlider(leftCtrl, 'w<sub>2</sub>', w2, -2, 2, 0.1, v => { w2 = v; });
+        addSlider(leftCtrl, 'θ', theta, -2, 2, 0.1, v => { theta = v; });
+
+        // Threshold function plot (right side, properly sized)
+        const pW = 130, pH = 80;
+        const pSvg = ctrl.append('svg').attr('width', pW).attr('height', pH)
+            .style('background', 'rgba(0,0,0,0.2)').style('border-radius', '6px').style('flex-shrink', '0');
+        const px = d3.scaleLinear().domain([-3, 3]).range([20, pW - 5]);
+        const py = d3.scaleLinear().domain([-0.2, 1.3]).range([pH - 10, 8]);
+
+        // Axes
+        pSvg.append('line').attr('x1', 20).attr('x2', pW - 5).attr('y1', py(0)).attr('y2', py(0))
+            .style('stroke', '#30363d').style('stroke-width', 0.5);
+        pSvg.append('text').attr('x', pW - 3).attr('y', py(0) - 3).attr('text-anchor', 'end')
+            .style('fill', '#8b949e').style('font-size', '7px').text('Σ');
+
+        const stepData = d3.range(-3, 3.01, 0.01).map(v => [v, v >= theta ? 1 : 0]);
+        pSvg.append('path').datum(stepData)
+            .attr('fill', 'none').attr('stroke', '#61afef').attr('stroke-width', 2)
+            .attr('d', d3.line().x(d => px(d[0])).y(d => py(d[1])));
+        pSvg.append('circle').attr('cx', px(Math.max(-3, Math.min(3, sum)))).attr('cy', py(output))
+            .attr('r', 5).attr('fill', output ? '#98c379' : '#e06c75');
+        pSvg.append('line').attr('x1', px(theta)).attr('x2', px(theta)).attr('y1', py(-0.2)).attr('y2', py(1.3))
+            .style('stroke', '#c678dd').style('stroke-dasharray', '3,3');
+        pSvg.append('text').attr('x', px(theta)).attr('y', pH - 2).attr('text-anchor', 'middle')
+            .style('fill', '#c678dd').style('font-size', '8px').text('θ=' + theta.toFixed(1));
+    }
+
+    Reveal.on('slidechanged', e => { if (e.currentSlide.querySelector('#mp-demo')) render(); });
+    Reveal.on('ready', e => { if (e.currentSlide.querySelector('#mp-demo')) render(); });
+    render();
+})();
+
+// ============================================================
+// 2. Hodgkin-Huxley Simulation
+// ============================================================
+(function() {
+    const W = 310, H = 140;
+    const svg = d3.select('#hh-demo').append('svg')
+        .attr('width', W).attr('height', H)
+        .style('background', 'rgba(0,0,0,0.3)').style('border-radius', '6px');
+
+    let Iext = 10;
+    const sliderDiv = d3.select('#hh-demo').append('div').attr('class', 'slider-container')
+        .style('justify-content', 'center').style('margin-top', '3px');
+    sliderDiv.append('label').text('I_ext:');
+    sliderDiv.append('input').attr('type', 'range')
+        .attr('min', '0').attr('max', '30').attr('value', '10').attr('step', '1')
+        .on('input', function() { Iext = +this.value; valSpan.text(Iext); runHH(); });
+    const valSpan = sliderDiv.append('span').text('10');
+
+    function runHH() {
+        const Cm = 1, gNa = 120, gK = 36, gL = 0.3;
+        const ENa = 50, EK = -77, EL = -54.387;
+        const dt = 0.02, steps = 2500;
+        let V = -65, m = 0.05, h = 0.6, n = 0.32;
+        const data = [];
+        for (let i = 0; i < steps; i++) {
+            const am = 0.1*(V+40)/(1-Math.exp(-(V+40)/10));
+            const bm = 4*Math.exp(-(V+65)/18);
+            const ah = 0.07*Math.exp(-(V+65)/20);
+            const bh = 1/(1+Math.exp(-(V+35)/10));
+            const an = 0.01*(V+55)/(1-Math.exp(-(V+55)/10));
+            const bn = 0.125*Math.exp(-(V+65)/80);
+            m += dt*(am*(1-m)-bm*m);
+            h += dt*(ah*(1-h)-bh*h);
+            n += dt*(an*(1-n)-bn*n);
+            const INa=gNa*m*m*m*h*(V-ENa), IK=gK*n*n*n*n*(V-EK), IL=gL*(V-EL);
+            V += dt*(Iext-INa-IK-IL)/Cm;
+            if (i%3===0) data.push({t:i*dt,V:V});
+        }
+        const x=d3.scaleLinear().domain([0,steps*dt]).range([30,W-5]);
+        const y=d3.scaleLinear().domain([-80,60]).range([H-15,8]);
+        svg.selectAll('*').remove();
+        svg.append('g').attr('transform',`translate(0,${H-15})`)
+            .call(d3.axisBottom(x).ticks(4).tickFormat(d=>d+'ms'))
+            .selectAll('text').style('fill','#8b949e').style('font-size','8px');
+        svg.append('g').attr('transform','translate(30,0)')
+            .call(d3.axisLeft(y).ticks(4).tickFormat(d=>d+'mV'))
+            .selectAll('text').style('fill','#8b949e').style('font-size','8px');
+        svg.selectAll('.domain, .tick line').style('stroke','#30363d');
+        svg.append('path').datum(data)
+            .attr('fill','none').attr('stroke','#61afef').attr('stroke-width',1.5)
+            .attr('d',d3.line().x(d=>x(d.t)).y(d=>y(d.V)));
+    }
+    Reveal.on('slidechanged', e => { if(e.currentSlide.querySelector('#hh-demo')) runHH(); });
+    Reveal.on('ready', e => { if(e.currentSlide.querySelector('#hh-demo')) runHH(); });
+    runHH();
+})();
+
+// ============================================================
+// 2b. HH Alpha/Beta Rate Functions Plot
+// ============================================================
+(function() {
+    const W = 310, H = 120, mg = {top: 6, right: 10, bottom: 20, left: 32};
+    const svg = d3.select('#hh-alpha-plot').append('svg')
+        .attr('width', W).attr('height', H)
+        .style('background', 'rgba(0,0,0,0.3)').style('border-radius', '6px');
+    const g = svg.append('g').attr('transform', `translate(${mg.left},${mg.top})`);
+    const w = W - mg.left - mg.right, h = H - mg.top - mg.bottom;
+
+    // HH rate functions for m gate
+    function alphaM(V) {
+        const dv = V + 40;
+        return Math.abs(dv) < 1e-7 ? 1.0 : 0.1 * dv / (1 - Math.exp(-dv / 10));
+    }
+    function betaM(V) { return 4 * Math.exp(-(V + 65) / 18); }
+
+    const vRange = d3.range(-80, 41, 0.5);
+    const alphaData = vRange.map(v => ({ V: v, val: alphaM(v) }));
+    const betaData = vRange.map(v => ({ V: v, val: betaM(v) }));
+
+    const x = d3.scaleLinear().domain([-80, 40]).range([0, w]);
+    const yMax = Math.max(d3.max(alphaData, d => d.val), d3.max(betaData, d => d.val));
+    const y = d3.scaleLinear().domain([0, yMax * 1.1]).range([h, 0]);
+
+    g.append('g').attr('transform', `translate(0,${h})`)
+        .call(d3.axisBottom(x).ticks(5).tickFormat(d => d + 'mV'))
+        .selectAll('text').style('fill', '#8b949e').style('font-size', '7px');
+    g.append('g')
+        .call(d3.axisLeft(y).ticks(3))
+        .selectAll('text').style('fill', '#8b949e').style('font-size', '7px');
+    g.selectAll('.domain, .tick line').style('stroke', '#30363d');
+
+    const line = d3.line().x(d => x(d.V)).y(d => y(d.val));
+
+    // alpha_m curve
+    g.append('path').datum(alphaData)
+        .attr('fill', 'none').attr('stroke', '#98c379').attr('stroke-width', 2)
+        .attr('d', line);
+    // beta_m curve
+    g.append('path').datum(betaData)
+        .attr('fill', 'none').attr('stroke', '#e06c75').attr('stroke-width', 2)
+        .attr('d', line);
+
+    // Legend
+    const leg = g.append('g').attr('transform', `translate(${w - 70}, 4)`);
+    leg.append('line').attr('x1', 0).attr('x2', 14).attr('y1', 0).attr('y2', 0)
+        .style('stroke', '#98c379').style('stroke-width', 2);
+    leg.append('text').attr('x', 17).attr('y', 3)
+        .style('fill', '#98c379').style('font-size', '9px').text('αₘ(V)');
+    leg.append('line').attr('x1', 0).attr('x2', 14).attr('y1', 13).attr('y2', 13)
+        .style('stroke', '#e06c75').style('stroke-width', 2);
+    leg.append('text').attr('x', 17).attr('y', 16)
+        .style('fill', '#e06c75').style('font-size', '9px').text('βₘ(V)');
+})();
+
+// ============================================================
+// 3. Activation Function Explorer
+// ============================================================
+(function() {
+    const W=500,H=220,m={top:10,right:20,bottom:25,left:40};
+    const svg=d3.select('#activation-plot').append('svg').attr('width',W).attr('height',H);
+    const g=svg.append('g').attr('transform',`translate(${m.left},${m.top})`);
+    const w=W-m.left-m.right,h=H-m.top-m.bottom;
+    const x=d3.scaleLinear().domain([-5,5]).range([0,w]);
+    const y=d3.scaleLinear().domain([-1.5,1.5]).range([h,0]);
+    g.append('g').attr('transform',`translate(0,${h})`).call(d3.axisBottom(x).ticks(10))
+        .selectAll('text').style('fill','#8b949e').style('font-size','10px');
+    const yAxis=g.append('g').call(d3.axisLeft(y).ticks(6));
+    yAxis.selectAll('text').style('fill','#8b949e').style('font-size','10px');
+    g.selectAll('.domain, .tick line').style('stroke','#30363d');
+    g.append('line').attr('x1',0).attr('x2',w).attr('y1',y(0)).attr('y2',y(0)).style('stroke','#30363d').style('stroke-dasharray','3,3');
+    g.append('line').attr('x1',x(0)).attr('x2',x(0)).attr('y1',0).attr('y2',h).style('stroke','#30363d').style('stroke-dasharray','3,3');
+    const path=g.append('path').attr('fill','none').attr('stroke','#61afef').attr('stroke-width',2.5);
+    const label=g.append('text').attr('x',w-5).attr('y',20).attr('text-anchor','end').style('fill','#61afef').style('font-size','14px');
+    const funcs={
+        sigmoid:{fn:v=>1/(1+Math.exp(-v)),label:'σ(x) = 1/(1+e⁻ˣ)',range:[-1.5,1.5]},
+        relu:{fn:v=>Math.max(0,v),label:'ReLU(x) = max(0,x)',range:[-1.5,5.5]},
+        tanh:{fn:v=>Math.tanh(v),label:'tanh(x)',range:[-1.5,1.5]},
+        leaky:{fn:v=>v>0?v:0.1*v,label:'LeakyReLU(x)',range:[-1.5,5.5]}
+    };
+    window.setActivation=function(name){
+        const f=funcs[name];
+        y.domain(f.range);
+        yAxis.call(d3.axisLeft(y).ticks(6)).selectAll('text').style('fill','#8b949e');
+        g.selectAll('.domain, .tick line').style('stroke','#30363d');
+        const data=d3.range(-5,5.01,0.05).map(v=>({x:v,y:f.fn(v)}));
+        path.transition().duration(300).attr('d',d3.line().x(d=>x(d.x)).y(d=>y(d.y))(data));
+        label.text(f.label);
+        d3.selectAll('[onclick^="setActivation"]').classed('active',false);
+        d3.select(`[onclick="setActivation('${name}')"]`).classed('active',true);
+    };
+    setActivation('sigmoid');
+})();
+
+// ============================================================
+// 4. Universal Approximation Demo
+// ============================================================
+(function() {
+    const W=600,H=250,margin={top:15,right:20,bottom:25,left:40};
+    const svg=d3.select('#ua-plot').append('svg').attr('width',W).attr('height',H);
+    const g=svg.append('g').attr('transform',`translate(${margin.left},${margin.top})`);
+    const w=W-margin.left-margin.right,h=H-margin.top-margin.bottom;
+    const x=d3.scaleLinear().domain([-3.5,3.5]).range([0,w]);
+    const y=d3.scaleLinear().domain([-1.5,1.5]).range([h,0]);
+    g.append('g').attr('transform',`translate(0,${h})`).call(d3.axisBottom(x).ticks(7)).selectAll('text').style('fill','#8b949e');
+    g.append('g').call(d3.axisLeft(y).ticks(6)).selectAll('text').style('fill','#8b949e');
+    g.selectAll('.domain, .tick line').style('stroke','#30363d');
+    const targetPath=g.append('path').attr('fill','none').attr('stroke','#e06c75').attr('stroke-width',2).attr('stroke-dasharray','5,3');
+    const approxPath=g.append('path').attr('fill','none').attr('stroke','#61afef').attr('stroke-width',2.5);
+    const legend=g.append('g').attr('transform',`translate(${w-150},5)`);
+    legend.append('line').attr('x1',0).attr('x2',20).attr('y1',0).attr('y2',0).style('stroke','#e06c75').style('stroke-dasharray','5,3');
+    legend.append('text').attr('x',25).attr('y',4).text('Target').style('fill','#e06c75').style('font-size','11px');
+    legend.append('line').attr('x1',0).attr('x2',20).attr('y1',18).attr('y2',18).style('stroke','#61afef');
+    legend.append('text').attr('x',25).attr('y',22).text('Network').style('fill','#61afef').style('font-size','11px');
+    let targetFn='sin';
+    const targets={sin:v=>Math.sin(v),step:v=>v>0?1:-1,sincos:v=>Math.sin(Math.cos(v*v))};
+    let params=null;
+    let lossHistory=[];
+    function initParams(n){
+        params=[];lossHistory=[];
+        for(let i=0;i<n;i++) params.push({w:(Math.random()-0.5)*4,b:(Math.random()-0.5)*4,a:(Math.random()-0.5)*2});
+        const xs=d3.range(-3,3.01,0.2),lr=0.005;
+        for(let ep=0;ep<800;ep++){
+            let epochLoss=0;
+            for(const xv of xs){
+                const target=targets[targetFn](xv);
+                let pred=0;
+                for(const p of params){const z=p.w*xv+p.b;pred+=p.a/(1+Math.exp(-z));}
+                const err=pred-target;epochLoss+=err*err;
+                for(const p of params){
+                    const z=p.w*xv+p.b;const sig=1/(1+Math.exp(-z));const dsig=sig*(1-sig);
+                    p.a-=lr*err*sig;p.w-=lr*err*p.a*dsig*xv;p.b-=lr*err*p.a*dsig;
+                }
+            }
+            if(ep%10===0) lossHistory.push({ep:ep,loss:epochLoss/xs.length});
+        }
+    }
+    function networkEval(xv){let p2=0;for(const p of params){p2+=p.a/(1+Math.exp(-(p.w*xv+p.b)));}return p2;}
+    // Loss curve plot
+    const lW=200,lH=90,lm={top:8,right:8,bottom:18,left:32};
+    const lSvg=d3.select('#ua-loss-plot').append('svg').attr('width',lW).attr('height',lH);
+    const lG=lSvg.append('g').attr('transform',`translate(${lm.left},${lm.top})`);
+    const lw=lW-lm.left-lm.right,lh=lH-lm.top-lm.bottom;
+    const lX=d3.scaleLinear().domain([0,800]).range([0,lw]);
+    const lY=d3.scaleLog().domain([0.001,2]).range([lh,0]).clamp(true);
+    lG.append('g').attr('transform',`translate(0,${lh})`).call(d3.axisBottom(lX).ticks(4).tickFormat(d=>d)).selectAll('text').style('fill','#8b949e').style('font-size','8px');
+    lG.append('g').call(d3.axisLeft(lY).ticks(3,'.0e')).selectAll('text').style('fill','#8b949e').style('font-size','8px');
+    lG.selectAll('.domain, .tick line').style('stroke','#30363d');
+    lG.append('text').attr('x',lw/2).attr('y',lh+16).attr('text-anchor','middle').style('fill','#8b949e').style('font-size','8px').text('Epoch');
+    lG.append('text').attr('x',-8).attr('y',-2).style('fill','#8b949e').style('font-size','8px').text('MSE');
+    const lossPath=lG.append('path').attr('fill','none').attr('stroke','#e5c07b').attr('stroke-width',1.5);
+
+    function drawLoss(){
+        if(!lossHistory.length)return;
+        const maxL=Math.max(0.01,...lossHistory.map(d=>d.loss));
+        lY.domain([Math.max(0.001,lossHistory[lossHistory.length-1].loss*0.5),maxL*1.2]);
+        lG.select('g:nth-child(2)').call(d3.axisLeft(lY).ticks(3,'.0e')).selectAll('text').style('fill','#8b949e').style('font-size','8px');
+        lG.selectAll('.domain, .tick line').style('stroke','#30363d');
+        const line=d3.line().x(d=>lX(d.ep)).y(d=>lY(Math.max(0.001,d.loss)));
+        lossPath.attr('d',line(lossHistory));
+        const finalLoss=lossHistory[lossHistory.length-1].loss;
+        const el=document.getElementById('ua-loss');
+        if(el)el.textContent=finalLoss.toFixed(4);
+    }
+    window.updateUA=function(){const n=+document.getElementById('ua-neurons').value;document.getElementById('ua-neurons-val').textContent=n;initParams(n);draw();drawLoss();};
+    window.setUATarget=function(name){targetFn=name;d3.selectAll('[onclick^="setUATarget"]').classed('active',false);d3.select(`[onclick="setUATarget('${name}')"]`).classed('active',true);updateUA();};
+    function draw(){const xs=d3.range(-3.5,3.51,0.05);const line=d3.line().x(d=>x(d[0])).y(d=>y(d[1]));targetPath.attr('d',line(xs.map(v=>[v,targets[targetFn](v)])));approxPath.attr('d',line(xs.map(v=>[v,networkEval(v)])));}
+    updateUA();
+})();
+
+// ============================================================
+// 5. Gradient Descent Visualization
+// ============================================================
+(function() {
+    const W=320,H=250,margin={top:10,right:40,bottom:25,left:35};
+    const svg=d3.select('#gd-plot').append('svg').attr('width',W).attr('height',H);
+    const g=svg.append('g').attr('transform',`translate(${margin.left},${margin.top})`);
+    const w=W-margin.left-margin.right,h=H-margin.top-margin.bottom;
+    const x=d3.scaleLinear().domain([-3,3]).range([0,w]);
+    const y=d3.scaleLinear().domain([-3,3]).range([h,0]);
+    function loss(a,b){return 0.5*(a*a+b*b)+0.8*Math.sin(2*a)*Math.cos(2*b)+0.3*Math.sin(3*a);}
+    const n2=60;const xVals=d3.range(-3,3.01,6/n2),yVals=d3.range(-3,3.01,6/n2);
+    const values=[];for(let j=0;j<yVals.length;j++)for(let i=0;i<xVals.length;i++)values.push(loss(xVals[i],yVals[j]));
+    const contours=d3.contours().size([xVals.length,yVals.length]).thresholds(d3.range(0,8,0.5))(values);
+    const color=d3.scaleSequential(d3.interpolateViridis).domain([0,8]);
+    const xS=d3.scaleLinear().domain([0,xVals.length-1]).range([0,w]);
+    const yS=d3.scaleLinear().domain([0,yVals.length-1]).range([h,0]);
+    g.selectAll('path.contour').data(contours).join('path').attr('class','contour')
+        .attr('d',d3.geoPath(d3.geoTransform({point:function(px,py){this.stream.point(xS(px),yS(py));}})))
+        .attr('fill',d=>color(d.value)).attr('stroke','rgba(255,255,255,0.1)').attr('stroke-width',0.5);
+    // Axis labels
+    g.append('text').attr('x',w/2).attr('y',h+20).attr('text-anchor','middle').style('fill','#8b949e').style('font-size','10px').text('w₁');
+    g.append('text').attr('x',-10).attr('y',h/2).attr('text-anchor','middle').style('fill','#8b949e').style('font-size','10px').attr('transform',`rotate(-90,-10,${h/2})`).text('w₂');
+    // Colorbar
+    const cbW=10,cbH=h;const defs=svg.select('defs').size()?svg.select('defs'):svg.append('defs');
+    const grad=defs.append('linearGradient').attr('id','gd-cb').attr('x1','0').attr('y1','1').attr('x2','0').attr('y2','0');
+    for(let t=0;t<=1;t+=0.1)grad.append('stop').attr('offset',t).attr('stop-color',color(t*8));
+    const cbX=w+8;
+    g.append('rect').attr('x',cbX).attr('y',0).attr('width',cbW).attr('height',cbH).style('fill','url(#gd-cb)').attr('rx',2);
+    g.append('text').attr('x',cbX+cbW+3).attr('y',6).style('fill','#8b949e').style('font-size','8px').text('high');
+    g.append('text').attr('x',cbX+cbW+3).attr('y',cbH).style('fill','#8b949e').style('font-size','8px').text('low');
+    let pos={a:2.5,b:-2},lr=0.1;const trail=[{...pos}];
+    const trailPath=g.append('path').attr('fill','none').attr('stroke','#e06c75').attr('stroke-width',2);
+    const dot=g.append('circle').attr('r',5).attr('fill','#e06c75').attr('stroke','#fff').attr('stroke-width',1.5);
+    function drawPos(){trailPath.attr('d',d3.line()(trail.map(p=>[x(p.a),y(p.b)])));dot.attr('cx',x(pos.a)).attr('cy',y(pos.b));}
+    function gradLoss(a,b){return[a+1.6*Math.cos(2*a)*Math.cos(2*b)+0.9*Math.cos(3*a),b-1.6*Math.sin(2*a)*Math.sin(2*b)];}
+    window.stepGD=function(){const[da,db]=gradLoss(pos.a,pos.b);pos.a-=lr*da;pos.b-=lr*db;pos.a=Math.max(-3,Math.min(3,pos.a));pos.b=Math.max(-3,Math.min(3,pos.b));trail.push({...pos});drawPos();};
+    window.resetGD=function(){pos={a:2.5,b:-2};trail.length=0;trail.push({...pos});drawPos();};
+    window.updateGDLR=function(){lr=+document.getElementById('gd-lr').value/100;document.getElementById('gd-lr-val').textContent=lr.toFixed(2);};
+    drawPos();
+})();
+
+// ============================================================
+// 6. Network Diagrams with KaTeX Labels
+// ============================================================
+function katexLabel(svg, x, y, latex, color, fontSize, maxWidth) {
+    // Render KaTeX math into an SVG foreignObject
+    fontSize = fontSize || 13;
+    const w = maxWidth || Math.max(80, latex.length * 7);
+    const fo = svg.append('foreignObject')
+        .attr('x', x - w/2).attr('y', y - fontSize * 0.9)
+        .attr('width', w).attr('height', fontSize * 2.5)
+        .style('pointer-events', 'none');
+    fo.append('xhtml:div')
+        .style('text-align', 'center')
+        .style('color', color || '#abb2bf')
+        .style('font-size', fontSize + 'px')
+        .style('line-height', '1')
+        .style('white-space', 'nowrap')
+        .style('pointer-events', 'none')
+        .html(katex.renderToString(latex, { throwOnError: false, displayMode: false }));
+}
+
+function drawNetworkWithWeights(containerId, layers, width, height, opts) {
+    opts = opts || {};
+    const svg = d3.select('#'+containerId).append('svg').attr('width',width).attr('height',height);
+    const colors = ['#e06c75','#61afef','#c678dd','#98c379','#e5c07b'];
+    const nodeR = opts.nodeR || 16;
+    const layerLabels = opts.labels || [];
+    const weightLabels = opts.weightLabels || [];
+    const edgeWidth = opts.edgeWidth || 1.8;
+    const nodeGap = opts.nodeGap || 50;
+    const labelFontSize = opts.labelFontSize || 14;
+    const showBias = opts.showBias || false;
+    const edgeLabels = opts.edgeLabels || null; // e.g. [['w_{11}','w_{12}',...], ...]
+    const topPad = showBias ? 35 : 25;
+
+    // Compute positions
+    const layerGap = width / (layers.length + 1);
+    const positions = [];
+    layers.forEach((n, li) => {
+        const cx = (li + 1) * layerGap;
+        const gap = Math.min(nodeGap, (height - topPad - 30) / (n + 1));
+        const startY = (height + topPad) / 2 - (n - 1) * gap / 2;
+        const layerPos = [];
+        for (let i = 0; i < n; i++) layerPos.push({ x: cx, y: startY + i * gap });
+        positions.push(layerPos);
+    });
+
+    // Bias: small "+b" label to the right of each non-input layer
+    if (showBias) {
+        for (let li = 1; li < positions.length; li++) {
+            const lastNode = positions[li][positions[li].length - 1];
+            const bx = lastNode.x + nodeR + 12;
+            const by = lastNode.y + nodeR + 8;
+            katexLabel(svg, bx, by, '+\\mathbf{b}', '#56b6c2', 11, 50);
+        }
+    }
+
+    // Edges + optional per-edge labels (staggered by input index)
+    for (let li = 0; li < positions.length - 1; li++) {
+        const nFrom = positions[li].length;
+        let edgeIdx = 0;
+        for (let fi = 0; fi < nFrom; fi++) {
+            for (let ti = 0; ti < positions[li + 1].length; ti++) {
+                const from = positions[li][fi], to = positions[li + 1][ti];
+                svg.append('line')
+                    .attr('x1', from.x + nodeR).attr('y1', from.y)
+                    .attr('x2', to.x - nodeR).attr('y2', to.y)
+                    .style('stroke', 'rgba(171,178,191,0.25)')
+                    .style('stroke-width', edgeWidth);
+                // Per-edge label staggered along edge by input index
+                if (edgeLabels && edgeLabels[li] && edgeLabels[li][edgeIdx]) {
+                    const t = 0.25 + 0.5 * fi / Math.max(1, nFrom - 1);
+                    const mx = from.x + (to.x - from.x) * t;
+                    const my = from.y + (to.y - from.y) * t - 7;
+                    katexLabel(svg, mx, my, edgeLabels[li][edgeIdx], '#e5c07b', 9);
+                }
+                edgeIdx++;
+            }
+        }
+        // Weight matrix label (KaTeX)
+        const wLatex = weightLabels[li] || '';
+        if (wLatex) {
+            const mx = (positions[li][0].x + positions[li + 1][0].x) / 2;
+            const topY = Math.min(positions[li][0].y, positions[li + 1][0].y);
+            katexLabel(svg, mx, topY - nodeR - 4, wLatex, '#e5c07b', labelFontSize);
+        }
+    }
+
+    // Nodes with KaTeX labels
+    positions.forEach((layer, li) => {
+        layer.forEach((p, ni) => {
+            svg.append('circle').attr('cx', p.x).attr('cy', p.y).attr('r', nodeR)
+                .attr('fill', colors[li % colors.length]).attr('fill-opacity', 0.2)
+                .attr('stroke', colors[li % colors.length]).attr('stroke-width', 2);
+            if (opts.nodeLabels && opts.nodeLabels[li]) {
+                const latex = opts.nodeLabels[li][ni] || '';
+                if (latex) katexLabel(svg, p.x, p.y, latex, colors[li % colors.length], 12);
+            }
+        });
+    });
+
+    // Layer labels (KaTeX)
+    if (layerLabels.length) {
+        positions.forEach((layer, li) => {
+            if (layerLabels[li]) {
+                katexLabel(svg, layer[0].x, height - 4, layerLabels[li], '#8b949e', 11, 160);
+            }
+        });
+    }
+
+    // Activation labels between layers (KaTeX)
+    if (opts.activationLabels) {
+        for (let li = 0; li < positions.length - 1; li++) {
+            if (opts.activationLabels[li]) {
+                const mx = (positions[li][0].x + positions[li + 1][0].x) / 2;
+                katexLabel(svg, mx, height - 4, opts.activationLabels[li], '#c678dd', 12);
+            }
+        }
+    }
+}
+
+// Draw all network diagrams
+Reveal.on('ready', () => {
+    // Linear predictor: 3 inputs -> 2 outputs with KaTeX labels
+    drawNetworkWithWeights('linear-net-svg', [3, 2], 480, 320, {
+        nodeR: 24,
+        nodeGap: 60,
+        edgeWidth: 2.2,
+        labelFontSize: 16,
+        labels: ['\\mathbf{x}', '\\hat{\\mathbf{y}}'],
+        weightLabels: ['W'],
+        nodeLabels: [['x_1','x_2','x_3'], ['\\hat{y}_1','\\hat{y}_2']],
+        showBias: true,
+        edgeLabels: [['w_{11}','w_{21}','w_{12}','w_{22}','w_{13}','w_{23}']]
+    });
+
+    // 1-hidden layer: show W1, sigma, W2
+    drawNetworkWithWeights('nn-1hidden-svg', [3, 4, 2], 500, 300, {
+        nodeR: 20,
+        nodeGap: 52,
+        edgeWidth: 2,
+        labelFontSize: 15,
+        labels: ['\\mathbf{x}', '\\mathbf{v} = f(W_1\\mathbf{x})', '\\hat{\\mathbf{y}}'],
+        weightLabels: ['W_1', 'W_2'],
+        nodeLabels: [['x_1','x_2','x_3'], ['v_1','v_2','v_3','v_4'], ['\\hat{y}_1','\\hat{y}_2']],
+        showBias: true
+    });
+
+    // Deep network: show all weight matrices
+    drawNetworkWithWeights('deep-net-svg', [3, 4, 4, 3, 2], 850, 270, {
+        nodeR: 16,
+        nodeGap: 48,
+        edgeWidth: 1.8,
+        labelFontSize: 14,
+        labels: ['\\mathbf{x}', '\\mathbf{v}^{(1)}', '\\mathbf{v}^{(2)}', '\\mathbf{v}^{(3)}', '\\hat{\\mathbf{y}}'],
+        weightLabels: ['W_1', 'W_2', 'W_3', 'W_4'],
+        activationLabels: ['f', 'f', 'f', 'f']
+    });
+
+    drawAutoEncoder();
+    drawCNN();
+    drawRNN();
+    initOverfitPlot();
+});
+
+// ============================================================
+// 7. Auto-Encoder Diagram
+// ============================================================
+function drawAutoEncoder() {
+    const W=350,H=240;
+    const svg=d3.select('#ae-svg').append('svg').attr('width',W).attr('height',H);
+    const layers=[5,3,2,3,5];
+    const colors=['#61afef','#c678dd','#e5c07b','#c678dd','#98c379'];
+    const layerGap=W/(layers.length+1);const nodeR=11;
+    const positions=[];
+    layers.forEach((n,li)=>{const cx=(li+1)*layerGap;const gap=30;const sy=H/2-(n-1)*gap/2;const lp=[];for(let i=0;i<n;i++)lp.push({x:cx,y:sy+i*gap});positions.push(lp);});
+    for(let li=0;li<positions.length-1;li++){for(const from of positions[li])for(const to of positions[li+1])svg.append('line').attr('x1',from.x).attr('y1',from.y).attr('x2',to.x).attr('y2',to.y).style('stroke','rgba(171,178,191,0.1)').style('stroke-width',1);}
+    positions.forEach((layer,li)=>{layer.forEach(p=>{svg.append('circle').attr('cx',p.x).attr('cy',p.y).attr('r',nodeR).attr('fill',colors[li]).attr('fill-opacity',0.25).attr('stroke',colors[li]).attr('stroke-width',1.5);});});
+    // Labels with KaTeX
+    katexLabel(svg, positions[0][0].x, H-4, '\\mathbf{x}', '#61afef', 12);
+    katexLabel(svg, positions[2][0].x, H-4, '\\mathbf{z}', '#e5c07b', 12);
+    katexLabel(svg, positions[4][0].x, H-4, '\\hat{\\mathbf{x}}', '#98c379', 12);
+    // Encoder / Decoder labels
+    katexLabel(svg, W*0.25, 10, '\\text{Encoder } f_\\phi', '#61afef', 10, 100);
+    katexLabel(svg, W*0.75, 10, '\\text{Decoder } g_\\theta', '#98c379', 10, 100);
+    // Bottleneck line
+    svg.append('line').attr('x1',W/2).attr('x2',W/2).attr('y1',22).attr('y2',H-18).style('stroke','#e5c07b').style('stroke-dasharray','3,3').style('stroke-width',1);
+}
+
+// ============================================================
+// 8. CNN Diagram
+// ============================================================
+function drawCNN() {
+    const W=400,H=220;const svg=d3.select('#cnn-svg').append('svg').attr('width',W).attr('height',H);
+    const stages=[{x:15,w:60,h:60,label:'Input\n28×28',color:'#61afef'},{x:100,w:48,h:48,label:'Conv\n5×5',color:'#98c379'},{x:170,w:36,h:36,label:'Pool\n2×2',color:'#e5c07b'},{x:225,w:30,h:30,label:'Conv\n3×3',color:'#98c379'},{x:280,w:22,h:22,label:'Pool\n2×2',color:'#e5c07b'},{x:330,w:12,h:50,label:'FC',color:'#c678dd'},{x:370,w:8,h:20,label:'Out',color:'#e06c75'}];
+    const cy=H/2-5;
+    svg.append('defs').append('marker').attr('id','arrow').attr('viewBox','0 0 10 10').attr('refX',9).attr('refY',5).attr('markerWidth',6).attr('markerHeight',6).attr('orient','auto').append('path').attr('d','M 0 0 L 10 5 L 0 10 Z').attr('fill','#30363d');
+    stages.forEach((s,i)=>{
+        for(let d=2;d>=0;d--)svg.append('rect').attr('x',s.x+d*4).attr('y',cy-s.h/2-d*4).attr('width',s.w).attr('height',s.h).attr('rx',3).attr('fill',s.color).attr('fill-opacity',0.08+d*0.05).attr('stroke',s.color).attr('stroke-opacity',0.3+d*0.12);
+        const lines=s.label.split('\n');
+        lines.forEach((txt,li)=>{
+            svg.append('text').attr('x',s.x+s.w/2+4).attr('y',cy+s.h/2+14+li*11).attr('text-anchor','middle').style('fill',li===0?'#8b949e':s.color).style('font-size',li===0?'9px':'8px').text(txt);
+        });
+        if(i<stages.length-1){const next=stages[i+1];svg.append('line').attr('x1',s.x+s.w+8).attr('y1',cy).attr('x2',next.x-3).attr('y2',cy).style('stroke','#30363d').style('stroke-width',1).attr('marker-end','url(#arrow)');}
+    });
+}
+
+// ============================================================
+// 9. RNN Diagram
+// ============================================================
+function drawRNN() {
+    const W=350,H=170;const svg=d3.select('#rnn-svg').append('svg').attr('width',W).attr('height',H);
+    svg.append('defs').append('marker').attr('id','arrow-rnn').attr('viewBox','0 0 10 10').attr('refX',9).attr('refY',5).attr('markerWidth',6).attr('markerHeight',6).attr('orient','auto').append('path').attr('d','M 0 0 L 10 5 L 0 10 Z').attr('fill','#c678dd');
+    svg.append('defs').append('marker').attr('id','arrow-io').attr('viewBox','0 0 10 10').attr('refX',9).attr('refY',5).attr('markerWidth',5).attr('markerHeight',5).attr('orient','auto').append('path').attr('d','M 0 0 L 10 5 L 0 10 Z').attr('fill','#8b949e');
+    const steps=4,gap=W/(steps+1),cy=80;
+    for(let i=0;i<steps;i++){
+        const cx=(i+1)*gap;
+        // Hidden state box
+        svg.append('rect').attr('x',cx-22).attr('y',cy-20).attr('width',44).attr('height',40).attr('rx',6).attr('fill','rgba(97,175,239,0.15)').attr('stroke','#61afef').attr('stroke-width',1.5);
+        katexLabel(svg, cx, cy, '\\mathbf{h}_{' + (i+1) + '}', '#61afef', 11);
+        // Input arrow + label
+        svg.append('line').attr('x1',cx).attr('y1',H-8).attr('x2',cx).attr('y2',cy+22).style('stroke','#98c379').style('stroke-width',1.5).attr('marker-end','url(#arrow-io)');
+        katexLabel(svg, cx, H-2, '\\mathbf{x}_{' + (i+1) + '}', '#98c379', 10);
+        // Output arrow + label
+        svg.append('line').attr('x1',cx).attr('y1',cy-22).attr('x2',cx).attr('y2',16).style('stroke','#e5c07b').style('stroke-width',1.5).attr('marker-end','url(#arrow-io)');
+        katexLabel(svg, cx, 6, '\\hat{\\mathbf{y}}_{' + (i+1) + '}', '#e5c07b', 10);
+        // Horizontal recurrence arrow
+        if(i<steps-1)svg.append('line').attr('x1',cx+24).attr('y1',cy).attr('x2',(i+2)*gap-24).attr('y2',cy).style('stroke','#c678dd').style('stroke-width',2).attr('marker-end','url(#arrow-rnn)');
+    }
+    // Label the recurrence arrows
+    katexLabel(svg, (1*gap+2*gap)/2, cy-18, 'W_h', '#c678dd', 9);
+}
+
+// (Computation graph and backprop demo removed — replaced with static math slide)
+
+// ============================================================
+// 12. Overfitting Plot
+// ============================================================
+function initOverfitPlot(){
+    const W=280,H=180,margin={top:10,right:15,bottom:25,left:40};
+    const svg=d3.select('#overfit-plot').append('svg').attr('width',W).attr('height',H);
+    const g=svg.append('g').attr('transform',`translate(${margin.left},${margin.top})`);
+    const w=W-margin.left-margin.right,h=H-margin.top-margin.bottom;
+    const x=d3.scaleLinear().domain([0,100]).range([0,w]);
+    const y=d3.scaleLinear().domain([0,1]).range([h,0]);
+    g.append('g').attr('transform',`translate(0,${h})`).call(d3.axisBottom(x).ticks(5)).selectAll('text').style('fill','#8b949e');
+    g.append('g').call(d3.axisLeft(y).ticks(4)).selectAll('text').style('fill','#8b949e');
+    g.selectAll('.domain, .tick line').style('stroke','#30363d');
+    g.append('text').attr('x',w/2).attr('y',h+22).attr('text-anchor','middle').style('fill','#8b949e').style('font-size','10px').text('Epoch');
+    const trainData=[],valData=[];
+    for(let i=0;i<=100;i++){trainData.push([i,0.8*Math.exp(-0.05*i)+0.02+0.01*Math.sin(i*0.3)]);const vb=0.8*Math.exp(-0.04*i)+0.05;const of2=i>40?0.003*(i-40):0;valData.push([i,vb+of2+0.015*Math.sin(i*0.4)]);}
+    const line=d3.line().x(d=>x(d[0])).y(d=>y(d[1])).curve(d3.curveBasis);
+    g.append('path').datum(trainData).attr('fill','none').attr('stroke','#61afef').attr('stroke-width',2).attr('d',line);
+    g.append('path').datum(valData).attr('fill','none').attr('stroke','#e06c75').attr('stroke-width',2).attr('d',line);
+    g.append('line').attr('x1',x(40)).attr('x2',x(40)).attr('y1',0).attr('y2',h).style('stroke','#e5c07b').style('stroke-dasharray','3,3');
+    g.append('text').attr('x',x(40)).attr('y',-2).attr('text-anchor','middle').style('fill','#e5c07b').style('font-size','9px').text('Early stop');
+    const leg=g.append('g').attr('transform',`translate(${w-90},5)`);
+    leg.append('line').attr('x1',0).attr('x2',15).attr('y1',0).attr('y2',0).style('stroke','#61afef');
+    leg.append('text').attr('x',18).attr('y',4).style('fill','#61afef').style('font-size','10px').text('Train');
+    leg.append('line').attr('x1',0).attr('x2',15).attr('y1',15).attr('y2',15).style('stroke','#e06c75');
+    leg.append('text').attr('x',18).attr('y',19).style('fill','#e06c75').style('font-size','10px').text('Validation');
+}
+</script>
+</body>
+</html>
