@@ -287,22 +287,31 @@
     url: https://www.youtube.com/watch?v=oI3grKBxkqM
   hide_from_announcments: false
   folder: 09_system_identification
-- lecture_num: '12'
-  title: Symbolic Regression + Project Pre-Proposal Feedback
-  date: '2026-02-24T08:00:00+03:00'
+- lecture_num: '11'
+  title: Quiz + Symbolic Regression
+  date: '2026-02-19T08:00:00+03:00'
   type: lecture
-  tldr: Discovering equations as expression trees using genetic algorithms. Selection,
-    crossover, mutation, Pareto-optimal complexity-accuracy tradeoffs, and PySR. Peer
-    feedback workshop for project pre-proposals.
+  tldr: Quiz covering weeks 1-5 material. Discovering equations as expression trees
+    using genetic algorithms. Selection, crossover, mutation, Pareto-optimal complexity-accuracy
+    tradeoffs, and PySR.
   material:
   - name: Lecture Slides
     type: slides
     url: /static_files/slides/symbolic_regression.html
-  - name: Project Feedback Workshop
+  hide_from_announcments: false
+  folder: 11_sindy_pdes
+- lecture_num: '12'
+  title: Project Pre-Proposal Feedback Session
+  date: '2026-02-24T08:00:00+03:00'
+  type: lecture
+  tldr: Peer feedback workshop for project pre-proposals. Review guidelines, swap
+    proposals, discuss, and revise.
+  material:
+  - name: Workshop Slides
     type: slides
     url: /static_files/slides/project_feedback.html
   hide_from_announcments: false
-  folder: 12_symbolic_regression
+  folder: 12_preproposal_feedback
 - lecture_num: '20'
   title: Physics-Informed Neural Networks, Part 1
   date: '2026-03-26T08:00:00+03:00'

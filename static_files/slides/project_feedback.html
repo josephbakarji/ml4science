@@ -28,19 +28,19 @@
             display: flex; gap: 25px; height: 580px;
         }
         .guidelines-panel {
-            flex: 0 0 420px;
+            flex: 0 0 480px;
             background: rgba(66, 175, 250, 0.08);
             border: 1px solid rgba(66, 175, 250, 0.2);
-            border-radius: 10px; padding: 15px 18px;
+            border-radius: 10px; padding: 12px 14px;
             overflow-y: auto;
         }
         .guidelines-panel h3 {
-            color: var(--accent-blue); font-size: 0.85em; margin: 0 0 10px 0;
-            border-bottom: 1px solid rgba(66, 175, 250, 0.3); padding-bottom: 6px;
+            color: var(--accent-blue); font-size: 0.75em; margin: 0 0 6px 0;
+            border-bottom: 1px solid rgba(66, 175, 250, 0.3); padding-bottom: 4px;
         }
         .guideline-item {
-            font-size: 0.6em; margin: 7px 0; padding: 5px 8px;
-            border-radius: 4px; line-height: 1.4;
+            font-size: 0.5em; margin: 4px 0; padding: 4px 7px;
+            border-radius: 4px; line-height: 1.35;
             background: rgba(255,255,255,0.03);
         }
         .guideline-item strong { color: var(--accent-cyan); }
@@ -49,9 +49,9 @@
             flex: 1; display: flex; flex-direction: column; gap: 0;
         }
         .activity-row {
-            display: flex; align-items: center; gap: 10px;
-            padding: 7px 12px; border-radius: 6px;
-            transition: all 0.4s ease; font-size: 0.68em;
+            display: flex; align-items: center; gap: 8px;
+            padding: 5px 10px; border-radius: 6px;
+            transition: all 0.4s ease; font-size: 0.6em;
             border-left: 3px solid #333; position: relative;
         }
         .activity-row.active {
@@ -134,7 +134,11 @@
     <div class="workshop-container">
         <!-- LEFT: Guidelines -->
         <div class="guidelines-panel">
-            <h3>Pre-Proposal Guidelines</h3>
+            <h3>Pre-Proposal Guidelines <span style="color: var(--accent-yellow); font-weight: normal;">(one page)</span></h3>
+            <div class="guideline-item" style="background: rgba(229,192,123,0.1); border: 1px solid rgba(229,192,123,0.2);">
+                <strong style="color: var(--accent-yellow);">Format</strong><br>
+                One page maximum. Concise and focused.
+            </div>
             <div class="guideline-item">
                 <strong>1. Scientific Question</strong><br>
                 A clear, specific question. Why is it significant? What is the goal?
@@ -178,15 +182,15 @@
                 <span class="activity-name">Peer Review: Read &amp; Comment</span>
                 <span class="activity-timer">10:00</span>
             </div>
-            <div class="activity-row upcoming" data-duration="300" data-idx="3">
+            <div class="activity-row upcoming" data-duration="600" data-idx="3">
                 <span class="activity-icon">4</span>
-                <span class="activity-name">Discussion: Reviewer &rarr; Author</span>
-                <span class="activity-timer">5:00</span>
+                <span class="activity-name">Discuss Paper A</span>
+                <span class="activity-timer">10:00</span>
             </div>
-            <div class="activity-row upcoming" data-duration="300" data-idx="4">
+            <div class="activity-row upcoming" data-duration="600" data-idx="4">
                 <span class="activity-icon">5</span>
-                <span class="activity-name">Discussion: Author &rarr; Reviewer</span>
-                <span class="activity-timer">5:00</span>
+                <span class="activity-name">Discuss Paper B</span>
+                <span class="activity-timer">10:00</span>
             </div>
             <div class="activity-row upcoming" data-duration="300" data-idx="5">
                 <span class="activity-icon">6</span>
@@ -209,7 +213,7 @@
                 <button class="timer-btn pause" id="btn-pause" onclick="timerPause()" style="display:none;">Pause</button>
                 <button class="timer-btn skip" onclick="timerSkip()">Skip &rarr;</button>
                 <button class="timer-btn" onclick="timerReset()">Reset</button>
-                <span class="total-timer" id="total-timer">Total: 60:00</span>
+                <span class="total-timer" id="total-timer">Total: 70:00</span>
             </div>
         </div>
     </div>
@@ -223,7 +227,7 @@
             <strong>Today:</strong> Post updated pre-proposal + review summary on Slack
         </p>
         <p style="color: var(--accent-yellow); margin: 15px 0;">
-            <strong>March 18:</strong> Full project proposal due (2 pages max, PDF on Moodle)
+            <strong>March 3:</strong> Full project proposal due (2 pages max, PDF on Moodle)
         </p>
         <p style="color: var(--accent-cyan); margin: 15px 0;">
             <strong>Proposal requirements:</strong> Motivation &amp; question, data description, process &amp; timeline, methodology, evaluation strategy
