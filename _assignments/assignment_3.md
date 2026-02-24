@@ -10,7 +10,7 @@ hide_from_announcments: false
 # hide_time: true
 due_event:
     type: due
-    date: 2026-03-03T23:59:00+03:00
+    date: 2026-02-24T23:59:00+03:00
     description: 'Problem Set #3 due'
 ---
 
