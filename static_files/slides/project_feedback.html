@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Pre-Proposal Feedback Session</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/night.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --accent-blue: #61afef;
+            --accent-green: #98c379;
+            --accent-yellow: #e5c07b;
+            --accent-red: #e06c75;
+            --accent-purple: #c678dd;
+            --accent-cyan: #56b6c2;
+        }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; }
+        .reveal h1 { font-size: 2.2em; }
+        .reveal h2 { font-size: 1.6em; color: var(--accent-blue); }
+        .reveal .slides section { text-align: left; }
+        .center-text { text-align: center; }
+
+        /* Workshop layout */
+        .workshop-container {
+            display: flex; gap: 25px; height: 580px;
+        }
+        .guidelines-panel {
+            flex: 0 0 420px;
+            background: rgba(66, 175, 250, 0.08);
+            border: 1px solid rgba(66, 175, 250, 0.2);
+            border-radius: 10px; padding: 15px 18px;
+            overflow-y: auto;
+        }
+        .guidelines-panel h3 {
+            color: var(--accent-blue); font-size: 0.85em; margin: 0 0 10px 0;
+            border-bottom: 1px solid rgba(66, 175, 250, 0.3); padding-bottom: 6px;
+        }
+        .guideline-item {
+            font-size: 0.6em; margin: 7px 0; padding: 5px 8px;
+            border-radius: 4px; line-height: 1.4;
+            background: rgba(255,255,255,0.03);
+        }
+        .guideline-item strong { color: var(--accent-cyan); }
+
+        .activities-panel {
+            flex: 1; display: flex; flex-direction: column; gap: 0;
+        }
+        .activity-row {
+            display: flex; align-items: center; gap: 10px;
+            padding: 7px 12px; border-radius: 6px;
+            transition: all 0.4s ease; font-size: 0.68em;
+            border-left: 3px solid #333; position: relative;
+        }
+        .activity-row.active {
+            background: rgba(152, 195, 121, 0.12);
+            border-left-color: var(--accent-green);
+        }
+        .activity-row.done {
+            opacity: 0.4;
+            border-left-color: #555;
+        }
+        .activity-row.done .activity-name {
+            text-decoration: line-through;
+            color: #666;
+        }
+        .activity-row.upcoming {
+            opacity: 0.7;
+            border-left-color: #444;
+        }
+        .activity-icon {
+            font-size: 1.1em; min-width: 22px; text-align: center;
+        }
+        .activity-name {
+            flex: 1; color: #ccc;
+        }
+        .activity-timer {
+            font-family: 'Courier New', monospace;
+            font-size: 1.3em; font-weight: bold;
+            min-width: 55px; text-align: right;
+            color: #666;
+        }
+        .activity-row.active .activity-timer {
+            color: var(--accent-green);
+        }
+        .activity-row.active .activity-timer.warning {
+            color: var(--accent-yellow);
+        }
+        .activity-row.active .activity-timer.urgent {
+            color: var(--accent-red);
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .timer-controls {
+            display: flex; gap: 8px; margin-top: 8px; align-items: center;
+        }
+        .timer-btn {
+            padding: 6px 18px; border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.08);
+            color: #ccc; cursor: pointer; font-size: 0.65em;
+            transition: all 0.2s;
+        }
+        .timer-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+        .timer-btn.start { border-color: var(--accent-green); color: var(--accent-green); }
+        .timer-btn.pause { border-color: var(--accent-yellow); color: var(--accent-yellow); }
+        .timer-btn.skip { border-color: var(--accent-cyan); color: var(--accent-cyan); }
+        .total-timer {
+            margin-left: auto; font-family: 'Courier New', monospace;
+            font-size: 0.75em; color: #888;
+        }
+    </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- TITLE -->
+<section class="center-text" data-background-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
+    <h1 style="font-size: 1.8em;">Project Pre-Proposal</h1>
+    <h2 style="font-size: 1.2em; color: var(--accent-cyan);">Peer Feedback Workshop</h2>
+    <p style="color: #888; font-size: 0.8em; margin-top: 1.5em;">ML for Science and Engineering &mdash; February 24, 2026</p>
+</section>
+
+<!-- MAIN WORKSHOP SLIDE -->
+<section>
+    <h2 style="font-size: 1.1em; margin-bottom: 8px;">Pre-Proposal Feedback Session</h2>
+    <div class="workshop-container">
+        <!-- LEFT: Guidelines -->
+        <div class="guidelines-panel">
+            <h3>Pre-Proposal Guidelines</h3>
+            <div class="guideline-item">
+                <strong>1. Scientific Question</strong><br>
+                A clear, specific question. Why is it significant? What is the goal?
+            </div>
+            <div class="guideline-item">
+                <strong>2. Dataset</strong><br>
+                Real data preferred. Include source link. Synthetic OK if methodological contribution is clear.
+            </div>
+            <div class="guideline-item">
+                <strong>3. ML Method(s)</strong><br>
+                SINDy, symbolic regression, PINNs, neural ODEs, DMD, autoencoders, or others. Why this method?
+            </div>
+            <div class="guideline-item">
+                <strong>4. Scientific Inductive Biases</strong><br>
+                Conservation laws, symmetries, known interaction terms, spatiotemporal structure, etc.
+            </div>
+            <div class="guideline-item">
+                <strong>5. References (3+)</strong><br>
+                Original method paper, application to similar system, scientific domain paper.
+            </div>
+            <div class="guideline-item" style="background: rgba(198,120,221,0.1); border: 1px solid rgba(198,120,221,0.2);">
+                <strong style="color: var(--accent-purple);">Key Question</strong><br>
+                What makes your project <em>scientific</em> rather than a generic ML exercise?
+            </div>
+        </div>
+
+        <!-- RIGHT: Activities with timers -->
+        <div class="activities-panel" id="activities-panel">
+            <div class="activity-row upcoming" data-duration="300" data-idx="0">
+                <span class="activity-icon">1</span>
+                <span class="activity-name">Guidelines Review &amp; Q&A</span>
+                <span class="activity-timer">5:00</span>
+            </div>
+            <div class="activity-row upcoming" data-duration="300" data-idx="1">
+                <span class="activity-icon">2</span>
+                <span class="activity-name">Exercise Explanation</span>
+                <span class="activity-timer">5:00</span>
+            </div>
+            <div class="activity-row upcoming" data-duration="600" data-idx="2">
+                <span class="activity-icon">3</span>
+                <span class="activity-name">Peer Review: Read &amp; Comment</span>
+                <span class="activity-timer">10:00</span>
+            </div>
+            <div class="activity-row upcoming" data-duration="300" data-idx="3">
+                <span class="activity-icon">4</span>
+                <span class="activity-name">Discussion: Reviewer &rarr; Author</span>
+                <span class="activity-timer">5:00</span>
+            </div>
+            <div class="activity-row upcoming" data-duration="300" data-idx="4">
+                <span class="activity-icon">5</span>
+                <span class="activity-name">Discussion: Author &rarr; Reviewer</span>
+                <span class="activity-timer">5:00</span>
+            </div>
+            <div class="activity-row upcoming" data-duration="300" data-idx="5">
+                <span class="activity-icon">6</span>
+                <span class="activity-name">Self-Review &amp; Revisions</span>
+                <span class="activity-timer">5:00</span>
+            </div>
+            <div class="activity-row upcoming" data-duration="900" data-idx="6">
+                <span class="activity-icon">7</span>
+                <span class="activity-name">Share Out: Teams Present</span>
+                <span class="activity-timer">15:00</span>
+            </div>
+            <div class="activity-row upcoming" data-duration="600" data-idx="7">
+                <span class="activity-icon">8</span>
+                <span class="activity-name">Debrief &amp; What's Next</span>
+                <span class="activity-timer">10:00</span>
+            </div>
+
+            <div class="timer-controls">
+                <button class="timer-btn start" id="btn-start" onclick="timerStart()">Start</button>
+                <button class="timer-btn pause" id="btn-pause" onclick="timerPause()" style="display:none;">Pause</button>
+                <button class="timer-btn skip" onclick="timerSkip()">Skip &rarr;</button>
+                <button class="timer-btn" onclick="timerReset()">Reset</button>
+                <span class="total-timer" id="total-timer">Total: 60:00</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CLOSING -->
+<section class="center-text" data-background-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
+    <h2 style="color: #fff;">Next Steps</h2>
+    <div style="text-align: left; max-width: 700px; margin: 30px auto; font-size: 0.85em;">
+        <p style="color: var(--accent-green); margin: 15px 0;">
+            <strong>Today:</strong> Post updated pre-proposal + review summary on Slack
+        </p>
+        <p style="color: var(--accent-yellow); margin: 15px 0;">
+            <strong>March 18:</strong> Full project proposal due (2 pages max, PDF on Moodle)
+        </p>
+        <p style="color: var(--accent-cyan); margin: 15px 0;">
+            <strong>Proposal requirements:</strong> Motivation &amp; question, data description, process &amp; timeline, methodology, evaluation strategy
+        </p>
+    </div>
+    <p style="color: #888; font-size: 0.7em; margin-top: 2em;">
+        See <a href="/content/hw/project_proposal_instructions/" style="color: var(--accent-cyan);">full project instructions</a> for details.
+    </p>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+<script>
+Reveal.initialize({
+    hash: true, slideNumber: true, transition: 'slide',
+    center: false, width: 1200, height: 700, margin: 0.04,
+    plugins: []
+});
+</script>
+
+<script>
+(function() {
+    const rows = document.querySelectorAll('.activity-row');
+    let currentIdx = -1;
+    let remaining = 0;
+    let interval = null;
+    let totalRemaining = 0;
+
+    // Calculate total time
+    function calcTotal() {
+        let t = 0;
+        rows.forEach((r, i) => {
+            if (i > currentIdx) t += parseInt(r.dataset.duration);
+            else if (i === currentIdx) t += remaining;
+        });
+        return t;
+    }
+
+    function fmt(secs) {
+        const m = Math.floor(secs / 60);
+        const s = secs % 60;
+        return `${m}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function updateDisplay() {
+        rows.forEach((r, i) => {
+            const timer = r.querySelector('.activity-timer');
+            r.classList.remove('active', 'done', 'upcoming');
+            timer.classList.remove('warning', 'urgent');
+            if (i < currentIdx) {
+                r.classList.add('done');
+                timer.textContent = '0:00';
+            } else if (i === currentIdx) {
+                r.classList.add('active');
+                timer.textContent = fmt(remaining);
+                if (remaining <= 30) timer.classList.add('urgent');
+                else if (remaining <= 60) timer.classList.add('warning');
+            } else {
+                r.classList.add('upcoming');
+                timer.textContent = fmt(parseInt(r.dataset.duration));
+            }
+        });
+        document.getElementById('total-timer').textContent = 'Total: ' + fmt(calcTotal());
+    }
+
+    function tick() {
+        if (remaining <= 0) {
+            // Move to next activity
+            if (currentIdx < rows.length - 1) {
+                currentIdx++;
+                remaining = parseInt(rows[currentIdx].dataset.duration);
+            } else {
+                clearInterval(interval);
+                interval = null;
+                document.getElementById('btn-start').style.display = '';
+                document.getElementById('btn-pause').style.display = 'none';
+                rows[currentIdx].classList.remove('active');
+                rows[currentIdx].classList.add('done');
+                rows[currentIdx].querySelector('.activity-timer').textContent = '0:00';
+                document.getElementById('total-timer').textContent = 'Total: 0:00';
+                return;
+            }
+        } else {
+            remaining--;
+        }
+        updateDisplay();
+    }
+
+    window.timerStart = function() {
+        if (currentIdx < 0) {
+            currentIdx = 0;
+            remaining = parseInt(rows[0].dataset.duration);
+        }
+        if (interval) return;
+        interval = setInterval(tick, 1000);
+        document.getElementById('btn-start').style.display = 'none';
+        document.getElementById('btn-pause').style.display = '';
+        updateDisplay();
+    };
+
+    window.timerPause = function() {
+        if (interval) { clearInterval(interval); interval = null; }
+        document.getElementById('btn-start').style.display = '';
+        document.getElementById('btn-pause').style.display = 'none';
+        document.getElementById('btn-start').textContent = 'Resume';
+    };
+
+    window.timerSkip = function() {
+        if (currentIdx < 0) currentIdx = 0;
+        if (currentIdx < rows.length - 1) {
+            currentIdx++;
+            remaining = parseInt(rows[currentIdx].dataset.duration);
+        } else {
+            remaining = 0;
+        }
+        updateDisplay();
+    };
+
+    window.timerReset = function() {
+        if (interval) { clearInterval(interval); interval = null; }
+        currentIdx = -1;
+        remaining = 0;
+        document.getElementById('btn-start').style.display = '';
+        document.getElementById('btn-pause').style.display = 'none';
+        document.getElementById('btn-start').textContent = 'Start';
+        rows.forEach(r => {
+            r.classList.remove('active', 'done');
+            r.classList.add('upcoming');
+            const dur = parseInt(r.dataset.duration);
+            r.querySelector('.activity-timer').textContent = fmt(dur);
+            r.querySelector('.activity-timer').classList.remove('warning', 'urgent');
+        });
+        document.getElementById('total-timer').textContent = 'Total: ' + fmt(
+            Array.from(rows).reduce((s, r) => s + parseInt(r.dataset.duration), 0)
+        );
+    };
+
+    // Initial display
+    window.timerReset();
+})();
+</script>
+</body>
+</html>
