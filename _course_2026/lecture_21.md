@@ -17,6 +17,5 @@ material:
   type: slides
   url: /static_files/slides/pinns.html
 hide_from_announcments: false
-hidden: true
 folder: 21_pinns
 ---

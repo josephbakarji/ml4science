@@ -287,33 +287,18 @@
     url: https://www.youtube.com/watch?v=oI3grKBxkqM
   hide_from_announcments: false
   folder: 09_system_identification
-- lecture_num: '10'
-  title: Project Requirements + Symbolic Regression
-  date: '2026-02-17T08:00:00+03:00'
+- lecture_num: '12'
+  title: Quiz Correction + Symbolic Regression
+  date: '2026-02-24T08:00:00+03:00'
   type: lecture
-  tldr: Project requirements and expectations, followed by discovering equations as
-    expression trees using genetic algorithms. Selection, crossover, mutation, Pareto-optimal
-    complexity-accuracy tradeoffs, and PySR.
+  tldr: Discovering equations as expression trees using genetic algorithms. Selection,
+    crossover, mutation, Pareto-optimal complexity-accuracy tradeoffs, and PySR.
   material:
-  - name: Project Requirements Slides
-    type: slides
-    url: /static_files/slides/project_requirements.html
-  - name: Full Project Requirements
-    type: notes
-    url: /project/
-  - name: Symbolic Regression Slides
+  - name: Lecture Slides
     type: slides
     url: /static_files/slides/symbolic_regression.html
-  - name: 'Python Symbolic Regression (PySR)'
-    type: video
-    url: https://www.youtube.com/watch?v=df43V4OjMVs
-  assignments:
-  - name: 'Problem Set 3: Project Pre-Proposal and Neural Networks'
-    type: homework
-    label: required
-    url: /assignments/assignment_3/
   hide_from_announcments: false
-  folder: 10_sindy
+  folder: 12_symbolic_regression
 - lecture_num: '20'
   title: Physics-Informed Neural Networks, Part 1
   date: '2026-03-26T08:00:00+03:00'
@@ -335,7 +320,6 @@
     type: video
     url: https://www.youtube.com/watch?v=G_hIppUWcsc
   hide_from_announcments: false
-  hidden: true
   folder: 20_review_pinns_intro
 - lecture_num: '21'
   title: Physics-Informed Neural Networks, Part 2
@@ -355,5 +339,4 @@
     type: slides
     url: /static_files/slides/pinns.html
   hide_from_announcments: false
-  hidden: true
   folder: 21_pinns

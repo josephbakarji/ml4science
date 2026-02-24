@@ -19,6 +19,5 @@ material:
   type: video
   url: https://www.youtube.com/watch?v=G_hIppUWcsc
 hide_from_announcments: false
-hidden: true
 folder: 20_review_pinns_intro
 ---
