@@ -113,7 +113,7 @@
 <section class="center-text" data-background-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
     <h1 style="font-size: 2em;">Physics-Informed Neural Networks</h1>
     <p style="color: var(--accent-cyan); font-size: 1.1em; margin-top: 0.5em;">From Residual Minimization to Deep Learning for PDEs</p>
-    <p class="small-text" style="margin-top: 2em; color: #888;">ML for Science and Engineering &mdash; Lecture 20</p>
+    <p class="small-text" style="margin-top: 2em; color: #888;">ML for Science and Engineering</p>
 </section>
 
 <!-- ============================================ -->
@@ -126,26 +126,26 @@
         <div class="two-column">
             <div>
                 <p class="small-text">Given a PDE on domain \(\Omega\):</p>
-                <div class="equation-box large">
-                    \(\mathcal{N}[u](x, t) = 0, \quad (x,t) \in \Omega\)
+                <div class="equation-box">
+                    \(\mathcal{N}[u](x, t) = 0, \;\; (x,t) \in \Omega\)
                 </div>
                 <p class="small-text">with boundary/initial conditions:</p>
-                <div class="equation-box">
-                    \(\mathcal{B}[u](x, t) = g(x, t), \quad (x,t) \in \partial\Omega\)
+                <div class="equation-box" style="font-size: 0.75em;">
+                    \(\mathcal{B}[u](x, t) = g(x, t), \;\; (x,t) \in \partial\Omega\)
                 </div>
                 <p class="small-text fragment">Find \(u(x, t)\) that satisfies both the PDE and the conditions.</p>
             </div>
             <div class="fragment">
                 <p class="small-text" style="color: var(--accent-yellow);">Concrete example: the heat equation</p>
-                <div class="equation-box">
-                    \(\frac{\partial u}{\partial t} = \alpha \frac{\partial^2 u}{\partial x^2}\)
+                <div class="equation-box" style="font-size: 0.8em;">
+                    \(u_t = \alpha \, u_{xx}\)
                 </div>
                 <p class="tiny-text">
                     IC: \(u(x, 0) = \sin(\pi x)\)<br>
                     BC: \(u(0, t) = u(1, t) = 0\)
                 </p>
-                <div class="highlight-box small-text">
-                    Exact solution: \(u(x,t) = e^{-\alpha \pi^2 t} \sin(\pi x)\)
+                <div class="highlight-box tiny-text">
+                    Exact: \(u(x,t) = e^{-\alpha \pi^2 t} \sin(\pi x)\)
                 </div>
             </div>
         </div>
@@ -181,7 +181,7 @@
         <h2>The Classical Approach: Basis Functions</h2>
         <p class="small-text">Propose a solution as a linear combination of known functions:</p>
         <div class="equation-box large">
-            \(u(x, t) = \sum_{i=1}^{N} a_i \, \phi_i(x, t)\)
+            \(u(x, t) = \sum_{i=1}^{N} \theta_i \, \phi_i(x, t)\)
         </div>
         <div class="two-column fragment" style="margin-top: 15px;">
             <div class="small-text">
@@ -190,7 +190,7 @@
                 <p><span class="em-purple">FEM shape functions:</span> piecewise linear on a mesh</p>
             </div>
             <div class="highlight-box small-text">
-                The idea: choose a <span class="keyword">hypothesis class</span>, then determine the coefficients \(a_i\) from the data and the PDE.
+                The idea: choose a <span class="keyword">hypothesis class</span>, then determine the coefficients \(\theta_i\) from the data and the PDE.
             </div>
         </div>
     </section>
@@ -205,7 +205,7 @@
         <h2>Defining the Residual</h2>
         <p class="small-text">Substitute the hypothesis into the PDE. For the heat equation:</p>
         <div class="equation-box large">
-            \(\mathcal{R}(x, t;\, a_i) = \sum_{i} a_i \frac{\partial \phi_i}{\partial t} - \alpha \sum_{i} a_i \frac{\partial^2 \phi_i}{\partial x^2}\)
+            \(\mathcal{R}(x, t;\, \theta_i) = \sum_{i} \theta_i \frac{\partial \phi_i}{\partial t} - \alpha \sum_{i} \theta_i \frac{\partial^2 \phi_i}{\partial x^2}\)
         </div>
         <div class="warning-box small-text fragment" style="margin-top: 15px;">
             If \(u\) is the <em>exact</em> solution, \(\mathcal{R} = 0\) everywhere.
@@ -224,49 +224,16 @@
                 <p>Choose a set of <span class="em-red">collocation points</span> \(\{(x_k, t_k)\}\) in the domain.</p>
                 <p class="fragment">Evaluate the residual at those points and minimize:</p>
                 <div class="equation-box fragment">
-                    \(\min_{a_i} \sum_{k=1}^{N_r} \mathcal{R}(x_k, t_k;\, a_i)^2\)
+                    \(\min_{\theta_i} \sum_{k=1}^{N_r} \mathcal{R}(x_k, t_k;\, \theta_i)^2\)
                 </div>
                 <div class="highlight-box fragment" style="font-size: 0.7em;">
                     This is the <span class="keyword">method of weighted residuals</span> / collocation method. Well-established in applied math.
                 </div>
             </div>
-            <div style="text-align: center;">
-                <svg width="340" height="280" viewBox="0 0 340 280">
-                    <rect x="40" y="20" width="260" height="220" fill="none" stroke="#555" stroke-width="2" rx="4"/>
-                    <text x="170" y="260" text-anchor="middle" fill="#888" font-size="11">Domain Ω</text>
-                    <text x="20" y="135" text-anchor="middle" fill="#888" font-size="11" transform="rotate(-90,20,135)">t</text>
-                    <text x="170" y="275" text-anchor="middle" fill="#888" font-size="11">x</text>
-                    <!-- Collocation points (red) -->
-                    <circle cx="100" cy="80" r="4" fill="#e06c75" opacity="0.7"/>
-                    <circle cx="180" cy="60" r="4" fill="#e06c75" opacity="0.7"/>
-                    <circle cx="250" cy="100" r="4" fill="#e06c75" opacity="0.7"/>
-                    <circle cx="80" cy="150" r="4" fill="#e06c75" opacity="0.7"/>
-                    <circle cx="200" cy="130" r="4" fill="#e06c75" opacity="0.7"/>
-                    <circle cx="150" cy="170" r="4" fill="#e06c75" opacity="0.7"/>
-                    <circle cx="230" cy="190" r="4" fill="#e06c75" opacity="0.7"/>
-                    <circle cx="120" cy="200" r="4" fill="#e06c75" opacity="0.7"/>
-                    <circle cx="270" cy="150" r="4" fill="#e06c75" opacity="0.7"/>
-                    <!-- Boundary/data points (green) -->
-                    <circle cx="40" cy="50" r="4" fill="#98c379"/>
-                    <circle cx="40" cy="100" r="4" fill="#98c379"/>
-                    <circle cx="40" cy="150" r="4" fill="#98c379"/>
-                    <circle cx="40" cy="200" r="4" fill="#98c379"/>
-                    <circle cx="300" cy="50" r="4" fill="#98c379"/>
-                    <circle cx="300" cy="100" r="4" fill="#98c379"/>
-                    <circle cx="300" cy="150" r="4" fill="#98c379"/>
-                    <circle cx="300" cy="200" r="4" fill="#98c379"/>
-                    <!-- IC points -->
-                    <circle cx="80" cy="240" r="4" fill="#98c379"/>
-                    <circle cx="140" cy="240" r="4" fill="#98c379"/>
-                    <circle cx="200" cy="240" r="4" fill="#98c379"/>
-                    <circle cx="260" cy="240" r="4" fill="#98c379"/>
-                    <!-- Legend -->
-                    <circle cx="60" cy="12" r="4" fill="#e06c75" opacity="0.7"/>
-                    <text x="70" y="16" fill="#ccc" font-size="10">Collocation (residual)</text>
-                    <circle cx="210" cy="12" r="4" fill="#98c379"/>
-                    <text x="220" y="16" fill="#ccc" font-size="10">Boundary / IC (data)</text>
-                </svg>
-            </div>
+            <div id="collocation-heatmap" style="text-align: center;"></div>
+        </div>
+        <div class="equation-box fragment" style="font-size: 0.7em; margin-top: 8px;">
+            With data: \(\mathcal{L} = \underbrace{\sum_j (u_j^{\text{data}} - u_\theta)^2}_{\color{#e5c07b}{\text{Data}}} + \underbrace{\sum_k \mathcal{R}(x_k, t_k)^2}_{\color{#e06c75}{\text{Residual}}} + \underbrace{\sum_m (u_\theta - g_m)^2}_{\color{#98c379}{\text{BC/IC}}}\)
         </div>
     </section>
 
@@ -274,11 +241,11 @@
     <section>
         <h2>Adding Data: The Combined Loss</h2>
         <p class="small-text">Given observations \((x_j, t_j, u_j^{\text{data}})\), find coefficients by minimizing:</p>
-        <div class="equation-box large" style="font-size: 0.95em;">
-            \(\mathcal{L}(a_i) = \underbrace{\sum_{j=1}^{N_d} \left[ u_j^{\text{data}} - \sum_i a_i \phi_i(x_j, t_j) \right]^2}_{\color{#98c379}{\text{Data-fitting term}}} + \underbrace{\sum_{k=1}^{N_r} \mathcal{R}(x_k, t_k;\, a_i)^2}_{\color{#e06c75}{\text{Physics residual term}}}\)
+        <div class="equation-box" style="font-size: 0.85em;">
+            \(\mathcal{L}(\theta_i) = \underbrace{\sum_{j=1}^{N_d} \left[ u_j^{\text{data}} - \sum_i \theta_i \phi_i(x_j, t_j) \right]^2}_{\color{#98c379}{\text{Data-fitting term}}} + \underbrace{\sum_{k=1}^{N_r} \mathcal{R}(x_k, t_k;\, \theta_i)^2}_{\color{#e06c75}{\text{Physics residual term}}}\)
         </div>
-        <div class="principle-box small-text fragment" style="margin-top: 15px;">
-            This is the key insight: <span class="keyword">combine data-fitting with physical constraints in a single objective</span>. The data pulls the solution toward observations; the residual ensures physical consistency everywhere.
+        <div class="highlight-box small-text fragment" style="margin-top: 15px;">
+            Combine <span class="keyword">data-fitting with physical constraints</span> in a single objective. The data pulls toward observations; the residual ensures physical consistency.
         </div>
     </section>
 </section>
@@ -290,7 +257,10 @@
     <!-- 3.1 Interactive -->
     <section>
         <h2>Interactive: Basis Function Mixer</h2>
-        <p class="tiny-text" style="margin-bottom: 5px;">PDE: \(u'' + \pi^2 u = 0\) on \([0,1]\). Exact solution: \(u(x) = \sin(\pi x)\). Adjust coefficients to minimize the residual.</p>
+        <p class="tiny-text" style="margin-bottom: 5px;">
+            PDE: \(u'' + \pi^2 u = 0\) on \([0,1]\), exact solution: \(\sin(\pi x)\).
+            Build \(u(x) = \sum \theta_i \sin(i\pi x)\) by adjusting \(\theta_i\). Only \(\theta_1 = 1\) gives zero residual <span style="color:var(--accent-red);">(red bars)</span> at collocation points.
+        </p>
         <div id="basis-mixer-viz" style="width: 100%; height: 460px;"></div>
     </section>
 
@@ -299,15 +269,15 @@
         <h2>From Linear to Universal Approximation</h2>
         <div class="two-column">
             <div>
-                <p class="small-text">The basis expansion is <span class="em-blue">linear in \(a_i\)</span> and limited to the chosen \(\phi_i\).</p>
+                <p class="small-text">The basis expansion is <span class="em-blue">linear in \(\theta_i\)</span> and limited to the chosen \(\phi_i\).</p>
                 <div class="equation-box">
-                    \(u(x) = \sum_{i=1}^N a_i \, \phi_i(x)\)
+                    \(u(x) = \sum_{i=1}^N \theta_i \, \phi_i(x)\)
                 </div>
                 <p class="small-text fragment" style="margin-top: 15px;">What if we had a <em>universal</em> hypothesis that could learn any shape?</p>
             </div>
             <div class="fragment">
                 <div class="equation-box large" style="margin-top: 30px;">
-                    \(\sum_i a_i \, \phi_i(x) \;\longrightarrow\; u_\theta(x)\)
+                    \(\sum_i \theta_i \, \phi_i(x) \;\longrightarrow\; u_\theta(x)\)
                 </div>
                 <div class="success-box small-text" style="margin-top: 15px;">
                     <span class="keyword">Neural networks</span> are universal approximators. We don't need to choose basis functions &mdash; the network <em>learns</em> them.
@@ -375,43 +345,89 @@
                     <line x1="56" y1="190" x2="128" y2="150" stroke="#555" stroke-width="0.7"/>
                     <line x1="56" y1="190" x2="128" y2="220" stroke="#555" stroke-width="0.7"/>
                     <line x1="56" y1="190" x2="128" y2="260" stroke="#555" stroke-width="0.7"/>
-                    <line x1="152" y1="60" x2="208" y2="60" stroke="#555" stroke-width="0.7"/>
-                    <line x1="152" y1="110" x2="208" y2="110" stroke="#555" stroke-width="0.7"/>
-                    <line x1="152" y1="150" x2="208" y2="150" stroke="#555" stroke-width="0.7"/>
-                    <line x1="152" y1="220" x2="208" y2="220" stroke="#555" stroke-width="0.7"/>
-                    <line x1="152" y1="260" x2="208" y2="260" stroke="#555" stroke-width="0.7"/>
+                    <!-- Hidden 1 to Hidden 2: fully connected -->
+                    <line x1="152" y1="60" x2="208" y2="60" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="60" x2="208" y2="110" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="60" x2="208" y2="150" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="60" x2="208" y2="220" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="60" x2="208" y2="260" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="110" x2="208" y2="60" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="110" x2="208" y2="110" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="110" x2="208" y2="150" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="110" x2="208" y2="220" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="110" x2="208" y2="260" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="150" x2="208" y2="60" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="150" x2="208" y2="110" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="150" x2="208" y2="150" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="150" x2="208" y2="220" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="150" x2="208" y2="260" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="220" x2="208" y2="60" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="220" x2="208" y2="110" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="220" x2="208" y2="150" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="220" x2="208" y2="220" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="220" x2="208" y2="260" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="260" x2="208" y2="60" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="260" x2="208" y2="110" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="260" x2="208" y2="150" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="260" x2="208" y2="220" stroke="#555" stroke-width="0.5"/>
+                    <line x1="152" y1="260" x2="208" y2="260" stroke="#555" stroke-width="0.5"/>
+                    <!-- Hidden 2 to Output -->
                     <line x1="232" y1="60" x2="284" y2="150" stroke="#555" stroke-width="0.7"/>
                     <line x1="232" y1="110" x2="284" y2="150" stroke="#555" stroke-width="0.7"/>
                     <line x1="232" y1="150" x2="284" y2="150" stroke="#555" stroke-width="0.7"/>
                     <line x1="232" y1="220" x2="284" y2="150" stroke="#555" stroke-width="0.7"/>
                     <line x1="232" y1="260" x2="284" y2="150" stroke="#555" stroke-width="0.7"/>
                     <!-- Activation label -->
-                    <text x="180" y="290" text-anchor="middle" fill="#c678dd" font-size="10">tanh activation</text>
+                    <text x="180" y="290" text-anchor="middle" fill="#c678dd" font-size="10">typically tanh activation</text>
                 </svg>
+            </div>
+        </div>
+        <p class="tiny-text fragment" style="color: #888; margin-top: 6px;">
+            Lagaris et al., <em>Artificial Neural Networks for Solving ODEs and PDEs</em>, IEEE TNN (1998) &nbsp;|&nbsp;
+            Raissi, Perdikaris &amp; Karniadakis, <em>Physics-Informed Neural Networks</em>, JCP (2019)
+        </p>
+    </section>
+
+    <!-- 4.2 Computing Derivatives: The Question -->
+    <section>
+        <h2>Computing PDE Derivatives</h2>
+        <p class="small-text">For the heat equation, the residual requires derivatives of \(u_\theta\):</p>
+        <div class="equation-box large">
+            \(\mathcal{R} = \frac{\partial u_\theta}{\partial t} - \alpha \frac{\partial^2 u_\theta}{\partial x^2}\)
+        </div>
+        <p class="small-text fragment" style="margin-top: 15px;">If \(u_\theta\) is a neural network, <span class="keyword">how do we compute these derivatives?</span></p>
+        <div class="two-column fragment" style="margin-top: 10px;">
+            <div class="warning-box small-text">
+                <strong>Finite differences?</strong><br>
+                Approximation errors, grid dependence, costly for higher-order derivatives
+            </div>
+            <div class="success-box small-text">
+                <strong>Something better...</strong><br>
+                Neural networks are compositions of differentiable functions. We can use the <span class="keyword">chain rule</span>.
             </div>
         </div>
     </section>
 
-    <!-- 4.2 Automatic Differentiation -->
+    <!-- 4.3 Automatic Differentiation: The Answer -->
     <section>
-        <h2>Automatic Differentiation: The Key Enabler</h2>
+        <h2>Automatic Differentiation</h2>
         <div class="two-column">
             <div class="small-text">
-                <p>For PDE residuals, we need derivatives of \(u_\theta\) with respect to inputs \(x, t\).</p>
-                <p class="fragment"><span class="keyword">Automatic differentiation</span> computes these <em>exactly</em> through the computational graph.</p>
-                <div class="highlight-box fragment" style="font-size: 0.9em;">
-                    Unlike finite differences, AD gives exact derivatives (up to floating point). No mesh or grid needed.
-                </div>
-            </div>
-            <div class="fragment">
+                <p><span class="keyword">AD</span> computes <em>exact</em> derivatives through the computational graph via the chain rule:</p>
                 <div class="equation-box" style="font-size: 0.8em;">
-                    Forward: \((x, t) \xrightarrow{W_1, b_1} h_1 \xrightarrow{W_2, b_2} \cdots \xrightarrow{} u_\theta\)
+                    \((x, t) \xrightarrow{W_1, b_1} h_1 \xrightarrow{W_2, b_2} \cdots \xrightarrow{} u_\theta\)
                 </div>
                 <div class="equation-box" style="font-size: 0.8em; margin-top: 8px;">
-                    AD: \(\frac{\partial u_\theta}{\partial x},\; \frac{\partial u_\theta}{\partial t},\; \frac{\partial^2 u_\theta}{\partial x^2},\; \ldots\)
+                    \(\frac{\partial u_\theta}{\partial x} = \frac{\partial u_\theta}{\partial h_L} \cdot \frac{\partial h_L}{\partial h_{L-1}} \cdots \frac{\partial h_1}{\partial x}\)
+                </div>
+                <p class="fragment" style="margin-top: 8px;">Higher-order derivatives too: \(\frac{\partial^2 u_\theta}{\partial x^2}\) by differentiating again through the graph.</p>
+            </div>
+            <div class="fragment">
+                <div class="highlight-box small-text">
+                    Unlike finite differences, AD gives <span class="keyword">exact derivatives</span> (up to floating point). No mesh or grid needed.
                 </div>
                 <div class="principle-box small-text" style="margin-top: 10px;">
-                    PINNs became practical only with modern frameworks (PyTorch, TensorFlow) that have built-in AD.
+                    This is efficient: PyTorch and TensorFlow compute all required PDE derivatives in a single backward pass through the network.
                 </div>
             </div>
         </div>
@@ -423,21 +439,54 @@
         <div class="equation-box large">
             \(\mathcal{L}(\theta) = \lambda_d \, \mathcal{L}_{\text{data}} + \lambda_r \, \mathcal{L}_{\text{residual}} + \lambda_b \, \mathcal{L}_{\text{boundary}}\)
         </div>
-        <div class="three-column" style="margin-top: 15px;">
-            <div class="success-box" style="font-size: 0.7em;">
-                <strong style="color: var(--accent-green);">Data</strong><br>
-                \(\frac{1}{N_d}\sum_j \left[u_\theta(x_j, t_j) - u_j^{\text{data}}\right]^2\)
+        <div style="display: flex; gap: 15px; margin-top: 12px; align-items: flex-start;">
+            <div style="flex: 1;">
+                <div class="three-column" style="gap: 8px;">
+                    <div class="success-box" style="font-size: 0.65em; padding: 10px 12px;">
+                        <strong style="color: var(--accent-green);">Data</strong><br>
+                        \(\frac{1}{N_d}\sum_j (u_\theta - u_j^{\text{data}})^2\)
+                    </div>
+                    <div class="warning-box" style="font-size: 0.65em; padding: 10px 12px;">
+                        <strong style="color: var(--accent-red);">Residual</strong><br>
+                        \(\frac{1}{N_r}\sum_k [\mathcal{N}[u_\theta]]^2\)
+                    </div>
+                    <div class="highlight-box" style="font-size: 0.65em; padding: 10px 12px;">
+                        <strong style="color: var(--accent-blue);">Boundary/IC</strong><br>
+                        \(\frac{1}{N_b}\sum_m (u_\theta - g_m)^2\)
+                    </div>
+                </div>
             </div>
-            <div class="warning-box" style="font-size: 0.7em;">
-                <strong style="color: var(--accent-red);">Residual</strong><br>
-                \(\frac{1}{N_r}\sum_k \left[\mathcal{N}[u_\theta](x_k, t_k)\right]^2\)
-            </div>
-            <div class="highlight-box" style="font-size: 0.7em;">
-                <strong style="color: var(--accent-blue);">Boundary/IC</strong><br>
-                \(\frac{1}{N_b}\sum_m \left[u_\theta(x_m, t_m) - g_m\right]^2\)
+            <div style="flex-shrink: 0;">
+                <svg width="160" height="120" viewBox="0 0 160 120">
+                    <rect x="15" y="5" width="130" height="100" fill="rgba(255,255,255,0.03)" stroke="#555" stroke-width="1.5" rx="3"/>
+                    <!-- Residual points (red) -->
+                    <circle cx="50" cy="30" r="3" fill="none" stroke="#e06c75" stroke-width="1.5"/>
+                    <circle cx="90" cy="45" r="3" fill="none" stroke="#e06c75" stroke-width="1.5"/>
+                    <circle cx="70" cy="65" r="3" fill="none" stroke="#e06c75" stroke-width="1.5"/>
+                    <circle cx="110" cy="35" r="3" fill="none" stroke="#e06c75" stroke-width="1.5"/>
+                    <circle cx="55" cy="80" r="3" fill="none" stroke="#e06c75" stroke-width="1.5"/>
+                    <circle cx="100" cy="75" r="3" fill="none" stroke="#e06c75" stroke-width="1.5"/>
+                    <!-- Data points (green crosses) -->
+                    <line x1="60" y1="47" x2="68" y2="55" stroke="#98c379" stroke-width="2"/>
+                    <line x1="68" y1="47" x2="60" y2="55" stroke="#98c379" stroke-width="2"/>
+                    <line x1="85" y1="67" x2="93" y2="75" stroke="#98c379" stroke-width="2"/>
+                    <line x1="93" y1="67" x2="85" y2="75" stroke="#98c379" stroke-width="2"/>
+                    <!-- Boundary points (blue) -->
+                    <circle cx="15" cy="25" r="2.5" fill="#61afef"/>
+                    <circle cx="15" cy="55" r="2.5" fill="#61afef"/>
+                    <circle cx="15" cy="85" r="2.5" fill="#61afef"/>
+                    <circle cx="145" cy="25" r="2.5" fill="#61afef"/>
+                    <circle cx="145" cy="55" r="2.5" fill="#61afef"/>
+                    <circle cx="145" cy="85" r="2.5" fill="#61afef"/>
+                    <circle cx="45" cy="105" r="2.5" fill="#61afef"/>
+                    <circle cx="80" cy="105" r="2.5" fill="#61afef"/>
+                    <circle cx="115" cy="105" r="2.5" fill="#61afef"/>
+                    <text x="80" y="117" text-anchor="middle" fill="#888" font-size="8">x</text>
+                    <text x="6" y="55" text-anchor="middle" fill="#888" font-size="8" transform="rotate(-90,6,55)">t</text>
+                </svg>
             </div>
         </div>
-        <p class="small-text fragment" style="margin-top: 12px;">The weights \(\lambda_d, \lambda_r, \lambda_b\) balance the three objectives. Getting this balance right is one of the main challenges.</p>
+        <p class="small-text fragment" style="margin-top: 8px;">The weights \(\lambda_d, \lambda_r, \lambda_b\) balance the three objectives. Getting this balance right is one of the main challenges.</p>
     </section>
 
     <!-- 4.4 Comparison Table -->
@@ -479,59 +528,37 @@
 
     <!-- 5.2 Training Loop -->
     <section>
-        <h2>The Training Loop</h2>
-        <pre><code class="language-python" style="font-size: 0.72em !important; line-height: 1.4 !important;">for epoch in range(N):
-    # Sample collocation points in the domain
-    x_r, t_r = random_points_in_domain(N_collocation)
+        <h2>PyTorch Implementation</h2>
+        <pre><code class="language-python" style="font-size: 0.56em !important; line-height: 1.3 !important;">class PINN(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(2, 20), nn.Tanh(),
+            nn.Linear(20, 20), nn.Tanh(),
+            nn.Linear(20, 1))
+    def forward(self, x, t):
+        return self.net(torch.cat([x, t], dim=1))
 
-    # Forward pass + PDE residual (via automatic differentiation)
-    u_pred = network(x_data, t_data)
-    residual = compute_PDE_residual(network, x_r, t_r)
+def pde_residual(model, x, t, alpha):
+    """Heat equation: u_t - alpha * u_xx = 0"""
+    x.requires_grad_(True); t.requires_grad_(True)
+    u = model(x, t)
+    u_t = torch.autograd.grad(u, t, torch.ones_like(u), create_graph=True)[0]
+    u_x = torch.autograd.grad(u, x, torch.ones_like(u), create_graph=True)[0]
+    u_xx = torch.autograd.grad(u_x, x, torch.ones_like(u_x), create_graph=True)[0]
+    return u_t - alpha * u_xx
 
-    # Combined loss
-    loss = MSE(u_pred, u_data) + lambda_r * MSE(residual, 0)
-
-    # Standard backpropagation + optimizer step
-    loss.backward()
-    optimizer.step()</code></pre>
-        <div class="highlight-box small-text fragment">
-            Collocation points can be <span class="keyword">resampled every epoch</span> (stochastic collocation) or kept fixed. Resampling helps explore the domain more thoroughly.
+model = PINN(); optimizer = Adam(model.parameters(), lr=1e-3)
+for epoch in range(N):
+    x_r, t_r = random_collocation_points(N_coll)
+    loss = MSE(model(x_data, t_data), u_data) \
+         + lambda_r * MSE(pde_residual(model, x_r, t_r, alpha), 0)
+    loss.backward(); optimizer.step()</code></pre>
+        <div class="highlight-box tiny-text fragment">
+            <code style="font-size:0.95em;">create_graph=True</code> preserves the computation graph so we can backpropagate <em>through</em> the AD derivatives. Collocation points can be <span class="keyword">resampled every epoch</span>.
         </div>
     </section>
-</section>
 
-<!-- ============================================ -->
-<!-- PART 1 SUMMARY -->
-<!-- ============================================ -->
-<section data-background-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
-    <h2 style="color: #fff; text-align: center;">Part 1 Summary</h2>
-    <div class="three-column" style="margin-top: 20px;">
-        <div class="highlight-box small-text">
-            <strong>1. Residual</strong><br>
-            Define \(\mathcal{R} = \mathcal{N}[u]\) for your PDE. Evaluate at collocation points. Minimize.
-        </div>
-        <div class="success-box small-text">
-            <strong>2. Replace basis with NN</strong><br>
-            \(u_\theta(x,t)\) as universal approximator. AD gives exact derivatives.
-        </div>
-        <div class="principle-box small-text">
-            <strong>3. Combined loss</strong><br>
-            \(\mathcal{L} = \mathcal{L}_{\text{data}} + \mathcal{L}_{\text{residual}} + \mathcal{L}_{\text{boundary}}\)
-        </div>
-    </div>
-    <div class="equation-box" style="margin-top: 25px; font-size: 1em;">
-        \(u(x,t) \approx u_\theta(x,t), \qquad \min_\theta \; \mathcal{L}(\theta)\)
-    </div>
-</section>
-
-<!-- ============================================ -->
-<!-- PART 2 DIVIDER -->
-<!-- ============================================ -->
-<section class="center-text" data-background-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
-    <h1>Part 2: PINNs in Practice</h1>
-    <p class="small-text" style="margin-top: 2em; color: #888;">
-        ML for Science and Engineering &mdash; Lecture 21
-    </p>
 </section>
 
 <!-- ============================================ -->
@@ -559,16 +586,13 @@
         </div>
     </section>
 
-    <!-- 6.2 PINN Training Demo -->
+    <!-- 6.2 PINN Ablation Demo -->
     <section>
-        <h2>PINN Training Demo</h2>
+        <h2>PINN Training: Loss Ablation</h2>
         <p class="tiny-text" style="margin-bottom: 2px;">
-            ODE: \(u' + \alpha u = 0,\; u(0)=1\). A 1-hidden-layer neural network trained in real time.
-            <span class="mode-btn active" onclick="pinnSetMode('forward')" id="mode-fwd-btn">Forward</span>
-            <span class="mode-btn" onclick="pinnSetMode('inverse')" id="mode-inv-btn">Inverse</span>
-            <span id="pinn-alpha-display" class="tiny-text" style="color: var(--accent-yellow); margin-left: 10px;"></span>
+            Damped oscillator: \(u'' + 0.6\,u' + 9\,u = 0\), \(u(0)=1,\; u'(0)=0\). Toggle loss components to see their effect on extrapolation.
         </p>
-        <div id="pinn-training-viz" style="width: 100%; height: 420px;"></div>
+        <div id="pinn-pendulum-viz" style="width: 100%; height: 500px;"></div>
     </section>
 </section>
 
@@ -583,23 +607,32 @@
         <div class="two-column" style="margin-top: 10px;">
             <div>
                 <p class="small-text"><span class="em-cyan">Example:</span> \(u' + \alpha u = 0\), we observe \(u\) at several points, \(\alpha\) is unknown.</p>
-                <div class="equation-box" style="font-size: 0.9em;">
-                    \(\mathcal{L}(\theta, \alpha) = \mathcal{L}_{\text{data}}(\theta) + \mathcal{L}_{\text{residual}}(\theta, \alpha)\)
-                </div>
-                <div class="principle-box small-text fragment">
-                    Both \(\theta\) (network weights) and \(\alpha\) (physical parameter) are optimized <em>simultaneously</em> via gradient descent.
+                <div class="equation-box" style="font-size: 0.72em;">
+                    \(\mathcal{L}(\theta, \alpha) = \mathcal{L}_{\text{data}}(\theta) + \mathcal{L}_{\text{res}}(\theta, \alpha)\)
                 </div>
             </div>
             <div class="fragment">
-                <div class="success-box small-text">
-                    <strong>This is where PINNs truly shine:</strong> inverse problems are notoriously difficult with classical methods, but natural with PINNs.
+                <div class="highlight-box small-text">
+                    <strong>Key idea:</strong> treat \(\alpha\) as a <span class="keyword">trainable parameter</span> alongside \(\theta\). Compute \(\frac{\partial \mathcal{L}}{\partial \alpha}\) via AD, just like network gradients.
                 </div>
-                <p class="tiny-text" style="margin-top: 10px; color: #888;">Try the <span class="em-blue">Inverse</span> mode in the demo (previous slide) to see this in action.</p>
+                <div class="principle-box small-text" style="margin-top: 8px;">
+                    Both \(\theta\) (network weights) and \(\alpha\) (physical parameter) are optimized <em>simultaneously</em> via gradient descent.
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- 7.2 More on Inverse -->
+    <!-- 7.2 Inverse Demo -->
+    <section>
+        <h2>Inverse Problem Demo</h2>
+        <p class="tiny-text" style="margin-bottom: 2px;">
+            ODE: \(u' + \alpha u = 0,\; u(0)=1\). We observe \(u\) at a few points. The network learns \(\alpha\) simultaneously.
+            <span id="pinn-alpha-display" class="tiny-text" style="color: var(--accent-yellow); margin-left: 10px;"></span>
+        </p>
+        <div id="pinn-inverse-viz" style="width: 100%; height: 420px;"></div>
+    </section>
+
+    <!-- 7.3 Applications -->
     <section>
         <h2>Inverse Problems: Applications</h2>
         <ul class="small-text">
@@ -615,65 +648,11 @@
 </section>
 
 <!-- ============================================ -->
-<!-- SECTION 8: PYTORCH IMPLEMENTATION -->
+<!-- ADVANCED TOPICS DIVIDER -->
 <!-- ============================================ -->
-<section>
-    <!-- 8.1 Network + Residual -->
-    <section>
-        <h2>PyTorch: Network + Residual</h2>
-        <pre><code class="language-python" style="font-size: 0.68em !important; line-height: 1.35 !important;">class PINN(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.net = nn.Sequential(
-            nn.Linear(2, 20), nn.Tanh(),
-            nn.Linear(20, 20), nn.Tanh(),
-            nn.Linear(20, 1)
-        )
-    def forward(self, x, t):
-        return self.net(torch.cat([x, t], dim=1))
-
-def pde_residual(model, x, t, alpha=0.01):
-    x.requires_grad_(True)
-    t.requires_grad_(True)
-    u = model(x, t)
-    u_t = torch.autograd.grad(u, t, grad_outputs=torch.ones_like(u),
-                               create_graph=True)[0]
-    u_x = torch.autograd.grad(u, x, grad_outputs=torch.ones_like(u),
-                               create_graph=True)[0]
-    u_xx = torch.autograd.grad(u_x, x, grad_outputs=torch.ones_like(u_x),
-                                create_graph=True)[0]
-    return u_t - alpha * u_xx  # Heat equation residual</code></pre>
-        <div class="success-box tiny-text fragment">
-            <code>create_graph=True</code> in <code>autograd.grad</code> preserves the computation graph so we can backpropagate <em>through</em> the derivatives.
-        </div>
-    </section>
-
-    <!-- 8.2 Training Loop -->
-    <section>
-        <h2>PyTorch: Training Loop</h2>
-        <pre><code class="language-python" style="font-size: 0.68em !important; line-height: 1.35 !important;">model = PINN()
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
-
-# Optional: make alpha trainable for inverse problems
-# alpha = torch.tensor([0.5], requires_grad=True)
-# optimizer = Adam(list(model.parameters()) + [alpha], lr=1e-3)
-
-for epoch in range(10000):
-    optimizer.zero_grad()
-
-    # Data loss (boundary + initial conditions)
-    u_pred = model(x_data, t_data)
-    loss_data = F.mse_loss(u_pred, u_data)
-
-    # Residual loss at collocation points
-    res = pde_residual(model, x_coll, t_coll, alpha=0.01)
-    loss_res = torch.mean(res ** 2)
-
-    # Total loss
-    loss = loss_data + loss_res
-    loss.backward()
-    optimizer.step()</code></pre>
-    </section>
+<section class="center-text" data-background-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
+    <h1>Beyond the Basics</h1>
+    <p style="color: var(--accent-cyan); font-size: 0.9em; margin-top: 1em;">Training challenges, architectural variants, and practical guidance</p>
 </section>
 
 <!-- ============================================ -->
@@ -829,18 +808,18 @@ for epoch in range(10000):
         \(\mathcal{L}(\theta) = \mathcal{L}_{\text{data}} + \mathcal{L}_{\text{residual}} + \mathcal{L}_{\text{boundary}}\)
     </div>
     <div class="tiny-text" style="margin-top: 15px; text-align: center; color: #888;">
-        <a class="ref-link" href="https://doi.org/10.1016/j.jcp.2018.10.045">Raissi, Perdikaris &amp; Karniadakis, JCP (2019)</a> &nbsp;|&nbsp;
-        <a class="ref-link" href="https://doi.org/10.1038/s42254-021-00314-5">Karniadakis et al., Nature Rev. Physics (2021)</a><br>
-        <a class="ref-link" href="https://doi.org/10.1016/j.jcp.2021.110768">Wang, Yu &amp; Perdikaris, JCP (2022)</a> &nbsp;|&nbsp;
-        <a class="ref-link" href="https://arxiv.org/abs/2006.10739">Tancik et al., NeurIPS (2020)</a>
+        <a class="ref-link" href="https://doi.org/10.1109/72.712178">Lagaris, Likas &amp; Fotiadis, IEEE TNN (1998)</a> &nbsp;|&nbsp;
+        <a class="ref-link" href="https://doi.org/10.1016/j.jcp.2018.10.045">Raissi, Perdikaris &amp; Karniadakis, JCP (2019)</a><br>
+        <a class="ref-link" href="https://doi.org/10.1038/s42254-021-00314-5">Karniadakis et al., Nature Rev. Physics (2021)</a> &nbsp;|&nbsp;
+        <a class="ref-link" href="https://doi.org/10.1016/j.jcp.2021.110768">Wang, Yu &amp; Perdikaris, JCP (2022)</a>
     </div>
 </section>
 
 <!-- ============================================ -->
-<!-- LOOKING AHEAD -->
+<!-- CONCLUSION -->
 <!-- ============================================ -->
 <section>
-    <h2>Looking Ahead</h2>
+    <h2>Conclusion</h2>
     <p class="small-text">PINNs learn <em>one solution</em> for <em>one</em> PDE instance. What if we want to learn the <strong>solution operator</strong>?</p>
     <div class="equation-box large fragment" style="margin-top: 20px;">
         PINN: &nbsp; \(f \mapsto u_\theta\) &nbsp; (one input &rarr; one solution)
@@ -949,9 +928,12 @@ Reveal.initialize({
     svg.append('line').attr('x1', ctrlX).attr('y1', margin.top + 67).attr('x2', ctrlX+25).attr('y2', margin.top + 67)
         .attr('stroke','var(--accent-blue)').attr('stroke-width',2.5);
     svg.append('text').attr('x', ctrlX+30).attr('y', margin.top + 71).attr('fill','#aaa').attr('font-size','10px').text('Your u(x)');
+    svg.append('line').attr('x1', ctrlX).attr('y1', margin.top + 84).attr('x2', ctrlX+25).attr('y2', margin.top + 84)
+        .attr('stroke','var(--accent-red)').attr('stroke-width',2).attr('opacity',0.6);
+    svg.append('text').attr('x', ctrlX+30).attr('y', margin.top + 88).attr('fill','#aaa').attr('font-size','10px').text('Residual R(x)');
 
     // Sliders
-    const sliderNames = ['a₁ sin(πx)', 'a₂ sin(2πx)', 'a₃ sin(3πx)', 'a₄ sin(4πx)'];
+    const sliderNames = ['θ₁ sin(πx)', 'θ₂ sin(2πx)', 'θ₃ sin(3πx)', 'θ₄ sin(4πx)'];
     const sliderColors = ['#61afef', '#98c379', '#c678dd', '#e5c07b'];
     const sliderStartY = margin.top + 100;
 
@@ -1000,11 +982,14 @@ Reveal.initialize({
         const collPts = d3.range(nColl).map(i => (i + 1) / (nColl + 1));
         const resData = collPts.map(x => ({x, r: residual(x)}));
 
+        // Scale residual bars relative to max residual for visibility
+        const maxR = Math.max(...resData.map(d => Math.abs(d.r)), 0.01);
+        const rScale = 0.8 / maxR; // max bar height = 0.8 in y-units
         const bars = resGroup.selectAll('line.res-bar').data(resData);
         bars.enter().append('line').attr('class','res-bar')
             .merge(bars)
             .attr('x1', d => xScale(d.x)).attr('x2', d => xScale(d.x))
-            .attr('y1', d => yScale(0)).attr('y2', d => yScale(d.r * 0.3))
+            .attr('y1', d => yScale(0)).attr('y2', d => yScale(d.r * rScale))
             .attr('stroke','var(--accent-red)').attr('stroke-width', 2).attr('opacity', 0.6);
         bars.exit().remove();
 
@@ -1022,6 +1007,113 @@ Reveal.initialize({
     }
 
     update();
+})();
+</script>
+
+<!-- ============================================ -->
+<!-- COLLOCATION HEATMAP (diffusion equation) -->
+<!-- ============================================ -->
+<script>
+(function() {
+    const el = document.getElementById('collocation-heatmap');
+    if (!el) return;
+
+    const W = 340, H = 280;
+    const margin = {top: 22, right: 10, bottom: 30, left: 35};
+    const pw = W - margin.left - margin.right;
+    const ph = H - margin.top - margin.bottom;
+
+    const svg = d3.select(el).append('svg').attr('width', W).attr('height', H)
+        .attr('viewBox', `0 0 ${W} ${H}`);
+
+    // Diffusion equation: u_t = alpha * u_xx, u(x,0) = sin(pi*x), u(0,t)=u(1,t)=0
+    // Exact solution: u(x,t) = sin(pi*x) * exp(-alpha*pi^2*t)
+    const alpha = 0.02;
+    const Nx = 60, Nt = 50, tMaxH = 1.0;
+
+    function uSol(x, t) {
+        return Math.sin(Math.PI * x) * Math.exp(-alpha * Math.PI * Math.PI * t);
+    }
+
+    // Build grid data
+    const grid = [];
+    let maxU = 0;
+    for (let j = 0; j < Nt; j++) {
+        for (let i = 0; i < Nx; i++) {
+            const x = (i + 0.5) / Nx;
+            const t = (j + 0.5) * tMaxH / Nt;
+            const u = uSol(x, t);
+            if (Math.abs(u) > maxU) maxU = Math.abs(u);
+            grid.push({x, t, u});
+        }
+    }
+
+    // Scales
+    const xS = d3.scaleLinear().domain([0, 1]).range([margin.left, margin.left + pw]);
+    const tS = d3.scaleLinear().domain([0, tMaxH]).range([margin.top + ph, margin.top]); // t goes up
+    const colorS = d3.scaleSequential(d3.interpolateInferno).domain([0, maxU]);
+    const cellW = pw / Nx, cellH = ph / Nt;
+
+    // Heatmap cells
+    svg.selectAll('rect.cell').data(grid).enter().append('rect')
+        .attr('x', d => xS(d.x) - cellW / 2).attr('y', d => tS(d.t) - cellH / 2)
+        .attr('width', cellW + 0.5).attr('height', cellH + 0.5)
+        .attr('fill', d => colorS(d.u));
+
+    // Collocation points (red circles) - more points
+    const nCR = 25;
+    // Use seeded positions for consistency
+    const collPts = [];
+    for (let i = 0; i < nCR; i++) {
+        const seed = (i * 7 + 3) % 100;
+        collPts.push({x: 0.06 + (seed / 100) * 0.88, t: 0.03 + ((i * 13 + 7) % 100) / 100 * (tMaxH - 0.06)});
+    }
+    svg.selectAll('circle.coll').data(collPts).enter().append('circle')
+        .attr('cx', d => xS(d.x)).attr('cy', d => tS(d.t))
+        .attr('r', 3).attr('fill', 'none').attr('stroke', '#e06c75').attr('stroke-width', 1.8);
+
+    // Data points (yellow crosses) - sparse observations in domain
+    const dataPts = [{x:0.25, t:0.2}, {x:0.5, t:0.15}, {x:0.75, t:0.25}, {x:0.4, t:0.5}, {x:0.6, t:0.45}, {x:0.3, t:0.7}];
+    dataPts.forEach(d => {
+        const cx = xS(d.x), cy = tS(d.t), s = 4;
+        svg.append('line').attr('x1', cx-s).attr('y1', cy-s).attr('x2', cx+s).attr('y2', cy+s).attr('stroke', '#e5c07b').attr('stroke-width', 2);
+        svg.append('line').attr('x1', cx-s).attr('y1', cy+s).attr('x2', cx+s).attr('y2', cy-s).attr('stroke', '#e5c07b').attr('stroke-width', 2);
+    });
+
+    // Boundary points (green)
+    const bcPts = [];
+    for (let j = 0; j < 6; j++) {
+        const t = (j + 0.5) * tMaxH / 6;
+        bcPts.push({x: 0, t}); bcPts.push({x: 1, t});
+    }
+    for (let i = 0; i < 8; i++) bcPts.push({x: (i + 0.5) / 8, t: 0});
+    svg.selectAll('circle.bc').data(bcPts).enter().append('circle')
+        .attr('cx', d => xS(d.x)).attr('cy', d => tS(d.t))
+        .attr('r', 3).attr('fill', '#98c379').attr('opacity', 0.9);
+
+    // Axes
+    svg.append('g').attr('transform', `translate(0,${margin.top + ph})`)
+        .call(d3.axisBottom(xS).ticks(4)).selectAll('text').style('fill','#888');
+    svg.append('g').attr('transform', `translate(${margin.left},0)`)
+        .call(d3.axisLeft(tS).ticks(4)).selectAll('text').style('fill','#888');
+    svg.selectAll('.domain, .tick line').style('stroke','#555');
+    svg.append('text').attr('x', margin.left + pw / 2).attr('y', H - 2)
+        .attr('text-anchor','middle').attr('fill','#888').attr('font-size','10px').text('x');
+    svg.append('text').attr('x', 10).attr('y', margin.top + ph / 2)
+        .attr('text-anchor','middle').attr('fill','#888').attr('font-size','10px')
+        .attr('transform', `rotate(-90,10,${margin.top + ph / 2})`).text('t');
+
+    // Legend
+    svg.append('circle').attr('cx', margin.left + 8).attr('cy', 10).attr('r', 3)
+        .attr('fill','none').attr('stroke','#e06c75').attr('stroke-width',1.5);
+    svg.append('text').attr('x', margin.left + 15).attr('y', 14).attr('fill','#ccc').attr('font-size','7px').text('Residual');
+    svg.append('circle').attr('cx', margin.left + 68).attr('cy', 10).attr('r', 2.5).attr('fill','#98c379');
+    svg.append('text').attr('x', margin.left + 75).attr('y', 14).attr('fill','#ccc').attr('font-size','7px').text('BC/IC');
+    // Cross for data
+    const lx = margin.left + 118, ly = 10, ls = 3;
+    svg.append('line').attr('x1',lx-ls).attr('y1',ly-ls).attr('x2',lx+ls).attr('y2',ly+ls).attr('stroke','#e5c07b').attr('stroke-width',1.5);
+    svg.append('line').attr('x1',lx-ls).attr('y1',ly+ls).attr('x2',lx+ls).attr('y2',ly-ls).attr('stroke','#e5c07b').attr('stroke-width',1.5);
+    svg.append('text').attr('x', margin.left + 126).attr('y', 14).attr('fill','#ccc').attr('font-size','7px').text('Data');
 })();
 </script>
 
@@ -1082,6 +1174,17 @@ function nnDeriv(nn, x) {
     return dudx;
 }
 
+function nnSecondDeriv(nn, x) {
+    // d2u/dx2 = sum w2[i] * (-2*h*s) * w1[i]^2
+    let d2udx2 = 0;
+    for (let i = 0; i < nn.H; i++) {
+        const h = Math.tanh(nn.w1[i] * x + nn.b1[i]);
+        const s = 1 - h * h;
+        d2udx2 += nn.w2[i] * (-2 * h * s) * nn.w1[i] * nn.w1[i];
+    }
+    return d2udx2;
+}
+
 function nnAdamUpdate(nn, grads, lr, beta1, beta2, eps) {
     beta1 = beta1 || 0.9; beta2 = beta2 || 0.999; eps = eps || 1e-8;
     nn.t++;
@@ -1110,351 +1213,423 @@ function nnAdamUpdate(nn, grads, lr, beta1, beta2, eps) {
 </script>
 
 <!-- ============================================ -->
-<!-- INTERACTIVE 2+3: PINN TRAINING DEMO -->
+<!-- INTERACTIVE 2: PENDULUM ABLATION DEMO -->
 <!-- ============================================ -->
 <script>
 (function() {
-    const el = document.getElementById('pinn-training-viz');
+    const el = document.getElementById('pinn-pendulum-viz');
+    if (!el) return;
+
+    const W = 1100, H = 490;
+    const m = {top: 10, right: 15, bottom: 100, left: 45};
+    const gap = 70;
+    const pw = (W - m.left - m.right - gap) / 2;
+    const ph = H - m.top - m.bottom;
+
+    const svg = d3.select(el).append('svg').attr('width', W).attr('height', H)
+        .attr('viewBox', `0 0 ${W} ${H}`);
+
+    // Damped oscillator: u'' + 2*beta*u' + omega0sq*u = 0
+    const beta = 0.3, omega0sq = 9;
+    const omega_d = Math.sqrt(omega0sq - beta*beta);
+    const tMax = 8.0, trainFrac = 0.8, tTrain = tMax * trainFrac;
+
+    function trueSol(t) {
+        return Math.exp(-beta * t) * (Math.cos(omega_d * t) + (beta / omega_d) * Math.sin(omega_d * t));
+    }
+
+    let nData = 15, nColl = 30, nHidden = 30;
+    let lr = 0.01, physW = 0.05, maxSteps = 15000;
+    let useDataLoss = true, usePhysicsLoss = true, useBCLoss = true;
+    let nn, lossHistory, step, running, interval;
+    let dataT, dataU;
+
+    function genData() {
+        dataT = d3.range(nData).map(i => (i + 0.5) * tTrain / nData);
+        dataU = dataT.map(trueSol);
+    }
+    genData();
+
+    // Scales
+    const x1L = m.left, x1R = m.left + pw;
+    const xS = d3.scaleLinear().domain([0, tMax]).range([x1L, x1R]);
+    const yS = d3.scaleLinear().domain([-1.2, 1.3]).range([m.top + ph, m.top]);
+    const x2L = m.left + pw + gap, x2R = x2L + pw;
+    let lossXS = d3.scaleLinear().domain([0, 500]).range([x2L, x2R]);
+    const lossYS = d3.scaleLog().domain([1e-6, 100]).range([m.top + ph, m.top]).clamp(true);
+
+    // Training/test region shading
+    svg.append('rect').attr('x', xS(0)).attr('y', m.top).attr('width', xS(tTrain)-xS(0)).attr('height', ph)
+        .attr('fill','rgba(152,195,121,0.06)');
+    svg.append('rect').attr('x', xS(tTrain)).attr('y', m.top).attr('width', xS(tMax)-xS(tTrain)).attr('height', ph)
+        .attr('fill','rgba(224,108,117,0.06)');
+    svg.append('text').attr('x', xS(tTrain/2)).attr('y', m.top+14).attr('text-anchor','middle')
+        .attr('fill','rgba(152,195,121,0.5)').attr('font-size','9px').text('Training');
+    svg.append('text').attr('x', xS(tTrain + (tMax-tTrain)/2)).attr('y', m.top+14).attr('text-anchor','middle')
+        .attr('fill','rgba(224,108,117,0.5)').attr('font-size','9px').text('Test');
+
+    // Axes
+    const solXAxis = svg.append('g').attr('transform', `translate(0,${m.top + ph})`);
+    const solYAxis = svg.append('g').attr('transform', `translate(${x1L},0)`);
+    function drawSolAxes() {
+        solXAxis.call(d3.axisBottom(xS).ticks(5)); solYAxis.call(d3.axisLeft(yS).ticks(5));
+        solXAxis.selectAll('text').style('fill','#888'); solYAxis.selectAll('text').style('fill','#888');
+    }
+    drawSolAxes();
+    svg.append('text').attr('x',(x1L+x1R)/2).attr('y',m.top+ph+28).attr('text-anchor','middle').attr('fill','#888').attr('font-size','11px').text('t');
+    svg.append('text').attr('x',(x1L+x1R)/2).attr('y',m.top-2).attr('text-anchor','middle').attr('fill','var(--accent-blue)').attr('font-size','11px').text('u(t)');
+
+    const lossXAxisG = svg.append('g').attr('transform', `translate(0,${m.top + ph})`);
+    const lossYAxisG = svg.append('g').attr('transform', `translate(${x2L},0)`);
+    function drawLossAxes() {
+        lossXAxisG.call(d3.axisBottom(lossXS).ticks(5)); lossYAxisG.call(d3.axisLeft(lossYS).ticks(5,'.0e'));
+        lossXAxisG.selectAll('text').style('fill','#888'); lossYAxisG.selectAll('text').style('fill','#888');
+    }
+    drawLossAxes();
+    svg.selectAll('.domain, .tick line').style('stroke','#555');
+    svg.append('text').attr('x',(x2L+x2R)/2).attr('y',m.top+ph+28).attr('text-anchor','middle').attr('fill','#888').attr('font-size','11px').text('Step');
+    svg.append('text').attr('x',(x2L+x2R)/2).attr('y',m.top-2).attr('text-anchor','middle').attr('fill','var(--accent-yellow)').attr('font-size','11px').text('Loss');
+
+    // True solution line
+    const lineFn = d3.line().x(d=>xS(d[0])).y(d=>yS(d[1]));
+    const trueData = d3.range(300).map(i => { const t=(i/299)*tMax; return [t,trueSol(t)]; });
+    svg.append('path').datum(trueData).attr('d',lineFn).attr('fill','none').attr('stroke','var(--accent-cyan)').attr('stroke-width',2).attr('stroke-dasharray','6,3').attr('opacity',0.6);
+
+    // Data points (dynamic)
+    const dataDotsG = svg.append('g');
+    // NN prediction path
+    const nnPath = svg.append('path').attr('fill','none').attr('stroke','var(--accent-blue)').attr('stroke-width',2.5);
+    // Collocation dots
+    const collG = svg.append('g');
+
+    // Loss lines
+    const lossLineFn = d3.line().defined(d=>d[1]>0).x(d=>lossXS(d[0])).y(d=>lossYS(d[1]));
+    const dataLossPath = svg.append('path').attr('fill','none').attr('stroke','var(--accent-green)').attr('stroke-width',1.5).attr('opacity',0.8);
+    const resLossPath = svg.append('path').attr('fill','none').attr('stroke','var(--accent-red)').attr('stroke-width',1.5).attr('opacity',0.8);
+    const totalLossPath = svg.append('path').attr('fill','none').attr('stroke','var(--accent-yellow)').attr('stroke-width',2);
+
+    // Loss legend (shifted down)
+    const legY = m.top+ph+6;
+    svg.append('line').attr('x1',x2L+5).attr('y1',legY).attr('x2',x2L+20).attr('y2',legY).attr('stroke','var(--accent-green)').attr('stroke-width',1.5);
+    svg.append('text').attr('x',x2L+24).attr('y',legY+3).attr('fill','#aaa').attr('font-size','9px').text('Data');
+    svg.append('line').attr('x1',x2L+60).attr('y1',legY).attr('x2',x2L+75).attr('y2',legY).attr('stroke','var(--accent-red)').attr('stroke-width',1.5);
+    svg.append('text').attr('x',x2L+79).attr('y',legY+3).attr('fill','#aaa').attr('font-size','9px').text('Physics');
+    svg.append('line').attr('x1',x2L+130).attr('y1',legY).attr('x2',x2L+145).attr('y2',legY).attr('stroke','var(--accent-yellow)').attr('stroke-width',2);
+    svg.append('text').attr('x',x2L+149).attr('y',legY+3).attr('fill','#aaa').attr('font-size','9px').text('Total');
+
+    // Step counter + solution legend
+    const stepText = svg.append('text').attr('x',x1R-5).attr('y',m.top+15).attr('text-anchor','end').attr('fill','#888').attr('font-size','11px');
+    svg.append('line').attr('x1',x1L+5).attr('y1',m.top+28).attr('x2',x1L+25).attr('y2',m.top+28).attr('stroke','var(--accent-cyan)').attr('stroke-width',2).attr('stroke-dasharray','6,3');
+    svg.append('text').attr('x',x1L+30).attr('y',m.top+32).attr('fill','#aaa').attr('font-size','9px').text('Exact');
+    svg.append('line').attr('x1',x1L+70).attr('y1',m.top+28).attr('x2',x1L+90).attr('y2',m.top+28).attr('stroke','var(--accent-blue)').attr('stroke-width',2.5);
+    svg.append('text').attr('x',x1L+95).attr('y',m.top+32).attr('fill','#aaa').attr('font-size','9px').text('NN');
+    svg.append('circle').attr('cx',x1L+120).attr('cy',m.top+28).attr('r',3).attr('fill','var(--accent-green)');
+    svg.append('text').attr('x',x1L+128).attr('y',m.top+32).attr('fill','#aaa').attr('font-size','9px').text('Data');
+
+    // Controls row 1: buttons
+    const ctrl1Y = m.top + ph + 20;
+    const ctrl1FO = svg.append('foreignObject').attr('x',m.left).attr('y',ctrl1Y).attr('width',pw+20).attr('height',28);
+    const ctrl1Div = ctrl1FO.append('xhtml:div').style('display','flex').style('gap','6px').style('align-items','center');
+    const btnStyle = 'padding:3px 10px; border-radius:4px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.08); color:#ccc; cursor:pointer; font-size:0.6em;';
+    const cbStyle = 'margin:0 2px 0 8px; accent-color:';
+
+    const stepBtn = ctrl1Div.append('xhtml:button').attr('style',btnStyle).text('Step');
+    const runBtn = ctrl1Div.append('xhtml:button').attr('style',btnStyle).text('Run');
+    const resetBtn = ctrl1Div.append('xhtml:button').attr('style',btnStyle).text('Reset');
+
+    // Controls row 2: checkboxes + sliders
+    const ctrl2Y = ctrl1Y + 24;
+    const ctrl2FO = svg.append('foreignObject').attr('x',m.left).attr('y',ctrl2Y).attr('width',W - m.left - m.right).attr('height',30);
+    const ctrl2Div = ctrl2FO.append('xhtml:div').style('display','flex').style('gap','4px').style('align-items','center');
+
+    // Checkboxes
+    const mkCb = (label, color, checked, onChange) => {
+        const cb = ctrl2Div.append('xhtml:input').attr('type','checkbox').attr('style',cbStyle+color);
+        if (checked) cb.attr('checked','');
+        cb.on('change', function() { onChange(this.checked); if(running){clearInterval(interval);running=false;runBtn.text('Run');} init(); });
+        ctrl2Div.append('xhtml:span').style('font-size','0.52em').style('color',color).text(label);
+        return cb;
+    };
+    mkCb('Data','#98c379',true, v=>{useDataLoss=v;});
+    mkCb('Physics','#e06c75',true, v=>{usePhysicsLoss=v;});
+    mkCb('BC','#61afef',true, v=>{useBCLoss=v;});
+
+    // Separator
+    ctrl2Div.append('xhtml:span').style('width','12px');
+
+    // Data points slider
+    ctrl2Div.append('xhtml:span').style('font-size','0.5em').style('color','#98c379').text('Data pts:');
+    const dataSlider = ctrl2Div.append('xhtml:input').attr('type','range').attr('min','3').attr('max','50').attr('step','1').attr('value',nData).style('width','70px');
+    const dataVal = ctrl2Div.append('xhtml:span').style('font-size','0.5em').style('color','#98c379').style('min-width','18px').text(nData);
+    dataSlider.on('input', function() { nData=+this.value; dataVal.text(nData); genData(); if(running){clearInterval(interval);running=false;runBtn.text('Run');} init(); });
+
+    // Collocation slider
+    ctrl2Div.append('xhtml:span').style('font-size','0.5em').style('color','#e06c75').style('margin-left','6px').text('Coll:');
+    const collSlider = ctrl2Div.append('xhtml:input').attr('type','range').attr('min','5').attr('max','80').attr('step','1').attr('value',nColl).style('width','70px');
+    const collVal = ctrl2Div.append('xhtml:span').style('font-size','0.5em').style('color','#e06c75').style('min-width','18px').text(nColl);
+    collSlider.on('input', function() { nColl=+this.value; collVal.text(nColl); if(running){clearInterval(interval);running=false;runBtn.text('Run');} init(); });
+
+    // Controls row 3: lr, physW, maxSteps
+    const ctrl3Y = ctrl2Y + 22;
+    const ctrl3FO = svg.append('foreignObject').attr('x',m.left).attr('y',ctrl3Y).attr('width',W - m.left - m.right).attr('height',30);
+    const ctrl3Div = ctrl3FO.append('xhtml:div').style('display','flex').style('gap','4px').style('align-items','center');
+
+    // Learning rate slider (log scale: 0.001 to 0.05)
+    ctrl3Div.append('xhtml:span').style('font-size','0.5em').style('color','#e5c07b').text('lr:');
+    const lrSlider = ctrl3Div.append('xhtml:input').attr('type','range').attr('min','-3').attr('max','-1.3').attr('step','0.1').attr('value',Math.log10(lr).toFixed(1)).style('width','65px');
+    const lrVal = ctrl3Div.append('xhtml:span').style('font-size','0.5em').style('color','#e5c07b').style('min-width','32px').text(lr);
+    lrSlider.on('input', function() { lr=Math.pow(10,+this.value); lrVal.text(lr.toFixed(4)); });
+
+    // Physics weight slider (log scale: 0.01 to 1.0)
+    ctrl3Div.append('xhtml:span').style('font-size','0.5em').style('color','#c678dd').style('margin-left','6px').text('λ_phys:');
+    const physSlider = ctrl3Div.append('xhtml:input').attr('type','range').attr('min','-2').attr('max','0').attr('step','0.1').attr('value',Math.log10(physW).toFixed(1)).style('width','65px');
+    const physVal = ctrl3Div.append('xhtml:span').style('font-size','0.5em').style('color','#c678dd').style('min-width','28px').text(physW);
+    physSlider.on('input', function() { physW=Math.pow(10,+this.value); physVal.text(physW.toFixed(3)); });
+
+    // Max steps slider
+    ctrl3Div.append('xhtml:span').style('font-size','0.5em').style('color','#888').style('margin-left','6px').text('Max steps:');
+    const maxSlider = ctrl3Div.append('xhtml:input').attr('type','range').attr('min','5000').attr('max','50000').attr('step','5000').attr('value',maxSteps).style('width','65px');
+    const maxVal = ctrl3Div.append('xhtml:span').style('font-size','0.5em').style('color','#888').style('min-width','36px').text(maxSteps/1000+'k');
+    maxSlider.on('input', function() { maxSteps=+this.value; maxVal.text(maxSteps/1000+'k'); });
+
+    function genColl() { return d3.range(nColl).map(i=>(i+0.5)*tMax/nColl); }
+    let tColl = genColl();
+
+    function init() {
+        nn = createNN(nHidden); lossHistory = []; step = 0; running = false;
+        tColl = genColl(); updatePlots();
+    }
+
+    function trainStep() {
+        const H = nn.H;
+        const grads = {dw1:new Float64Array(H),db1:new Float64Array(H),dw2:new Float64Array(H),db2:0};
+        let lossData = 0, lossRes = 0, lossBc = 0;
+        const twoB = 2*beta;
+
+        // --- Data loss ---
+        if (useDataLoss) {
+            for (let j=0; j<nData; j++) {
+                const t=dataT[j], u=nnForward(nn,t), err=u-dataU[j];
+                lossData += err*err;
+                const factor = 2*err/nData;
+                for (let i=0;i<H;i++) {
+                    const h=Math.tanh(nn.w1[i]*t+nn.b1[i]), s=1-h*h;
+                    grads.dw2[i]+=factor*h; grads.dw1[i]+=factor*nn.w2[i]*s*t; grads.db1[i]+=factor*nn.w2[i]*s;
+                }
+                grads.db2+=factor;
+            }
+            lossData /= nData;
+        }
+
+        // --- BC loss: u(0)=1, u'(0)=0 ---
+        if (useBCLoss) {
+            const u0=nnForward(nn,0), err0=u0-1;
+            const up0=nnDeriv(nn,0);
+            lossBc = err0*err0 + up0*up0;
+            for (let i=0;i<H;i++) {
+                const h0=Math.tanh(nn.b1[i]), s0=1-h0*h0;
+                grads.dw2[i]+=2*err0*h0; grads.db1[i]+=2*err0*nn.w2[i]*s0;
+                grads.dw2[i]+=2*up0*s0*nn.w1[i];
+                grads.dw1[i]+=2*up0*nn.w2[i]*s0;
+                grads.db1[i]+=2*up0*nn.w2[i]*(-2*h0*s0)*nn.w1[i];
+            }
+            grads.db2+=2*err0;
+        }
+
+        // --- Physics loss: r = u'' + 2*beta*u' + omega0sq*u (scaled by 1/omega0sq) ---
+        if (usePhysicsLoss) {
+            for (let k=0;k<tColl.length;k++) {
+                const t=tColl[k];
+                const u=nnForward(nn,t), up=nnDeriv(nn,t), upp=nnSecondDeriv(nn,t);
+                const r = upp + twoB*up + omega0sq*u;
+                lossRes += r*r*physW;
+                const rF = 2*r*physW/nColl;
+                for (let i=0;i<H;i++) {
+                    const h=Math.tanh(nn.w1[i]*t+nn.b1[i]), s=1-h*h, w1=nn.w1[i], w2=nn.w2[i];
+                    grads.dw2[i] += rF*(-2*h*s*w1*w1 + twoB*s*w1 + omega0sq*h);
+                    grads.dw1[i] += rF*w2*s*(-2*w1*(t*w1*(1-3*h*h)+2*h) + twoB*(1-2*h*w1*t) + omega0sq*t);
+                    grads.db1[i] += rF*w2*s*(-2*w1*w1*(1-3*h*h) - twoB*2*h*w1 + omega0sq);
+                }
+                grads.db2 += rF*omega0sq;
+            }
+            lossRes /= nColl;
+        }
+
+        // Gradient clipping
+        const clip=10.0;
+        for(let i=0;i<H;i++){grads.dw1[i]=Math.max(-clip,Math.min(clip,grads.dw1[i]));grads.db1[i]=Math.max(-clip,Math.min(clip,grads.db1[i]));grads.dw2[i]=Math.max(-clip,Math.min(clip,grads.dw2[i]));}
+        grads.db2=Math.max(-clip,Math.min(clip,grads.db2));
+        nnAdamUpdate(nn, grads, lr);
+
+        step++;
+        const total = lossData+lossRes+lossBc;
+        lossHistory.push({step, data:lossData, res:lossRes, total:total});
+    }
+
+    function updatePlots() {
+        const pts=d3.range(300).map(i=>{const t=(i/299)*tMax;return[t,nnForward(nn,t)];});
+        nnPath.datum(pts).attr('d',lineFn);
+        // Update collocation dots
+        const cdots=collG.selectAll('circle').data(tColl);
+        cdots.enter().append('circle').merge(cdots).attr('cx',d=>xS(d)).attr('cy',yS(0)).attr('r',2).attr('fill','var(--accent-red)').attr('opacity',0.4);
+        cdots.exit().remove();
+        // Update data dots
+        const dd = dataDotsG.selectAll('circle').data(dataT);
+        dd.enter().append('circle').merge(dd).attr('cx',(d,i)=>xS(d)).attr('cy',(d,i)=>yS(dataU[i])).attr('r',3).attr('fill','var(--accent-green)').attr('opacity',0.8);
+        dd.exit().remove();
+        // Loss plot
+        if(lossHistory.length>0){
+            const ms=Math.max(500,lossHistory[lossHistory.length-1].step);
+            lossXS.domain([0,ms]); drawLossAxes(); svg.selectAll('.domain, .tick line').style('stroke','#555');
+            dataLossPath.datum(lossHistory.map(d=>[d.step,d.data])).attr('d',lossLineFn);
+            resLossPath.datum(lossHistory.map(d=>[d.step,d.res])).attr('d',lossLineFn);
+            totalLossPath.datum(lossHistory.map(d=>[d.step,d.total])).attr('d',lossLineFn);
+        }
+        stepText.text(`Step: ${step}`);
+    }
+
+    stepBtn.on('click',()=>{for(let i=0;i<20;i++)trainStep();updatePlots();});
+    runBtn.on('click',()=>{
+        if(running){clearInterval(interval);running=false;runBtn.text('Run');return;}
+        running=true;runBtn.text('Pause');
+        interval=setInterval(()=>{for(let i=0;i<20;i++)trainStep();updatePlots();if(step>maxSteps){clearInterval(interval);running=false;runBtn.text('Run');}},50);
+    });
+    resetBtn.on('click',()=>{if(running){clearInterval(interval);running=false;runBtn.text('Run');}init();});
+
+    init();
+})();
+</script>
+
+<!-- ============================================ -->
+<!-- INTERACTIVE 3: INVERSE PINN DEMO -->
+<!-- ============================================ -->
+<script>
+(function() {
+    const el = document.getElementById('pinn-inverse-viz');
     if (!el) return;
 
     const W = 1100, H = 410;
     const m = {top: 10, right: 15, bottom: 35, left: 45};
     const gap = 70;
     const pw = (W - m.left - m.right - gap) / 2;
-    const ph = H - m.top - m.bottom - 45; // leave room for controls
+    const ph = H - m.top - m.bottom - 45;
+    const svg = d3.select(el).append('svg').attr('width',W).attr('height',H).attr('viewBox',`0 0 ${W} ${H}`);
 
-    const svg = d3.select(el).append('svg').attr('width', W).attr('height', H)
-        .attr('viewBox', `0 0 ${W} ${H}`);
-
-    // Config
-    const xMax = 3.0;
-    const trueAlpha = 1.0;
-    let mode = 'forward'; // 'forward' or 'inverse'
-    let nColl = 20;
-    let nHidden = 15;
-    let alpha = trueAlpha; // known in forward, learned in inverse
-    let alphaEst = 0.3; // initial guess for inverse
+    const xMax = 3.0, trueAlpha = 1.0;
+    let nColl = 20, nHidden = 15, alphaEst = 0.3;
     let nn, lossHistory, step, running, interval;
 
-    // Data for inverse mode
     const invDataX = [0, 0.3, 0.6, 1.0, 1.5, 2.0, 2.5, 3.0];
-    const invDataU = invDataX.map(x => Math.exp(-x));
+    const invDataU = invDataX.map(x => Math.exp(-trueAlpha*x));
 
-    // Scales - solution plot
     const x1L = m.left, x1R = m.left + pw;
-    const xS = d3.scaleLinear().domain([0, xMax]).range([x1L, x1R]);
-    const yS = d3.scaleLinear().domain([-0.2, 1.3]).range([m.top + ph, m.top]);
+    const xS = d3.scaleLinear().domain([0,xMax]).range([x1L,x1R]);
+    const yS = d3.scaleLinear().domain([-0.2,1.3]).range([m.top+ph,m.top]);
+    const x2L = m.left+pw+gap, x2R = x2L+pw;
+    let lossXS = d3.scaleLinear().domain([0,500]).range([x2L,x2R]);
+    const lossYS = d3.scaleLog().domain([1e-6,10]).range([m.top+ph,m.top]).clamp(true);
 
-    // Scales - loss plot
-    const x2L = m.left + pw + gap, x2R = x2L + pw;
-    let lossXS = d3.scaleLinear().domain([0, 500]).range([x2L, x2R]);
-    const lossYS = d3.scaleLog().domain([1e-6, 10]).range([m.top + ph, m.top]).clamp(true);
-
-    // Axes - solution
-    const solXAxis = svg.append('g').attr('transform', `translate(0,${m.top + ph})`);
-    const solYAxis = svg.append('g').attr('transform', `translate(${x1L},0)`);
-    function drawSolAxes() {
-        solXAxis.call(d3.axisBottom(xS).ticks(5));
-        solYAxis.call(d3.axisLeft(yS).ticks(5));
-        solXAxis.selectAll('text').style('fill','#888');
-        solYAxis.selectAll('text').style('fill','#888');
-    }
+    const solXAxis = svg.append('g').attr('transform',`translate(0,${m.top+ph})`);
+    const solYAxis = svg.append('g').attr('transform',`translate(${x1L},0)`);
+    function drawSolAxes(){solXAxis.call(d3.axisBottom(xS).ticks(5));solYAxis.call(d3.axisLeft(yS).ticks(5));solXAxis.selectAll('text').style('fill','#888');solYAxis.selectAll('text').style('fill','#888');}
     drawSolAxes();
-    svg.append('text').attr('x', (x1L + x1R)/2).attr('y', m.top + ph + 30)
-        .attr('text-anchor','middle').attr('fill','#888').attr('font-size','11px').text('x');
-    svg.append('text').attr('x', (x1L + x1R)/2).attr('y', m.top - 2)
-        .attr('text-anchor','middle').attr('fill','var(--accent-blue)').attr('font-size','11px').text('Solution');
+    svg.append('text').attr('x',(x1L+x1R)/2).attr('y',m.top+ph+30).attr('text-anchor','middle').attr('fill','#888').attr('font-size','11px').text('x');
+    svg.append('text').attr('x',(x1L+x1R)/2).attr('y',m.top-2).attr('text-anchor','middle').attr('fill','var(--accent-blue)').attr('font-size','11px').text('Solution');
 
-    // Axes - loss
-    const lossXAxisG = svg.append('g').attr('transform', `translate(0,${m.top + ph})`);
-    const lossYAxisG = svg.append('g').attr('transform', `translate(${x2L},0)`);
-    function drawLossAxes() {
-        lossXAxisG.call(d3.axisBottom(lossXS).ticks(5));
-        lossYAxisG.call(d3.axisLeft(lossYS).ticks(5, '.0e'));
-        lossXAxisG.selectAll('text').style('fill','#888');
-        lossYAxisG.selectAll('text').style('fill','#888');
-    }
+    const lossXAxisG = svg.append('g').attr('transform',`translate(0,${m.top+ph})`);
+    const lossYAxisG = svg.append('g').attr('transform',`translate(${x2L},0)`);
+    function drawLossAxes(){lossXAxisG.call(d3.axisBottom(lossXS).ticks(5));lossYAxisG.call(d3.axisLeft(lossYS).ticks(5,'.0e'));lossXAxisG.selectAll('text').style('fill','#888');lossYAxisG.selectAll('text').style('fill','#888');}
     drawLossAxes();
     svg.selectAll('.domain, .tick line').style('stroke','#555');
-    svg.append('text').attr('x', (x2L + x2R)/2).attr('y', m.top + ph + 30)
-        .attr('text-anchor','middle').attr('fill','#888').attr('font-size','11px').text('Training step');
-    svg.append('text').attr('x', (x2L + x2R)/2).attr('y', m.top - 2)
-        .attr('text-anchor','middle').attr('fill','var(--accent-yellow)').attr('font-size','11px').text('Loss (log scale)');
+    svg.append('text').attr('x',(x2L+x2R)/2).attr('y',m.top+ph+30).attr('text-anchor','middle').attr('fill','#888').attr('font-size','11px').text('Step');
+    svg.append('text').attr('x',(x2L+x2R)/2).attr('y',m.top-2).attr('text-anchor','middle').attr('fill','var(--accent-yellow)').attr('font-size','11px').text('Loss');
 
-    // True solution
-    const trueLine = d3.line().x(d => xS(d[0])).y(d => yS(d[1]));
-    const trueData = d3.range(200).map(i => {
-        const x = (i / 199) * xMax;
-        return [x, Math.exp(-trueAlpha * x)];
-    });
-    svg.append('path').datum(trueData).attr('d', trueLine)
-        .attr('fill','none').attr('stroke','var(--accent-cyan)').attr('stroke-width',2)
-        .attr('stroke-dasharray','6,3').attr('opacity',0.6);
+    const trueLine = d3.line().x(d=>xS(d[0])).y(d=>yS(d[1]));
+    const trueData = d3.range(200).map(i=>{const x=(i/199)*xMax;return[x,Math.exp(-trueAlpha*x)];});
+    svg.append('path').datum(trueData).attr('d',trueLine).attr('fill','none').attr('stroke','var(--accent-cyan)').attr('stroke-width',2).attr('stroke-dasharray','6,3').attr('opacity',0.6);
 
-    // IC point
-    svg.append('circle').attr('cx', xS(0)).attr('cy', yS(1)).attr('r', 5)
-        .attr('fill','var(--accent-green)').attr('stroke','#fff').attr('stroke-width',1);
+    invDataX.forEach((x,i)=>{svg.append('circle').attr('cx',xS(x)).attr('cy',yS(invDataU[i])).attr('r',4).attr('fill','var(--accent-green)').attr('opacity',0.8);});
 
-    // Inverse data points (hidden initially)
-    const invDotsG = svg.append('g').style('display','none');
-    invDataX.forEach((x, i) => {
-        if (i === 0) return; // skip IC, already shown
-        invDotsG.append('circle').attr('cx', xS(x)).attr('cy', yS(invDataU[i])).attr('r', 4)
-            .attr('fill','var(--accent-green)').attr('opacity', 0.8);
-    });
-
-    // NN prediction path
-    const nnPath = svg.append('path').attr('fill','none')
-        .attr('stroke','var(--accent-blue)').attr('stroke-width', 2.5);
-
-    // Collocation dots
+    const nnPath = svg.append('path').attr('fill','none').attr('stroke','var(--accent-blue)').attr('stroke-width',2.5);
     const collG = svg.append('g');
 
-    // Loss lines
-    const lossLineFn = d3.line().defined(d => d[1] > 0).x(d => lossXS(d[0])).y(d => lossYS(d[1]));
-    const dataLossPath = svg.append('path').attr('fill','none')
-        .attr('stroke','var(--accent-green)').attr('stroke-width',1.5).attr('opacity',0.8);
-    const resLossPath = svg.append('path').attr('fill','none')
-        .attr('stroke','var(--accent-red)').attr('stroke-width',1.5).attr('opacity',0.8);
-    const totalLossPath = svg.append('path').attr('fill','none')
-        .attr('stroke','var(--accent-yellow)').attr('stroke-width',2);
+    const lossLineFn = d3.line().defined(d=>d[1]>0).x(d=>lossXS(d[0])).y(d=>lossYS(d[1]));
+    const dataLossPath = svg.append('path').attr('fill','none').attr('stroke','var(--accent-green)').attr('stroke-width',1.5).attr('opacity',0.8);
+    const resLossPath = svg.append('path').attr('fill','none').attr('stroke','var(--accent-red)').attr('stroke-width',1.5).attr('opacity',0.8);
+    const totalLossPath = svg.append('path').attr('fill','none').attr('stroke','var(--accent-yellow)').attr('stroke-width',2);
 
-    // Loss legend
-    const legY = m.top + ph + 12;
-    svg.append('line').attr('x1', x2L+5).attr('y1', legY).attr('x2', x2L+20).attr('y2', legY)
-        .attr('stroke','var(--accent-green)').attr('stroke-width',1.5);
-    svg.append('text').attr('x', x2L+24).attr('y', legY+3).attr('fill','#aaa').attr('font-size','9px').text('Data');
-    svg.append('line').attr('x1', x2L+60).attr('y1', legY).attr('x2', x2L+75).attr('y2', legY)
-        .attr('stroke','var(--accent-red)').attr('stroke-width',1.5);
-    svg.append('text').attr('x', x2L+79).attr('y', legY+3).attr('fill','#aaa').attr('font-size','9px').text('Residual');
-    svg.append('line').attr('x1', x2L+130).attr('y1', legY).attr('x2', x2L+145).attr('y2', legY)
-        .attr('stroke','var(--accent-yellow)').attr('stroke-width',2);
-    svg.append('text').attr('x', x2L+149).attr('y', legY+3).attr('fill','#aaa').attr('font-size','9px').text('Total');
+    const legY = m.top+ph+12;
+    svg.append('line').attr('x1',x2L+5).attr('y1',legY).attr('x2',x2L+20).attr('y2',legY).attr('stroke','var(--accent-green)').attr('stroke-width',1.5);
+    svg.append('text').attr('x',x2L+24).attr('y',legY+3).attr('fill','#aaa').attr('font-size','9px').text('Data');
+    svg.append('line').attr('x1',x2L+60).attr('y1',legY).attr('x2',x2L+75).attr('y2',legY).attr('stroke','var(--accent-red)').attr('stroke-width',1.5);
+    svg.append('text').attr('x',x2L+79).attr('y',legY+3).attr('fill','#aaa').attr('font-size','9px').text('Residual');
+    svg.append('line').attr('x1',x2L+130).attr('y1',legY).attr('x2',x2L+145).attr('y2',legY).attr('stroke','var(--accent-yellow)').attr('stroke-width',2);
+    svg.append('text').attr('x',x2L+149).attr('y',legY+3).attr('fill','#aaa').attr('font-size','9px').text('Total');
 
-    // Step counter
-    const stepText = svg.append('text').attr('x', x1R - 5).attr('y', m.top + 15)
-        .attr('text-anchor','end').attr('fill','#888').attr('font-size','11px');
+    const stepText = svg.append('text').attr('x',x1R-5).attr('y',m.top+15).attr('text-anchor','end').attr('fill','#888').attr('font-size','11px');
 
-    // Controls (via foreignObject)
-    const ctrlY = m.top + ph + 17;
-    const ctrlFO = svg.append('foreignObject').attr('x', m.left).attr('y', ctrlY).attr('width', pw + 20).attr('height', 40);
+    const ctrlY = m.top+ph+22;
+    const ctrlFO = svg.append('foreignObject').attr('x',m.left).attr('y',ctrlY).attr('width',pw+20).attr('height',35);
     const ctrlDiv = ctrlFO.append('xhtml:div').style('display','flex').style('gap','6px').style('align-items','center');
+    const btnStyle = 'padding:3px 12px; border-radius:4px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.08); color:#ccc; cursor:pointer; font-size:0.6em;';
+    const stepBtn = ctrlDiv.append('xhtml:button').attr('style',btnStyle).text('Step');
+    const runBtn = ctrlDiv.append('xhtml:button').attr('style',btnStyle).text('Run');
+    const resetBtn = ctrlDiv.append('xhtml:button').attr('style',btnStyle).text('Reset');
 
-    const btnStyle = 'padding:3px 12px; border-radius:4px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.08); color:#ccc; cursor:pointer; font-size:0.65em;';
-
-    const stepBtn = ctrlDiv.append('xhtml:button').attr('style', btnStyle).text('Step');
-    const runBtn = ctrlDiv.append('xhtml:button').attr('style', btnStyle).text('Run');
-    const resetBtn = ctrlDiv.append('xhtml:button').attr('style', btnStyle).text('Reset');
-
-    ctrlDiv.append('xhtml:span').style('font-size','0.6em').style('color','#888').style('margin-left','8px').text('Coll:');
-    const collSlider = ctrlDiv.append('xhtml:input').attr('type','range').attr('min','5').attr('max','50')
-        .attr('value', nColl).style('width','80px');
-    const collLabel = ctrlDiv.append('xhtml:span').style('font-size','0.6em').style('color','var(--accent-red)').text(nColl);
-
-    ctrlDiv.append('xhtml:span').style('font-size','0.6em').style('color','#888').style('margin-left','8px').text('Neurons:');
-    const neuronSlider = ctrlDiv.append('xhtml:input').attr('type','range').attr('min','5').attr('max','30')
-        .attr('value', nHidden).style('width','80px');
-    const neuronLabel = ctrlDiv.append('xhtml:span').style('font-size','0.6em').style('color','var(--accent-purple)').text(nHidden);
-
-    // Collocation points
-    function genColl() { return d3.range(nColl).map(i => (i + 0.5) * xMax / nColl); }
+    function genColl(){return d3.range(nColl).map(i=>(i+0.5)*xMax/nColl);}
     let xColl = genColl();
 
-    function init() {
-        nn = createNN(nHidden);
-        lossHistory = [];
-        step = 0;
-        running = false;
-        alphaEst = 0.3;
-        // Adam state for alpha
-        nn.mAlpha = 0; nn.vAlpha = 0;
-        xColl = genColl();
-        updatePlots();
+    function init(){nn=createNN(nHidden);lossHistory=[];step=0;running=false;alphaEst=0.3;nn.mAlpha=0;nn.vAlpha=0;xColl=genColl();updatePlots();}
+
+    function trainStep(){
+        const H=nn.H, lr=0.005;
+        const grads={dw1:new Float64Array(H),db1:new Float64Array(H),dw2:new Float64Array(H),db2:0};
+        let dAlpha=0, lossData=0, lossRes=0;
+        // Data loss (multiple observed points)
+        for(let j=0;j<invDataX.length;j++){
+            const x=invDataX[j],uPred=nnForward(nn,x),err=uPred-invDataU[j];
+            lossData+=err*err;
+            const factor=2*err/invDataX.length;
+            for(let i=0;i<H;i++){const h=Math.tanh(nn.w1[i]*x+nn.b1[i]),s=1-h*h;grads.dw2[i]+=factor*h;grads.dw1[i]+=factor*nn.w2[i]*s*x;grads.db1[i]+=factor*nn.w2[i]*s;}
+            grads.db2+=factor;
+        }
+        lossData/=invDataX.length;
+        // Residual loss: u'+alpha*u=0
+        for(let k=0;k<xColl.length;k++){
+            const x=xColl[k],u=nnForward(nn,x),up=nnDeriv(nn,x),r=up+alphaEst*u;
+            lossRes+=r*r;
+            const rF=2*r/nColl;
+            for(let i=0;i<H;i++){const h=Math.tanh(nn.w1[i]*x+nn.b1[i]),s=1-h*h;grads.dw2[i]+=rF*(s*nn.w1[i]+alphaEst*h);grads.dw1[i]+=rF*nn.w2[i]*s*(1+alphaEst*x-2*h*nn.w1[i]*x);grads.db1[i]+=rF*nn.w2[i]*s*(alphaEst-2*nn.w1[i]*h);}
+            grads.db2+=rF*alphaEst;
+            dAlpha+=rF*u;
+        }
+        lossRes/=nColl;
+        const clip=5.0;
+        for(let i=0;i<H;i++){grads.dw1[i]=Math.max(-clip,Math.min(clip,grads.dw1[i]));grads.db1[i]=Math.max(-clip,Math.min(clip,grads.db1[i]));grads.dw2[i]=Math.max(-clip,Math.min(clip,grads.dw2[i]));}
+        grads.db2=Math.max(-clip,Math.min(clip,grads.db2));
+        nnAdamUpdate(nn,grads,lr);
+        // Update alpha estimate
+        dAlpha=Math.max(-clip,Math.min(clip,dAlpha));
+        nn.mAlpha=0.9*nn.mAlpha+0.1*dAlpha;nn.vAlpha=0.999*nn.vAlpha+0.001*dAlpha*dAlpha;
+        const bc1=1-Math.pow(0.9,nn.t),bc2=1-Math.pow(0.999,nn.t);
+        alphaEst-=0.005*(nn.mAlpha/bc1)/(Math.sqrt(nn.vAlpha/bc2)+1e-8);
+        alphaEst=Math.max(0.01,Math.min(5.0,alphaEst));
+        step++;lossHistory.push({step,data:lossData,res:lossRes,total:lossData+lossRes});
     }
 
-    function trainStep() {
-        const H = nn.H;
-        const lr = 0.005;
-        const grads = { dw1: new Float64Array(H), db1: new Float64Array(H),
-                        dw2: new Float64Array(H), db2: 0 };
-        let dAlpha = 0;
-        let lossData = 0, lossRes = 0;
-        const curAlpha = mode === 'forward' ? trueAlpha : alphaEst;
-
-        // --- Data loss ---
-        if (mode === 'forward') {
-            // Just IC: u(0) = 1
-            const u0 = nnForward(nn, 0);
-            const err = u0 - 1;
-            lossData = err * err;
-            // Gradients of u(0) w.r.t params
-            for (let i = 0; i < H; i++) {
-                const h = Math.tanh(nn.b1[i]); // w1*0 + b1 = b1
-                const s = 1 - h * h;
-                grads.dw2[i] += 2 * err * h;
-                grads.db1[i] += 2 * err * nn.w2[i] * s;
-                // dw1: w2[i]*s*x = 0 (x=0)
-            }
-            grads.db2 += 2 * err;
-        } else {
-            // Inverse: multiple data points
-            for (let j = 0; j < invDataX.length; j++) {
-                const x = invDataX[j];
-                const uPred = nnForward(nn, x);
-                const err = uPred - invDataU[j];
-                lossData += err * err;
-                for (let i = 0; i < H; i++) {
-                    const h = Math.tanh(nn.w1[i] * x + nn.b1[i]);
-                    const s = 1 - h * h;
-                    grads.dw2[i] += 2 * err * h;
-                    grads.dw1[i] += 2 * err * nn.w2[i] * s * x;
-                    grads.db1[i] += 2 * err * nn.w2[i] * s;
-                }
-                grads.db2 += 2 * err;
-            }
-            lossData /= invDataX.length;
-            const invN = invDataX.length;
-            for (let i = 0; i < H; i++) { grads.dw2[i] /= 1; grads.dw1[i] /= 1; grads.db1[i] /= 1; }
-            // Note: we accumulated 2*err*... for each point, need to normalize
-            const scale = 1.0 / invN;
-            for (let i = 0; i < H; i++) {
-                grads.dw2[i] *= scale;
-                grads.dw1[i] *= scale;
-                grads.db1[i] *= scale;
-            }
-            grads.db2 *= scale;
-        }
-
-        // --- Residual loss ---
-        // PDE: u' + alpha * u = 0 => residual = u'(x) + alpha * u(x)
-        for (let k = 0; k < xColl.length; k++) {
-            const x = xColl[k];
-            const u = nnForward(nn, x);
-            const up = nnDeriv(nn, x);
-            const r = up + curAlpha * u;
-            lossRes += r * r;
-
-            const rFactor = 2 * r / nColl;
-            for (let i = 0; i < H; i++) {
-                const h = Math.tanh(nn.w1[i] * x + nn.b1[i]);
-                const s = 1 - h * h;
-                // dr/dw2[i] = s*w1[i] + alpha*h
-                grads.dw2[i] += rFactor * (s * nn.w1[i] + curAlpha * h);
-                // dr/db2 = alpha
-                // dr/dw1[i] = w2[i]*s*(1 + alpha*x - 2*h*w1[i]*x)
-                grads.dw1[i] += rFactor * nn.w2[i] * s * (1 + curAlpha * x - 2 * h * nn.w1[i] * x);
-                // dr/db1[i] = w2[i]*s*(alpha - 2*w1[i]*h)
-                grads.db1[i] += rFactor * nn.w2[i] * s * (curAlpha - 2 * nn.w1[i] * h);
-            }
-            grads.db2 += rFactor * curAlpha;
-
-            if (mode === 'inverse') {
-                // dr/dalpha = u
-                dAlpha += rFactor * u;
-            }
-        }
-        lossRes /= nColl;
-
-        // Gradient clipping
-        const clipVal = 5.0;
-        for (let i = 0; i < H; i++) {
-            grads.dw1[i] = Math.max(-clipVal, Math.min(clipVal, grads.dw1[i]));
-            grads.db1[i] = Math.max(-clipVal, Math.min(clipVal, grads.db1[i]));
-            grads.dw2[i] = Math.max(-clipVal, Math.min(clipVal, grads.dw2[i]));
-        }
-        grads.db2 = Math.max(-clipVal, Math.min(clipVal, grads.db2));
-
-        nnAdamUpdate(nn, grads, lr);
-
-        // Update alpha in inverse mode
-        if (mode === 'inverse') {
-            dAlpha = Math.max(-clipVal, Math.min(clipVal, dAlpha));
-            nn.mAlpha = 0.9 * nn.mAlpha + 0.1 * dAlpha;
-            nn.vAlpha = 0.999 * nn.vAlpha + 0.001 * dAlpha * dAlpha;
-            const bc1 = 1 - Math.pow(0.9, nn.t);
-            const bc2 = 1 - Math.pow(0.999, nn.t);
-            alphaEst -= 0.005 * (nn.mAlpha / bc1) / (Math.sqrt(nn.vAlpha / bc2) + 1e-8);
-            alphaEst = Math.max(0.01, Math.min(5.0, alphaEst));
-        }
-
-        step++;
-        lossHistory.push({step, data: lossData, res: lossRes, total: lossData + lossRes});
-    }
-
-    function updatePlots() {
-        // NN prediction
-        const pts = d3.range(200).map(i => {
-            const x = (i / 199) * xMax;
-            return [x, nnForward(nn, x)];
-        });
-        nnPath.datum(pts).attr('d', trueLine);
-
-        // Collocation dots
-        const cdots = collG.selectAll('circle').data(xColl);
-        cdots.enter().append('circle').merge(cdots)
-            .attr('cx', d => xS(d)).attr('cy', yS(0)).attr('r', 2.5)
-            .attr('fill','var(--accent-red)').attr('opacity', 0.5);
-        cdots.exit().remove();
-
-        // Loss plot
-        if (lossHistory.length > 0) {
-            const maxStep = Math.max(500, lossHistory[lossHistory.length-1].step);
-            lossXS.domain([0, maxStep]);
-            drawLossAxes();
-            svg.selectAll('.domain, .tick line').style('stroke','#555');
-
-            dataLossPath.datum(lossHistory.map(d => [d.step, d.data])).attr('d', lossLineFn);
-            resLossPath.datum(lossHistory.map(d => [d.step, d.res])).attr('d', lossLineFn);
-            totalLossPath.datum(lossHistory.map(d => [d.step, d.total])).attr('d', lossLineFn);
-        }
-
+    function updatePlots(){
+        const pts=d3.range(200).map(i=>{const x=(i/199)*xMax;return[x,nnForward(nn,x)];});
+        nnPath.datum(pts).attr('d',trueLine);
+        const cdots=collG.selectAll('circle').data(xColl);cdots.enter().append('circle').merge(cdots).attr('cx',d=>xS(d)).attr('cy',yS(0)).attr('r',2.5).attr('fill','var(--accent-red)').attr('opacity',0.5);cdots.exit().remove();
+        if(lossHistory.length>0){const ms=Math.max(500,lossHistory[lossHistory.length-1].step);lossXS.domain([0,ms]);drawLossAxes();svg.selectAll('.domain, .tick line').style('stroke','#555');dataLossPath.datum(lossHistory.map(d=>[d.step,d.data])).attr('d',lossLineFn);resLossPath.datum(lossHistory.map(d=>[d.step,d.res])).attr('d',lossLineFn);totalLossPath.datum(lossHistory.map(d=>[d.step,d.total])).attr('d',lossLineFn);}
         stepText.text(`Step: ${step}`);
-
-        // Alpha display
-        const alphaDisp = document.getElementById('pinn-alpha-display');
-        if (mode === 'inverse') {
-            const err = Math.abs(alphaEst - trueAlpha);
-            const col = err < 0.05 ? 'var(--accent-green)' : 'var(--accent-yellow)';
-            alphaDisp.innerHTML = `Estimated &alpha; = <span style="color:${col}">${alphaEst.toFixed(3)}</span> (true = ${trueAlpha.toFixed(1)})`;
-        } else {
-            alphaDisp.textContent = '';
-        }
+        const alphaDisp=document.getElementById('pinn-alpha-display');
+        if(alphaDisp){const err=Math.abs(alphaEst-trueAlpha);const col=err<0.05?'var(--accent-green)':'var(--accent-yellow)';alphaDisp.innerHTML=`Estimated &alpha; = <span style="color:${col}">${alphaEst.toFixed(3)}</span> (true = ${trueAlpha.toFixed(1)})`;}
     }
 
-    // Button handlers
-    stepBtn.on('click', () => { trainStep(); updatePlots(); });
-    runBtn.on('click', () => {
-        if (running) { clearInterval(interval); running = false; runBtn.text('Run'); return; }
-        running = true; runBtn.text('Pause');
-        interval = setInterval(() => {
-            for (let i = 0; i < 5; i++) trainStep();
-            updatePlots();
-            if (step > 5000) { clearInterval(interval); running = false; runBtn.text('Run'); }
-        }, 50);
-    });
-    resetBtn.on('click', () => {
-        if (running) { clearInterval(interval); running = false; runBtn.text('Run'); }
-        init();
-    });
-    collSlider.on('input', function() {
-        nColl = +this.value; collLabel.text(nColl);
-        xColl = genColl(); updatePlots();
-    });
-    neuronSlider.on('input', function() {
-        nHidden = +this.value; neuronLabel.text(nHidden);
-        if (running) { clearInterval(interval); running = false; runBtn.text('Run'); }
-        init();
-    });
-
-    // Mode toggle (called from HTML buttons)
-    window.pinnSetMode = function(m) {
-        mode = m;
-        document.getElementById('mode-fwd-btn').className = 'mode-btn' + (m === 'forward' ? ' active' : '');
-        document.getElementById('mode-inv-btn').className = 'mode-btn' + (m === 'inverse' ? ' active' : '');
-        invDotsG.style('display', m === 'inverse' ? null : 'none');
-        if (running) { clearInterval(interval); running = false; runBtn.text('Run'); }
-        init();
-    };
+    stepBtn.on('click',()=>{trainStep();updatePlots();});
+    runBtn.on('click',()=>{if(running){clearInterval(interval);running=false;runBtn.text('Run');return;}running=true;runBtn.text('Pause');interval=setInterval(()=>{for(let i=0;i<5;i++)trainStep();updatePlots();if(step>5000){clearInterval(interval);running=false;runBtn.text('Run');}},50);});
+    resetBtn.on('click',()=>{if(running){clearInterval(interval);running=false;runBtn.text('Run');}init();});
 
     init();
 })();
