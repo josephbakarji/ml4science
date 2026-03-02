@@ -14,6 +14,9 @@ material:
 - name: Lecture Slides
   type: slides
   url: /static_files/slides/deep_learning.html
+- name: Lecture Slides (PDF)
+  type: pdf
+  url: /static_files/slides/deep-learning-lecture.pdf
 hide_from_announcments: false
 folder: 11_intro_deep_learning
 ---
