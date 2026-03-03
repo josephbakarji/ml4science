@@ -1,12 +1,13 @@
 ---
 type: assignment
-date: 2027-03-10T16:00:00+4:30
-title: 'Project Proposal'
-location: /content/hw/project_proposal_instructions/
-hide_from_announcments: true 
-due_event: 
+date: 2026-02-24T16:00:00+03:00
+title: 'Assignment #4 - Project Proposal'
+location: /content/hw/hw4_26/
+hide_from_announcments: false
+due_event:
     type: due
-    date: 2027-03-18T23:59:00+3:30
+    date: 2026-03-05T23:59:00+03:00
     description: 'Project Proposal due'
 ---
+
 
