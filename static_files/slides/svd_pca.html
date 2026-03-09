@@ -1,0 +1,1802 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVD & PCA: Dimensionality Reduction</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/night.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/monokai.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --accent-blue: #61afef;
+            --accent-green: #98c379;
+            --accent-yellow: #e5c07b;
+            --accent-red: #e06c75;
+            --accent-purple: #c678dd;
+            --accent-cyan: #56b6c2;
+        }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; }
+        .reveal h1 { font-size: 2.2em; }
+        .reveal h2 { font-size: 1.6em; color: var(--accent-blue); }
+        .reveal h3 { font-size: 1.3em; }
+        .reveal blockquote {
+            font-style: italic;
+            background: rgba(255,255,255,0.05);
+            padding: 20px 30px;
+            border-left: 4px solid #42affa;
+            width: 90%;
+            margin: 0 auto;
+            border-radius: 0 8px 8px 0;
+        }
+        .reveal .slides section { text-align: left; }
+        .reveal ul { display: block; }
+        .reveal li { margin: 0.5em 0; font-size: 0.85em; }
+        .center-text { text-align: center; }
+        .highlight-box {
+            background: rgba(66, 175, 250, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(66, 175, 250, 0.3);
+        }
+        .warning-box {
+            background: rgba(224, 108, 117, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(224, 108, 117, 0.3);
+        }
+        .success-box {
+            background: rgba(152, 195, 121, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(152, 195, 121, 0.3);
+        }
+        .principle-box {
+            background: rgba(198, 120, 221, 0.15);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(198, 120, 221, 0.3);
+        }
+        .equation-box {
+            background: rgba(255,255,255,0.08);
+            padding: 12px 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 10px 0;
+            font-size: 0.85em;
+        }
+        .equation-box.large { font-size: 1.1em; padding: 18px 20px; }
+        .small-text { font-size: 0.75em; }
+        .tiny-text { font-size: 0.65em; }
+        pre code { font-size: 0.65em !important; line-height: 1.4 !important; }
+        .reveal pre { width: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .two-column { display: flex; gap: 30px; align-items: flex-start; }
+        .two-column > div { flex: 1; }
+        .three-column { display: flex; gap: 20px; }
+        .three-column > div { flex: 1; }
+        .slider-container {
+            display: flex; align-items: center; gap: 10px; margin: 5px 0;
+        }
+        .slider-container label { min-width: 100px; font-size: 0.8em; }
+        .slider-container input[type="range"] { flex: 1; }
+        .slider-container span { min-width: 50px; font-size: 0.8em; color: var(--accent-blue); }
+        svg text { fill: #abb2bf; font-size: 12px; }
+        .keyword { color: var(--accent-yellow); font-weight: bold; }
+        .em-blue { color: var(--accent-blue); }
+        .em-green { color: var(--accent-green); }
+        .em-red { color: var(--accent-red); }
+        .em-purple { color: var(--accent-purple); }
+        .em-cyan { color: var(--accent-cyan); }
+        table.comparison {
+            width: 100%; border-collapse: collapse; font-size: 0.7em; margin: 10px 0;
+        }
+        table.comparison th {
+            background: rgba(66, 175, 250, 0.2); padding: 6px 10px; text-align: left;
+            border-bottom: 2px solid rgba(66, 175, 250, 0.4);
+        }
+        table.comparison td { padding: 5px 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        table.comparison tr:hover td { background: rgba(255,255,255,0.03); }
+        .btn {
+            display: inline-block; padding: 5px 12px; border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08);
+            color: #ccc; cursor: pointer; font-size: 0.65em; transition: all 0.2s;
+        }
+        .btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+        .btn.active { background: rgba(66, 175, 250, 0.3); border-color: var(--accent-blue); color: #fff; }
+        a.ref-link { color: var(--accent-cyan); text-decoration: none; border-bottom: 1px dotted var(--accent-cyan); }
+        a.ref-link:hover { color: #fff; }
+        /* Drag axis interactive */
+        .drag-axis-line { cursor: grab; }
+        .drag-axis-line:active { cursor: grabbing; }
+        .projection-line { stroke-dasharray: 3,3; }
+        /* Image compression slider */
+        input[type="range"].styled-slider {
+            -webkit-appearance: none; appearance: none;
+            height: 8px; border-radius: 4px;
+            background: rgba(255,255,255,0.15);
+            outline: none;
+        }
+        input[type="range"].styled-slider::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 20px; height: 20px; border-radius: 50%;
+            background: var(--accent-blue); cursor: pointer;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        .eigenface-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .eigenface-grid img {
+            width: 100%;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .eigenface-grid .ef-label {
+            text-align: center;
+            font-size: 0.55em;
+            color: #888;
+            margin-top: 2px;
+        }
+        .matrix-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.85em;
+        }
+        .matrix-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .matrix-block .label {
+            font-size: 0.7em;
+            margin-top: 4px;
+        }
+        .matrix-rect {
+            border: 2px solid;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        /* Centering buttons */
+        .centering-btn {
+            display: inline-block; padding: 6px 14px; border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08);
+            color: #ccc; cursor: pointer; font-size: 0.7em; transition: all 0.2s;
+            margin-right: 6px;
+        }
+        .centering-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+        .centering-btn.active { background: rgba(66, 175, 250, 0.3); border-color: var(--accent-blue); color: #fff; }
+    </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ============================================ -->
+<!-- TITLE SLIDE -->
+<!-- ============================================ -->
+<section class="center-text" data-background-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
+    <h1>SVD &amp; PCA<br><span style="font-size:0.7em;">Dimensionality Reduction</span></h1>
+    <p class="small-text" style="margin-top: 2em; color: #888;">
+        ML for Science and Engineering
+    </p>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 1: MOTIVATION -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Why Reduce Dimensions?</h2>
+        <blockquote style="margin-bottom: 20px;">
+            More features should mean more information, right? Not always.
+        </blockquote>
+        <div class="two-column" style="margin-top: 15px;">
+            <div>
+                <div class="warning-box small-text fragment">
+                    <strong>The Curse of Dimensionality</strong><br>
+                    As dimensions grow, data becomes sparse. Distances between points converge. Models need exponentially more data to generalize.
+                </div>
+                <div class="warning-box small-text fragment">
+                    <strong>Noise accumulates</strong><br>
+                    Each added feature brings signal <em>and</em> noise. With many features, noise can dominate the patterns.
+                </div>
+            </div>
+            <div>
+                <div class="highlight-box small-text fragment">
+                    <strong>Computation</strong><br>
+                    Training time, memory, and storage all grow with dimension. Many algorithms scale as $O(d^2)$ or $O(d^3)$.
+                </div>
+                <div class="success-box small-text fragment">
+                    <strong>Visualization</strong><br>
+                    Humans can only see 2D or 3D. Reducing to 2 dimensions lets us <em>see</em> structure in data.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>A Real Example: Iris Flowers</h2>
+        <p class="small-text">The Iris dataset has <span class="keyword">4 features</span> per flower &mdash; measurements of two structures:</p>
+        <div class="two-column" style="margin-top: 10px;">
+            <div>
+                <!-- Flower diagram: SVG illustration of sepal vs petal -->
+                <svg viewBox="0 0 240 200" width="240" height="200" style="display: block; margin: 0 auto 10px;">
+                    <!-- Sepals (outer, green) -->
+                    <ellipse cx="120" cy="70" rx="50" ry="85" fill="rgba(152,195,121,0.25)" stroke="var(--accent-green)" stroke-width="1.5" transform="rotate(0,120,70)"/>
+                    <ellipse cx="120" cy="70" rx="50" ry="85" fill="rgba(152,195,121,0.15)" stroke="var(--accent-green)" stroke-width="1.5" transform="rotate(60,120,70)"/>
+                    <ellipse cx="120" cy="70" rx="50" ry="85" fill="rgba(152,195,121,0.15)" stroke="var(--accent-green)" stroke-width="1.5" transform="rotate(-60,120,70)"/>
+                    <!-- Petals (inner, blue) -->
+                    <ellipse cx="120" cy="80" rx="22" ry="50" fill="rgba(97,175,239,0.3)" stroke="var(--accent-blue)" stroke-width="1.5" transform="rotate(0,120,80)"/>
+                    <ellipse cx="120" cy="80" rx="22" ry="50" fill="rgba(97,175,239,0.2)" stroke="var(--accent-blue)" stroke-width="1.5" transform="rotate(60,120,80)"/>
+                    <ellipse cx="120" cy="80" rx="22" ry="50" fill="rgba(97,175,239,0.2)" stroke="var(--accent-blue)" stroke-width="1.5" transform="rotate(-60,120,80)"/>
+                    <!-- Labels -->
+                    <text x="195" y="40" fill="var(--accent-green)" font-size="11" font-weight="bold">Sepal</text>
+                    <line x1="170" y1="30" x2="190" y2="37" stroke="var(--accent-green)" stroke-width="1" stroke-dasharray="3,2"/>
+                    <text x="145" y="105" fill="var(--accent-blue)" font-size="11" font-weight="bold">Petal</text>
+                    <line x1="140" y1="95" x2="143" y2="100" stroke="var(--accent-blue)" stroke-width="1" stroke-dasharray="3,2"/>
+                    <!-- Dimension arrows -->
+                    <line x1="55" y1="155" x2="55" y2="10" stroke="var(--accent-green)" stroke-width="1" marker-end="url(#arrG)"/>
+                    <text x="30" y="85" fill="var(--accent-green)" font-size="9" transform="rotate(-90,30,85)">length</text>
+                    <line x1="70" y1="155" x2="170" y2="155" stroke="var(--accent-green)" stroke-width="1"/>
+                    <text x="110" y="168" fill="var(--accent-green)" font-size="9" text-anchor="middle">width</text>
+                </svg>
+                <table class="comparison" style="font-size:0.65em;">
+                    <tr><th>#</th><th>Feature</th><th>Unit</th></tr>
+                    <tr><td>1</td><td><span style="color:var(--accent-green);">Sepal</span> length</td><td>cm</td></tr>
+                    <tr><td>2</td><td><span style="color:var(--accent-green);">Sepal</span> width</td><td>cm</td></tr>
+                    <tr><td>3</td><td><span style="color:var(--accent-blue);">Petal</span> length</td><td>cm</td></tr>
+                    <tr><td>4</td><td><span style="color:var(--accent-blue);">Petal</span> width</td><td>cm</td></tr>
+                </table>
+                <p class="tiny-text" style="color:#888; margin-top:4px;"><strong>Sepal</strong> = outer leaf-like part &nbsp;|&nbsp; <strong>Petal</strong> = inner colorful part</p>
+            </div>
+            <div>
+                <div class="fragment principle-box small-text">
+                    <strong>150 flowers, 3 species, 4 measurements each.</strong><br><br>
+                    A classic benchmark for classification and dimensionality reduction (Fisher, 1936).<br><br>
+                    How do you visualize a point in 4-dimensional space?<br>
+                    How do you find the <span class="em-purple">most important directions</span>?
+                </div>
+                <div class="fragment highlight-box small-text" style="margin-top: 10px;">
+                    <strong>Key idea:</strong> Most of the variation might live in a <span class="em-blue">low-dimensional subspace</span>. PCA finds it.
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 2: PCA INTUITION (2D INTERACTIVE) -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Start Simple: 2D Data</h2>
+        <p class="small-text">Pick <span class="em-blue">two features</span>: Sepal Length vs Petal Length.</p>
+        <div class="two-column" style="margin-top: 10px;">
+            <div>
+                <table class="comparison" id="iris-table-preview">
+                    <thead>
+                        <tr><th>Sample</th><th>Sepal L.</th><th>Petal L.</th><th>Species</th></tr>
+                    </thead>
+                    <tbody id="iris-table-body">
+                    </tbody>
+                </table>
+                <p class="tiny-text" style="color:#888; margin-top: 5px;">Showing first 6 of 150 samples</p>
+            </div>
+            <div>
+                <div id="scatter-2d-intro" style="width:520px; height:400px;"></div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Principal Components</h2>
+        <p class="small-text">The data is <em>spread out</em> more in some directions than others.</p>
+        <div style="display: flex; gap: 15px; align-items: flex-start;">
+            <div id="scatter-pc-overlay" style="width:440px; height:430px;"></div>
+            <div style="width: 380px;">
+                <div class="fragment highlight-box small-text">
+                    <span class="em-blue">PC1</span> = direction of <strong>maximum variance</strong> (major axis).
+                </div>
+                <div class="fragment success-box small-text" style="margin-top: 8px;">
+                    <span class="em-green">PC2</span> = second-most variance, <strong>orthogonal</strong> to PC1.
+                </div>
+                <div class="fragment principle-box small-text" style="margin-top: 8px;">
+                    <strong>Orthogonality:</strong> $\mathbf{u}_1 \perp \mathbf{u}_2$ &mdash; new coordinate system.
+                    <div class="equation-box" style="margin-top: 6px; background:none; padding:4px;">
+                        $\mathbf{u}_1^\top \mathbf{u}_2 = 0$
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Center and Standardize</h2>
+        <p class="small-text">Before finding principal components, we preprocess each feature:</p>
+        <div class="equation-box" style="font-size:0.8em;">
+            $\text{Center: } x_j \leftarrow x_j - \mu_j \qquad\qquad \text{Standardize: } x_j \leftarrow \frac{x_j - \mu_j}{\sigma_j}$
+        </div>
+        <div style="display: flex; gap: 15px; align-items: flex-start; margin-top: 10px;">
+            <div id="centering-interactive" style="width:680px; height:370px;"></div>
+            <div style="width: 220px; padding-top: 10px;">
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <span class="centering-btn active" data-state="raw" onclick="setCenteringState('raw')">Raw data</span>
+                    <span class="centering-btn" data-state="centered" onclick="setCenteringState('centered')">Center</span>
+                    <span class="centering-btn" data-state="standardized" onclick="setCenteringState('standardized')">Standardize</span>
+                </div>
+                <div id="centering-info" class="tiny-text" style="margin-top: 12px; color: #888;">
+                    Original data with mean $\mu$ shown.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Project onto an Axis</h2>
+        <p class="small-text">Data can be <span class="em-blue">projected</span> onto the axis of highest variation: $\mathbf{u}_1$.</p>
+        <div id="projection-demo" style="width:750px; height:420px; margin: 0 auto;"></div>
+        <div class="fragment highlight-box small-text" style="max-width: 700px; margin: 10px auto;">
+            Each point maps to its <span class="em-blue">shadow</span> on the line. The projected data is <strong>1-dimensional</strong>. What information is lost?
+        </div>
+    </section>
+
+    <section>
+        <h2>Reconstruction Error</h2>
+        <p class="small-text">The <span class="em-red">error</span> is the distance from each original point to its projection.</p>
+        <div id="recon-error-demo" style="width:750px; height:400px; margin: 0 auto;"></div>
+        <div class="two-column" style="margin-top: 10px;">
+            <div class="highlight-box small-text">
+                <strong>Goal:</strong> Find $\mathbf{u}_1$ that <span class="em-blue">maximizes variance</span> of projections
+            </div>
+            <div class="success-box small-text">
+                Equivalently: <span class="em-green">minimizes reconstruction error</span> (sum of squared distances)
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Find the Best Axis</h2>
+        <p class="tiny-text"><span class="keyword">Drag the line</span> to rotate it. Find the direction that maximizes variance of projections.</p>
+        <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <div id="drag-axis-viz" style="width:580px; height:440px;"></div>
+            <div style="width: 210px;">
+                <div style="margin-top: 15px;">
+                    <div class="tiny-text" style="color:#888; margin-bottom: 4px;">Variance of projections:</div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <div style="width:160px; height:18px; background:rgba(255,255,255,0.08); border-radius:5px; overflow:hidden;">
+                            <div id="variance-bar" style="height:100%; background:var(--accent-green); border-radius:5px; transition: width 0.1s;"></div>
+                        </div>
+                        <span id="variance-val" style="font-size:0.55em; color:var(--accent-green); min-width:40px;"></span>
+                    </div>
+                </div>
+                <div style="margin-top: 10px;">
+                    <div class="tiny-text" style="color:#888; margin-bottom: 4px;">Reconstruction error:</div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <div style="width:160px; height:18px; background:rgba(255,255,255,0.08); border-radius:5px; overflow:hidden;">
+                            <div id="error-bar" style="height:100%; background:var(--accent-red); border-radius:5px; transition: width 0.1s;"></div>
+                        </div>
+                        <span id="error-val" style="font-size:0.55em; color:var(--accent-red); min-width:40px;"></span>
+                    </div>
+                </div>
+                <div style="margin-top: 10px;">
+                    <div class="tiny-text" style="color:#888;">Angle: <span id="drag-angle-val" style="color:var(--accent-yellow);">0</span>&deg;</div>
+                </div>
+                <div style="margin-top: 12px;">
+                    <span class="btn" onclick="snapToPC1()">Show PC1</span>
+                    <span class="btn" onclick="snapToPC2()">Show PC2</span>
+                </div>
+                <div id="drag-feedback" class="tiny-text" style="margin-top:10px; min-height: 30px;"></div>
+            </div>
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 3: PROJECTION ONTO A DIRECTION -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Projection onto a Direction</h2>
+        <p class="small-text">Given centered data $\{\mathbf{x}^{(1)}, \dots, \mathbf{x}^{(n)}\}$ in $\mathbb{R}^d$, find the unit vector $\mathbf{u}$ along which projections have maximum variance.</p>
+        <div style="display: flex; gap: 15px; align-items: flex-start;">
+            <div id="projection-formula-diagram" style="width:600px; height:400px;"></div>
+            <div style="width: 340px; padding-top: 20px;">
+                <div class="highlight-box small-text" style="text-align: center;">
+                    What is the <span class="em-blue">scalar projection</span> of $\mathbf{x}^{(i)}$ onto $\mathbf{u}$?
+                </div>
+                <div class="fragment equation-box" style="margin-top: 12px; border: 2px solid var(--accent-green);">
+                    $z^{(i)} = \mathbf{x}^{(i)\top}\mathbf{u}$
+                </div>
+                <div class="fragment small-text" style="margin-top: 10px; color: #aaa;">
+                    The <span class="em-green">scalar projection</span> $z$ is the signed length of the shadow of $\mathbf{x}$ onto the direction $\mathbf{u}$.
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 4: PCA DERIVATION -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Maximize Variance of Projections</h2>
+        <p class="small-text">The scalar projection is $z^{(i)} = \mathbf{x}^{(i)\top}\mathbf{u}$. We want to find $\mathbf{u}$ that maximizes the variance of $z$:</p>
+        <div class="equation-box large" style="margin-top: 10px; border: 2px solid var(--accent-yellow);">
+            $\max_{\mathbf{u}} \;\; \frac{1}{n}\sum_{i=1}^{n}\left(\mathbf{x}^{(i)\top}\mathbf{u}\right)^2 \quad \text{subject to } \|\mathbf{u}\|=1$
+        </div>
+        <div class="fragment" style="margin-top: 15px;">
+            <p class="small-text">Rewrite the sum in matrix form:</p>
+            <div class="equation-box">
+                $= \frac{1}{n}\sum_{i=1}^{n} \mathbf{u}^\top \mathbf{x}^{(i)}\mathbf{x}^{(i)\top}\mathbf{u}
+                = \mathbf{u}^\top \underbrace{\left[\frac{1}{n}\sum_{i=1}^{n}\mathbf{x}^{(i)}\mathbf{x}^{(i)\top}\right]}_{\mathbf{C}} \mathbf{u}
+                = \mathbf{u}^\top \mathbf{C} \, \mathbf{u}$
+            </div>
+        </div>
+        <div class="fragment principle-box small-text" style="margin-top: 10px;">
+            $\mathbf{C} = \frac{1}{n}\mathbf{X}^\top\mathbf{X}$ is the <span class="em-purple">covariance matrix</span> (for centered data). Our objective becomes: <strong>maximize $\mathbf{u}^\top\mathbf{C}\mathbf{u}$</strong> subject to $\|\mathbf{u}\|=1$.
+        </div>
+    </section>
+
+    <section>
+        <h2>Lagrange Multipliers</h2>
+        <p class="small-text">Constrained optimization: maximize $\mathbf{u}^\top\mathbf{C}\mathbf{u}$ subject to $\mathbf{u}^\top\mathbf{u} = 1$.</p>
+        <div class="equation-box" style="margin-top: 15px;">
+            $\mathcal{L}(\mathbf{u}, \lambda) = \mathbf{u}^\top\mathbf{C}\mathbf{u} - \lambda\left(\mathbf{u}^\top\mathbf{u} - 1\right)$
+        </div>
+        <div class="fragment" style="margin-top: 15px;">
+            <p class="small-text">Take the derivative and set to zero:</p>
+            <div class="equation-box large">
+                $\frac{\partial\mathcal{L}}{\partial\mathbf{u}} = 2\mathbf{C}\mathbf{u} - 2\lambda\mathbf{u} = 0$
+            </div>
+        </div>
+        <div class="fragment equation-box large" style="border: 2px solid var(--accent-green); margin-top: 15px;">
+            $\mathbf{C}\mathbf{u} = \lambda\mathbf{u}$
+        </div>
+        <div class="fragment success-box small-text" style="margin-top: 10px;">
+            This is an <span class="em-green">eigenvalue problem</span>. The direction $\mathbf{u}$ that maximizes projection variance is an <strong>eigenvector</strong> of the covariance matrix, and $\lambda$ is the corresponding eigenvalue.
+        </div>
+    </section>
+
+    <section>
+        <h2>Eigenvalues Tell the Story</h2>
+        <div class="two-column" style="margin-top: 10px;">
+            <div>
+                <div class="highlight-box small-text">
+                    <strong>PC1</strong>: eigenvector with <span class="em-blue">largest eigenvalue</span> $\lambda_1$<br>
+                    <strong>PC2</strong>: eigenvector with <span class="em-blue">second-largest eigenvalue</span> $\lambda_2$<br>
+                    &emsp;&vellip;<br>
+                    <strong>PC$d$</strong>: eigenvector with <span class="em-blue">smallest eigenvalue</span> $\lambda_d$
+                </div>
+                <div class="fragment equation-box" style="margin-top: 10px;">
+                    $\text{Var along } \mathbf{u}_k = \mathbf{u}_k^\top\mathbf{C}\mathbf{u}_k = \lambda_k$
+                </div>
+                <div class="fragment principle-box small-text" style="margin-top: 10px;">
+                    Eigenvectors &rarr; <span class="em-purple">directions</span>.<br>
+                    Eigenvalues &rarr; <span class="em-purple">importance</span> (variance captured).
+                </div>
+            </div>
+            <div>
+                <div id="iris-scree-mini" style="width:320px; height:280px;"></div>
+                <p class="tiny-text center-text" style="color:#888;">Iris dataset: 4 eigenvalues</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Projecting to Lower Dimensions</h2>
+        <p class="small-text">Given $\mathbf{x} \in \mathbb{R}^d$, project to $\mathbb{R}^k$ using the top $k$ eigenvectors:</p>
+        <div class="two-column" style="margin-top: 10px;">
+            <div>
+                <div class="equation-box large">
+                    $\mathbf{y}^{(i)} = \begin{bmatrix} \mathbf{u}_1^\top\mathbf{x}^{(i)} \\ \mathbf{u}_2^\top\mathbf{x}^{(i)} \\ \vdots \\ \mathbf{u}_k^\top\mathbf{x}^{(i)} \end{bmatrix} \in \mathbb{R}^k$
+                </div>
+                <div class="fragment" style="margin-top: 12px;">
+                    <p class="small-text"><strong>Variance retained</strong> by keeping $k$ of $d$ components:</p>
+                    <div class="equation-box" style="border: 1px solid var(--accent-green);">
+                        $\frac{\sum_{i=1}^{k}\lambda_i}{\sum_{i=1}^{d}\lambda_i} \times 100\%$
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div id="iris-cumul-mini" style="width:320px; height:250px;"></div>
+                <div class="fragment highlight-box tiny-text" style="margin-top: 8px;">
+                    Iris example: first 2 of 4 components capture <strong>95.8%</strong> of total variance. Projecting 4D &rarr; 2D loses only 4.2%.
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 4: SVD - THE MACHINERY -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>SVD: Singular Value Decomposition</h2>
+        <p class="small-text">Any matrix $\mathbf{X} \in \mathbb{R}^{m \times n}$ can be factored as:</p>
+        <div class="equation-box large" style="margin-top: 15px;">
+            $\mathbf{X} = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^\top$
+        </div>
+        <div class="equation-box" style="margin-top: 20px; font-size: 0.8em;">
+            $\underbrace{\begin{bmatrix} & & \\ & \mathbf{X} & \\ & & \end{bmatrix}}_{m \times n}
+            =
+            \underbrace{\begin{bmatrix} \vert & \vert & & \vert \\ \mathbf{u}_1 & \mathbf{u}_2 & \cdots & \mathbf{u}_m \\ \vert & \vert & & \vert \end{bmatrix}}_{\color{#98c379}{\mathbf{U}\;(m \times m)}}
+            \underbrace{\left[\begin{array}{ccc} \sigma_1 & & 0 \\ & \ddots & \\ 0 & & \sigma_n \\ \hline & \mathbf{0} & \end{array}\right]}_{\color{#e5c07b}{\boldsymbol{\Sigma}\;(m \times n)}}
+            \underbrace{\begin{bmatrix} \text{---} \; \mathbf{v}_1^\top \; \text{---} \\ \text{---} \; \mathbf{v}_2^\top \; \text{---} \\ \vdots \\ \text{---} \; \mathbf{v}_n^\top \; \text{---} \end{bmatrix}}_{\color{#e06c75}{\mathbf{V}^\top\;(n \times n)}}$
+        </div>
+        <div class="three-column small-text fragment" style="margin-top: 15px;">
+            <div class="highlight-box" style="text-align:center;">
+                <strong>U</strong>: left singular vectors<br>(orthonormal columns)
+            </div>
+            <div style="background: rgba(229,192,123,0.15); padding: 15px 20px; border-radius: 8px; border: 1px solid rgba(229,192,123,0.3); text-align:center;">
+                <strong>&Sigma;</strong>: singular values<br>(diagonal, $\sigma_1 \geq \sigma_2 \geq \cdots \geq 0$)
+            </div>
+            <div class="warning-box" style="text-align:center;">
+                <strong>V<sup>T</sup></strong>: right singular vectors<br>(orthonormal rows)
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>SVD &#x2194; PCA Connection</h2>
+        <p class="small-text">Start from the SVD of the centered data matrix $\mathbf{X} = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^\top$:</p>
+        <div class="equation-box" style="margin-top: 10px;">
+            $\mathbf{X}^\top\mathbf{X} = (\mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^\top)^\top(\mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^\top) = \mathbf{V}\boldsymbol{\Sigma}^\top\underbrace{\mathbf{U}^\top\mathbf{U}}_{\mathbf{I}}\boldsymbol{\Sigma}\mathbf{V}^\top = \mathbf{V}\boldsymbol{\Sigma}^2\mathbf{V}^\top$
+        </div>
+        <div class="fragment" style="margin-top: 15px;">
+            <p class="small-text">Compare with eigendecomposition of covariance $\mathbf{C} = \frac{1}{n}\mathbf{X}^\top\mathbf{X}$:</p>
+            <div class="two-column">
+                <div class="success-box small-text">
+                    <strong>Right singular vectors</strong> $\mathbf{V}$ = eigenvectors of $\mathbf{X}^\top\mathbf{X}$<br>
+                    = <span class="em-green">principal component directions</span>
+                </div>
+                <div class="highlight-box small-text">
+                    <strong>Singular values</strong> relate to eigenvalues:<br>
+                    $\lambda_i = \frac{\sigma_i^2}{n}$
+                </div>
+            </div>
+        </div>
+        <div class="fragment principle-box small-text" style="margin-top: 10px;">
+            SVD computes PCA without ever forming $\mathbf{X}^\top\mathbf{X}$. This is numerically more stable and often faster.
+        </div>
+    </section>
+
+    <section>
+        <h2>Low-Rank Approximation</h2>
+        <p class="small-text">Keep only the first $r$ singular values (set the rest to zero):</p>
+        <div class="equation-box large" style="margin-top: 10px;">
+            $\mathbf{X} \approx \mathbf{X}_r = \mathbf{U}_r\boldsymbol{\Sigma}_r\mathbf{V}_r^\top = \sum_{i=1}^{r}\sigma_i\,\mathbf{u}_i\mathbf{v}_i^\top$
+        </div>
+        <div class="fragment principle-box small-text" style="margin-top: 15px;">
+            <strong>Eckart-Young theorem (1936):</strong> $\mathbf{X}_r$ is the <span class="em-purple">best</span> rank-$r$ approximation to $\mathbf{X}$ in both Frobenius and spectral norms:
+            <div class="equation-box" style="margin-top: 8px; background: none; padding: 5px;">
+                $\mathbf{X}_r = \arg\min_{\text{rank}(\mathbf{B}) = r}\|\mathbf{X} - \mathbf{B}\|_F$
+            </div>
+        </div>
+        <div class="fragment highlight-box small-text" style="margin-top: 10px;">
+            This is the theoretical foundation for <strong>data compression</strong>, <strong>denoising</strong>, and <strong>dimensionality reduction</strong>. We truncate the small singular values (noise) and keep the large ones (signal).
+        </div>
+    </section>
+
+    <section>
+        <h2>PCA in 3 Lines of Code</h2>
+        <pre><code class="language-python">
+# 1. Center the data
+X_centered = X - X.mean(axis=0)
+
+# 2. Compute the SVD
+U, S, Vt = np.linalg.svd(X_centered, full_matrices=False)
+
+# 3. Project onto top k components
+X_pca = X_centered @ Vt[:k].T
+        </code></pre>
+        <div class="two-column small-text" style="margin-top: 15px;">
+            <div class="highlight-box">
+                <strong>S</strong> contains the singular values $\sigma_1, \sigma_2, \dots$<br>
+                <strong>Vt</strong> rows are the principal directions<br>
+                <strong>X_pca</strong> is the reduced representation
+            </div>
+            <div class="success-box">
+                <strong>That is it.</strong> No need to compute $\mathbf{X}^\top\mathbf{X}$ or solve eigenvalue problems manually. <code>np.linalg.svd</code> does everything.
+            </div>
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 5: REAL-WORLD APPLICATIONS -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Application 1: Iris Dataset PCA</h2>
+        <p class="small-text">The Iris dataset: 150 flowers, 4 measurements each (sepal length, sepal width, petal length, petal width).</p>
+        <div style="display: flex; gap: 15px; align-items: flex-start;">
+            <div id="iris-pca-scatter" style="width:500px; height:380px;"></div>
+            <div style="width:350px;">
+                <div id="iris-variance-bars" style="width:340px; height:180px;"></div>
+                <div class="success-box tiny-text" style="margin-top: 8px;">
+                    <strong>72.8%</strong> of variance in PC1 alone! <strong>95.8%</strong> in just 2 components.<br>
+                    4D &rarr; 2D with minimal loss. Three species separate cleanly.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Application 2: Image Compression</h2>
+        <p class="small-text">An image is a matrix. Apply SVD and keep only the first $r$ singular values.</p>
+        <div style="display: flex; gap: 30px; align-items: flex-start;">
+            <div style="text-align: center; min-width: 260px;">
+                <img id="svd-image-display" src="/static/data/09_svd_pca/images/original_img.png"
+                     style="width:260px; border-radius:8px; border:2px solid rgba(255,255,255,0.15);">
+                <div style="margin-top: 10px;">
+                    <div class="slider-container" style="max-width: 260px;">
+                        <input type="range" class="styled-slider" id="svd-rank-slider"
+                               min="0" max="7" value="7" step="1" style="width: 170px;"
+                               oninput="updateSVDImage(this.value)">
+                        <span id="svd-rank-label" style="font-size:0.6em; color:var(--accent-yellow); font-weight:bold; white-space:nowrap;">Original</span>
+                    </div>
+                </div>
+            </div>
+            <div style="flex: 1; max-width: 520px;">
+                <div id="sv-spectrum-plot" style="width:100%; height:200px;"></div>
+                <div style="height: 25px;"></div>
+                <div id="sv-energy-plot" style="width:100%; height:200px;"></div>
+            </div>
+        </div>
+        <p class="tiny-text" style="color:#555; margin-top:8px; text-align:right;">Brunton & Kutz, <em>Data-Driven Science and Engineering</em>, Cambridge UP, 2019</p>
+    </section>
+
+    <section>
+        <h2>Eigenfaces: Faces as Points in High-D Space</h2>
+        <p class="small-text">
+            <span class="keyword">2,410</span> face images, each $192 \times 168 = $ <span class="keyword">32,256</span> pixels.
+            Each face is a point in <span class="em-blue">32,256-dimensional space</span>.
+        </p>
+        <p class="small-text fragment">
+            <strong>Goal:</strong> represent any face as a combination of a few <span class="em-purple">basis faces</span> (eigenfaces). PCA finds these basis directions.
+        </p>
+        <div style="display: flex; gap: 15px; align-items: flex-start; margin-top: 8px;" class="fragment">
+            <div style="text-align: center; min-width: 100px;">
+                <p class="tiny-text" style="color:var(--accent-yellow); margin-bottom:4px;">Average Face</p>
+                <img src="/static/data/09_svd_pca/images/avg_face.png" style="width:90px; border-radius:6px; border:1px solid rgba(255,255,255,0.2);">
+                <p class="tiny-text" style="margin-top:4px; color:#888;">$\bar{\mathbf{x}} = \frac{1}{n}\sum \mathbf{x}^{(i)}$</p>
+            </div>
+            <div style="flex: 1;">
+                <p class="tiny-text" style="color:var(--accent-purple); margin-bottom:4px;">First 8 Eigenfaces (Principal Components)</p>
+                <div class="eigenface-grid" style="grid-template-columns: repeat(8, 1fr); max-width: 850px; gap: 5px;">
+                    <div><img src="/static/data/09_svd_pca/images/eigenface_01.png"><div class="ef-label">PC 1</div></div>
+                    <div><img src="/static/data/09_svd_pca/images/eigenface_02.png"><div class="ef-label">PC 2</div></div>
+                    <div><img src="/static/data/09_svd_pca/images/eigenface_03.png"><div class="ef-label">PC 3</div></div>
+                    <div><img src="/static/data/09_svd_pca/images/eigenface_04.png"><div class="ef-label">PC 4</div></div>
+                    <div><img src="/static/data/09_svd_pca/images/eigenface_05.png"><div class="ef-label">PC 5</div></div>
+                    <div><img src="/static/data/09_svd_pca/images/eigenface_06.png"><div class="ef-label">PC 6</div></div>
+                    <div><img src="/static/data/09_svd_pca/images/eigenface_07.png"><div class="ef-label">PC 7</div></div>
+                    <div><img src="/static/data/09_svd_pca/images/eigenface_08.png"><div class="ef-label">PC 8</div></div>
+                </div>
+                <p class="tiny-text" style="color:#888; margin-top:4px;">Each eigenface captures a different mode of variation (lighting, pose, expression).</p>
+            </div>
+        </div>
+        <p class="tiny-text" style="color:#555; margin-top:8px; text-align:right;">Brunton & Kutz, <em>Data-Driven Science and Engineering</em>, Cambridge UP, 2019</p>
+    </section>
+
+    <section>
+        <h2>Face Reconstruction</h2>
+        <p class="small-text">Reconstruct a face using $k$ eigenfaces: $\hat{\mathbf{x}} = \bar{\mathbf{x}} + \sum_{i=1}^k c_i\,\mathbf{u}_i$</p>
+        <div style="display: flex; gap: 20px; align-items: flex-start;">
+            <div style="text-align: center; min-width: 280px;">
+                <div style="display: flex; gap: 12px; align-items: flex-end; justify-content: center;">
+                    <div>
+                        <p class="tiny-text" style="color:var(--accent-green);">Original</p>
+                        <img src="/static/data/09_svd_pca/images/test_face.png" style="width:120px; border-radius:6px; border:2px solid var(--accent-green);">
+                    </div>
+                    <div>
+                        <p class="tiny-text" style="color:var(--accent-blue);">Reconstruction</p>
+                        <img id="face-recon-display" src="/static/data/09_svd_pca/images/face_rank_0800.png" style="width:120px; border-radius:6px; border:2px solid var(--accent-blue);">
+                    </div>
+                </div>
+                <div style="margin-top: 12px;">
+                    <div class="slider-container" style="max-width: 280px; margin: 0 auto;">
+                        <input type="range" class="styled-slider" id="face-rank-slider"
+                               min="0" max="6" value="6" step="1" style="width: 170px;"
+                               oninput="updateFaceRecon(this.value)">
+                        <span id="face-rank-label" style="font-size:0.6em; color:var(--accent-yellow); font-weight:bold; white-space:nowrap;">k = 800</span>
+                    </div>
+                </div>
+            </div>
+            <div style="flex: 1; max-width: 520px;">
+                <div id="face-sv-plot" style="width:100%; height:200px;"></div>
+                <div style="height: 25px;"></div>
+                <div id="face-energy-plot" style="width:100%; height:200px;"></div>
+            </div>
+        </div>
+        <p class="tiny-text" style="color:#555; margin-top:8px; text-align:right;">Brunton & Kutz, <em>Data-Driven Science and Engineering</em>, Cambridge UP, 2019</p>
+    </section>
+
+    <section>
+        <h2>Scree Plot: How Many Components?</h2>
+        <p class="small-text">The <span class="keyword">scree plot</span> shows singular values (or eigenvalues) in decreasing order. Look for the <span class="em-blue">"elbow"</span>.</p>
+        <div style="display: flex; gap: 15px; align-items: flex-start;">
+            <div id="scree-plot-main" style="width:520px; height:370px;"></div>
+            <div style="width:320px;">
+                <div id="scree-cumulative" style="width:320px; height:190px;"></div>
+                <div class="principle-box tiny-text" style="margin-top: 6px; padding: 10px 15px;">
+                    <strong>Rules of thumb:</strong><br>
+                    &bull; Cumulative variance &ge; 95%<br>
+                    &bull; "Elbow" in scree plot<br>
+                    &bull; Cross-validate for prediction
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 6: SUMMARY & PREVIEW -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Summary</h2>
+        <div class="two-column">
+            <div>
+                <div class="highlight-box small-text">
+                    <strong>PCA</strong> finds orthogonal directions of maximum variance.<br><br>
+                    The key equation:<br>
+                    <div class="equation-box" style="background:none; padding:5px; font-size:1.1em;">$\mathbf{C}\mathbf{u} = \lambda\mathbf{u}$</div>
+                </div>
+                <div class="success-box small-text" style="margin-top: 10px;">
+                    <strong>SVD</strong> provides the computation.<br>
+                    $\mathbf{X} = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^\top$<br><br>
+                    No need to form $\mathbf{X}^\top\mathbf{X}$ explicitly.
+                </div>
+            </div>
+            <div>
+                <div class="principle-box small-text">
+                    <strong>Low-rank approximation</strong> compresses data optimally (Eckart-Young).<br><br>
+                    Applications:<br>
+                    &bull; Dimensionality reduction<br>
+                    &bull; Image compression<br>
+                    &bull; Denoising<br>
+                    &bull; Feature extraction<br>
+                    &bull; Visualization
+                </div>
+                <div class="warning-box small-text" style="margin-top: 10px;">
+                    <strong>Limitations:</strong> PCA only captures <em>linear</em> structure. For nonlinear manifolds, you need kernel PCA, autoencoders, or t-SNE.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="center-text" data-background-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
+        <h2>What's Next?</h2>
+        <p class="small-text" style="margin-top: 20px;">
+            What if the data is a <span class="keyword">time series</span>?<br>
+            What if we want to decompose <span class="em-blue">dynamics</span>, not just static data?
+        </p>
+        <div class="equation-box large" style="margin-top: 30px; max-width: 600px; margin-left: auto; margin-right: auto;">
+            $\mathbf{X} = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^\top \quad \longrightarrow \quad$ Dynamic Mode Decomposition
+        </div>
+        <p class="small-text" style="margin-top: 30px; color: #888;">
+            Next lecture: <strong>Linear Dynamical Systems &amp; DMD</strong>
+        </p>
+    </section>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/math/math.js"></script>
+<script>
+Reveal.initialize({
+    hash: true, slideNumber: true, transition: 'slide',
+    center: false, width: 1200, height: 700, margin: 0.04,
+    plugins: [RevealHighlight, RevealMath.KaTeX]
+});
+</script>
+
+<script>
+// =========================================================
+// GLOBAL DATA - loaded via fetch
+// =========================================================
+let DATA = null;
+let irisRaw2D = [], irisLabels = [], irisCentered = [], irisStandardized = [];
+let irisMeanX = 0, irisMeanY = 0, irisStdX = 1, irisStdY = 1;
+let irisPC1Angle = 0;
+
+const COLORS_3 = ['#61afef', '#e06c75', '#98c379'];
+
+fetch('/static/data/09_svd_pca/lecture_data.json')
+    .then(r => r.json())
+    .then(data => {
+        DATA = data;
+
+        // Extract iris 2D: sepal length (col 0) vs petal length (col 2)
+        irisRaw2D = data.iris.raw.map(d => [d[0], d[2]]);
+        irisLabels = data.iris.labels;
+
+        // Compute mean
+        irisMeanX = irisRaw2D.reduce((s, p) => s + p[0], 0) / irisRaw2D.length;
+        irisMeanY = irisRaw2D.reduce((s, p) => s + p[1], 0) / irisRaw2D.length;
+
+        // Center data
+        irisCentered = irisRaw2D.map(p => [p[0] - irisMeanX, p[1] - irisMeanY]);
+
+        // Standardize data
+        irisStdX = Math.sqrt(irisCentered.reduce((s, p) => s + p[0]*p[0], 0) / irisCentered.length);
+        irisStdY = Math.sqrt(irisCentered.reduce((s, p) => s + p[1]*p[1], 0) / irisCentered.length);
+        irisStandardized = irisCentered.map(p => [p[0]/irisStdX, p[1]/irisStdY]);
+
+        // Compute PC1 angle from centered data
+        let cxx = 0, cyy = 0, cxy = 0;
+        irisCentered.forEach(p => {
+            cxx += p[0]*p[0]; cyy += p[1]*p[1]; cxy += p[0]*p[1];
+        });
+        cxx /= irisCentered.length; cyy /= irisCentered.length; cxy /= irisCentered.length;
+        const trace = cxx + cyy;
+        const det = cxx*cyy - cxy*cxy;
+        const lambda1 = trace/2 + Math.sqrt(trace*trace/4 - det);
+        const ev1x = cxy;
+        const ev1y = lambda1 - cxx;
+        irisPC1Angle = Math.atan2(ev1y, ev1x);
+
+        // Initialize all visualizations
+        initIrisTable();
+        initScatter2DIntro();
+        initScatterPCOverlay();
+        initCenteringInteractive();
+        initProjectionDemo();
+        initReconErrorDemo();
+        initDragAxisViz();
+        initProjectionFormulaDiagram();
+        initIrisPCA();
+        initSVDImageCompression();
+        initFaceReconstruction();
+        initScreePlot();
+        initIrisScreeMini();
+        initIrisCumulMini();
+    });
+
+// =========================================================
+// HELPER: build an SVG with margins
+// =========================================================
+function makeSVG(containerId, w, h, margin) {
+    const svg = d3.select('#' + containerId).append('svg')
+        .attr('width', w).attr('height', h);
+    const g = svg.append('g')
+        .attr('transform', `translate(${margin.left},${margin.top})`);
+    const iW = w - margin.left - margin.right;
+    const iH = h - margin.top - margin.bottom;
+    return { svg, g, iW, iH };
+}
+
+function drawAxes(g, xScale, yScale, iW, iH, xLabel, yLabel, ticks) {
+    const xAxis = g.append('g').attr('transform', `translate(0,${iH})`)
+        .call(d3.axisBottom(xScale).ticks(ticks || 5));
+    const yAxis = g.append('g').call(d3.axisLeft(yScale).ticks(ticks || 5));
+    [xAxis, yAxis].forEach(a => {
+        a.selectAll('text').style('fill', '#888').style('font-size', '10px');
+        a.selectAll('.domain, .tick line').style('stroke', '#444');
+    });
+    if (xLabel) g.append('text').attr('x', iW/2).attr('y', iH + 35)
+        .attr('text-anchor', 'middle').text(xLabel).style('font-size', '11px').style('fill', '#aaa');
+    if (yLabel) g.append('text').attr('x', -iH/2).attr('y', -40)
+        .attr('text-anchor', 'middle').attr('transform', 'rotate(-90)')
+        .text(yLabel).style('font-size', '11px').style('fill', '#aaa');
+    return { xAxis, yAxis };
+}
+
+function styleAxes(xAxisG, yAxisG) {
+    [xAxisG, yAxisG].forEach(a => {
+        a.selectAll('text').style('fill', '#888').style('font-size', '10px');
+        a.selectAll('.domain, .tick line').style('stroke', '#444');
+    });
+}
+
+// =========================================================
+// IRIS TABLE (first 6 rows)
+// =========================================================
+function initIrisTable() {
+    const tbody = document.getElementById('iris-table-body');
+    const speciesNames = DATA.iris.species;
+    // Show 2 from each species (indices 0,1 = setosa, 50,51 = versicolor, 100,101 = virginica)
+    const sampleIndices = [0, 1, 50, 51, 100, 101];
+    for (const i of sampleIndices) {
+        const row = document.createElement('tr');
+        const label = irisLabels[i];
+        row.innerHTML = `<td style="color:${COLORS_3[label]}">${i+1}</td>` +
+            `<td>${irisRaw2D[i][0].toFixed(1)}</td><td>${irisRaw2D[i][1].toFixed(1)}</td>` +
+            `<td style="color:${COLORS_3[label]}">${speciesNames[label]}</td>`;
+        tbody.appendChild(row);
+    }
+}
+
+// =========================================================
+// SCATTER 2D INTRO (raw iris data)
+// =========================================================
+function initScatter2DIntro() {
+    const m = { top: 20, right: 20, bottom: 45, left: 55 };
+    const { g, iW, iH } = makeSVG('scatter-2d-intro', 520, 400, m);
+    const xS = d3.scaleLinear().domain([3.8, 8.2]).range([0, iW]);
+    const yS = d3.scaleLinear().domain([0.5, 7.2]).range([iH, 0]);
+    drawAxes(g, xS, yS, iW, iH, 'Sepal Length (cm)', 'Petal Length (cm)');
+    g.selectAll('circle').data(irisRaw2D).join('circle')
+        .attr('cx', d => xS(d[0])).attr('cy', d => yS(d[1]))
+        .attr('r', 4).attr('fill', (d, i) => COLORS_3[irisLabels[i]])
+        .attr('opacity', 0.7).attr('stroke', 'rgba(255,255,255,0.2)').attr('stroke-width', 0.5);
+
+    // Legend
+    const speciesNames = DATA.iris.species;
+    speciesNames.forEach((s, i) => {
+        g.append('circle').attr('cx', 15).attr('cy', 15 + i*18).attr('r', 4).attr('fill', COLORS_3[i]);
+        g.append('text').attr('x', 24).attr('y', 19 + i*18).text(s)
+            .style('fill', COLORS_3[i]).style('font-size', '10px');
+    });
+}
+
+// =========================================================
+// SCATTER WITH PC OVERLAY (merged with orthogonality)
+// =========================================================
+function initScatterPCOverlay() {
+    const m = { top: 20, right: 20, bottom: 45, left: 55 };
+    const { g, iW, iH } = makeSVG('scatter-pc-overlay', 440, 430, m);
+    // Equal data range on both axes (7 units each) with equal inner dims (365x365)
+    // so PCs look visually perpendicular
+    const xS = d3.scaleLinear().domain([2.5, 9.5]).range([0, iW]);
+    const yS = d3.scaleLinear().domain([0.0, 7.0]).range([iH, 0]);
+    drawAxes(g, xS, yS, iW, iH, 'Sepal Length (cm)', 'Petal Length (cm)');
+
+    g.selectAll('circle').data(irisRaw2D).join('circle')
+        .attr('cx', d => xS(d[0])).attr('cy', d => yS(d[1]))
+        .attr('r', 3.5).attr('fill', (d, i) => COLORS_3[irisLabels[i]])
+        .attr('opacity', 0.5);
+
+    // PC directions in original space for visual overlay
+    const cx = irisMeanX, cy = irisMeanY;
+    const pc1dx = Math.cos(irisPC1Angle), pc1dy = Math.sin(irisPC1Angle);
+    const pc2dx = -Math.sin(irisPC1Angle), pc2dy = Math.cos(irisPC1Angle);
+
+    // PC1 arrow
+    const arrowLen = 2.8;
+    const pc1Group = g.append('g').attr('class', 'fragment');
+    pc1Group.append('line')
+        .attr('x1', xS(cx - pc1dx*arrowLen)).attr('y1', yS(cy - pc1dy*arrowLen))
+        .attr('x2', xS(cx + pc1dx*arrowLen)).attr('y2', yS(cy + pc1dy*arrowLen))
+        .attr('stroke', 'var(--accent-blue)').attr('stroke-width', 3).attr('opacity', 0.8);
+    pc1Group.append('text')
+        .attr('x', xS(cx + pc1dx*arrowLen) + 5).attr('y', yS(cy + pc1dy*arrowLen) - 5)
+        .text('PC1').style('fill', 'var(--accent-blue)').style('font-size', '12px').style('font-weight', 'bold');
+
+    // PC2 arrow
+    const pc2Group = g.append('g').attr('class', 'fragment');
+    pc2Group.append('line')
+        .attr('x1', xS(cx - pc2dx*1.2)).attr('y1', yS(cy - pc2dy*1.2))
+        .attr('x2', xS(cx + pc2dx*1.2)).attr('y2', yS(cy + pc2dy*1.2))
+        .attr('stroke', 'var(--accent-green)').attr('stroke-width', 3).attr('opacity', 0.8);
+    pc2Group.append('text')
+        .attr('x', xS(cx + pc2dx*1.2) + 5).attr('y', yS(cy + pc2dy*1.2) - 5)
+        .text('PC2').style('fill', 'var(--accent-green)').style('font-size', '12px').style('font-weight', 'bold');
+
+    // Right angle marker at mean
+    const rSize = 10;
+    const n1x = pc1dx * rSize * (xS(1) - xS(0));
+    const n1y = -pc1dy * rSize * (yS(0) - yS(1));
+    const n2x = pc2dx * rSize * (xS(1) - xS(0));
+    const n2y = -pc2dy * rSize * (yS(0) - yS(1));
+    const mcx = xS(cx), mcy = yS(cy);
+    const raGroup = g.append('g').attr('class', 'fragment');
+    raGroup.append('path')
+        .attr('d', `M ${mcx+n1x*0.15} ${mcy+n1y*0.15} L ${mcx+n1x*0.15+n2x*0.15} ${mcy+n1y*0.15+n2y*0.15} L ${mcx+n2x*0.15} ${mcy+n2y*0.15}`)
+        .attr('fill', 'none').attr('stroke', '#aaa').attr('stroke-width', 1.5);
+
+    // Mean point
+    g.append('circle').attr('cx', xS(cx)).attr('cy', yS(cy))
+        .attr('r', 5).attr('fill', 'var(--accent-yellow)').attr('stroke', '#fff').attr('stroke-width', 2);
+}
+
+// =========================================================
+// CENTERING INTERACTIVE (animated transitions)
+// =========================================================
+function initCenteringInteractive() {
+    const m = { top: 20, right: 20, bottom: 48, left: 58 };
+    const w = 680, h = 370;
+    const { svg, g, iW, iH } = makeSVG('centering-interactive', w, h, m);
+
+    const xS = d3.scaleLinear().domain([3.8, 8.2]).range([0, iW]);
+    const yS = d3.scaleLinear().domain([0.5, 7.2]).range([iH, 0]);
+
+    // Axes
+    const xAxisG = g.append('g').attr('transform', `translate(0,${iH})`);
+    const yAxisG = g.append('g');
+    xAxisG.call(d3.axisBottom(xS).ticks(6));
+    yAxisG.call(d3.axisLeft(yS).ticks(6));
+    styleAxes(xAxisG, yAxisG);
+
+    const xLabelEl = g.append('text').attr('x', iW/2).attr('y', iH + 40)
+        .attr('text-anchor', 'middle').text('Sepal Length (cm)')
+        .style('font-size', '11px').style('fill', '#aaa');
+    const yLabelEl = g.append('text').attr('x', -iH/2).attr('y', -45)
+        .attr('text-anchor', 'middle').attr('transform', 'rotate(-90)')
+        .text('Petal Length (cm)').style('font-size', '11px').style('fill', '#aaa');
+
+    // Mean crosshair
+    const meanG = g.append('g');
+    meanG.append('line').attr('class', 'mv')
+        .attr('x1', xS(irisMeanX)).attr('y1', 0).attr('x2', xS(irisMeanX)).attr('y2', iH)
+        .attr('stroke', 'var(--accent-yellow)').attr('stroke-dasharray', '4,4').attr('opacity', 0.5);
+    meanG.append('line').attr('class', 'mh')
+        .attr('x1', 0).attr('y1', yS(irisMeanY)).attr('x2', iW).attr('y2', yS(irisMeanY))
+        .attr('stroke', 'var(--accent-yellow)').attr('stroke-dasharray', '4,4').attr('opacity', 0.5);
+    meanG.append('circle').attr('class', 'mdot')
+        .attr('cx', xS(irisMeanX)).attr('cy', yS(irisMeanY))
+        .attr('r', 5).attr('fill', 'var(--accent-yellow)').attr('stroke', '#fff').attr('stroke-width', 1.5);
+    meanG.append('text').attr('class', 'mlabel')
+        .attr('x', xS(irisMeanX) + 10).attr('y', yS(irisMeanY) - 8)
+        .text('\u03BC').style('fill', 'var(--accent-yellow)').style('font-size', '13px').style('font-weight', 'bold');
+
+    // Origin crosshair (initially hidden)
+    const originG = g.append('g').attr('opacity', 0);
+    originG.append('line').attr('class', 'ov')
+        .attr('y1', 0).attr('y2', iH)
+        .attr('stroke', 'var(--accent-green)').attr('stroke-dasharray', '4,4').attr('opacity', 0.6);
+    originG.append('line').attr('class', 'oh')
+        .attr('x1', 0).attr('x2', iW)
+        .attr('stroke', 'var(--accent-green)').attr('stroke-dasharray', '4,4').attr('opacity', 0.6);
+    originG.append('circle')
+        .attr('r', 4).attr('fill', 'var(--accent-green)').attr('stroke', '#fff').attr('stroke-width', 1.5);
+
+    // Data points
+    const dots = g.selectAll('.cdot').data(irisRaw2D).join('circle')
+        .attr('class', 'cdot')
+        .attr('cx', d => xS(d[0])).attr('cy', d => yS(d[1]))
+        .attr('r', 4).attr('fill', (d, i) => COLORS_3[irisLabels[i]])
+        .attr('opacity', 0.7).attr('stroke', 'rgba(255,255,255,0.2)').attr('stroke-width', 0.5);
+
+    let currentState = 'raw';
+
+    window.setCenteringState = function(state) {
+        if (state === currentState) return;
+        currentState = state;
+        document.querySelectorAll('.centering-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector(`.centering-btn[data-state="${state}"]`).classList.add('active');
+
+        const t = d3.transition().duration(800).ease(d3.easeCubicInOut);
+        let data, xDom, yDom, xLab, yLab, infoText;
+
+        if (state === 'raw') {
+            data = irisRaw2D;
+            xDom = [3.8, 8.2]; yDom = [0.5, 7.2];
+            xLab = 'Sepal Length (cm)'; yLab = 'Petal Length (cm)';
+            infoText = 'Original data with mean \u03BC shown.';
+        } else if (state === 'centered') {
+            data = irisCentered;
+            xDom = [-2.2, 2.5]; yDom = [-3.5, 3.8];
+            xLab = 'Sepal Length (centered)'; yLab = 'Petal Length (centered)';
+            infoText = 'Data shifted so mean = 0. Shape unchanged.';
+        } else {
+            data = irisStandardized;
+            xDom = [-2.8, 3.2]; yDom = [-2.2, 2.2];
+            xLab = 'Sepal Length (standardized)'; yLab = 'Petal Length (standardized)';
+            infoText = 'Each feature scaled to unit variance. Axes now comparable.';
+        }
+
+        xS.domain(xDom);
+        yS.domain(yDom);
+
+        xAxisG.transition(t).call(d3.axisBottom(xS).ticks(6));
+        yAxisG.transition(t).call(d3.axisLeft(yS).ticks(6));
+        setTimeout(() => styleAxes(xAxisG, yAxisG), 850);
+
+        xLabelEl.text(xLab);
+        yLabelEl.text(yLab);
+
+        dots.data(data).transition(t)
+            .attr('cx', d => xS(d[0])).attr('cy', d => yS(d[1]));
+
+        // Mean indicator
+        if (state === 'raw') {
+            meanG.transition(t).attr('opacity', 1);
+            meanG.select('.mv').transition(t).attr('x1', xS(irisMeanX)).attr('x2', xS(irisMeanX));
+            meanG.select('.mh').transition(t).attr('y1', yS(irisMeanY)).attr('y2', yS(irisMeanY));
+            meanG.select('.mdot').transition(t).attr('cx', xS(irisMeanX)).attr('cy', yS(irisMeanY));
+            meanG.select('.mlabel').transition(t).attr('x', xS(irisMeanX)+10).attr('y', yS(irisMeanY)-8);
+            originG.transition(t).attr('opacity', 0);
+        } else {
+            meanG.transition(t).attr('opacity', 0);
+            originG.transition(t).attr('opacity', 1);
+            originG.select('.ov').transition(t).attr('x1', xS(0)).attr('x2', xS(0));
+            originG.select('.oh').transition(t).attr('y1', yS(0)).attr('y2', yS(0));
+            originG.select('circle').transition(t).attr('cx', xS(0)).attr('cy', yS(0));
+        }
+
+        document.getElementById('centering-info').textContent = infoText;
+    };
+}
+
+// =========================================================
+// PROJECTION DEMO
+// =========================================================
+function initProjectionDemo() {
+    const m = { top: 20, right: 30, bottom: 40, left: 50 };
+    const { g, iW, iH } = makeSVG('projection-demo', 750, 420, m);
+    const ext = 3.5;
+    const xS = d3.scaleLinear().domain([-ext, ext]).range([0, iW]);
+    const yS = d3.scaleLinear().domain([-ext, ext]).range([iH, 0]);
+    drawAxes(g, xS, yS, iW, iH, '', '', 5);
+
+    const cos1 = Math.cos(irisPC1Angle), sin1 = Math.sin(irisPC1Angle);
+
+    // PC1 line
+    g.append('line')
+        .attr('x1', xS(-ext*cos1)).attr('y1', yS(-ext*sin1))
+        .attr('x2', xS(ext*cos1)).attr('y2', yS(ext*sin1))
+        .attr('stroke', 'var(--accent-blue)').attr('stroke-width', 2).attr('opacity', 0.6);
+    g.append('text').attr('x', xS(ext*cos1*0.85)+5).attr('y', yS(ext*sin1*0.85)-8)
+        .text('u\u2081').style('fill', 'var(--accent-blue)').style('font-size', '13px').style('font-weight', 'bold');
+
+    // Draw subset of points with projection lines
+    const subset = irisCentered.filter((_, i) => i % 3 === 0);
+    const subLabels = irisLabels.filter((_, i) => i % 3 === 0);
+
+    subset.forEach((p, i) => {
+        const proj = p[0]*cos1 + p[1]*sin1;
+        const px = proj * cos1;
+        const py = proj * sin1;
+        g.append('line')
+            .attr('x1', xS(p[0])).attr('y1', yS(p[1]))
+            .attr('x2', xS(px)).attr('y2', yS(py))
+            .attr('stroke', '#888').attr('stroke-width', 0.5).attr('stroke-dasharray', '2,2').attr('opacity', 0.5);
+        g.append('circle').attr('cx', xS(px)).attr('cy', yS(py))
+            .attr('r', 3).attr('fill', COLORS_3[subLabels[i]]).attr('opacity', 0.9);
+        g.append('circle').attr('cx', xS(p[0])).attr('cy', yS(p[1]))
+            .attr('r', 3).attr('fill', COLORS_3[subLabels[i]]).attr('opacity', 0.4);
+    });
+}
+
+// =========================================================
+// RECONSTRUCTION ERROR DEMO
+// =========================================================
+function initReconErrorDemo() {
+    const m = { top: 20, right: 30, bottom: 40, left: 50 };
+    const { g, iW, iH } = makeSVG('recon-error-demo', 750, 400, m);
+    const ext = 3.5;
+    const xS = d3.scaleLinear().domain([-ext, ext]).range([0, iW]);
+    const yS = d3.scaleLinear().domain([-ext, ext]).range([iH, 0]);
+    drawAxes(g, xS, yS, iW, iH, '', '', 5);
+
+    const cos1 = Math.cos(irisPC1Angle), sin1 = Math.sin(irisPC1Angle);
+
+    g.append('line')
+        .attr('x1', xS(-ext*cos1)).attr('y1', yS(-ext*sin1))
+        .attr('x2', xS(ext*cos1)).attr('y2', yS(ext*sin1))
+        .attr('stroke', 'var(--accent-blue)').attr('stroke-width', 2).attr('opacity', 0.5);
+
+    const subset = irisCentered.filter((_, i) => i % 3 === 0);
+    const subLabels = irisLabels.filter((_, i) => i % 3 === 0);
+
+    subset.forEach((p, i) => {
+        const proj = p[0]*cos1 + p[1]*sin1;
+        const px = proj * cos1;
+        const py = proj * sin1;
+        g.append('line')
+            .attr('x1', xS(p[0])).attr('y1', yS(p[1]))
+            .attr('x2', xS(px)).attr('y2', yS(py))
+            .attr('stroke', 'var(--accent-red)').attr('stroke-width', 1.5).attr('opacity', 0.6);
+        g.append('circle').attr('cx', xS(px)).attr('cy', yS(py))
+            .attr('r', 3).attr('fill', COLORS_3[subLabels[i]]).attr('opacity', 0.8);
+        g.append('circle').attr('cx', xS(p[0])).attr('cy', yS(p[1]))
+            .attr('r', 3).attr('fill', COLORS_3[subLabels[i]]).attr('opacity', 0.4);
+    });
+}
+
+// =========================================================
+// DRAG AXIS INTERACTIVE (the key interactive slide)
+// =========================================================
+let dragAngle = 0;
+let dragG, dragXS, dragYS, dragIW, dragIH;
+const dragExt = 3.5;
+let projLines, projDots, origDots, axisLine, axisHandle;
+let maxVariance = 0, totalVariance = 0;
+
+function initDragAxisViz() {
+    const m = { top: 15, right: 15, bottom: 35, left: 45 };
+    const res = makeSVG('drag-axis-viz', 580, 440, m);
+    dragG = res.g; dragIW = res.iW; dragIH = res.iH;
+    dragXS = d3.scaleLinear().domain([-dragExt, dragExt]).range([0, dragIW]);
+    dragYS = d3.scaleLinear().domain([-dragExt, dragExt]).range([dragIH, 0]);
+    drawAxes(dragG, dragXS, dragYS, dragIW, dragIH, '', '', 5);
+
+    // Compute max variance (along PC1) and total variance
+    const cos1 = Math.cos(irisPC1Angle), sin1 = Math.sin(irisPC1Angle);
+    const projPC1 = irisCentered.map(p => p[0]*cos1 + p[1]*sin1);
+    maxVariance = projPC1.reduce((s, v) => s + v*v, 0) / projPC1.length;
+    totalVariance = irisCentered.reduce((s, p) => s + p[0]*p[0] + p[1]*p[1], 0) / irisCentered.length;
+
+    // Projection lines group
+    const projLinesG = dragG.append('g');
+    projLines = projLinesG.selectAll('line').data(irisCentered).join('line')
+        .attr('stroke', 'var(--accent-red)').attr('stroke-width', 0.8).attr('opacity', 0.3);
+
+    // Projected dots
+    projDots = dragG.selectAll('.proj-dot').data(irisCentered).join('circle')
+        .attr('class', 'proj-dot').attr('r', 3).attr('opacity', 0.8)
+        .attr('fill', (d, i) => COLORS_3[irisLabels[i]]);
+
+    // Original dots
+    origDots = dragG.selectAll('.orig-dot').data(irisCentered).join('circle')
+        .attr('class', 'orig-dot')
+        .attr('cx', d => dragXS(d[0])).attr('cy', d => dragYS(d[1]))
+        .attr('r', 3).attr('fill', (d, i) => COLORS_3[irisLabels[i]]).attr('opacity', 0.35);
+
+    // Axis line
+    axisLine = dragG.append('line')
+        .attr('stroke', 'var(--accent-yellow)').attr('stroke-width', 3).attr('opacity', 0.8);
+
+    // Draggable handle
+    axisHandle = dragG.append('circle')
+        .attr('r', 10).attr('fill', 'var(--accent-yellow)').attr('opacity', 0.5)
+        .attr('stroke', '#fff').attr('stroke-width', 2)
+        .style('cursor', 'grab');
+
+    const drag = d3.drag()
+        .on('start', function() { d3.select(this).style('cursor', 'grabbing').attr('opacity', 0.8); })
+        .on('drag', function(event) {
+            const mx = dragXS.invert(event.x);
+            const my = dragYS.invert(event.y);
+            dragAngle = Math.atan2(my, mx);
+            updateDragViz();
+        })
+        .on('end', function() { d3.select(this).style('cursor', 'grab').attr('opacity', 0.5); });
+
+    axisHandle.call(drag);
+    axisLine.style('cursor', 'grab').call(d3.drag()
+        .on('drag', function(event) {
+            const mx = dragXS.invert(event.x);
+            const my = dragYS.invert(event.y);
+            dragAngle = Math.atan2(my, mx);
+            updateDragViz();
+        })
+    );
+
+    dragAngle = 0;
+    updateDragViz();
+}
+
+function updateDragViz() {
+    const cos = Math.cos(dragAngle), sin = Math.sin(dragAngle);
+
+    axisLine
+        .attr('x1', dragXS(-dragExt*cos)).attr('y1', dragYS(-dragExt*sin))
+        .attr('x2', dragXS(dragExt*cos)).attr('y2', dragYS(dragExt*sin));
+
+    axisHandle.attr('cx', dragXS(dragExt*0.85*cos)).attr('cy', dragYS(dragExt*0.85*sin));
+
+    let varianceSum = 0;
+    let errorSum = 0;
+    projDots.each(function(d, i) {
+        const proj = d[0]*cos + d[1]*sin;
+        const px = proj * cos;
+        const py = proj * sin;
+        varianceSum += proj * proj;
+        const ex = d[0] - px, ey = d[1] - py;
+        errorSum += ex*ex + ey*ey;
+        d3.select(this).attr('cx', dragXS(px)).attr('cy', dragYS(py));
+    });
+
+    projLines.each(function(d, i) {
+        const proj = d[0]*cos + d[1]*sin;
+        const px = proj * cos, py = proj * sin;
+        d3.select(this)
+            .attr('x1', dragXS(d[0])).attr('y1', dragYS(d[1]))
+            .attr('x2', dragXS(px)).attr('y2', dragYS(py));
+    });
+
+    const variance = varianceSum / irisCentered.length;
+    const error = errorSum / irisCentered.length;
+
+    const varPct = Math.min(100, (variance / maxVariance) * 100);
+    document.getElementById('variance-bar').style.width = varPct + '%';
+    document.getElementById('variance-val').textContent = variance.toFixed(3);
+
+    const errPct = Math.min(100, (error / totalVariance) * 100);
+    document.getElementById('error-bar').style.width = errPct + '%';
+    document.getElementById('error-val').textContent = error.toFixed(3);
+
+    let deg = (dragAngle * 180 / Math.PI) % 360;
+    if (deg < 0) deg += 360;
+    document.getElementById('drag-angle-val').textContent = deg.toFixed(1);
+
+    const fb = document.getElementById('drag-feedback');
+    const angleDiff = Math.abs(Math.atan2(Math.sin(dragAngle - irisPC1Angle), Math.cos(dragAngle - irisPC1Angle)));
+    const angleDiffDeg = angleDiff * 180 / Math.PI;
+    if (angleDiffDeg < 3 || angleDiffDeg > 177) {
+        fb.innerHTML = '<span style="color:var(--accent-green); font-weight:bold;">&#10004; PC1 found! Maximum variance.</span>';
+        document.getElementById('variance-bar').style.background = 'var(--accent-green)';
+    } else if (angleDiffDeg < 10 || angleDiffDeg > 170) {
+        fb.innerHTML = '<span style="color:var(--accent-yellow);">Almost there!</span>';
+        document.getElementById('variance-bar').style.background = 'var(--accent-yellow)';
+    } else {
+        fb.innerHTML = '<span style="color:#888;">Drag the yellow handle to rotate.</span>';
+        document.getElementById('variance-bar').style.background = 'var(--accent-green)';
+    }
+}
+
+window.snapToPC1 = function() {
+    dragAngle = irisPC1Angle;
+    updateDragViz();
+};
+
+window.snapToPC2 = function() {
+    dragAngle = irisPC1Angle + Math.PI/2;
+    updateDragViz();
+};
+
+// =========================================================
+// PROJECTION FORMULA DIAGRAM (section 4 slide 1)
+// =========================================================
+function initProjectionFormulaDiagram() {
+    const m = { top: 20, right: 20, bottom: 40, left: 50 };
+    const { g, iW, iH } = makeSVG('projection-formula-diagram', 600, 400, m);
+    const ext = 3.5;
+    const xS = d3.scaleLinear().domain([-ext, ext]).range([0, iW]);
+    const yS = d3.scaleLinear().domain([-ext, ext]).range([iH, 0]);
+    drawAxes(g, xS, yS, iW, iH, '', '', 5);
+
+    const cos1 = Math.cos(irisPC1Angle), sin1 = Math.sin(irisPC1Angle);
+
+    // All data points (grayed out)
+    g.selectAll('.bg-dot').data(irisCentered).join('circle')
+        .attr('class', 'bg-dot')
+        .attr('cx', d => xS(d[0])).attr('cy', d => yS(d[1]))
+        .attr('r', 2.5).attr('fill', '#666').attr('opacity', 0.25);
+
+    // PC1 direction line
+    g.append('line')
+        .attr('x1', xS(-ext*cos1)).attr('y1', yS(-ext*sin1))
+        .attr('x2', xS(ext*cos1)).attr('y2', yS(ext*sin1))
+        .attr('stroke', 'var(--accent-blue)').attr('stroke-width', 2.5).attr('opacity', 0.7);
+
+    // Unit vector u arrow along PC1
+    const defs = d3.select('#projection-formula-diagram svg').append('defs');
+    defs.append('marker').attr('id', 'arrB').attr('viewBox', '0 0 10 10')
+        .attr('refX', 10).attr('refY', 5).attr('markerWidth', 8).attr('markerHeight', 8)
+        .attr('orient', 'auto').append('path').attr('d', 'M 0 0 L 10 5 L 0 10 z').attr('fill', 'var(--accent-blue)');
+    defs.append('marker').attr('id', 'arrY').attr('viewBox', '0 0 10 10')
+        .attr('refX', 10).attr('refY', 5).attr('markerWidth', 8).attr('markerHeight', 8)
+        .attr('orient', 'auto').append('path').attr('d', 'M 0 0 L 10 5 L 0 10 z').attr('fill', 'var(--accent-yellow)');
+
+    // Unit vector arrow (length = 1 in data space)
+    g.append('line')
+        .attr('x1', xS(0)).attr('y1', yS(0))
+        .attr('x2', xS(cos1 * 1.5)).attr('y2', yS(sin1 * 1.5))
+        .attr('stroke', 'var(--accent-blue)').attr('stroke-width', 3).attr('marker-end', 'url(#arrB)');
+    g.append('text').attr('x', xS(cos1 * 1.6) - 28).attr('y', yS(sin1 * 1.6) - 4)
+        .text('u').style('fill', 'var(--accent-blue)').style('font-size', '18px').style('font-weight', 'bold')
+        .style('font-family', 'Georgia, serif');
+    g.append('text').attr('x', xS(cos1 * 1.6) - 32).attr('y', yS(sin1 * 1.6) - 20)
+        .text('(unit)').style('fill', 'var(--accent-blue)').style('font-size', '10px')
+        .style('font-family', 'Georgia, serif');
+
+    // Pick a point with large perpendicular distance from PC1 for visual clarity
+    const hiIdx = 131;
+    const hiPoint = irisCentered[hiIdx];
+
+    // PC1 direction in SCREEN space (accounts for unequal axis pixel scales)
+    const scrDx = xS(cos1) - xS(0), scrDy = yS(sin1) - yS(0);
+    const scrLen = Math.sqrt(scrDx*scrDx + scrDy*scrDy);
+    const snX = scrDx/scrLen, snY = scrDy/scrLen;
+
+    // Project x^(i) onto PC1 line in SCREEN space so dashed line looks perpendicular
+    const vx = xS(hiPoint[0]) - xS(0), vy = yS(hiPoint[1]) - yS(0);
+    const pS = vx*snX + vy*snY;
+    const projSX = xS(0) + pS*snX, projSY = yS(0) + pS*snY;
+
+    // Arrow from origin to x^(i)
+    g.append('line')
+        .attr('x1', xS(0)).attr('y1', yS(0))
+        .attr('x2', xS(hiPoint[0])).attr('y2', yS(hiPoint[1]))
+        .attr('stroke', 'var(--accent-yellow)').attr('stroke-width', 2.5).attr('marker-end', 'url(#arrY)');
+
+    // Highlighted point
+    g.append('circle').attr('cx', xS(hiPoint[0])).attr('cy', yS(hiPoint[1]))
+        .attr('r', 7).attr('fill', 'var(--accent-yellow)').attr('stroke', '#fff').attr('stroke-width', 2);
+    g.append('text').attr('x', xS(hiPoint[0]) + 12).attr('y', yS(hiPoint[1]) + 5)
+        .text('x').style('fill', 'var(--accent-yellow)').style('font-size', '18px').style('font-weight', 'bold')
+        .style('font-family', 'Georgia, serif');
+    g.append('text').attr('x', xS(hiPoint[0]) + 26).attr('y', yS(hiPoint[1]) - 8)
+        .text('(i)').style('fill', 'var(--accent-yellow)').style('font-size', '11px')
+        .style('font-family', 'Georgia, serif');
+
+    // Dashed projection line (perpendicular in screen space)
+    g.append('line')
+        .attr('x1', xS(hiPoint[0])).attr('y1', yS(hiPoint[1]))
+        .attr('x2', projSX).attr('y2', projSY)
+        .attr('stroke', '#aaa').attr('stroke-width', 1.5).attr('stroke-dasharray', '4,4');
+
+    // Right angle marker in screen space
+    const rr = 12;
+    const pVx = xS(hiPoint[0]) - projSX, pVy = yS(hiPoint[1]) - projSY;
+    const pVLen = Math.sqrt(pVx*pVx + pVy*pVy);
+    const pnX = pVx/pVLen, pnY = pVy/pVLen;  // perp dir (toward x^(i))
+    const aX = -snX, aY = -snY;  // along PC1 toward origin
+    g.append('path')
+        .attr('d', `M ${projSX + pnX*rr} ${projSY + pnY*rr} ` +
+              `L ${projSX + pnX*rr + aX*rr} ${projSY + pnY*rr + aY*rr} ` +
+              `L ${projSX + aX*rr} ${projSY + aY*rr}`)
+        .attr('fill', 'none').attr('stroke', '#aaa').attr('stroke-width', 1.5);
+
+    // Projection point (z)
+    g.append('circle').attr('cx', projSX).attr('cy', projSY)
+        .attr('r', 6).attr('fill', 'var(--accent-green)').attr('stroke', '#fff').attr('stroke-width', 2);
+    g.append('text').attr('x', projSX - 30).attr('y', projSY + 6)
+        .text('z = ?').style('fill', 'var(--accent-green)').style('font-size', '16px').style('font-weight', 'bold')
+        .style('text-anchor', 'end').style('font-family', 'Georgia, serif');
+
+    // Origin marker
+    g.append('circle').attr('cx', xS(0)).attr('cy', yS(0))
+        .attr('r', 4).attr('fill', '#fff');
+    g.append('text').attr('x', xS(0) - 14).attr('y', yS(0) + 16)
+        .text('0').style('fill', '#888').style('font-size', '13px').style('font-family', 'Georgia, serif');
+}
+
+
+// =========================================================
+// IRIS SCREE MINI (for section 4 eigendecomposition slide)
+// =========================================================
+function initIrisScreeMini() {
+    const m = { top: 20, right: 15, bottom: 35, left: 50 };
+    const { g, iW, iH } = makeSVG('iris-scree-mini', 320, 280, m);
+    const ve = DATA.iris.variance_explained;
+    const labels = ['PC1','PC2','PC3','PC4'];
+    const xS = d3.scaleBand().domain(labels).range([0, iW]).padding(0.3);
+    const yS = d3.scaleLinear().domain([0, 0.8]).range([iH, 0]);
+    const xA = g.append('g').attr('transform', `translate(0,${iH})`).call(d3.axisBottom(xS));
+    const yA = g.append('g').call(d3.axisLeft(yS).ticks(4).tickFormat(d3.format('.0%')));
+    [xA, yA].forEach(a => {
+        a.selectAll('text').style('fill', '#888').style('font-size', '10px');
+        a.selectAll('.domain, .tick line').style('stroke', '#444');
+    });
+    g.selectAll('rect').data(ve).join('rect')
+        .attr('x', (d, i) => xS(labels[i]))
+        .attr('y', d => yS(d)).attr('width', xS.bandwidth())
+        .attr('height', d => iH - yS(d))
+        .attr('fill', (d, i) => i < 2 ? 'var(--accent-blue)' : 'rgba(97,175,239,0.3)')
+        .attr('rx', 3);
+    ve.forEach((v, i) => {
+        g.append('text').attr('x', xS(labels[i]) + xS.bandwidth()/2)
+            .attr('y', yS(v) - 5).attr('text-anchor', 'middle')
+            .text((v*100).toFixed(1) + '%').style('font-size', '9px').style('fill', '#ccc');
+    });
+    g.append('text').attr('x', iW/2).attr('y', -5).attr('text-anchor', 'middle')
+        .text('Variance Explained').style('font-size', '11px').style('fill', '#aaa');
+}
+
+// =========================================================
+// IRIS CUMULATIVE MINI (for section 4 projection slide)
+// =========================================================
+function initIrisCumulMini() {
+    const m = { top: 20, right: 15, bottom: 35, left: 50 };
+    const { g, iW, iH } = makeSVG('iris-cumul-mini', 320, 250, m);
+    const ve = DATA.iris.variance_explained;
+    // Cumulative
+    const cumul = [];
+    let sum = 0;
+    ve.forEach(v => { sum += v; cumul.push(sum); });
+    const labels = ['1','2','3','4'];
+    const xS = d3.scaleBand().domain(labels).range([0, iW]).padding(0.2);
+    const yS = d3.scaleLinear().domain([0, 1.05]).range([iH, 0]);
+    const xA = g.append('g').attr('transform', `translate(0,${iH})`).call(d3.axisBottom(xS));
+    const yA = g.append('g').call(d3.axisLeft(yS).ticks(5).tickFormat(d3.format('.0%')));
+    [xA, yA].forEach(a => {
+        a.selectAll('text').style('fill', '#888').style('font-size', '10px');
+        a.selectAll('.domain, .tick line').style('stroke', '#444');
+    });
+    // Bars
+    g.selectAll('rect').data(cumul).join('rect')
+        .attr('x', (d, i) => xS(labels[i]))
+        .attr('y', d => yS(d)).attr('width', xS.bandwidth())
+        .attr('height', d => iH - yS(d))
+        .attr('fill', (d, i) => i < 2 ? 'var(--accent-green)' : 'rgba(152,195,121,0.3)')
+        .attr('rx', 3);
+    cumul.forEach((v, i) => {
+        g.append('text').attr('x', xS(labels[i]) + xS.bandwidth()/2)
+            .attr('y', yS(v) - 5).attr('text-anchor', 'middle')
+            .text((v*100).toFixed(1) + '%').style('font-size', '9px').style('fill', '#ccc');
+    });
+    // 95% line
+    g.append('line').attr('x1', 0).attr('x2', iW)
+        .attr('y1', yS(0.95)).attr('y2', yS(0.95))
+        .attr('stroke', 'var(--accent-red)').attr('stroke-width', 1).attr('stroke-dasharray', '4,4').attr('opacity', 0.6);
+    g.append('text').attr('x', iW - 3).attr('y', yS(0.95) - 4)
+        .attr('text-anchor', 'end').text('95%').style('font-size', '9px').style('fill', 'var(--accent-red)');
+
+    g.append('text').attr('x', iW/2).attr('y', iH + 28).attr('text-anchor', 'middle')
+        .text('# Components kept').style('font-size', '10px').style('fill', '#aaa');
+    g.append('text').attr('x', iW/2).attr('y', -5).attr('text-anchor', 'middle')
+        .text('Cumulative Variance').style('font-size', '11px').style('fill', '#aaa');
+}
+
+// =========================================================
+// IRIS PCA SCATTER (application section)
+// =========================================================
+function initIrisPCA() {
+    const m = { top: 20, right: 20, bottom: 45, left: 55 };
+    const { g, iW, iH } = makeSVG('iris-pca-scatter', 500, 380, m);
+    const pca = DATA.iris.pca_2d;
+    const labels = DATA.iris.labels;
+    const species = DATA.iris.species;
+    const xExt = d3.extent(pca, d => d[0]);
+    const yExt = d3.extent(pca, d => d[1]);
+    const pad = 0.5;
+    const xS = d3.scaleLinear().domain([xExt[0]-pad, xExt[1]+pad]).range([0, iW]);
+    const yS = d3.scaleLinear().domain([yExt[0]-pad, yExt[1]+pad]).range([iH, 0]);
+    drawAxes(g, xS, yS, iW, iH, 'PC1 (72.8%)', 'PC2 (22.9%)');
+
+    g.selectAll('circle').data(pca).join('circle')
+        .attr('cx', d => xS(d[0])).attr('cy', d => yS(d[1]))
+        .attr('r', 5).attr('fill', (d, i) => COLORS_3[labels[i]])
+        .attr('opacity', 0.7).attr('stroke', 'rgba(255,255,255,0.2)').attr('stroke-width', 0.5);
+
+    // Legend
+    species.forEach((s, i) => {
+        g.append('circle').attr('cx', iW - 100).attr('cy', 20 + i*22).attr('r', 5).attr('fill', COLORS_3[i]);
+        g.append('text').attr('x', iW - 90).attr('y', 24 + i*22).text(s)
+            .style('fill', COLORS_3[i]).style('font-size', '11px');
+    });
+
+    // Variance explained bar chart
+    initIrisVarianceBars();
+}
+
+function initIrisVarianceBars() {
+    const m = { top: 15, right: 15, bottom: 35, left: 45 };
+    const { g, iW, iH } = makeSVG('iris-variance-bars', 340, 180, m);
+    const ve = DATA.iris.variance_explained;
+    const xS = d3.scaleBand().domain(['PC1','PC2','PC3','PC4']).range([0, iW]).padding(0.3);
+    const yS = d3.scaleLinear().domain([0, 0.8]).range([iH, 0]);
+    const xA = g.append('g').attr('transform', `translate(0,${iH})`).call(d3.axisBottom(xS));
+    const yA = g.append('g').call(d3.axisLeft(yS).ticks(4).tickFormat(d3.format('.0%')));
+    [xA, yA].forEach(a => {
+        a.selectAll('text').style('fill', '#888').style('font-size', '10px');
+        a.selectAll('.domain, .tick line').style('stroke', '#444');
+    });
+    g.selectAll('rect').data(ve).join('rect')
+        .attr('x', (d, i) => xS(['PC1','PC2','PC3','PC4'][i]))
+        .attr('y', d => yS(d)).attr('width', xS.bandwidth())
+        .attr('height', d => iH - yS(d))
+        .attr('fill', (d, i) => i < 2 ? 'var(--accent-blue)' : 'rgba(97,175,239,0.3)')
+        .attr('rx', 3);
+    ve.forEach((v, i) => {
+        g.append('text').attr('x', xS(['PC1','PC2','PC3','PC4'][i]) + xS.bandwidth()/2)
+            .attr('y', yS(v) - 5).attr('text-anchor', 'middle')
+            .text((v*100).toFixed(1) + '%').style('font-size', '9px').style('fill', '#ccc');
+    });
+    g.append('text').attr('x', iW/2).attr('y', iH + 30).attr('text-anchor', 'middle')
+        .text('Variance Explained').style('font-size', '10px').style('fill', '#aaa');
+}
+
+// =========================================================
+// SVD IMAGE COMPRESSION INTERACTIVE
+// =========================================================
+function initSVDImageCompression() {
+    const ranks = DATA.image.ranks;
+    const rankFiles = {
+        1: 'svd_rank_001.png', 2: 'svd_rank_002.png', 5: 'svd_rank_005.png',
+        10: 'svd_rank_010.png', 20: 'svd_rank_020.png', 50: 'svd_rank_050.png',
+        100: 'svd_rank_100.png', 200: 'svd_rank_200.png'
+    };
+
+    const sv = DATA.image.singular_values;
+    const ce = DATA.image.cumulative_energy;
+
+    initSVSpectrum('sv-spectrum-plot', sv, ranks, 480, 210, 'Singular value spectrum');
+    initCumulativeEnergy('sv-energy-plot', ce, ranks, 480, 210, 'Cumulative energy');
+
+    window.updateSVDImage = function(sliderVal) {
+        const idx = parseInt(sliderVal);
+        if (idx >= ranks.length) {
+            document.getElementById('svd-image-display').src = '/static/data/09_svd_pca/images/original_img.png';
+            document.getElementById('svd-rank-label').textContent = 'Original';
+            updateSpectrumMarker('sv-spectrum-plot', -1);
+            updateEnergyMarker('sv-energy-plot', -1);
+        } else {
+            const rank = ranks[idx];
+            document.getElementById('svd-image-display').src = `/static/data/09_svd_pca/images/${rankFiles[rank]}`;
+            document.getElementById('svd-rank-label').textContent = `r = ${rank}`;
+            updateSpectrumMarker('sv-spectrum-plot', rank);
+            updateEnergyMarker('sv-energy-plot', rank);
+        }
+    };
+}
+
+function initSVSpectrum(containerId, sv, ranks, w, h, title) {
+    const m = { top: 25, right: 15, bottom: 35, left: 55 };
+    const { g, iW, iH } = makeSVG(containerId, w, h, m);
+    const xS = d3.scaleLinear().domain([0, sv.length]).range([0, iW]);
+    const yS = d3.scaleLog().domain([Math.max(1, d3.min(sv)), d3.max(sv)]).range([iH, 0]);
+    drawAxes(g, xS, yS, iW, iH, 'Component index', '', 5);
+
+    g.append('path').datum(sv)
+        .attr('fill', 'none').attr('stroke', 'var(--accent-blue)').attr('stroke-width', 2)
+        .attr('d', d3.line().x((d, i) => xS(i)).y(d => yS(Math.max(1, d))));
+
+    g.append('text').attr('x', iW/2).attr('y', -8).attr('text-anchor', 'middle')
+        .text(title).style('font-size', '11px').style('fill', '#aaa');
+
+    g.append('line').attr('class', 'spectrum-marker')
+        .attr('y1', 0).attr('y2', iH)
+        .attr('stroke', 'var(--accent-yellow)').attr('stroke-width', 2)
+        .attr('stroke-dasharray', '4,4').attr('opacity', 0);
+}
+
+function updateSpectrumMarker(containerId, rank) {
+    const svg = d3.select('#' + containerId + ' svg');
+    const marker = svg.select('.spectrum-marker');
+    if (rank < 0) {
+        marker.attr('opacity', 0);
+        return;
+    }
+    const g = svg.select('g');
+    const iW = parseInt(svg.attr('width')) - 70;
+    const sv = containerId.includes('face') ? DATA.faces.singular_values : DATA.image.singular_values;
+    const xS = d3.scaleLinear().domain([0, sv.length]).range([0, iW]);
+    marker.attr('x1', xS(rank)).attr('x2', xS(rank)).attr('opacity', 0.8);
+}
+
+function initCumulativeEnergy(containerId, ce, ranks, w, h, title) {
+    const m = { top: 25, right: 15, bottom: 35, left: 55 };
+    const { g, iW, iH } = makeSVG(containerId, w, h, m);
+    const xS = d3.scaleLinear().domain([0, ce.length]).range([0, iW]);
+    const yS = d3.scaleLinear().domain([ce[0]*0.95, 1.0]).range([iH, 0]);
+    drawAxes(g, xS, yS, iW, iH, 'Components', '', 5);
+
+    g.append('path').datum(ce)
+        .attr('fill', 'none').attr('stroke', 'var(--accent-green)').attr('stroke-width', 2)
+        .attr('d', d3.line().x((d, i) => xS(i)).y(d => yS(d)));
+
+    if (0.95 >= ce[0]*0.95) {
+        g.append('line').attr('x1', 0).attr('x2', iW)
+            .attr('y1', yS(0.95)).attr('y2', yS(0.95))
+            .attr('stroke', 'var(--accent-red)').attr('stroke-width', 1).attr('stroke-dasharray', '4,4').attr('opacity', 0.5);
+        g.append('text').attr('x', iW - 5).attr('y', yS(0.95) - 5)
+            .attr('text-anchor', 'end').text('95%').style('font-size', '9px').style('fill', 'var(--accent-red)');
+    }
+
+    g.append('text').attr('x', iW/2).attr('y', -8).attr('text-anchor', 'middle')
+        .text(title).style('font-size', '11px').style('fill', '#aaa');
+
+    g.append('circle').attr('class', 'energy-marker')
+        .attr('r', 5).attr('fill', 'var(--accent-yellow)').attr('stroke', '#fff').attr('stroke-width', 1.5)
+        .attr('opacity', 0);
+}
+
+function updateEnergyMarker(containerId, rank) {
+    const svg = d3.select('#' + containerId + ' svg');
+    const marker = svg.select('.energy-marker');
+    if (rank < 0) {
+        marker.attr('opacity', 0);
+        return;
+    }
+    const ce = containerId.includes('face') ? DATA.faces.cumulative_energy : DATA.image.cumulative_energy;
+    const iW = parseInt(svg.attr('width')) - 70;
+    const m = { top: 25, right: 15, bottom: 35, left: 55 };
+    const iH = parseInt(svg.attr('height')) - m.top - m.bottom;
+    const xS = d3.scaleLinear().domain([0, ce.length]).range([0, iW]);
+    const yMin = ce[0]*0.95;
+    const yS = d3.scaleLinear().domain([yMin, 1.0]).range([iH, 0]);
+    const idx = Math.min(rank - 1, ce.length - 1);
+    if (idx >= 0 && idx < ce.length) {
+        marker.attr('cx', xS(idx)).attr('cy', yS(ce[idx])).attr('opacity', 1);
+    }
+}
+
+// =========================================================
+// FACE RECONSTRUCTION INTERACTIVE
+// =========================================================
+function initFaceReconstruction() {
+    const ranks = DATA.faces.ranks;
+    const rankFiles = {
+        5: 'face_rank_0005.png', 25: 'face_rank_0025.png', 50: 'face_rank_0050.png',
+        100: 'face_rank_0100.png', 200: 'face_rank_0200.png',
+        400: 'face_rank_0400.png', 800: 'face_rank_0800.png'
+    };
+
+    initSVSpectrum('face-sv-plot', DATA.faces.singular_values, ranks, 480, 210, 'Face singular values');
+    initCumulativeEnergy('face-energy-plot', DATA.faces.cumulative_energy, ranks, 480, 210, 'Face cumulative energy');
+
+    window.updateFaceRecon = function(sliderVal) {
+        const idx = parseInt(sliderVal);
+        const rank = ranks[idx];
+        document.getElementById('face-recon-display').src = `/static/data/09_svd_pca/images/${rankFiles[rank]}`;
+        document.getElementById('face-rank-label').textContent = `k = ${rank}`;
+        updateSpectrumMarker('face-sv-plot', Math.min(rank, DATA.faces.singular_values.length));
+        updateEnergyMarker('face-energy-plot', Math.min(rank, DATA.faces.cumulative_energy.length));
+    };
+}
+
+// =========================================================
+// SCREE PLOT (faces data)
+// =========================================================
+function initScreePlot() {
+    // Main scree plot
+    {
+        const m = { top: 25, right: 20, bottom: 45, left: 60 };
+        const { g, iW, iH } = makeSVG('scree-plot-main', 520, 370, m);
+        const sv = DATA.faces.singular_values;
+        const xS = d3.scaleLinear().domain([0, sv.length]).range([0, iW]);
+        const yS = d3.scaleLog().domain([d3.min(sv)*0.8, d3.max(sv)*1.1]).range([iH, 0]);
+        drawAxes(g, xS, yS, iW, iH, 'Component index', 'Singular value (log scale)');
+
+        const barW = Math.max(1, iW / sv.length - 1);
+        g.selectAll('rect').data(sv).join('rect')
+            .attr('x', (d, i) => xS(i) - barW/2)
+            .attr('y', d => yS(d))
+            .attr('width', barW)
+            .attr('height', d => iH - yS(d))
+            .attr('fill', 'var(--accent-blue)')
+            .attr('opacity', 0.7);
+
+        g.append('circle').attr('cx', xS(10)).attr('cy', yS(sv[10]))
+            .attr('r', 15).attr('fill', 'none').attr('stroke', 'var(--accent-yellow)')
+            .attr('stroke-width', 2).attr('stroke-dasharray', '4,4');
+        g.append('text').attr('x', xS(10) + 20).attr('y', yS(sv[10]) - 10)
+            .text('"Elbow"').style('fill', 'var(--accent-yellow)').style('font-size', '12px').style('font-weight', 'bold');
+
+        g.append('text').attr('x', iW/2).attr('y', -8).attr('text-anchor', 'middle')
+            .text('Scree Plot (Faces Dataset)').style('font-size', '12px').style('fill', '#ccc');
+    }
+
+    // Cumulative variance
+    {
+        const m = { top: 20, right: 15, bottom: 35, left: 50 };
+        const { g, iW, iH } = makeSVG('scree-cumulative', 320, 190, m);
+        const ce = DATA.faces.cumulative_energy;
+        const xS = d3.scaleLinear().domain([0, ce.length]).range([0, iW]);
+        const yS = d3.scaleLinear().domain([0, 1]).range([iH, 0]);
+        drawAxes(g, xS, yS, iW, iH, 'Components', '', 4);
+
+        g.append('path').datum(ce)
+            .attr('fill', 'none').attr('stroke', 'var(--accent-green)').attr('stroke-width', 2.5)
+            .attr('d', d3.line().x((d, i) => xS(i)).y(d => yS(d)));
+
+        g.append('path').datum(ce)
+            .attr('fill', 'rgba(152, 195, 121, 0.15)')
+            .attr('d', d3.area().x((d, i) => xS(i)).y0(iH).y1(d => yS(d)));
+
+        g.append('line').attr('x1', 0).attr('x2', iW)
+            .attr('y1', yS(0.9)).attr('y2', yS(0.9))
+            .attr('stroke', 'var(--accent-yellow)').attr('stroke-width', 1).attr('stroke-dasharray', '4,4');
+        g.append('text').attr('x', iW - 3).attr('y', yS(0.9) - 4)
+            .attr('text-anchor', 'end').text('90%').style('font-size', '9px').style('fill', 'var(--accent-yellow)');
+
+        g.append('line').attr('x1', 0).attr('x2', iW)
+            .attr('y1', yS(0.95)).attr('y2', yS(0.95))
+            .attr('stroke', 'var(--accent-red)').attr('stroke-width', 1).attr('stroke-dasharray', '4,4');
+        g.append('text').attr('x', iW - 3).attr('y', yS(0.95) - 4)
+            .attr('text-anchor', 'end').text('95%').style('font-size', '9px').style('fill', 'var(--accent-red)');
+
+        g.append('text').attr('x', iW/2).attr('y', -5).attr('text-anchor', 'middle')
+            .text('Cumulative Variance').style('font-size', '11px').style('fill', '#aaa');
+    }
+}
+</script>
+
+</body>
+</html>

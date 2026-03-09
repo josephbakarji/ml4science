@@ -1,0 +1,925 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Linear Dynamical Systems & DMD</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reset.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/night.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/monokai.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+    <style>
+        :root {
+            --accent-blue: #61afef;
+            --accent-green: #98c379;
+            --accent-yellow: #e5c07b;
+            --accent-red: #e06c75;
+            --accent-purple: #c678dd;
+            --accent-cyan: #56b6c2;
+        }
+        .reveal { font-size: 28px; }
+        .reveal h1 { font-size: 1.8em; color: var(--accent-yellow); }
+        .reveal h2 { font-size: 1.3em; color: var(--accent-blue); margin-bottom: 0.5em; }
+        .reveal h3 { font-size: 1.1em; color: var(--accent-purple); }
+        .small-text { font-size: 0.75em; line-height: 1.6; }
+        .tiny-text { font-size: 0.6em; line-height: 1.5; }
+        .keyword { color: var(--accent-yellow); font-weight: bold; }
+        .em-blue { color: var(--accent-blue); }
+        .em-green { color: var(--accent-green); }
+        .em-purple { color: var(--accent-purple); }
+        .em-red { color: var(--accent-red); }
+        .center-text { text-align: center; }
+
+        .highlight-box {
+            background: rgba(97,175,239,0.1); border-left: 4px solid var(--accent-blue);
+            padding: 12px 18px; border-radius: 6px; margin: 10px 0;
+        }
+        .warning-box {
+            background: rgba(224,108,117,0.1); border-left: 4px solid var(--accent-red);
+            padding: 12px 18px; border-radius: 6px; margin: 10px 0;
+        }
+        .success-box {
+            background: rgba(152,195,121,0.1); border-left: 4px solid var(--accent-green);
+            padding: 12px 18px; border-radius: 6px; margin: 10px 0;
+        }
+        .principle-box {
+            background: rgba(198,120,221,0.1); border-left: 4px solid var(--accent-purple);
+            padding: 12px 18px; border-radius: 6px; margin: 10px 0;
+        }
+        .equation-box {
+            background: rgba(40,44,52,0.8); border: 1px solid #444; border-radius: 8px;
+            padding: 15px 20px; text-align: center; font-size: 1.1em; margin: 10px auto;
+            display: inline-block;
+        }
+        .equation-box.large { font-size: 1.3em; }
+
+        .two-column { display: flex; gap: 25px; align-items: flex-start; }
+        .two-column > div { flex: 1; }
+        .three-column { display: flex; gap: 15px; align-items: flex-start; }
+        .three-column > div { flex: 1; }
+
+        .styled-slider {
+            -webkit-appearance: none; appearance: none; height: 6px; border-radius: 3px;
+            background: #444; outline: none; cursor: pointer;
+        }
+        .styled-slider::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; width: 16px; height: 16px;
+            border-radius: 50%; background: var(--accent-yellow); cursor: pointer;
+        }
+        .slider-container { display: flex; align-items: center; gap: 8px; justify-content: center; }
+
+        .mode-grid {
+            display: grid; gap: 8px; justify-items: center;
+        }
+        .mode-grid img { width: 100%; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); }
+        .mode-grid .mode-label { font-size: 0.55em; color: #888; margin-top: 2px; }
+
+        .btn {
+            background: rgba(97,175,239,0.2); border: 1px solid var(--accent-blue);
+            color: var(--accent-blue); padding: 4px 10px; border-radius: 4px;
+            cursor: pointer; font-size: 0.6em; margin: 2px;
+        }
+        .btn:hover { background: rgba(97,175,239,0.4); }
+        .btn.active { background: rgba(97,175,239,0.5); }
+
+        pre code { font-size: 0.65em !important; line-height: 1.4 !important; border-radius: 8px; }
+    </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ============================================ -->
+<!-- SECTION 1: LINEAR DYNAMICAL SYSTEMS          -->
+<!-- ============================================ -->
+<section>
+    <section class="center-text" data-background-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
+        <h1>Linear Dynamical Systems<br>&amp; DMD<br>
+            <span style="font-size:0.55em; color:#aaa;">From Eigenvalues to Data-Driven Dynamics</span></h1>
+        <p class="small-text" style="margin-top: 2em; color: #666;">
+            ML for Science and Engineering &mdash; Lecture 10
+        </p>
+    </section>
+
+    <section>
+        <h2>Coupled Oscillators</h2>
+        <p class="small-text">Two masses connected by springs: a classic linear system.</p>
+        <div class="two-column">
+            <div>
+                <!-- Spring-mass SVG diagram -->
+                <svg viewBox="0 0 420 140" style="width: 100%; max-width: 420px;">
+                    <!-- Wall -->
+                    <line x1="20" y1="30" x2="20" y2="110" stroke="#888" stroke-width="3"/>
+                    <line x1="400" y1="30" x2="400" y2="110" stroke="#888" stroke-width="3"/>
+                    <!-- Spring 1 (wall to m1) -->
+                    <path d="M 20 70 L 40 70 L 48 55 L 64 85 L 80 55 L 96 85 L 112 55 L 120 70 L 140 70" fill="none" stroke="var(--accent-blue)" stroke-width="2"/>
+                    <!-- Mass 1 -->
+                    <rect x="140" y="50" width="40" height="40" rx="4" fill="var(--accent-yellow)" opacity="0.8"/>
+                    <text x="160" y="76" text-anchor="middle" fill="#222" font-size="14" font-weight="bold">m₁</text>
+                    <!-- Spring 2 (m1 to m2) -->
+                    <path d="M 180 70 L 195 70 L 203 55 L 219 85 L 235 55 L 251 85 L 259 70 L 270 70" fill="none" stroke="var(--accent-green)" stroke-width="2"/>
+                    <!-- Mass 2 -->
+                    <rect x="270" y="50" width="40" height="40" rx="4" fill="var(--accent-yellow)" opacity="0.8"/>
+                    <text x="290" y="76" text-anchor="middle" fill="#222" font-size="14" font-weight="bold">m₂</text>
+                    <!-- Spring 3 (m2 to wall) -->
+                    <path d="M 310 70 L 325 70 L 333 55 L 349 85 L 365 55 L 373 70 L 400 70" fill="none" stroke="var(--accent-purple)" stroke-width="2"/>
+                    <!-- Displacement arrows -->
+                    <line x1="160" y1="105" x2="160" y2="130" stroke="var(--accent-yellow)" stroke-width="1" stroke-dasharray="3,3"/>
+                    <text x="160" y="140" text-anchor="middle" fill="var(--accent-yellow)" font-size="12">x₁</text>
+                    <line x1="290" y1="105" x2="290" y2="130" stroke="var(--accent-yellow)" stroke-width="1" stroke-dasharray="3,3"/>
+                    <text x="290" y="140" text-anchor="middle" fill="var(--accent-yellow)" font-size="12">x₂</text>
+                </svg>
+            </div>
+            <div>
+                <p class="small-text fragment">Newton's second law for each mass:</p>
+                <div class="small-text fragment">
+                    $m_1 \ddot{x}_1 = -k_1 x_1 + k_2(x_2 - x_1)$<br>
+                    $m_2 \ddot{x}_2 = -k_2(x_2 - x_1) - k_3 x_2$
+                </div>
+                <div class="fragment" style="margin-top:15px;">
+                    <div class="equation-box">
+                        $\frac{d\mathbf{x}}{dt} = A\,\mathbf{x}$
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="highlight-box small-text fragment" style="margin-top:10px;">
+            All coupled linear systems have this form. The matrix $A$ encodes all the physics.
+        </div>
+    </section>
+
+    <section>
+        <h2>When Is a System Linear?</h2>
+        <div class="two-column">
+            <div>
+                <div class="success-box small-text">
+                    <strong>Linear:</strong> $A$ is constant<br><br>
+                    $\dot{\mathbf{x}} = A\,\mathbf{x}$<br><br>
+                    <span class="tiny-text">Coupled oscillators, circuits,<br>small perturbations, heat equation</span>
+                </div>
+            </div>
+            <div>
+                <div class="warning-box small-text">
+                    <strong>Nonlinear:</strong> $A$ depends on state<br><br>
+                    $\dot{\mathbf{x}} = f(\mathbf{x})$<br><br>
+                    <span class="tiny-text">Pendulum (large angle), Lorenz,<br>Navier-Stokes, population dynamics</span>
+                </div>
+            </div>
+        </div>
+        <div class="principle-box small-text fragment" style="margin-top:15px;">
+            Even nonlinear systems are <span class="em-purple">locally linear</span> (linearization around fixed points). DMD exploits this idea globally.
+        </div>
+    </section>
+
+    <section>
+        <h2>Eigendecomposition of $A$</h2>
+        <p class="small-text">Recall from last lecture: any square matrix can be decomposed as</p>
+        <div class="equation-box large">$A = V \Lambda V^{-1}$</div>
+        <div class="two-column small-text" style="margin-top:15px;">
+            <div>
+                <div class="highlight-box">
+                    <strong>$V$</strong> = eigenvectors (columns)<br>
+                    <span class="tiny-text">Mode shapes: how components move together</span>
+                </div>
+            </div>
+            <div>
+                <div class="highlight-box">
+                    <strong>$\Lambda$</strong> = diagonal eigenvalues<br>
+                    <span class="tiny-text">Growth rates: how fast each mode evolves</span>
+                </div>
+            </div>
+        </div>
+        <div class="principle-box small-text fragment" style="margin-top:12px;">
+            For symmetric $A$: all $\lambda_i$ are real, $V$ is orthogonal.
+        </div>
+    </section>
+
+    <section>
+        <h2>The Decoupling Trick</h2>
+        <p class="small-text">Change coordinates: $\mathbf{z} = V^{-1}\mathbf{x}$</p>
+        <div class="equation-box large" style="margin: 15px auto;">
+            $\frac{d\mathbf{z}}{dt} = \Lambda\,\mathbf{z}$
+        </div>
+        <p class="small-text fragment">Each component is independent:</p>
+        <div class="equation-box fragment">
+            $\dot{z}_i = \lambda_i\, z_i \quad\Longrightarrow\quad z_i(t) = z_i(0)\,e^{\lambda_i t}$
+        </div>
+        <div class="principle-box small-text fragment" style="margin-top:15px;">
+            <strong>Eigenvalues determine everything:</strong> growth, decay, and oscillation are all encoded in $\lambda_i$.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 2: EIGENVALUE BEHAVIOR               -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>What Do Eigenvalues Tell Us?</h2>
+        <p class="small-text">For $z_i(t) = z_i(0)\,e^{\lambda_i t}$, the eigenvalue $\lambda_i$ controls the behavior:</p>
+        <div class="three-column" style="margin-top: 10px;">
+            <div>
+                <div class="warning-box small-text" style="text-align:center;">
+                    <strong>$\lambda > 0$ (real)</strong><br><br>
+                    Exponential <span class="em-red">growth</span><br>
+                    <svg viewBox="0 0 120 60" style="width:100px; margin-top:5px;">
+                        <path d="M 10 55 Q 50 50 70 30 Q 90 10 110 5" fill="none" stroke="var(--accent-red)" stroke-width="2"/>
+                        <line x1="10" y1="55" x2="110" y2="55" stroke="#555" stroke-width="1"/>
+                    </svg>
+                </div>
+            </div>
+            <div>
+                <div class="success-box small-text" style="text-align:center;">
+                    <strong>$\lambda < 0$ (real)</strong><br><br>
+                    Exponential <span class="em-green">decay</span><br>
+                    <svg viewBox="0 0 120 60" style="width:100px; margin-top:5px;">
+                        <path d="M 10 5 Q 30 10 50 30 Q 70 50 110 53" fill="none" stroke="var(--accent-green)" stroke-width="2"/>
+                        <line x1="10" y1="55" x2="110" y2="55" stroke="#555" stroke-width="1"/>
+                    </svg>
+                </div>
+            </div>
+            <div>
+                <div class="highlight-box small-text" style="text-align:center;">
+                    <strong>$\lambda = \sigma \pm i\omega$</strong><br><br>
+                    <span class="em-blue">Oscillation</span> (&plusmn; growth/decay)<br>
+                    <svg viewBox="0 0 120 60" style="width:100px; margin-top:5px;">
+                        <path d="M 10 30 Q 20 10 30 30 Q 40 50 50 30 Q 60 15 70 30 Q 80 42 90 30 Q 100 22 110 30" fill="none" stroke="var(--accent-blue)" stroke-width="2"/>
+                        <line x1="10" y1="55" x2="110" y2="55" stroke="#555" stroke-width="1"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="equation-box small-text fragment" style="margin-top:10px;">
+            $e^{(\sigma + i\omega)t} = e^{\sigma t}\bigl(\cos\omega t + i\sin\omega t\bigr)$
+        </div>
+    </section>
+
+    <section>
+        <h2>Interactive: Eigenvalue Plane</h2>
+        <p class="tiny-text">Click the complex plane to place an eigenvalue $\lambda$. See the resulting trajectory $z(t) = e^{\lambda t}$.</p>
+        <div style="display: flex; gap: 15px; align-items: flex-start;">
+            <div>
+                <div id="eigenvalue-plane" style="width:440px; height:400px;"></div>
+                <div style="display:flex; gap:4px; justify-content:center; flex-wrap:wrap; margin-top:6px;">
+                    <button class="btn" onclick="setEigenvalue(-0.5, 0)">Stable Node</button>
+                    <button class="btn" onclick="setEigenvalue(-0.3, 3)">Damped Osc.</button>
+                    <button class="btn" onclick="setEigenvalue(0, 3)">Center</button>
+                    <button class="btn" onclick="setEigenvalue(0.2, 2)">Unstable Spiral</button>
+                </div>
+            </div>
+            <div>
+                <div id="eigenvalue-trajectory" style="width:440px; height:280px;"></div>
+                <div id="eigen-info" class="highlight-box tiny-text" style="margin-top:8px; padding:8px 12px;">
+                    Click the plane or use a preset to explore eigenvalue behavior.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Back to $\mathbf{x}$: Superposition of Modes</h2>
+        <p class="small-text">The full solution in original coordinates:</p>
+        <div class="equation-box large">
+            $\mathbf{x}(t) = \sum_{i=1}^n c_i\, e^{\lambda_i t}\, \mathbf{v}_i$
+        </div>
+        <div class="small-text fragment" style="margin-top: 15px;">
+            <div class="highlight-box">
+                Each <span class="em-blue">mode</span> $\mathbf{v}_i$ evolves independently at rate $\lambda_i$.<br>
+                The motion is their <span class="keyword">superposition</span>.
+            </div>
+        </div>
+        <div class="principle-box small-text fragment" style="margin-top: 12px;">
+            But what if we don't know $A$? What if we only have <span class="em-purple">data</span>?
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 3: THE INVERSE PROBLEM               -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>From Models to Data</h2>
+        <p class="small-text">In the real world, we measure <span class="keyword">snapshots</span> $\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_m$ at successive times.</p>
+        <div class="two-column" style="margin-top: 15px;">
+            <div class="small-text">
+                <div class="equation-box" style="font-size:0.85em;">
+                    $X = \begin{bmatrix} | & | & & | \\ \mathbf{x}_1 & \mathbf{x}_2 & \cdots & \mathbf{x}_{m-1} \\ | & | & & | \end{bmatrix}$
+                </div>
+                <p style="margin-top:8px;">Shifted matrix:</p>
+                <div class="equation-box" style="font-size:0.85em;">
+                    $X' = \begin{bmatrix} | & | & & | \\ \mathbf{x}_2 & \mathbf{x}_3 & \cdots & \mathbf{x}_{m} \\ | & | & & | \end{bmatrix}$
+                </div>
+            </div>
+            <div>
+                <div class="principle-box small-text fragment">
+                    If the system is linear:<br><br>
+                    <div class="equation-box">$X' \approx A\, X$</div><br>
+                    <span class="tiny-text">Each snapshot maps to the next via $A$.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Solving for $A$</h2>
+        <p class="small-text">From $X' = AX$, we can solve for $A$ using the pseudo-inverse:</p>
+        <div class="equation-box large">$A = X'\, X^\dagger = X'\, V\, \Sigma^{-1}\, U^T$</div>
+        <p class="small-text fragment" style="margin-top:15px;">
+            Equivalently, this is a <span class="keyword">least-squares</span> problem:
+        </p>
+        <div class="equation-box fragment">$A = \arg\min_A \|X' - AX\|_F^2$</div>
+        <div class="warning-box small-text fragment" style="margin-top:15px;">
+            <strong>Problem:</strong> If $\mathbf{x}$ has $n$ components (e.g., 89,351 pixels), then $A$ is $n \times n$.<br>
+            That's an 8 billion entry matrix! We need a trick.
+        </div>
+    </section>
+
+    <section>
+        <h2>The SVD Projection Trick</h2>
+        <p class="small-text">Start from the SVD of $X$ (recall Lecture 9):</p>
+        <div class="equation-box">$X = U\Sigma V^T \quad\longrightarrow\quad X \approx U_r \Sigma_r V_r^T$</div>
+        <p class="small-text fragment" style="margin-top:12px;">
+            Project $A$ onto the $r$-dimensional SVD basis:
+        </p>
+        <div class="equation-box large fragment">
+            $\tilde{A} = U_r^T\, X'\, V_r\, \Sigma_r^{-1}$
+        </div>
+        <div class="success-box small-text fragment" style="margin-top:12px;">
+            $\tilde{A}$ is $r \times r$ instead of $n \times n$. For cylinder flow: $21 \times 21$ instead of $89{,}351 \times 89{,}351$.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 4: DMD ALGORITHM                     -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>DMD: The 4-Step Recipe</h2>
+        <div class="small-text">
+            <div class="highlight-box fragment" style="margin-bottom:8px;">
+                <strong>Step 1:</strong> SVD of $X$: &ensp; $X = U\Sigma V^T$ &ensp; (truncate to rank $r$)
+            </div>
+            <div class="highlight-box fragment" style="margin-bottom:8px;">
+                <strong>Step 2:</strong> Projected dynamics: &ensp; $\tilde{A} = U_r^T\, X'\, V_r\, \Sigma_r^{-1}$
+            </div>
+            <div class="highlight-box fragment" style="margin-bottom:8px;">
+                <strong>Step 3:</strong> Eigendecomposition: &ensp; $\tilde{A}\, W = W\, \Lambda$
+            </div>
+            <div class="highlight-box fragment" style="margin-bottom:8px;">
+                <strong>Step 4:</strong> DMD modes: &ensp; $\Phi = X'\, V_r\, \Sigma_r^{-1}\, W$
+            </div>
+        </div>
+        <div class="success-box tiny-text fragment" style="margin-top:10px;">
+            <strong>Cost:</strong> SVD of $X$ is $O(nm\min(n,m))$ + eigendecomp of $r\times r$ is $O(r^3)$. We never build the full $n \times n$ matrix $A$.
+        </div>
+    </section>
+
+    <section>
+        <h2>DMD in Python</h2>
+        <pre><code class="language-python" data-trim>
+def DMD(X, Xprime, r):
+    # Step 1: SVD of X (truncate to rank r)
+    U, S, Vt = np.linalg.svd(X, full_matrices=False)
+    Ur, Sr, Vtr = U[:,:r], np.diag(S[:r]), Vt[:r,:]
+
+    # Step 2: Projected dynamics
+    Atilde = Ur.T @ Xprime @ Vtr.T @ np.linalg.inv(Sr)
+
+    # Step 3: Eigendecomposition
+    Lambda, W = np.linalg.eig(Atilde)
+
+    # Step 4: DMD modes
+    Phi = Xprime @ Vtr.T @ np.linalg.inv(Sr) @ W
+    return Phi, Lambda
+        </code></pre>
+        <div class="highlight-box small-text fragment" style="margin-top: 10px;">
+            Four lines of linear algebra. The same SVD you learned last lecture does all the heavy lifting.
+        </div>
+    </section>
+
+    <section>
+        <h2>Interpreting DMD Output</h2>
+        <div class="two-column">
+            <div>
+                <div class="highlight-box small-text">
+                    <strong>DMD Modes $\boldsymbol{\phi}_i$</strong><br><br>
+                    Spatial patterns (like eigenfaces,<br>but for dynamics).<br><br>
+                    <span class="tiny-text">Each mode captures a coherent<br>spatial structure that oscillates<br>at a single frequency.</span>
+                </div>
+            </div>
+            <div>
+                <div class="highlight-box small-text">
+                    <strong>Eigenvalues $\lambda_i$</strong><br><br>
+                    Encode frequency and growth rate.<br><br>
+                    <span class="tiny-text">
+                    $|\lambda_i| < 1$: decaying mode<br>
+                    $|\lambda_i| = 1$: neutral (persistent)<br>
+                    $\angle\lambda_i$: oscillation frequency
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="equation-box small-text fragment" style="margin-top: 12px;">
+            Reconstruction: &ensp; $\mathbf{x}(t) = \displaystyle\sum_{i=1}^r b_i\, \lambda_i^t\, \boldsymbol{\phi}_i$
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 5: CYLINDER FLOW EXAMPLE             -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Application: Flow Past a Cylinder</h2>
+        <p class="small-text">
+            Fluid flowing past a cylinder produces <span class="keyword">vortex shedding</span>:
+            alternating vortices behind the obstacle.
+        </p>
+        <div style="text-align:center; margin: 10px 0;">
+            <img src="/static/data/10_dmd/images/mean_vorticity.png"
+                 style="width:600px; border-radius:8px; border:1px solid rgba(255,255,255,0.15);">
+            <p class="tiny-text" style="color:#888;">Mean vorticity field (time-averaged)</p>
+        </div>
+        <div class="highlight-box small-text">
+            <strong>Data:</strong> <span class="keyword">449 &times; 199</span> grid = 89,351 pixels per snapshot, <span class="keyword">151</span> time steps.
+        </div>
+        <p class="tiny-text" style="color:#555; text-align:right; margin-top:6px;">Brunton & Kutz, <em>Data-Driven Science and Engineering</em>, Cambridge UP, 2019</p>
+    </section>
+
+    <section>
+        <h2>Vorticity Snapshots</h2>
+        <p class="small-text">Raw vorticity field at four time steps. Notice the periodic vortex shedding.</p>
+        <div class="mode-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 800px; margin: 10px auto; gap: 10px;">
+            <div><img src="/static/data/10_dmd/images/snapshot_000.png"><div class="mode-label">$t = 0$</div></div>
+            <div><img src="/static/data/10_dmd/images/snapshot_050.png"><div class="mode-label">$t = 50$</div></div>
+            <div><img src="/static/data/10_dmd/images/snapshot_100.png"><div class="mode-label">$t = 100$</div></div>
+            <div><img src="/static/data/10_dmd/images/snapshot_150.png"><div class="mode-label">$t = 150$</div></div>
+        </div>
+        <p class="tiny-text fragment" style="color:#aaa; margin-top:6px;">Can DMD extract the underlying oscillation pattern from these snapshots?</p>
+    </section>
+
+    <section>
+        <h2>SVD Spectrum of the Flow</h2>
+        <p class="small-text">How many modes do we need? The singular value spectrum tells us.</p>
+        <div style="display: flex; gap: 15px; align-items: flex-start;">
+            <div id="cyl-sv-spectrum" style="width:520px; height:340px;"></div>
+            <div>
+                <div id="cyl-sv-energy" style="width:340px; height:220px;"></div>
+                <div class="principle-box tiny-text" style="margin-top: 6px; padding: 8px 12px;">
+                    The spectrum drops sharply. Most energy is in the first ~21 modes.
+                    This is where DMD operates.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>DMD Eigenvalues</h2>
+        <p class="small-text">The 21 DMD eigenvalues in the complex plane. Points near the <span class="keyword">unit circle</span> are persistent modes.</p>
+        <div style="display: flex; gap: 15px; align-items: flex-start;">
+            <div id="dmd-eigenvalue-plot" style="width:460px; height:420px;"></div>
+            <div style="max-width:380px;">
+                <div class="highlight-box small-text" style="margin-bottom:10px;">
+                    <strong>Discrete-time interpretation:</strong><br>
+                    $|\lambda| < 1$: decaying<br>
+                    $|\lambda| = 1$: neutral<br>
+                    $|\lambda| > 1$: growing<br>
+                    $\angle\lambda$: oscillation frequency
+                </div>
+                <div id="eigenvalue-hover-info" class="tiny-text" style="color:#888; padding: 8px;">
+                    Hover over a point to see its frequency and growth rate.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>DMD Modes &amp; Reconstruction</h2>
+        <p class="small-text">Top 6 modes (sorted by amplitude). Each captures a coherent spatial oscillation.</p>
+        <div style="display:flex; gap:20px; align-items:flex-start;">
+            <div>
+                <div class="mode-grid" style="grid-template-columns: repeat(3, 1fr); max-width: 500px; gap: 6px;">
+                    <div><img src="/static/data/10_dmd/images/dmd_mode_01.png"><div class="mode-label">Mode 1</div></div>
+                    <div><img src="/static/data/10_dmd/images/dmd_mode_02.png"><div class="mode-label">Mode 2</div></div>
+                    <div><img src="/static/data/10_dmd/images/dmd_mode_03.png"><div class="mode-label">Mode 3</div></div>
+                    <div><img src="/static/data/10_dmd/images/dmd_mode_04.png"><div class="mode-label">Mode 4</div></div>
+                    <div><img src="/static/data/10_dmd/images/dmd_mode_05.png"><div class="mode-label">Mode 5</div></div>
+                    <div><img src="/static/data/10_dmd/images/dmd_mode_06.png"><div class="mode-label">Mode 6</div></div>
+                </div>
+            </div>
+            <div style="min-width:320px;">
+                <p class="tiny-text" style="color:var(--accent-green); margin-bottom:4px;">Reconstruction at $t=100$</p>
+                <img id="dmd-recon-display" src="/static/data/10_dmd/images/recon_rank_21.png"
+                     style="width:320px; border-radius:6px; border:2px solid var(--accent-green);">
+                <div style="margin-top:8px;">
+                    <div class="slider-container" style="max-width:300px;">
+                        <input type="range" class="styled-slider" id="dmd-rank-slider"
+                               min="0" max="5" value="5" step="1" style="width:180px;"
+                               oninput="updateDMDRecon(this.value)">
+                        <span id="dmd-rank-label" style="font-size:0.6em; color:var(--accent-yellow); font-weight:bold; white-space:nowrap;">r = 21</span>
+                    </div>
+                </div>
+                <div id="dmd-error-display" class="tiny-text" style="color:#888; margin-top:4px; text-align:center;"></div>
+            </div>
+        </div>
+    </section>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 6: EXTENSIONS & SUMMARY              -->
+<!-- ============================================ -->
+<section>
+    <section>
+        <h2>Beyond DMD</h2>
+        <div class="two-column small-text">
+            <div>
+                <div class="principle-box">
+                    <strong>Koopman Operator</strong><br><br>
+                    What if we could represent <em>nonlinear</em> dynamics as a <span class="em-purple">linear operator</span> acting on observables?<br><br>
+                    <div class="equation-box" style="font-size:0.85em;">$\mathcal{K}\, g(\mathbf{x}) = g\bigl(F(\mathbf{x})\bigr)$</div>
+                    <br><span class="tiny-text">Extended DMD adds nonlinear features $\boldsymbol{\phi}(\mathbf{x})$ to the data matrix.</span>
+                </div>
+            </div>
+            <div>
+                <table style="font-size:0.75em; width:100%;">
+                    <thead><tr><th></th><th style="color:var(--accent-blue);">DMD</th><th style="color:var(--accent-green);">SINDy</th></tr></thead>
+                    <tbody>
+                        <tr><td>Assumes</td><td>Linear dynamics</td><td>Sparse nonlinear</td></tr>
+                        <tr><td>Method</td><td>Spectral decomp.</td><td>Sparse regression</td></tr>
+                        <tr><td>Output</td><td>Global modes</td><td>Local equations</td></tr>
+                        <tr><td>Scales to</td><td>Very high dim.</td><td>Low-moderate dim.</td></tr>
+                    </tbody>
+                </table>
+                <div class="highlight-box tiny-text fragment" style="margin-top:10px;">
+                    DMD finds the <em>best linear model</em>.<br>SINDy (Lecture 8) finds <em>sparse nonlinear</em> equations.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Summary</h2>
+        <div class="highlight-box small-text" style="margin-bottom:10px;">
+            <strong>Linear Dynamical Systems:</strong> $\dot{\mathbf{x}} = A\mathbf{x}$<br>
+            Eigenvalues of $A$ control growth, decay, and oscillation. Each mode evolves independently.
+        </div>
+        <div class="success-box small-text" style="margin-bottom:10px;">
+            <strong>DMD Algorithm:</strong> Given snapshots, find $A$ efficiently via SVD projection.<br>
+            4 steps: SVD $\to$ project $\to$ eigendecompose $\to$ recover modes.
+        </div>
+        <div class="principle-box small-text">
+            <strong>Result:</strong> Spatial modes $\boldsymbol{\phi}_i$ + frequencies $\omega_i$ + growth rates $\sigma_i$.<br>
+            Data-driven decomposition of complex dynamics into interpretable components.
+        </div>
+        <p class="tiny-text" style="color:#555; margin-top:15px; text-align:right;">
+            Ref: Schmid (2010), Brunton & Kutz (2019) Ch. 7
+        </p>
+    </section>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.min.js"></script>
+<script>
+Reveal.initialize({
+    hash: true,
+    width: 1200, height: 700,
+    margin: 0.04,
+    transition: 'fade',
+    plugins: [RevealHighlight]
+});
+</script>
+<script>
+// =========================================================
+// SHARED HELPERS (same as svd_pca.html)
+// =========================================================
+function makeSVG(containerId, width, height, margins) {
+    const svg = d3.select('#' + containerId).append('svg')
+        .attr('width', width).attr('height', height);
+    const g = svg.append('g')
+        .attr('transform', `translate(${margins.left},${margins.top})`);
+    return {
+        svg, g,
+        iW: width - margins.left - margins.right,
+        iH: height - margins.top - margins.bottom
+    };
+}
+
+function drawAxes(g, xS, yS, iW, iH, xLabel, yLabel, tickCount) {
+    tickCount = tickCount || 5;
+    const xA = g.append('g').attr('transform', `translate(0,${iH})`)
+        .call(d3.axisBottom(xS).ticks(tickCount));
+    const yA = g.append('g').call(d3.axisLeft(yS).ticks(tickCount));
+    [xA, yA].forEach(a => {
+        a.selectAll('text').style('fill', '#888').style('font-size', '10px');
+        a.selectAll('.domain, .tick line').style('stroke', '#444');
+    });
+    if (xLabel) {
+        g.append('text').attr('x', iW / 2).attr('y', iH + 32)
+            .attr('text-anchor', 'middle').text(xLabel)
+            .style('font-size', '10px').style('fill', '#aaa');
+    }
+    if (yLabel) {
+        g.append('text').attr('transform', 'rotate(-90)')
+            .attr('y', -42).attr('x', -iH / 2)
+            .attr('text-anchor', 'middle').text(yLabel)
+            .style('font-size', '10px').style('fill', '#aaa');
+    }
+}
+
+// =========================================================
+// EIGENVALUE PLANE EXPLORER (interactive, no data needed)
+// =========================================================
+let eigenPlaneG, eigenXS, eigenYS, eigenMarker;
+
+function initEigenvaluePlane() {
+    const m = { top: 20, right: 20, bottom: 45, left: 50 };
+    const { g, iW, iH } = makeSVG('eigenvalue-plane', 440, 400, m);
+    eigenPlaneG = g;
+
+    const ext = 2.5;
+    const xS = d3.scaleLinear().domain([-ext, ext]).range([0, iW]);
+    const yS = d3.scaleLinear().domain([-ext, ext]).range([iH, 0]);
+    eigenXS = xS; eigenYS = yS;
+    drawAxes(g, xS, yS, iW, iH, 'Re(λ)', 'Im(λ)', 5);
+
+    // Stability boundary: imaginary axis (continuous time)
+    g.append('line')
+        .attr('x1', xS(0)).attr('y1', yS(-ext)).attr('x2', xS(0)).attr('y2', yS(ext))
+        .attr('stroke', 'var(--accent-yellow)').attr('stroke-width', 1.5)
+        .attr('stroke-dasharray', '6,4').attr('opacity', 0.6);
+
+    // Real axis
+    g.append('line')
+        .attr('x1', xS(-ext)).attr('y1', yS(0)).attr('x2', xS(ext)).attr('y2', yS(0))
+        .attr('stroke', '#555').attr('stroke-width', 1);
+
+    // Stability regions (subtle background)
+    g.append('rect')
+        .attr('x', xS(-ext)).attr('y', yS(ext))
+        .attr('width', xS(0) - xS(-ext)).attr('height', yS(-ext) - yS(ext))
+        .attr('fill', 'var(--accent-green)').attr('opacity', 0.04);
+    g.append('rect')
+        .attr('x', xS(0)).attr('y', yS(ext))
+        .attr('width', xS(ext) - xS(0)).attr('height', yS(-ext) - yS(ext))
+        .attr('fill', 'var(--accent-red)').attr('opacity', 0.04);
+
+    // Labels
+    g.append('text').attr('x', xS(-1.2)).attr('y', yS(ext) + 14)
+        .text('Stable').style('fill', 'var(--accent-green)').style('font-size', '9px').style('opacity', 0.7);
+    g.append('text').attr('x', xS(0.8)).attr('y', yS(ext) + 14)
+        .text('Unstable').style('fill', 'var(--accent-red)').style('font-size', '9px').style('opacity', 0.7);
+
+    // Eigenvalue marker
+    eigenMarker = g.append('circle')
+        .attr('cx', xS(0)).attr('cy', yS(0))
+        .attr('r', 7).attr('fill', 'var(--accent-yellow)').attr('stroke', '#fff').attr('stroke-width', 2)
+        .attr('opacity', 0);
+
+    // Click handler
+    d3.select('#eigenvalue-plane svg').on('click', function(event) {
+        const [mx, my] = d3.pointer(event, g.node());
+        const re = xS.invert(mx), im = yS.invert(my);
+        if (Math.abs(re) <= ext && Math.abs(im) <= ext) {
+            setEigenvalue(re, im);
+        }
+    });
+}
+
+function setEigenvalue(re, im) {
+    eigenMarker
+        .attr('cx', eigenXS(re)).attr('cy', eigenYS(im))
+        .attr('opacity', 1);
+    updateTrajectory(re, im);
+}
+
+function updateTrajectory(re, im) {
+    d3.select('#eigenvalue-trajectory').selectAll('*').remove();
+    const m = { top: 15, right: 15, bottom: 40, left: 50 };
+    const { g, iW, iH } = makeSVG('eigenvalue-trajectory', 440, 280, m);
+
+    const T = 8, dt = 0.02;
+    const points = [];
+    for (let t = 0; t <= T; t += dt) {
+        const amp = Math.exp(re * t);
+        const realPart = amp * Math.cos(im * t);
+        points.push({ t, re: realPart, env: amp, envNeg: -amp });
+    }
+
+    const xS = d3.scaleLinear().domain([0, T]).range([0, iW]);
+    const yMax = Math.min(d3.max(points, d => Math.abs(d.re)) * 1.2, 50);
+    const yS = d3.scaleLinear().domain([-yMax, yMax]).range([iH, 0]);
+    drawAxes(g, xS, yS, iW, iH, 't', 'Re(z(t))', 5);
+
+    // Zero line
+    g.append('line').attr('x1', 0).attr('y1', yS(0)).attr('x2', iW).attr('y2', yS(0))
+        .attr('stroke', '#444').attr('stroke-width', 1);
+
+    // Trajectory
+    g.append('path').datum(points)
+        .attr('fill', 'none').attr('stroke', 'var(--accent-blue)').attr('stroke-width', 2)
+        .attr('d', d3.line().x(d => xS(d.t)).y(d => yS(Math.max(-yMax, Math.min(yMax, d.re)))));
+
+    // Envelope (if oscillating)
+    if (Math.abs(im) > 0.05) {
+        g.append('path').datum(points)
+            .attr('fill', 'none').attr('stroke', 'var(--accent-yellow)')
+            .attr('stroke-width', 1).attr('stroke-dasharray', '4,4')
+            .attr('d', d3.line().x(d => xS(d.t)).y(d => yS(Math.max(-yMax, Math.min(yMax, d.env)))));
+        g.append('path').datum(points)
+            .attr('fill', 'none').attr('stroke', 'var(--accent-yellow)')
+            .attr('stroke-width', 1).attr('stroke-dasharray', '4,4')
+            .attr('d', d3.line().x(d => xS(d.t)).y(d => yS(Math.max(-yMax, Math.min(yMax, d.envNeg)))));
+    }
+
+    // Update info
+    let behavior = '';
+    if (Math.abs(im) < 0.05) {
+        behavior = re > 0.01 ? 'Exponential growth' : re < -0.01 ? 'Exponential decay' : 'Constant';
+    } else {
+        const osc = `Oscillation (ω = ${Math.abs(im).toFixed(2)})`;
+        if (Math.abs(re) < 0.01) behavior = `Pure ${osc.toLowerCase()}`;
+        else if (re > 0) behavior = `Growing ${osc.toLowerCase()}`;
+        else behavior = `Damped ${osc.toLowerCase()}`;
+    }
+    document.getElementById('eigen-info').innerHTML =
+        `<strong>λ = ${re.toFixed(2)} ${im >= 0 ? '+' : '−'} ${Math.abs(im).toFixed(2)}i</strong><br>` +
+        `<span style="color:var(${re > 0.01 ? '--accent-red' : re < -0.01 ? '--accent-green' : '--accent-yellow'});">` +
+        behavior + `</span>`;
+}
+
+// =========================================================
+// DATA-DRIVEN PLOTS (loaded from lecture_data.json)
+// =========================================================
+let DATA = null;
+
+fetch('/static/data/10_dmd/lecture_data.json')
+    .then(r => r.json())
+    .then(data => {
+        DATA = data;
+        initCylSVSpectrum();
+        initCylSVEnergy();
+        initDMDEigenvalues();
+        initDMDReconstruction();
+    });
+
+// ── Singular Value Spectrum ──
+function initCylSVSpectrum() {
+    const sv = DATA.cylinder.singular_values;
+    const m = { top: 25, right: 15, bottom: 40, left: 60 };
+    const { g, iW, iH } = makeSVG('cyl-sv-spectrum', 520, 340, m);
+    const xS = d3.scaleLinear().domain([0, sv.length]).range([0, iW]);
+    const yS = d3.scaleLog().domain([Math.max(1, d3.min(sv)), d3.max(sv)]).range([iH, 0]);
+    drawAxes(g, xS, yS, iW, iH, 'Component index', '', 5);
+
+    g.selectAll('.sv-bar').data(sv).join('rect')
+        .attr('x', (d, i) => xS(i) - 3)
+        .attr('y', d => yS(Math.max(1, d)))
+        .attr('width', 6)
+        .attr('height', d => iH - yS(Math.max(1, d)))
+        .attr('fill', 'var(--accent-blue)').attr('opacity', 0.7);
+
+    // Mark r=21
+    g.append('line')
+        .attr('x1', xS(21)).attr('y1', 0).attr('x2', xS(21)).attr('y2', iH)
+        .attr('stroke', 'var(--accent-yellow)').attr('stroke-width', 1.5)
+        .attr('stroke-dasharray', '4,4').attr('opacity', 0.8);
+    g.append('text').attr('x', xS(21) + 5).attr('y', 15)
+        .text('r = 21').style('fill', 'var(--accent-yellow)').style('font-size', '10px');
+
+    g.append('text').attr('x', iW / 2).attr('y', -8).attr('text-anchor', 'middle')
+        .text('Singular value spectrum').style('font-size', '11px').style('fill', '#aaa');
+}
+
+// ── Cumulative Energy ──
+function initCylSVEnergy() {
+    const ce = DATA.cylinder.cumulative_energy;
+    const m = { top: 25, right: 15, bottom: 40, left: 55 };
+    const { g, iW, iH } = makeSVG('cyl-sv-energy', 340, 220, m);
+    const xS = d3.scaleLinear().domain([0, ce.length]).range([0, iW]);
+    const yS = d3.scaleLinear().domain([0.5, 1.0]).range([iH, 0]);
+    drawAxes(g, xS, yS, iW, iH, 'Components', '', 5);
+
+    g.append('path').datum(ce)
+        .attr('fill', 'none').attr('stroke', 'var(--accent-green)').attr('stroke-width', 2)
+        .attr('d', d3.line().x((d, i) => xS(i)).y(d => yS(d)));
+
+    // 95% line
+    g.append('line').attr('x1', 0).attr('x2', iW)
+        .attr('y1', yS(0.95)).attr('y2', yS(0.95))
+        .attr('stroke', 'var(--accent-red)').attr('stroke-width', 1).attr('stroke-dasharray', '4,4').attr('opacity', 0.5);
+    g.append('text').attr('x', iW - 5).attr('y', yS(0.95) - 5)
+        .attr('text-anchor', 'end').text('95%').style('font-size', '9px').style('fill', 'var(--accent-red)');
+
+    // Mark r=21
+    g.append('line')
+        .attr('x1', xS(21)).attr('y1', 0).attr('x2', xS(21)).attr('y2', iH)
+        .attr('stroke', 'var(--accent-yellow)').attr('stroke-width', 1.5)
+        .attr('stroke-dasharray', '4,4').attr('opacity', 0.8);
+
+    g.append('text').attr('x', iW / 2).attr('y', -8).attr('text-anchor', 'middle')
+        .text('Cumulative energy').style('font-size', '11px').style('fill', '#aaa');
+}
+
+// ── DMD Eigenvalue Scatter ──
+function initDMDEigenvalues() {
+    const cyl = DATA.cylinder;
+    const m = { top: 20, right: 20, bottom: 45, left: 50 };
+    const { g, iW, iH } = makeSVG('dmd-eigenvalue-plot', 460, 420, m);
+
+    const maxR = 1.15;
+    const xS = d3.scaleLinear().domain([-maxR, maxR]).range([0, iW]);
+    const yS = d3.scaleLinear().domain([-maxR, maxR]).range([iH, 0]);
+    drawAxes(g, xS, yS, iW, iH, 'Re(λ)', 'Im(λ)', 5);
+
+    // Unit circle
+    const cx = xS(0), cy = yS(0), cr = xS(1) - xS(0);
+    g.append('circle')
+        .attr('cx', cx).attr('cy', cy).attr('r', cr)
+        .attr('fill', 'none').attr('stroke', 'var(--accent-yellow)')
+        .attr('stroke-dasharray', '6,4').attr('opacity', 0.5).attr('stroke-width', 1.5);
+
+    // Axes
+    g.append('line').attr('x1', xS(-maxR)).attr('y1', yS(0)).attr('x2', xS(maxR)).attr('y2', yS(0))
+        .attr('stroke', '#444').attr('stroke-width', 1);
+    g.append('line').attr('x1', xS(0)).attr('y1', yS(-maxR)).attr('x2', xS(0)).attr('y2', yS(maxR))
+        .attr('stroke', '#444').attr('stroke-width', 1);
+
+    // Color scale by |lambda|
+    const magColorScale = d3.scaleLinear()
+        .domain([0.95, 1.0, 1.05])
+        .range(['var(--accent-red)', 'var(--accent-green)', 'var(--accent-red)']);
+
+    // Eigenvalue dots
+    const eigenData = cyl.eigenvalues_real.map((re, i) => ({
+        re, im: cyl.eigenvalues_imag[i],
+        mag: cyl.eigenvalue_magnitudes[i],
+        angle: cyl.eigenvalue_angles[i],
+        amp: cyl.mode_amplitudes[i]
+    }));
+
+    // Tooltip
+    const tooltip = d3.select('#eigenvalue-hover-info');
+
+    g.selectAll('.eig-dot').data(eigenData).join('circle')
+        .attr('class', 'eig-dot')
+        .attr('cx', d => xS(d.re)).attr('cy', d => yS(d.im))
+        .attr('r', d => Math.max(4, Math.min(10, d.amp * 3)))
+        .attr('fill', d => {
+            const dist = Math.abs(d.mag - 1);
+            return dist < 0.01 ? 'var(--accent-green)' : 'var(--accent-cyan)';
+        })
+        .attr('stroke', '#fff').attr('stroke-width', 1.5)
+        .attr('opacity', 0.85)
+        .attr('cursor', 'pointer')
+        .on('mouseover', function(event, d) {
+            d3.select(this).attr('r', 12).attr('opacity', 1);
+            tooltip.html(
+                `<strong>λ = ${d.re.toFixed(4)} ${d.im >= 0 ? '+' : '−'} ${Math.abs(d.im).toFixed(4)}i</strong><br>` +
+                `|λ| = ${d.mag.toFixed(4)} &ensp; ∠λ = ${(d.angle * 180 / Math.PI).toFixed(1)}°<br>` +
+                `Amplitude: ${d.amp.toFixed(3)}`
+            );
+        })
+        .on('mouseout', function(event, d) {
+            d3.select(this).attr('r', Math.max(4, Math.min(10, d.amp * 3))).attr('opacity', 0.85);
+            tooltip.html('Hover over a point to see its frequency and growth rate.');
+        });
+
+    g.append('text').attr('x', iW / 2).attr('y', -5).attr('text-anchor', 'middle')
+        .text('DMD eigenvalues (unit circle = neutral stability)')
+        .style('font-size', '10px').style('fill', '#aaa');
+}
+
+// ── DMD Reconstruction Slider ──
+function initDMDReconstruction() {
+    const ranks = DATA.cylinder.reconstruction_ranks;
+    const errors = DATA.cylinder.reconstruction_errors;
+    const errEl = document.getElementById('dmd-error-display');
+    errEl.textContent = `Relative error: ${(errors[errors.length - 1] * 100).toFixed(2)}%`;
+}
+
+function updateDMDRecon(sliderVal) {
+    const ranks = DATA.cylinder.reconstruction_ranks;
+    const errors = DATA.cylinder.reconstruction_errors;
+    const idx = parseInt(sliderVal);
+    const rank = ranks[idx];
+    document.getElementById('dmd-recon-display').src = `/static/data/10_dmd/images/recon_rank_${String(rank).padStart(2, '0')}.png`;
+    document.getElementById('dmd-rank-label').textContent = `r = ${rank}`;
+    document.getElementById('dmd-error-display').textContent = `Relative error: ${(errors[idx] * 100).toFixed(2)}%`;
+}
+
+// ── Initialize eigenvalue plane (no data dependency) ──
+initEigenvaluePlane();
+// Set default preset
+setEigenvalue(-0.3, 3);
+</script>
+</body>
+</html>
