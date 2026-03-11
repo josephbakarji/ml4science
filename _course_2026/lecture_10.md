@@ -9,7 +9,7 @@ tldr: Quiz covering time series, autoregression, and SINDy. Discovering equation
 material:
 - name: Lecture Slides
   type: slides
-  url: /static_files/slides/symbolic_regression.html
+  url: https://learnslides.onrender.com/slides/12_symbolic_regression
 hide_from_announcments: false
 folder: 10_symbolic_regression
 ---

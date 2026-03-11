@@ -8,7 +8,7 @@ tldr: From Fourier decomposition through autoregressive models to the logistic m
 material:
 - name: Time Series Analysis Slides
   type: slides
-  url: /static_files/slides/time_series.html
+  url: https://learnslides.onrender.com/slides/07_time_series
 - name: 'Lecture Notes: Time Series Analysis'
   type: notes
   url: /static_files/lectures/07/notes_time_series

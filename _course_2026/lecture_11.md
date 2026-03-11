@@ -13,7 +13,7 @@ preparation:
 material:
 - name: Lecture Slides
   type: slides
-  url: /static_files/slides/deep_learning.html
+  url: https://learnslides.onrender.com/slides/11_deep_learning
 - name: Lecture Slides (PDF)
   type: pdf
   url: /static_files/slides/deep-learning-lecture.pdf

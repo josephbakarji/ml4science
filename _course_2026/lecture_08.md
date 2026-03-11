@@ -15,7 +15,7 @@ preparation:
 material:
 - name: Lecture Slides (Parts 1 & 2)
   type: slides
-  url: /static_files/slides/sindy.html
+  url: https://learnslides.onrender.com/slides/08_sindy
 - name: Sparse Nonlinear Dynamics Models with SINDy, Part 1
   type: video
   url: https://www.youtube.com/watch?v=NxAn0oglMVw

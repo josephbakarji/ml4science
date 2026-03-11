@@ -17,7 +17,7 @@ preparation:
 material:
 - name: Complex Systems and Probability Slides
   type: slides
-  url: /static_files/slides/complex_systems_probability.html
+  url: https://learnslides.onrender.com/slides/06_complex_systems
 - name: 'Lorenz (1963): Deterministic Nonperiodic Flow'
   type: paper
   label: optional

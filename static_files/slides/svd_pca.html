@@ -18,10 +18,10 @@
             --accent-purple: #c678dd;
             --accent-cyan: #56b6c2;
         }
-        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; }
-        .reveal h1 { font-size: 2.2em; }
-        .reveal h2 { font-size: 1.6em; color: var(--accent-blue); }
-        .reveal h3 { font-size: 1.3em; }
+        .reveal { font-size: 28px; }
+        .reveal h1 { font-size: 1.8em; color: var(--accent-yellow); }
+        .reveal h2 { font-size: 1.3em; color: var(--accent-blue); margin-bottom: 0.5em; }
+        .reveal h3 { font-size: 1.1em; color: var(--accent-purple); }
         .reveal blockquote {
             font-style: italic;
             background: rgba(255,255,255,0.05);
@@ -36,45 +36,30 @@
         .reveal li { margin: 0.5em 0; font-size: 0.85em; }
         .center-text { text-align: center; }
         .highlight-box {
-            background: rgba(66, 175, 250, 0.15);
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border: 1px solid rgba(66, 175, 250, 0.3);
+            background: rgba(97,175,239,0.1); border-left: 4px solid var(--accent-blue);
+            padding: 12px 18px; border-radius: 6px; margin: 10px 0;
         }
         .warning-box {
-            background: rgba(224, 108, 117, 0.15);
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border: 1px solid rgba(224, 108, 117, 0.3);
+            background: rgba(224,108,117,0.1); border-left: 4px solid var(--accent-red);
+            padding: 12px 18px; border-radius: 6px; margin: 10px 0;
         }
         .success-box {
-            background: rgba(152, 195, 121, 0.15);
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border: 1px solid rgba(152, 195, 121, 0.3);
+            background: rgba(152,195,121,0.1); border-left: 4px solid var(--accent-green);
+            padding: 12px 18px; border-radius: 6px; margin: 10px 0;
         }
         .principle-box {
-            background: rgba(198, 120, 221, 0.15);
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border: 1px solid rgba(198, 120, 221, 0.3);
+            background: rgba(198,120,221,0.1); border-left: 4px solid var(--accent-purple);
+            padding: 12px 18px; border-radius: 6px; margin: 10px 0;
         }
         .equation-box {
-            background: rgba(255,255,255,0.08);
-            padding: 12px 15px;
-            border-radius: 8px;
-            text-align: center;
-            margin: 10px 0;
-            font-size: 0.85em;
+            background: rgba(40,44,52,0.8); border: 1px solid #444; border-radius: 8px;
+            padding: 15px 20px; text-align: center; font-size: 1.1em; margin: 10px auto;
+            display: inline-block;
         }
-        .equation-box.large { font-size: 1.1em; padding: 18px 20px; }
-        .small-text { font-size: 0.75em; }
-        .tiny-text { font-size: 0.65em; }
-        pre code { font-size: 0.65em !important; line-height: 1.4 !important; }
+        .equation-box.large { font-size: 1.3em; }
+        .small-text { font-size: 0.75em; line-height: 1.6; }
+        .tiny-text { font-size: 0.6em; line-height: 1.5; }
+        pre code { font-size: 0.8em !important; line-height: 1.5 !important; border-radius: 8px; }
         .reveal pre { width: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         .two-column { display: flex; gap: 30px; align-items: flex-start; }
         .two-column > div { flex: 1; }
@@ -449,7 +434,8 @@
             </div>
         </div>
         <div class="fragment principle-box small-text" style="margin-top: 10px;">
-            $\mathbf{C} = \frac{1}{n}\mathbf{X}^\top\mathbf{X}$ is the <span class="em-purple">covariance matrix</span> (for centered data). Our objective becomes: <strong>maximize $\mathbf{u}^\top\mathbf{C}\mathbf{u}$</strong> subject to $\|\mathbf{u}\|=1$.
+            $\mathbf{C} = \frac{1}{n}\mathbf{X}^\top\mathbf{X}$ is the <span class="em-purple">covariance matrix</span> (for centered data).<br>
+            Our objective becomes: <strong>maximize $\mathbf{u}^\top\mathbf{C}\mathbf{u}$</strong> subject to $\|\mathbf{u}\|=1$.
         </div>
     </section>
 
@@ -574,6 +560,33 @@
         </div>
         <div class="fragment principle-box small-text" style="margin-top: 10px;">
             SVD computes PCA without ever forming $\mathbf{X}^\top\mathbf{X}$. This is numerically more stable and often faster.
+        </div>
+    </section>
+
+    <section>
+        <h2>Three Forms of SVD</h2>
+        <p class="small-text">The SVD comes in three flavors, each progressively more compact. Assume $m \geq n$ (more rows than columns).</p>
+        <div style="display:flex; gap:8px; justify-content:center; margin:8px 0;">
+            <button class="btn active" id="svd-btn-full" onclick="setSVDForm('full')">Full SVD</button>
+            <button class="btn" id="svd-btn-economy" onclick="setSVDForm('economy')">Economy SVD</button>
+            <button class="btn" id="svd-btn-truncated" onclick="setSVDForm('truncated')">Truncated SVD</button>
+        </div>
+        <div style="display:flex; gap:20px; align-items:flex-start;">
+            <div id="svd-block-viz" style="width:620px; height:240px;"></div>
+            <div style="flex:1;">
+                <div id="svd-form-info" class="highlight-box small-text" style="min-height:80px;"></div>
+                <div id="svd-form-slider" style="display:none; margin-top:8px;">
+                    <div style="display:flex; align-items:center; gap:8px; justify-content:center;">
+                        <span class="tiny-text" style="color:#888;">Rank $r$:</span>
+                        <input type="range" class="styled-slider" id="svd-form-rank-slider" min="1" max="4" value="3" step="1" style="width:140px;" oninput="updateSVDTruncation(+this.value)">
+                        <span id="svd-form-rank-label" class="tiny-text" style="color:var(--accent-yellow); font-weight:bold;">r = 3</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:10px;">
+            <p class="tiny-text" style="color:var(--accent-purple); margin-bottom:4px;">Outer-product form:</p>
+            <div id="svd-sum-viz" style="text-align:center; min-height:40px;"></div>
         </div>
     </section>
 
@@ -806,7 +819,7 @@ X_pca = X_centered @ Vt[:k].T
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/math/math.js"></script>
 <script>
 Reveal.initialize({
-    hash: true, slideNumber: true, transition: 'slide',
+    hash: true, slideNumber: 'c.v', transition: 'slide',
     center: false, width: 1200, height: 700, margin: 0.04,
     plugins: [RevealHighlight, RevealMath.KaTeX]
 });
@@ -1796,6 +1809,264 @@ function initScreePlot() {
             .text('Cumulative Variance').style('font-size', '11px').style('fill', '#aaa');
     }
 }
+
+// =========================================================
+// SVD FORMS: Full / Economy / Truncated — Block Matrix Viz
+// =========================================================
+let currentSVDForm = 'full';
+let currentTruncR = 3;
+const svdM = 8, svdN = 5; // example dimensions
+
+function setSVDForm(form) {
+    currentSVDForm = form;
+    document.querySelectorAll('#svd-btn-full, #svd-btn-economy, #svd-btn-truncated').forEach(b => b.classList.remove('active'));
+    document.getElementById('svd-btn-' + form).classList.add('active');
+    document.getElementById('svd-form-slider').style.display = (form === 'truncated') ? 'block' : 'none';
+    drawSVDBlocks();
+    updateSVDInfo();
+    drawSVDSum();
+}
+
+function updateSVDTruncation(r) {
+    currentTruncR = r;
+    document.getElementById('svd-form-rank-label').textContent = 'r = ' + r;
+    drawSVDBlocks();
+    updateSVDInfo();
+    drawSVDSum();
+}
+
+function updateSVDInfo() {
+    const el = document.getElementById('svd-form-info');
+    const m = svdM, n = svdN, r = currentTruncR;
+    if (currentSVDForm === 'full') {
+        el.innerHTML = '<strong>Full SVD</strong>: all $' + m + '$ columns of $U$ and all $' + n + '$ rows of $V^T$.<br>' +
+            '<span class="tiny-text">$\\Sigma$ is $' + m + ' \\times ' + n + '$ (rectangular, with zeros below the diagonal).<br>' +
+            'Stores: $' + m + '\\times' + m + ' + ' + m + '\\times' + n + ' + ' + n + '\\times' + n + ' = ' + (m*m + m*n + n*n) + '$ entries.</span>';
+    } else if (currentSVDForm === 'economy') {
+        el.innerHTML = '<strong>Economy SVD</strong>: keep only the first $' + n + '$ columns of $U$.<br>' +
+            '<span class="tiny-text">$\\Sigma$ becomes $' + n + ' \\times ' + n + '$ (square!). <span class="em-green">Lossless</span> — the dropped columns of $U$ are in the null space of $X^T$.<br>' +
+            'Stores: $' + m + '\\times' + n + ' + ' + n + '\\times' + n + ' + ' + n + '\\times' + n + ' = ' + (m*n + n*n + n*n) + '$ entries. ' +
+            'This is what <code>np.linalg.svd(X, full_matrices=False)</code> returns.</span>';
+    } else {
+        el.innerHTML = '<strong>Truncated SVD</strong>: keep only the top $r = ' + r + '$ components.<br>' +
+            '<span class="tiny-text"><span class="em-red">Lossy</span> — discards $' + (n - r) + '$ singular values. ' +
+            'But if $\\sigma_{' + (r+1) + '} \\approx 0$, the loss is negligible.<br>' +
+            'Stores: $' + m + '\\times' + r + ' + ' + r + '\\times' + r + ' + ' + r + '\\times' + n + ' = ' + (m*r + r*r + r*n) + '$ entries ' +
+            '(vs $' + (m*n) + '$ in $X$).</span>';
+    }
+    if (typeof renderMathInElement === 'function') renderMathInElement(el, {delimiters:[{left:'$',right:'$',display:false}]});
+}
+
+function drawSVDBlocks() {
+    const container = document.getElementById('svd-block-viz');
+    if (!container) return;
+    container.innerHTML = '';
+    const W = 620, H = 240;
+    const svg = d3.select(container).append('svg').attr('width', W).attr('height', H);
+
+    const m = svdM, n = svdN, r = currentTruncR;
+    const scale = 22; // pixels per unit
+    const gap = 14;
+
+    let dims; // {U: [rows, cols], S: [rows, cols], Vt: [rows, cols]}
+    let labels, colors, equality;
+    if (currentSVDForm === 'full') {
+        dims = {U: [m, m], S: [m, n], Vt: [n, n]};
+        labels = {U: 'U', S: 'Σ', Vt: 'Vᵀ'};
+        colors = {U: '#61afef', S: '#e5c07b', Vt: '#e06c75'};
+        equality = '=';
+    } else if (currentSVDForm === 'economy') {
+        dims = {U: [m, n], S: [n, n], Vt: [n, n]};
+        labels = {U: 'U', S: 'Σ', Vt: 'Vᵀ'};
+        colors = {U: '#61afef', S: '#e5c07b', Vt: '#e06c75'};
+        equality = '=';
+    } else {
+        dims = {U: [m, r], S: [r, r], Vt: [r, n]};
+        labels = {U: 'Uᵣ', S: 'Σᵣ', Vt: 'Vᵣᵀ'};
+        colors = {U: '#61afef', S: '#e5c07b', Vt: '#e06c75'};
+        equality = '≈';
+    }
+
+    // Compute total width to center
+    const xW = n * scale, xH = m * scale;
+    const uW = dims.U[1] * scale, uH = dims.U[0] * scale;
+    const sW = dims.S[1] * scale, sH = dims.S[0] * scale;
+    const vW = dims.Vt[1] * scale, vH = dims.Vt[0] * scale;
+    const eqGap = 20;
+    const totalW = xW + eqGap + uW + gap + sW + gap + vW;
+    const startX = (W - totalW) / 2;
+    const midY = H / 2;
+
+    function drawBlock(x, y, w, h, color, label, dimLabel, type) {
+        const top = y - h/2;
+        // Filled block
+        svg.append('rect').attr('x', x).attr('y', top)
+            .attr('width', w).attr('height', h)
+            .attr('fill', color).attr('fill-opacity', 0.15)
+            .attr('stroke', color).attr('stroke-width', 2).attr('rx', 3);
+
+        if (type === 'U') {
+            // Draw vertical column lines for u_i vectors
+            const nCols = dims.U[1];
+            for (let i = 1; i < nCols; i++) {
+                const lx = x + i / nCols * w;
+                svg.append('line').attr('x1', lx).attr('x2', lx)
+                    .attr('y1', top + 2).attr('y2', top + h - 2)
+                    .attr('stroke', color).attr('stroke-opacity', 0.3).attr('stroke-width', 1);
+            }
+            // Label first and last column
+            if (nCols >= 2) {
+                svg.append('text').attr('x', x + 0.5/nCols * w).attr('y', top + h/2 + 3)
+                    .attr('text-anchor', 'middle').attr('fill', color).attr('fill-opacity', 0.7)
+                    .attr('font-size', '9px').text('u₁');
+                const lastLabel = (currentSVDForm === 'truncated') ? 'uᵣ' : (currentSVDForm === 'economy' ? 'uₙ' : 'uₘ');
+                svg.append('text').attr('x', x + (nCols - 0.5)/nCols * w).attr('y', top + h/2 + 3)
+                    .attr('text-anchor', 'middle').attr('fill', color).attr('fill-opacity', 0.7)
+                    .attr('font-size', '9px').text(lastLabel);
+            }
+        } else if (type === 'Vt') {
+            // Draw horizontal row lines for v_i^T vectors
+            const nRows = dims.Vt[0];
+            for (let i = 1; i < nRows; i++) {
+                const ly = top + i / nRows * h;
+                svg.append('line').attr('x1', x + 2).attr('x2', x + w - 2)
+                    .attr('y1', ly).attr('y2', ly)
+                    .attr('stroke', color).attr('stroke-opacity', 0.3).attr('stroke-width', 1);
+            }
+            // Label first and last row
+            if (nRows >= 2) {
+                svg.append('text').attr('x', x + w/2).attr('y', top + 0.5/nRows * h + 3)
+                    .attr('text-anchor', 'middle').attr('fill', color).attr('fill-opacity', 0.7)
+                    .attr('font-size', '9px').text('v₁ᵀ');
+                const lastLabel = (currentSVDForm === 'truncated') ? 'vᵣᵀ' : 'vₙᵀ';
+                svg.append('text').attr('x', x + w/2).attr('y', top + (nRows - 0.5)/nRows * h + 3)
+                    .attr('text-anchor', 'middle').attr('fill', color).attr('fill-opacity', 0.7)
+                    .attr('font-size', '9px').text(lastLabel);
+            }
+        } else if (type === 'S') {
+            // Draw diagonal σ_i entries and "0" off-diagonal
+            const sRows = dims.S[0], sCols = dims.S[1];
+            const diagN = Math.min(sRows, sCols);
+            for (let i = 0; i < diagN; i++) {
+                const cx = x + (i + 0.5) / sCols * w;
+                const cy = top + (i + 0.5) / sRows * h;
+                svg.append('text').attr('x', cx).attr('y', cy + 4)
+                    .attr('text-anchor', 'middle').attr('fill', color)
+                    .attr('font-size', '10px').attr('font-weight', 'bold')
+                    .text('σ' + '₁₂₃₄₅₆₇₈₉'[i]);
+            }
+            // Show "0" in off-diagonal regions
+            if (sCols >= 2 && sRows >= 2) {
+                // Upper-right region
+                if (sCols > 1) {
+                    svg.append('text')
+                        .attr('x', x + (sCols - 0.5) / sCols * w)
+                        .attr('y', top + 0.5 / sRows * h + 4)
+                        .attr('text-anchor', 'middle').attr('fill', '#555').attr('font-size', '10px').text('0');
+                }
+                // Lower-left region
+                if (sRows > 1) {
+                    svg.append('text')
+                        .attr('x', x + 0.5 / sCols * w)
+                        .attr('y', top + (sRows - 0.5) / sRows * h + 4)
+                        .attr('text-anchor', 'middle').attr('fill', '#555').attr('font-size', '10px').text('0');
+                }
+            }
+            // If full SVD with zero rows below diagonal
+            if (currentSVDForm === 'full' && sRows > sCols) {
+                const zeroY = top + sCols / sRows * h;
+                const zeroH = (sRows - sCols) / sRows * h;
+                svg.append('rect').attr('x', x + 1).attr('y', zeroY)
+                    .attr('width', w - 2).attr('height', zeroH)
+                    .attr('fill', 'none').attr('stroke', '#555').attr('stroke-width', 1).attr('stroke-dasharray', '3,3');
+                svg.append('text').attr('x', x + w/2).attr('y', zeroY + zeroH/2 + 4)
+                    .attr('text-anchor', 'middle').attr('fill', '#555').attr('font-size', '10px').text('0');
+            }
+        }
+
+        // Label above
+        svg.append('text').attr('x', x + w/2).attr('y', top - 8)
+            .attr('text-anchor', 'middle').attr('fill', color).attr('font-size', '14px').attr('font-weight', 'bold')
+            .text(label);
+
+        // Dimension below
+        svg.append('text').attr('x', x + w/2).attr('y', top + h + 16)
+            .attr('text-anchor', 'middle').attr('fill', '#888').attr('font-size', '11px')
+            .text(dimLabel);
+    }
+
+    // X block
+    drawBlock(startX, midY, xW, xH, '#aaa', 'X', m + '×' + n, 'X');
+
+    // Equals sign
+    svg.append('text').attr('x', startX + xW + eqGap/2).attr('y', midY + 5)
+        .attr('text-anchor', 'middle').attr('fill', '#aaa').attr('font-size', '18px')
+        .text(equality);
+
+    // U, Σ, V^T blocks
+    let cx = startX + xW + eqGap;
+    drawBlock(cx, midY, uW, uH, colors.U, labels.U, dims.U[0] + '×' + dims.U[1], 'U');
+    cx += uW + gap;
+
+    // Multiply dot
+    svg.append('text').attr('x', cx - gap/2).attr('y', midY + 5)
+        .attr('text-anchor', 'middle').attr('fill', '#666').attr('font-size', '14px').text('·');
+
+    drawBlock(cx, midY, sW, sH, colors.S, labels.S, dims.S[0] + '×' + dims.S[1], 'S');
+    cx += sW + gap;
+
+    svg.append('text').attr('x', cx - gap/2).attr('y', midY + 5)
+        .attr('text-anchor', 'middle').attr('fill', '#666').attr('font-size', '14px').text('·');
+
+    drawBlock(cx, midY, vW, vH, colors.Vt, labels.Vt, dims.Vt[0] + '×' + dims.Vt[1], 'Vt');
+}
+
+function drawSVDSum() {
+    const container = document.getElementById('svd-sum-viz');
+    if (!container) return;
+
+    const m = svdM, n = svdN, r = currentTruncR;
+    let nTerms, approx;
+    if (currentSVDForm === 'full' || currentSVDForm === 'economy') {
+        nTerms = n;
+        approx = '=';
+    } else {
+        nTerms = r;
+        approx = '≈';
+    }
+
+    // Build KaTeX sum with colored terms
+    let terms = [];
+    const maxShow = Math.min(nTerms, 4);
+    for (let i = 1; i <= maxShow; i++) {
+        terms.push('\\sigma_' + i + '\\,\\mathbf{u}_' + i + '\\mathbf{v}_' + i + '^\\top');
+    }
+    let sumStr = terms.join(' \\;+\\; ');
+    if (nTerms > maxShow) sumStr += ' \\;+\\; \\cdots \\;+\\; \\sigma_' + nTerms + '\\,\\mathbf{u}_' + nTerms + '\\mathbf{v}_' + nTerms + '^\\top';
+
+    container.innerHTML = '<span class="small-text">$X ' + approx + ' ' + sumStr + '$ &ensp; <span style="color:#888;">(' + nTerms + ' rank-1 terms)</span></span>';
+    if (typeof renderMathInElement === 'function') renderMathInElement(container, {delimiters:[{left:'$',right:'$',display:false}]});
+}
+
+// Initialize on slide visibility
+Reveal.on('slidechanged', function(event) {
+    if (event.currentSlide.querySelector('#svd-block-viz')) {
+        setTimeout(function() {
+            drawSVDBlocks();
+            updateSVDInfo();
+            drawSVDSum();
+        }, 100);
+    }
+});
+
+// Also init on ready in case we land on that slide
+Reveal.on('ready', function() {
+    if (document.querySelector('.present #svd-block-viz')) {
+        drawSVDBlocks();
+        updateSVDInfo();
+        drawSVDSum();
+    }
+});
 </script>
 
 </body>

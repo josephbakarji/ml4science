@@ -140,7 +140,7 @@
   material:
   - name: Scientific Modeling Principles
     type: slides
-    url: /static_files/slides/scientific_modeling_principles.html
+    url: https://learnslides.onrender.com/slides/04_scientific_modeling
   - name: 'Lecture Notes: Scientific Modeling Principles'
     type: notes
     label: required
@@ -165,7 +165,7 @@
   material:
   - name: Numerical Computing Slides
     type: slides
-    url: /static_files/slides/numerical_computing.html
+    url: https://learnslides.onrender.com/slides/05_numerical_computing
   - name: Stable Fluids (Stam, SIGGRAPH 1999)
     type: paper
     label: optional
@@ -206,7 +206,7 @@
   material:
   - name: Complex Systems and Probability Slides
     type: slides
-    url: /static_files/slides/complex_systems_probability.html
+    url: https://learnslides.onrender.com/slides/06_complex_systems
   - name: 'Lorenz (1963): Deterministic Nonperiodic Flow'
     type: paper
     label: optional
@@ -230,7 +230,7 @@
   material:
   - name: Time Series Analysis Slides
     type: slides
-    url: /static_files/slides/time_series.html
+    url: https://learnslides.onrender.com/slides/07_time_series
   - name: 'Lecture Notes: Time Series Analysis'
     type: notes
     url: /static_files/lectures/07/notes_time_series
@@ -252,7 +252,7 @@
   material:
   - name: Lecture Slides (Parts 1 & 2)
     type: slides
-    url: /static_files/slides/sindy.html
+    url: https://learnslides.onrender.com/slides/08_sindy
   - name: Sparse Nonlinear Dynamics Models with SINDy, Part 1
     type: video
     url: https://www.youtube.com/watch?v=NxAn0oglMVw
@@ -288,7 +288,7 @@
   material:
   - name: Lecture Slides (Parts 1 & 2)
     type: slides
-    url: /static_files/slides/sindy.html
+    url: https://learnslides.onrender.com/slides/08_sindy
   - name: PDE FIND
     type: video
     url: https://www.youtube.com/watch?v=oI3grKBxkqM
@@ -304,7 +304,7 @@
   material:
   - name: Lecture Slides
     type: slides
-    url: /static_files/slides/symbolic_regression.html
+    url: https://learnslides.onrender.com/slides/12_symbolic_regression
   hide_from_announcments: false
   folder: 10_symbolic_regression
 - lecture_num: '11'
@@ -321,7 +321,7 @@
   material:
   - name: Lecture Slides
     type: slides
-    url: /static_files/slides/deep_learning.html
+    url: https://learnslides.onrender.com/slides/11_deep_learning
   - name: Lecture Slides (PDF)
     type: pdf
     url: /static_files/slides/deep-learning-lecture.pdf
@@ -355,7 +355,7 @@
   material:
   - name: Lecture Slides
     type: slides
-    url: /static_files/slides/pinns.html
+    url: https://learnslides.onrender.com/slides/20_pinns
   - name: 'PINNs: Physics Informed Neural Networks — Ben Moseley'
     type: video
     url: https://www.youtube.com/watch?v=G_hIppUWcsc
@@ -375,7 +375,7 @@
   material:
   - name: Lecture Slides
     type: slides
-    url: /static_files/slides/svd_pca.html
+    url: https://learnslides.onrender.com/slides/09_svd_pca
   - name: PCA Reference (PDF)
     type: notes
     label: recommended

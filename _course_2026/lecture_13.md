@@ -15,7 +15,7 @@ preparation:
 material:
 - name: Lecture Slides
   type: slides
-  url: /static_files/slides/pinns.html
+  url: https://learnslides.onrender.com/slides/20_pinns
 - name: 'PINNs: Physics Informed Neural Networks — Ben Moseley'
   type: video
   url: https://www.youtube.com/watch?v=G_hIppUWcsc

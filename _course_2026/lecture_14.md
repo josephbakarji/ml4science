@@ -13,7 +13,7 @@ preparation:
 material:
 - name: Lecture Slides
   type: slides
-  url: /static_files/slides/svd_pca.html
+  url: https://learnslides.onrender.com/slides/09_svd_pca
 - name: PCA Reference (PDF)
   type: notes
   label: recommended

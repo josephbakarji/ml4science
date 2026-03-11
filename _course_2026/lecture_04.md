@@ -13,7 +13,7 @@ preparation:
 material:
 - name: Scientific Modeling Principles
   type: slides
-  url: /static_files/slides/scientific_modeling_principles.html
+  url: https://learnslides.onrender.com/slides/04_scientific_modeling
 - name: 'Lecture Notes: Scientific Modeling Principles'
   type: notes
   label: required
