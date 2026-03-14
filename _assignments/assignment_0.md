@@ -1,7 +1,7 @@
 ---
 type: assignment
 date: 2026-01-13T16:00:00+4:30
-title: 'Problem set #0 - Linear Algebra and Calculus'
+title: 'Problem Set #0 - Linear Algebra and Calculus'
 location: /content/hw/hw0/
 # pdf: /static_files/assignments/asg.pdf
 # attachment: /static_files/assignments/asg.zip
