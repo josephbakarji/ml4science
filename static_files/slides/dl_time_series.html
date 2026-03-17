@@ -1,0 +1,1453 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Deep Learning for Time Series</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reset.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/night.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/monokai.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+    <style>
+        :root {
+            --accent-blue: #61afef;
+            --accent-green: #98c379;
+            --accent-yellow: #e5c07b;
+            --accent-red: #e06c75;
+            --accent-purple: #c678dd;
+            --accent-cyan: #56b6c2;
+            --accent-orange: #d19a66;
+        }
+        .reveal { font-size: 28px; }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; }
+        .reveal h1 { font-size: 1.8em; color: var(--accent-yellow); }
+        .reveal h2 { font-size: 1.3em; color: var(--accent-blue); margin-bottom: 0.5em; }
+        .reveal h3 { font-size: 1.1em; color: var(--accent-purple); }
+        .reveal .slides section { text-align: left; font-size: 0.85em; }
+        .reveal ul { display: block; }
+        .reveal li { margin: 0.3em 0; font-size: 0.85em; }
+        .center-text { text-align: center; }
+        .small-text { font-size: 0.75em; line-height: 1.6; }
+        .tiny-text { font-size: 0.6em; line-height: 1.5; }
+        .keyword { color: var(--accent-yellow); font-weight: bold; }
+        .em-blue { color: var(--accent-blue); }
+        .em-green { color: var(--accent-green); }
+        .em-red { color: var(--accent-red); }
+        .em-purple { color: var(--accent-purple); }
+        .em-cyan { color: var(--accent-cyan); }
+        .em-orange { color: var(--accent-orange); }
+        .highlight-box {
+            background: rgba(97,175,239,0.1); border-left: 4px solid var(--accent-blue);
+            padding: 12px 18px; border-radius: 6px; margin: 10px 0;
+        }
+        .warning-box {
+            background: rgba(224,108,117,0.1); border-left: 4px solid var(--accent-red);
+            padding: 12px 18px; border-radius: 6px; margin: 10px 0;
+        }
+        .success-box {
+            background: rgba(152,195,121,0.1); border-left: 4px solid var(--accent-green);
+            padding: 12px 18px; border-radius: 6px; margin: 10px 0;
+        }
+        .principle-box {
+            background: rgba(198,120,221,0.1); border-left: 4px solid var(--accent-purple);
+            padding: 12px 18px; border-radius: 6px; margin: 10px 0;
+        }
+        .equation-box {
+            background: rgba(40,44,52,0.8); border: 1px solid #444; border-radius: 8px;
+            padding: 15px 20px; text-align: center; font-size: 1.1em; margin: 10px auto;
+            display: inline-block;
+        }
+        .two-column { display: flex; gap: 20px; align-items: flex-start; }
+        .two-column > div { flex: 1; }
+        .three-column { display: flex; gap: 15px; }
+        .three-column > div { flex: 1; }
+        .slider-container {
+            display: flex; align-items: center; gap: 6px; margin: 3px 0;
+        }
+        .slider-container label { min-width: 80px; font-size: 0.75em; }
+        .slider-container input[type="range"] { flex: 1; }
+        .slider-container span { min-width: 45px; font-size: 0.75em; color: var(--accent-blue); }
+        svg text { fill: #abb2bf; font-size: 12px; }
+        .author-info { font-size: 0.7em; color: #8b949e; }
+        .styled-table {
+            width: 100%; border-collapse: collapse; font-size: 0.8em;
+        }
+        .styled-table th {
+            background: rgba(97, 175, 239, 0.15);
+            color: var(--accent-blue); padding: 10px; text-align: left;
+            border-bottom: 2px solid var(--accent-blue);
+        }
+        .styled-table td {
+            padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .styled-table tr:hover td { background: rgba(255,255,255,0.03); }
+        .control-panel {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; padding: 8px 12px; margin: 6px 0;
+        }
+        button.demo-btn {
+            background: rgba(97, 175, 239, 0.2);
+            border: 1px solid var(--accent-blue);
+            color: var(--accent-blue);
+            padding: 4px 10px; border-radius: 5px;
+            cursor: pointer; font-size: 0.7em;
+            transition: background 0.15s;
+        }
+        button.demo-btn:hover { background: rgba(97, 175, 239, 0.35); }
+        button.demo-btn.active { background: var(--accent-blue); color: #0d1117; }
+        .reveal blockquote {
+            font-style: italic;
+            background: rgba(255,255,255,0.05);
+            padding: 12px 20px;
+            border-left: 4px solid var(--accent-purple);
+            width: 90%; margin: 0 auto;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.75em;
+        }
+        .arch-box {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px; padding: 12px;
+            text-align: center;
+        }
+        .arch-arrow {
+            font-size: 1.5em; color: var(--accent-yellow);
+            text-align: center; line-height: 1;
+        }
+        .timeline-item {
+            display: flex; gap: 10px; margin: 5px 0; align-items: flex-start;
+        }
+        .timeline-year {
+            min-width: 42px; flex-shrink: 0; font-weight: bold; color: var(--accent-yellow);
+            font-size: 0.68em;
+        }
+        .timeline-desc { font-size: 0.6em; }
+        .nobel-img {
+            border-radius: 8px;
+            border: 2px solid var(--accent-yellow);
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ============================================================ -->
+<!-- TITLE SLIDE -->
+<!-- ============================================================ -->
+<section data-background-gradient="linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1a1a2e 100%)">
+    <h1 style="font-size: 2em;">Deep Learning for Time Series</h1>
+    <p style="color: var(--accent-purple); font-size: 1.2em; font-weight: 400;">
+        From Ising Models to Recurrent Neural Networks
+    </p>
+    <br>
+    <p class="author-info">
+        ML for Science and Engineering &mdash; Lecture 16<br>
+        Joseph Bakarji
+    </p>
+</section>
+
+<!-- ============================================================ -->
+<!-- VERTICAL DECK: MOTIVATION -->
+<!-- ============================================================ -->
+<section>
+    <section>
+        <h2>Where We Are</h2>
+        <p class="small-text">We have been building a toolkit for modeling dynamical systems from data:</p>
+        <div class="two-column" style="margin-top: 10px;">
+            <div>
+                <div class="highlight-box small-text">
+                    <strong class="em-blue">What we have</strong><br>
+                    <span class="fragment">ODE discretization: $x_{k+1} = f(x_k)$</span><br>
+                    <span class="fragment">SVD/POD for spatial modes</span><br>
+                    <span class="fragment">DMD for linear dynamics</span><br>
+                    <span class="fragment">SINDy for sparse equations</span>
+                </div>
+            </div>
+            <div>
+                <div class="fragment principle-box small-text">
+                    <strong class="em-purple">What if we don't know the structure?</strong><br>
+                    What if the dynamics are too complex for a sparse model?<br>
+                    Can we learn $f$ directly from data using neural networks?
+                </div>
+            </div>
+        </div>
+        <div class="fragment success-box small-text" style="margin-top: 10px;">
+            <strong>Key insight:</strong> Discretized ODEs are already <span class="keyword">recurrent</span>: the next state depends on the current state. Neural networks can generalize this idea.
+        </div>
+    </section>
+
+    <section>
+        <h2>The Recurrence Idea</h2>
+        <p class="small-text">Every time-stepping scheme is an autoregressive model:</p>
+        <div class="equation-box" style="width: 90%; margin: 15px auto;">
+            $$\text{Forward Euler:} \quad x_{k+1} = x_k + \Delta t \cdot f(x_k)$$
+        </div>
+        <div class="fragment" style="margin-top: 10px;">
+            <div class="equation-box" style="width: 90%; margin: 10px auto;">
+                $$\text{General autoregressive:} \quad x_{k+1} = g(x_k, x_{k-1}, \ldots, x_{k-n})$$
+            </div>
+        </div>
+        <div class="fragment highlight-box small-text" style="margin-top: 10px;">
+            <strong>Design question:</strong> What if $g$ includes <span class="keyword">learnable nonlinear transformations</span> and operates in a <span class="keyword">hidden state space</span> rather than the observable space?
+        </div>
+        <div class="fragment tiny-text" style="margin-top: 8px; color: #8b949e;">
+            This is the central idea behind recurrent neural networks. But the story starts much earlier, with physics.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================================ -->
+<!-- VERTICAL DECK: ISING MODEL -->
+<!-- ============================================================ -->
+<section>
+    <section data-background-color="#0d1117">
+        <h1 style="font-size: 1.6em;">Part I: Physics Roots</h1>
+        <p style="color: var(--accent-cyan); font-size: 1em;">
+            The Ising Model, Hopfield Networks, and Boltzmann Machines
+        </p>
+        <p class="small-text" style="margin-top: 20px; color: #8b949e;">
+            How statistical mechanics inspired the first neural network architectures
+        </p>
+    </section>
+
+    <section>
+        <h2>The Ising Model (Lenz 1920, Ising 1925)</h2>
+        <p class="small-text">A model from statistical mechanics: a 2D grid of <span class="keyword">spins</span>, each either "up" $(+1)$ or "down" $(-1)$. Neighboring spins want to align. The model was designed to explain <span class="em-purple">ferromagnetism</span>: how local interactions produce global order.</p>
+        <div class="two-column" style="margin-top: 8px;">
+            <div>
+                <div class="equation-box" style="font-size: 0.85em; margin: 8px 0; text-align: left; padding: 12px;">
+                    $$E = -J \sum_{\langle i,j \rangle} s_i s_j - h \sum_i s_i$$
+                </div>
+                <p class="tiny-text" style="margin-top: 6px;">
+                    <span class="em-yellow">$s_i \in \{-1, +1\}$</span> = spin at site $i$<br>
+                    <span class="em-blue">$J > 0$</span> = coupling (scalar); favors aligned neighbors<br>
+                    <span class="em-green">$h$</span> = external magnetic field (scalar)<br>
+                    <span class="em-cyan">$\langle i,j \rangle$</span> = nearest-neighbor pairs only
+                </p>
+                <div class="fragment small-text" style="margin-top: 8px;">
+                    The system evolves to <span class="em-green">minimize energy</span>.<br>
+                    At <span class="em-red">high temperature $T$</span>: thermal noise dominates, random spins<br>
+                    At <span class="em-blue">low temperature</span>: energy dominates, aligned spins<br>
+                    At <span class="em-yellow">$T_c \approx 2.27 J/k_B$</span>: phase transition!
+                </div>
+            </div>
+            <div>
+                <div id="ising-viz" style="width: 100%; height: 280px;"></div>
+                <div class="control-panel tiny-text" style="margin-top: 2px;">
+                    <div class="slider-container">
+                        <label>Temperature $T$</label>
+                        <input type="range" id="ising-temp" min="0.5" max="5" step="0.1" value="2.27">
+                        <span id="ising-temp-val">2.27</span>
+                    </div>
+                    <button class="demo-btn" onclick="resetIsing()">Reset</button>
+                    <button class="demo-btn" id="ising-play-btn" onclick="toggleIsing()">Play</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Ising Model: The Algorithm</h2>
+        <p class="small-text">The <span class="keyword">Metropolis-Hastings</span> algorithm simulates the Ising model at temperature $T$:</p>
+        <div class="two-column" style="margin-top: 8px;">
+            <div>
+                <div class="highlight-box small-text">
+                    <strong>Algorithm (one sweep):</strong><br>
+                    For each spin $s_i$ in random order:<br>
+                    1. Compute energy change if we flip it:<br>
+                    $\quad \Delta E = 2 J \, s_i \sum_{j \in \text{neighbors}} s_j$<br>
+                    2. If $\Delta E \leq 0$: flip (lower energy)<br>
+                    3. If $\Delta E > 0$: flip with probability $e^{-\Delta E / T}$
+                </div>
+                <div class="fragment principle-box tiny-text" style="margin-top: 8px;">
+                    At equilibrium, the probability of a configuration follows the <span class="keyword">Boltzmann distribution</span>: $P(\{s\}) = \frac{1}{Z} e^{-E(\{s\})/T}$
+                </div>
+            </div>
+            <div>
+                <pre style="font-size: 0.55em;"><code class="language-python">import numpy as np
+
+def ising_step(grid, T, J=1.0):
+    N = grid.shape[0]
+    for _ in range(N * N):
+        i, j = np.random.randint(N, size=2)
+        s = grid[i, j]
+        # Sum of 4 nearest neighbors
+        neighbors = (grid[(i-1)%N, j] +
+                     grid[(i+1)%N, j] +
+                     grid[i, (j-1)%N] +
+                     grid[i, (j+1)%N])
+        dE = 2 * J * s * neighbors
+        if dE <= 0 or np.random.rand() < np.exp(-dE / T):
+            grid[i, j] = -s
+    return grid</code></pre>
+                <div style="margin-top: 8px; text-align: center;">
+                    <a href="https://colab.research.google.com/drive/1_ising_model_demo" target="_blank" rel="noopener"
+                       style="display: inline-block; padding: 6px 14px; border: 1px solid rgba(212, 162, 78, 0.4); border-radius: 6px; color: #d4a24e; font-size: 0.65em; text-decoration: none;">
+                        &#x1F4D3; Open in Colab
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
+
+<!-- ============================================================ -->
+<!-- VERTICAL DECK: HOPFIELD NETWORKS -->
+<!-- ============================================================ -->
+<section>
+    <section>
+        <h2>From Spins to Neurons: Hopfield Networks (1982)</h2>
+        <div class="two-column">
+            <div>
+                <p class="small-text">John Hopfield's insight: replace the Ising lattice with a <span class="keyword">fully connected</span> network. Instead of nearest-neighbor coupling, every neuron connects to every other. The energy landscape has local minima that serve as <span class="keyword">stored memories</span>.</p>
+                <div class="equation-box" style="font-size: 0.85em; margin: 10px 0;">
+                    $$E = -\frac{1}{2} \sum_{i \neq j} W_{ij} s_i s_j - \sum_i b_i s_i$$
+                </div>
+                <p class="small-text">Same energy as Ising, but with <span class="em-blue">all-to-all</span> learned weights $W_{ij}$ instead of uniform nearest-neighbor coupling $J$.</p>
+                <div class="fragment principle-box tiny-text" style="margin-top: 6px;">
+                    <strong>2024 Nobel Prize in Physics</strong> awarded to John Hopfield and Geoffrey Hinton "for foundational discoveries and inventions that enable machine learning with artificial neural networks."
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <div style="display: flex; gap: 12px; justify-content: center; align-items: flex-start;">
+                    <div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/John_Hopfield_Nobel_2024.jpg/440px-John_Hopfield_Nobel_2024.jpg"
+                             alt="John Hopfield" style="width: 150px; border-radius: 6px;"
+                             onerror="this.parentElement.innerHTML='<div class=\'arch-box tiny-text\'><p style=\'margin:0\'>John Hopfield</p></div>';">
+                        <p class="tiny-text" style="margin-top: 4px; color: #8b949e;">John Hopfield</p>
+                    </div>
+                    <div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Geoffrey_Hinton_Nobel_2024.jpg/440px-Geoffrey_Hinton_Nobel_2024.jpg"
+                             alt="Geoffrey Hinton" style="width: 150px; border-radius: 6px;"
+                             onerror="this.parentElement.innerHTML='<div class=\'arch-box tiny-text\'><p style=\'margin:0\'>Geoffrey Hinton</p></div>';">
+                        <p class="tiny-text" style="margin-top: 4px; color: #8b949e;">Geoffrey Hinton</p>
+                    </div>
+                </div>
+                <p class="tiny-text" style="margin-top: 4px; color: var(--accent-yellow);">Nobel Prize in Physics 2024</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>How Hopfield Networks Work</h2>
+        <p class="small-text">The network operates as an <span class="keyword">associative memory</span>: given a corrupted input, it recovers the closest stored pattern.</p>
+        <div class="two-column">
+            <div>
+                <div class="highlight-box small-text">
+                    <strong>Setup:</strong><br>
+                    <span class="em-blue">$s_i \in \{-1, +1\}$</span>: neuron states (like pixel values in an image)<br>
+                    <span class="em-green">$W_{ij}$</span>: connection weights (computed from training data)<br>
+                    <span class="em-yellow">Patterns $\xi^\mu$</span>: binary images we want to store
+                </div>
+                <div class="fragment success-box small-text" style="margin-top: 8px;">
+                    <strong>Step 1 &mdash; Store:</strong> Compute weights from $M$ patterns:<br>
+                    $W_{ij} = \frac{1}{N} \sum_{\mu=1}^{M} \xi_i^\mu \xi_j^\mu$<br>
+                    (This is like an autocorrelation: neurons that co-activate get stronger connections)
+                </div>
+                <div class="fragment highlight-box small-text" style="margin-top: 6px;">
+                    <strong>Step 2 &mdash; Recall:</strong> Initialize $s$ with a corrupted pattern. Update each neuron:<br>
+                    $s_i \leftarrow \text{sign}\!\left(\sum_j W_{ij} s_j\right)$<br>
+                    Each update <span class="em-green">decreases energy</span> $\Rightarrow$ converges to nearest minimum = nearest stored pattern
+                </div>
+            </div>
+            <div>
+                <div id="hopfield-viz" style="width: 100%; height: 240px;"></div>
+                <div class="control-panel tiny-text" style="margin-top: 4px;">
+                    <button class="demo-btn" onclick="hopfieldStore()">Store Pattern</button>
+                    <button class="demo-btn" onclick="hopfieldCorrupt()">Corrupt (30%)</button>
+                    <button class="demo-btn" onclick="hopfieldRecall()">Recall</button>
+                    <span id="hopfield-status" style="color: #888; margin-left: 6px;">Click "Store" to begin</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Hopfield: Capacity and Limitations</h2>
+        <div class="two-column">
+            <div>
+                <div class="warning-box small-text">
+                    <strong>Capacity limit</strong> (McEliece et al. 1987):<br>
+                    At most $\sim 0.138 N$ patterns for $N$ neurons.<br>
+                    Beyond this: <span class="em-red">spin-glass phase</span> with spurious attractors (false memories).
+                </div>
+                <div class="fragment small-text" style="margin-top: 10px;">
+                    <strong>Limitations of classical Hopfield:</strong>
+                    <ul class="tiny-text">
+                        <li>Low capacity: only $O(N)$ patterns</li>
+                        <li>Binary states only ($\pm 1$)</li>
+                        <li>Spurious attractors (mixture states, reversed patterns)</li>
+                        <li>No hidden representation</li>
+                    </ul>
+                </div>
+            </div>
+            <div>
+                <div class="fragment principle-box small-text">
+                    <strong>Why study Hopfield networks?</strong><br>
+                    1. First architecture where <span class="keyword">physics principles</span> (energy minimization) directly defined computation<br>
+                    2. The design logic generalizes: define an energy, let the system minimize it<br>
+                    3. Direct mathematical ancestor of <span class="em-cyan">transformers</span> (next slide)
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h3 style="color: var(--accent-cyan);">Research Connection: Modern Hopfield $\rightarrow$ Transformers</h3>
+        <p class="small-text">Ramsauer et al. (2021) showed that with <span class="keyword">continuous states</span> and a log-sum-exp energy, the Hopfield update rule becomes:</p>
+        <div class="equation-box" style="width: 90%; margin: 10px auto;">
+            $$\xi^{\text{new}} = X \cdot \text{softmax}(\beta \, X^T \xi)$$
+        </div>
+        <div class="two-column small-text" style="margin-top: 8px;">
+            <div class="highlight-box">
+                <strong>Modern Hopfield</strong><br>
+                Query state $\xi$, stored patterns $X$<br>
+                Inverse temperature $\beta$<br>
+                Storage: $\exp(O(d))$ patterns
+            </div>
+            <div class="success-box">
+                <strong>Transformer Attention</strong><br>
+                Query $Q$, Keys $K$, Values $V$<br>
+                $\beta = 1/\sqrt{d_k}$<br>
+                $\text{softmax}(QK^T\!/\sqrt{d_k}) \cdot V$
+            </div>
+        </div>
+        <div class="fragment principle-box tiny-text" style="margin-top: 8px;">
+            <strong>The punchline:</strong> Each attention head in a transformer performs one step of modern Hopfield network retrieval. The lineage Ising $\rightarrow$ Hopfield $\rightarrow$ Transformers is mathematically precise. (We may revisit transformers in a later lecture.)
+        </div>
+    </section>
+</section>
+
+<!-- ============================================================ -->
+<!-- VERTICAL DECK: BOLTZMANN MACHINES -->
+<!-- ============================================================ -->
+<section>
+    <section>
+        <h2>Boltzmann Machines: Adding Stochasticity</h2>
+        <p class="small-text">Geoffrey Hinton and Terrence Sejnowski (1985) extended Hopfield networks with two ingredients:</p>
+        <div class="two-column" style="margin-top: 10px;">
+            <div>
+                <div class="highlight-box small-text">
+                    <strong>1. Stochastic updates</strong> (finite temperature)<br>
+                    Instead of deterministic $s_i = \text{sign}(h_i)$, flip with probability:<br>
+                    $$P(s_i = 1) = \sigma\!\left(\frac{h_i}{T}\right) = \frac{1}{1 + e^{-h_i/T}}$$
+                    This lets the network escape local minima (like simulated annealing).
+                </div>
+                <div class="fragment success-box small-text" style="margin-top: 8px;">
+                    <strong>2. Hidden units</strong><br>
+                    Split neurons into:<br>
+                    <span class="em-blue">Visible $v$</span> = observed data (e.g., time series windows, sensor readings, image pixels)<br>
+                    <span class="em-purple">Hidden $h$</span> = latent features the model discovers (temporal patterns, modes)
+                </div>
+            </div>
+            <div>
+                <div id="boltzmann-arch" style="width: 100%; height: 260px;"></div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Boltzmann Machines: The Math</h2>
+        <p class="small-text">A <span class="keyword">Restricted Boltzmann Machine</span> (RBM) has no connections within the same layer (bipartite graph):</p>
+        <div class="equation-box" style="width: 95%; margin: 10px auto; font-size: 0.9em;">
+            $$E(v, h) = -\underbrace{a^T v}_{\text{visible bias}} - \underbrace{b^T h}_{\text{hidden bias}} - \underbrace{v^T W h}_{\text{interaction}}$$
+        </div>
+        <div class="fragment small-text" style="margin-top: 8px;">
+            The probability of a data configuration follows the <span class="keyword">Boltzmann distribution</span>:
+            $$P(v, h) = \frac{1}{Z} e^{-E(v,h)}, \qquad Z = \sum_{v,h} e^{-E(v,h)}$$
+        </div>
+        <div class="fragment two-column" style="margin-top: 10px;">
+            <div class="highlight-box tiny-text">
+                <strong>Concrete examples:</strong><br>
+                <span class="em-blue">Images:</span> $v$ = 784 pixels (MNIST). RBM learns digit-like patterns.<br>
+                <span class="em-cyan">Time series:</span> $v$ = a window of $T$ observations $[x_t, \ldots, x_{t+T}]$. RBM learns temporal motifs and transition probabilities.
+            </div>
+            <div class="principle-box tiny-text">
+                <strong>Why "restricted"?</strong> No connections within visible or hidden layers means units are <em>conditionally independent</em>:<br>
+                $P(h_j = 1 | v) = \sigma(b_j + \sum_i W_{ij} v_i)$<br>
+                This makes sampling efficient (block Gibbs).
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Training Boltzmann Machines</h2>
+        <p class="small-text">Goal: maximize the probability the model assigns to real data. The gradient has a beautiful structure:</p>
+        <div class="equation-box" style="width: 95%; margin: 10px auto; font-size: 0.85em;">
+            $$\frac{\partial \log P(v)}{\partial W_{ij}} = \underbrace{\langle v_i h_j \rangle_{\text{data}}}_{\text{positive phase: what the data looks like}} - \underbrace{\langle v_i h_j \rangle_{\text{model}}}_{\text{negative phase: what the model thinks data looks like}}$$
+        </div>
+        <div class="fragment two-column small-text" style="margin-top: 10px;">
+            <div class="success-box">
+                <strong class="em-green">Positive phase</strong> (easy)<br>
+                Clamp $v$ to real data. Sample $h$ from $P(h|v)$.<br>
+                Measures correlations in real data.
+            </div>
+            <div class="warning-box">
+                <strong class="em-red">Negative phase</strong> (hard!)<br>
+                Sample from full model $P(v,h)$. Requires MCMC to equilibrium.<br>
+                <strong>Contrastive Divergence</strong> (Hinton 2002): just 1 Gibbs step!
+            </div>
+        </div>
+        <div class="fragment highlight-box tiny-text" style="margin-top: 8px;">
+            <strong>Free energy:</strong> $F(v) = -a^T v - \sum_j \log(1 + e^{b_j + \sum_i v_i W_{ij}})$. Note the $\log(1 + e^x)$ = <span class="keyword">softplus</span>, the smooth ancestor of ReLU!
+        </div>
+        <div class="fragment tiny-text" style="margin-top: 6px; color: #8b949e;">
+            Deep Belief Networks (Hinton et al. 2006) stacked RBMs layer-by-layer, kickstarting the deep learning revolution. Superseded by dropout, batch norm, and ReLU by ~2012.
+        </div>
+    </section>
+
+    <section>
+        <h2>The Intellectual Lineage</h2>
+        <p class="small-text">Physics-inspired designs gave birth to modern deep learning:</p>
+        <div class="three-column" style="margin-top: 15px;">
+            <div class="arch-box fragment">
+                <p class="small-text" style="margin:0;"><strong class="em-yellow">Hopfield (1982)</strong></p>
+                <p class="tiny-text" style="margin:4px 0;">Energy minimization<br>Associative memory</p>
+                <p class="arch-arrow" style="margin:0;">$\downarrow$</p>
+                <p class="tiny-text" style="color: var(--accent-cyan); margin:0;">Modern Hopfield<br>$\rightarrow$ <strong>Transformers</strong></p>
+            </div>
+            <div class="arch-box fragment">
+                <p class="small-text" style="margin:0;"><strong class="em-yellow">Boltzmann (1985)</strong></p>
+                <p class="tiny-text" style="margin:4px 0;">Gibbs distribution<br>Generative model</p>
+                <p class="arch-arrow" style="margin:0;">$\downarrow$</p>
+                <p class="tiny-text" style="color: var(--accent-cyan); margin:0;">Pretraining<br>$\rightarrow$ <strong>VAEs, GANs, Diffusion</strong></p>
+            </div>
+            <div class="arch-box fragment">
+                <p class="small-text" style="margin:0;"><strong class="em-yellow">Ising (1920)</strong></p>
+                <p class="tiny-text" style="margin:4px 0;">Phase transitions<br>Statistical mechanics</p>
+                <p class="arch-arrow" style="margin:0;">$\downarrow$</p>
+                <p class="tiny-text" style="color: var(--accent-cyan); margin:0;">Energy-based learning<br>$\rightarrow$ <strong>Unifying framework</strong></p>
+            </div>
+        </div>
+        <div class="fragment highlight-box small-text" style="margin-top: 12px;">
+            <strong>Design lesson:</strong> These architectures were <em>derived from physical principles</em>: energy minimization, statistical equilibrium, symmetry. Understanding the physics helps you understand <em>why</em> an architecture works, and how to invent new ones.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================================ -->
+<!-- VERTICAL DECK: RNNs -->
+<!-- ============================================================ -->
+<section>
+    <section data-background-color="#0d1117">
+        <h1 style="font-size: 1.6em;">Part II: Recurrent Neural Networks</h1>
+        <p style="color: var(--accent-cyan); font-size: 1em;">
+            Learning dynamics in a hidden state space
+        </p>
+    </section>
+
+    <section>
+        <h2>The RNN Architecture</h2>
+        <p class="small-text">Instead of modeling $x_{k+1} = f(x_k)$ in the observable space, introduce a <span class="keyword">hidden state</span> $h_t$:</p>
+        <div id="rnn-arch-viz" style="width: 100%; height: 280px; margin: 8px 0;"></div>
+        <div class="two-column small-text" style="margin-top: 4px;">
+            <div class="equation-box" style="text-align: left; padding: 10px; width: 100%;">
+                <strong>Hidden update:</strong> $h_t = \tanh(W_{hh} \, h_{t-1} + W_{xh} \, x_t + b_h)$
+            </div>
+            <div class="equation-box" style="text-align: left; padding: 10px; width: 100%;">
+                <strong>Prediction:</strong> $\hat{x}_{t+1} = W_{hy} \, h_t + b_y$
+            </div>
+        </div>
+        <div class="fragment principle-box tiny-text" style="margin-top: 6px;">
+            <strong>State-space analogy:</strong> Compare $\dot{x} = Ax + Bu$, $y = Cx$. The hidden state $h$ plays the role of the internal state; $W_{xh}$ is like $B$ (input), $W_{hh}$ is like $A$ (dynamics), $W_{hy}$ is like $C$ (readout), but all are <em>nonlinear</em>.
+        </div>
+    </section>
+
+    <section>
+        <h2>The Loss Function</h2>
+        <p class="small-text">The RNN predicts $\hat{x}_{t+1}$ at each step. The loss measures prediction errors across the full sequence:</p>
+        <div class="equation-box" style="width: 90%; margin: 12px auto;">
+            $$\mathcal{L} = \sum_{t=1}^{T} \| \hat{x}_{t+1} - x_{t+1} \|^2$$
+        </div>
+        <p class="fragment small-text" style="margin-top: 8px;">To minimize $\mathcal{L}$, we need $\frac{\partial \mathcal{L}}{\partial W_{hh}}$, $\frac{\partial \mathcal{L}}{\partial W_{xh}}$, and $\frac{\partial \mathcal{L}}{\partial W_{hy}}$. But $h_t$ depends on $h_{t-1}$, which depends on $h_{t-2}$, etc. We must <span class="keyword">unroll</span> the network through time and apply the chain rule.</p>
+        <div class="fragment" style="margin-top: 8px;">
+            <div id="bptt-viz" style="width: 100%; height: 200px;"></div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Backpropagation Through Time (BPTT)</h2>
+        <p class="small-text">Apply the chain rule step by step. Consider the gradient at time $t = 4$:</p>
+        <div class="equation-box small-text" style="width: 100%; text-align: left; padding: 12px; margin: 8px 0;">
+            <div class="fragment">$\frac{\partial \mathcal{L}_4}{\partial W_{hh}} = \frac{\partial \mathcal{L}_4}{\partial h_4} \cdot \frac{\partial h_4}{\partial W_{hh}}$<span style="color: #8b949e;"> &mdash; direct effect at $t=4$</span></div>
+            <div class="fragment" style="margin-top: 6px;">$+ \frac{\partial \mathcal{L}_4}{\partial h_4} \cdot \frac{\partial h_4}{\partial h_3} \cdot \frac{\partial h_3}{\partial W_{hh}}$<span style="color: #8b949e;"> &mdash; through $h_3$</span></div>
+            <div class="fragment" style="margin-top: 6px;">$+ \frac{\partial \mathcal{L}_4}{\partial h_4} \cdot \frac{\partial h_4}{\partial h_3} \cdot \frac{\partial h_3}{\partial h_2} \cdot \frac{\partial h_2}{\partial W_{hh}}$<span style="color: #8b949e;"> &mdash; through $h_3, h_2$</span></div>
+            <div class="fragment" style="margin-top: 6px;">$+ \;\cdots$</div>
+        </div>
+        <div class="fragment small-text" style="margin-top: 8px;">
+            Each $\frac{\partial h_{k+1}}{\partial h_k} = W_{hh}^T \cdot \text{diag}(\tanh'(z_k))$, so the gradient involves:
+        </div>
+        <div class="fragment equation-box" style="width: 90%; margin: 8px auto; font-size: 0.9em;">
+            $$\prod_{k=2}^{t} \frac{\partial h_{k}}{\partial h_{k-1}} = \prod_{k=2}^{t} W_{hh}^T \cdot \text{diag}(\tanh'(z_k))$$
+        </div>
+        <div class="fragment warning-box tiny-text" style="margin-top: 6px;">
+            <strong>Vanishing/exploding gradient:</strong> If $\|W_{hh}\| < 1$, this product shrinks exponentially $\Rightarrow$ gradients from early time steps vanish. If $\|W_{hh}\| > 1$, it grows exponentially $\Rightarrow$ gradients explode. Long-range dependencies become invisible to learning.
+        </div>
+    </section>
+
+    <section>
+        <h2>Vanishing Gradients: Interactive</h2>
+        <p class="small-text">The gradient magnitude at time step $k$ back scales as $\sim (\rho \cdot \overline{\tanh'})^k$:</p>
+        <div id="vanishing-grad-viz" style="width: 100%; height: 280px;"></div>
+        <div class="control-panel small-text">
+            <div class="slider-container">
+                <label>Spectral radius $\rho(W)$</label>
+                <input type="range" id="vg-rho" min="0.3" max="1.5" step="0.05" value="0.9">
+                <span id="vg-rho-val">0.90</span>
+            </div>
+            <div class="slider-container">
+                <label>Sequence length</label>
+                <input type="range" id="vg-steps" min="5" max="50" step="1" value="20">
+                <span id="vg-steps-val">20</span>
+            </div>
+        </div>
+        <div class="tiny-text" style="margin-top: 4px; color: #8b949e;">
+            <span class="em-green">Green zone</span>: gradient useful for learning. <span class="em-red">Red zone</span>: gradient too small to affect weights.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================================ -->
+<!-- VERTICAL DECK: LSTM -->
+<!-- ============================================================ -->
+<section>
+    <section>
+        <h2>LSTM: Solving the Vanishing Gradient</h2>
+        <p class="small-text">Hochreiter & Schmidhuber (1997) introduced <span class="keyword">gating mechanisms</span> and a <span class="keyword">cell state highway</span>:</p>
+        <div class="two-column" style="margin-top: 6px;">
+            <div style="text-align: center;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/LSTM_Cell.svg/600px-LSTM_Cell.svg.png"
+                     alt="LSTM Cell diagram" style="width: 95%; max-width: 420px; background: rgba(255,255,255,0.92); padding: 8px; border-radius: 8px;"
+                     onerror="this.outerHTML='<div id=\'lstm-arch-viz\' style=\'width:100%;height:260px;\'></div>';">
+                <p class="tiny-text" style="color: #8b949e; margin-top: 2px;">Source: Wikipedia &mdash; LSTM cell diagram</p>
+            </div>
+            <div>
+                <div class="equation-box tiny-text" style="text-align: left; padding: 10px;">
+                    <div><span class="em-red">Forget</span>: $f_t = \sigma(W_f [h_{t-1}, x_t] + b_f)$</div>
+                    <div style="margin-top: 4px;"><span class="em-green">Input</span>: $i_t = \sigma(W_i [h_{t-1}, x_t] + b_i)$</div>
+                    <div style="margin-top: 4px;"><span class="em-blue">Candidate</span>: $\tilde{c}_t = \tanh(W_c [h_{t-1}, x_t] + b_c)$</div>
+                    <div style="margin-top: 6px; border-top: 1px solid #444; padding-top: 6px;">
+                        <span class="em-yellow">Cell update</span>: $c_t = f_t \odot c_{t-1} + i_t \odot \tilde{c}_t$
+                    </div>
+                    <div style="margin-top: 4px;"><span class="em-purple">Output</span>: $o_t = \sigma(W_o [h_{t-1}, x_t] + b_o)$</div>
+                    <div style="margin-top: 4px;"><span class="em-cyan">Hidden</span>: $h_t = o_t \odot \tanh(c_t)$</div>
+                </div>
+                <div class="fragment principle-box tiny-text" style="margin-top: 8px;">
+                    <strong>Why it works:</strong> $c_t = f_t \odot c_{t-1} + \ldots$ is <em>additive</em>. Gradients flow through $\prod_k f_k$ (forget gates near 1). No repeated $W_{hh}$ multiplication on the cell state highway.
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
+
+<!-- ============================================================ -->
+<!-- VERTICAL DECK: RESERVOIR COMPUTING -->
+<!-- ============================================================ -->
+<section>
+    <section data-background-color="#0d1117">
+        <h1 style="font-size: 1.6em;">Part III: Reservoir Computing</h1>
+        <p style="color: var(--accent-cyan); font-size: 1em;">
+            What if you never train the recurrent weights?
+        </p>
+    </section>
+
+    <section>
+        <h2>Echo State Networks (Jaeger, 2001)</h2>
+        <p class="small-text">A radically different approach: the recurrent dynamics are <span class="keyword">random and fixed</span>. Only a linear readout is trained.</p>
+        <div class="two-column" style="margin-top: 10px;">
+            <div>
+                <div class="equation-box small-text" style="text-align: left; padding: 10px;">
+                    <strong>Reservoir (fixed, random):</strong><br>
+                    $h_{t+1} = \tanh(W_{\text{in}} x_{t+1} + W h_t)$<br><br>
+                    <strong>Output (trained, linear):</strong><br>
+                    $y_t = W_{\text{out}} h_t$
+                </div>
+                <div class="fragment small-text" style="margin-top: 8px;">
+                    <span class="em-green">$W_{\text{in}}$</span> (input $\rightarrow$ reservoir): random, <strong>fixed</strong><br>
+                    <span class="em-purple">$W$</span> (reservoir $\rightarrow$ reservoir): random, <strong>fixed</strong><br>
+                    <span class="em-yellow">$W_{\text{out}}$</span> (reservoir $\rightarrow$ output): <strong>trained</strong> via ridge regression
+                </div>
+                <div class="fragment success-box tiny-text" style="margin-top: 8px;">
+                    <strong>Training:</strong> $W_{\text{out}} = Y H^T (H H^T + \beta I)^{-1}$<br>
+                    One linear solve. No backpropagation. Seconds, not hours.
+                </div>
+            </div>
+            <div>
+                <div id="esn-arch-viz" style="width: 100%; height: 260px;"></div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>The Echo State Property</h2>
+        <p class="small-text">For the reservoir to be useful, it must <span class="keyword">forget initial conditions</span>:</p>
+        <div class="two-column" style="margin-top: 10px;">
+            <div>
+                <div class="highlight-box small-text">
+                    <strong>Echo State Property:</strong><br>
+                    $\|h(t) - h'(t)\| \to 0$ as $t \to \infty$<br>
+                    for any two initial states driven by the same input.<br><br>
+                    <strong>Sufficient condition:</strong> spectral radius $\rho(W) < 1$<br>
+                    (because $\tanh$ is Lipschitz-1, so $\|h_t - h'_t\| \leq \|W\| \cdot \|h_{t-1} - h'_{t-1}\|$)
+                </div>
+            </div>
+            <div>
+                <div class="principle-box small-text">
+                    <strong>Edge of chaos ($\rho \approx 1$):</strong><br>
+                    Best performance at the boundary between order and chaos.<br><br>
+                    $\rho \ll 1$: short memory, strong nonlinearity<br>
+                    $\rho \to 1$: long memory, more linear<br>
+                    $\rho > 1$: risk of instability
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Reservoir Dynamics: Interactive</h2>
+        <p class="small-text">Watch how reservoir neurons respond to a sinusoidal input at different spectral radii:</p>
+        <div id="esn-dynamics-viz" style="width: 100%; height: 280px;"></div>
+        <div class="control-panel small-text">
+            <div class="slider-container">
+                <label>Spectral radius $\rho(W)$</label>
+                <input type="range" id="esn-rho" min="0.1" max="1.5" step="0.05" value="0.9">
+                <span id="esn-rho-val">0.90</span>
+            </div>
+            <div class="slider-container">
+                <label>Input frequency</label>
+                <input type="range" id="esn-freq" min="0.02" max="0.2" step="0.01" value="0.05">
+                <span id="esn-freq-val">0.05</span>
+            </div>
+            <button class="demo-btn" onclick="resetESN()">New Reservoir</button>
+        </div>
+        <div class="tiny-text" style="margin-top: 4px; color: #8b949e;">
+            <span class="em-blue">Blue</span>: input signal. Colored lines: 8 reservoir neurons. Higher $\rho$ = richer, longer-memory responses.
+        </div>
+    </section>
+
+    <section>
+        <h2>Memory Capacity: A Conservation Law</h2>
+        <div class="two-column">
+            <div>
+                <p class="small-text">How much can a reservoir remember? (Dambre et al. 2012)</p>
+                <div class="highlight-box small-text" style="margin-top: 8px;">
+                    <strong>Linear memory capacity:</strong><br>
+                    $MC = \sum_{k=1}^{\infty} r^2(W_{\text{out}} h_t, \; x_{t-k}) \leq N$
+                </div>
+                <div class="fragment warning-box small-text" style="margin-top: 8px;">
+                    <strong>Conservation law:</strong><br>
+                    Total capacity (linear + nonlinear) $= N$<br><br>
+                    More computation $\Leftrightarrow$ less memory.<br>
+                    Each neuron contributes $\sim 1$ degree of freedom.
+                </div>
+            </div>
+            <div>
+                <div id="memory-capacity-viz" style="width: 100%; height: 260px;"></div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Physical Reservoir Computing</h2>
+        <p class="small-text">Any physical system with sufficient complexity, nonlinearity, and fading memory can be a reservoir:</p>
+        <table class="styled-table small-text" style="margin-top: 10px;">
+            <thead><tr><th>Physical System</th><th>Reservoir Mechanism</th><th>Reference</th></tr></thead>
+            <tbody>
+                <tr><td><span class="em-blue">Photonic circuits</span></td><td>Mach-Zehnder modulator + delay feedback</td><td>Larger et al. 2012</td></tr>
+                <tr><td><span class="em-green">Mechanical networks</span></td><td>Mass-spring nonlinear coupling</td><td>Dion et al. 2018</td></tr>
+                <tr><td><span class="em-purple">Quantum systems</span></td><td>Interacting qubits, exponential Hilbert space</td><td>Fujii & Nakajima 2017</td></tr>
+                <tr><td><span class="em-cyan">Biological neurons</span></td><td>Cortical microcircuits (Liquid State Machines)</td><td>Maass et al. 2002</td></tr>
+            </tbody>
+        </table>
+        <div class="fragment principle-box small-text" style="margin-top: 10px;">
+            <strong>Key insight:</strong> A single nonlinear node with delay feedback creates a <em>virtual reservoir</em> via time-multiplexing. Connects to <span class="keyword">delay-differential equations</span> and <span class="keyword">Takens' embedding theorem</span>.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================================ -->
+<!-- VERTICAL DECK: PATHAK / KS CASE STUDY -->
+<!-- ============================================================ -->
+<section>
+    <section data-background-color="#0d1117">
+        <h1 style="font-size: 1.6em;">Case Study: Predicting Chaos</h1>
+        <p style="color: var(--accent-cyan); font-size: 1em;">
+            Pathak et al., Physical Review Letters (2018)
+        </p>
+    </section>
+
+    <section>
+        <h2>The Kuramoto-Sivashinsky Equation</h2>
+        <p class="small-text">A model of <span class="keyword">spatiotemporal chaos</span>, originally for flame-front instabilities (Kuramoto 1978, Sivashinsky 1977):</p>
+        <div class="equation-box" style="width: 90%; margin: 10px auto;">
+            $$\frac{\partial u}{\partial t} = -u \frac{\partial u}{\partial x} - \frac{\partial^2 u}{\partial x^2} - \frac{\partial^4 u}{\partial x^4}$$
+        </div>
+        <div class="two-column small-text" style="margin-top: 10px;">
+            <div>
+                <ul>
+                    <li class="fragment">$-u \, u_x$: nonlinear advection (energy transfer between scales)</li>
+                    <li class="fragment">$-u_{xx}$: <span class="em-red">anti-diffusion</span> (energy injection at small scales)</li>
+                    <li class="fragment">$-u_{xxxx}$: hyper-diffusion (energy dissipation at smallest scales)</li>
+                </ul>
+                <div class="fragment highlight-box tiny-text" style="margin-top: 8px;">
+                    Produces chaos with positive Lyapunov exponents. Long-term prediction is <em>fundamentally impossible</em>. The question: how many Lyapunov times can you predict?
+                </div>
+            </div>
+            <div>
+                <div id="ks-solution-viz" style="width: 100%; height: 220px;"></div>
+                <p class="tiny-text center-text" style="color: #8b949e;">Simulated KS-like spatiotemporal pattern</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Pathak et al.: Architecture &amp; Results</h2>
+        <div id="pathak-arch-viz" style="width: 100%; height: 200px; margin: 6px 0;"></div>
+        <div class="two-column" style="margin-top: 6px;">
+            <div>
+                <table class="styled-table tiny-text">
+                    <tbody>
+                        <tr><td><span class="em-purple">Reservoir size</span></td><td>$N = 5000$ neurons</td></tr>
+                        <tr><td><span class="em-blue">Input</span></td><td>64-dim spatial discretization</td></tr>
+                        <tr><td><span class="em-green">Training</span></td><td>Ridge regression only</td></tr>
+                        <tr><td><span class="em-red">Spectral radius</span></td><td>$\rho \approx 0.9$</td></tr>
+                        <tr><td><span class="em-yellow">Prediction</span></td><td>Output fed back as input</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <div class="success-box small-text">
+                    <strong>Results:</strong><br>
+                    <span class="em-green">$\sim 8$ Lyapunov times</span> of valid prediction<br>
+                    Correct Lyapunov spectrum<br>
+                    Accurate long-term climate (statistics)<br><br>
+                    <strong>All with ridge regression. No backpropagation.</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
+
+<!-- ============================================================ -->
+<!-- VERTICAL DECK: COMPARISON & SUMMARY -->
+<!-- ============================================================ -->
+<section>
+    <section>
+        <h2>Architecture Comparison</h2>
+        <table class="styled-table small-text">
+            <thead><tr><th>Feature</th><th>Vanilla RNN</th><th>LSTM</th><th>ESN</th></tr></thead>
+            <tbody>
+                <tr><td>Recurrent weights</td><td><span class="em-red">Trained (BPTT)</span></td><td><span class="em-red">Trained (BPTT)</span></td><td><span class="em-green">Fixed random</span></td></tr>
+                <tr><td>Training cost</td><td>$O(N^2 T \cdot \text{epochs})$</td><td>$O(N^2 T \cdot \text{epochs})$</td><td>$O(N^2 T + N^3)$</td></tr>
+                <tr><td>Gradient issues</td><td><span class="em-red">Vanishing/exploding</span></td><td><span class="em-green">Mitigated (cell highway)</span></td><td><span class="em-green">None</span></td></tr>
+                <tr><td>Memory</td><td>Short</td><td>Long (gated)</td><td>$\leq N$ (hard limit)</td></tr>
+                <tr><td>Interpretability</td><td>Low</td><td>Low</td><td><span class="em-green">High (linear readout)</span></td></tr>
+                <tr><td>Adaptability</td><td><span class="em-green">Learned features</span></td><td><span class="em-green">Learned features</span></td><td><span class="em-red">Random features</span></td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>Beyond: Modern Extensions</h2>
+        <div class="three-column" style="margin-top: 10px;">
+            <div class="highlight-box small-text">
+                <strong class="em-blue">Neural ODEs</strong><br>
+                <span class="tiny-text">
+                    ResNet: $h_{k+1} = h_k + f(h_k)$<br>
+                    As layers $\to \infty$: $\frac{dh}{dt} = f(h, t)$<br>
+                    Chen et al. 2018
+                </span>
+            </div>
+            <div class="success-box small-text">
+                <strong class="em-green">State Space Models</strong><br>
+                <span class="tiny-text">
+                    Mamba: structured SSM<br>
+                    $h' = Ah + Bx$, $y = Ch$<br>
+                    Linear recurrence, $O(N \log N)$
+                </span>
+            </div>
+            <div class="principle-box small-text">
+                <strong class="em-purple">Transformers</strong><br>
+                <span class="tiny-text">
+                    Attention over full sequence<br>
+                    No explicit recurrence<br>
+                    Dominant in NLP
+                </span>
+            </div>
+        </div>
+        <div class="fragment three-column" style="margin-top: 10px;">
+            <div class="arch-box tiny-text">
+                <strong class="em-orange">Next-Gen RC</strong><br>
+                Gauthier et al. 2021<br>
+                No reservoir: polynomial features<br>
+                of time-delay embeddings
+            </div>
+            <div class="arch-box tiny-text">
+                <strong class="em-cyan">GRU</strong><br>
+                Cho et al. 2014<br>
+                Simplified LSTM: 2 gates<br>
+                Often comparable performance
+            </div>
+            <div class="arch-box tiny-text">
+                <strong class="em-red">Temporal Fusion</strong><br>
+                Lim et al. 2021<br>
+                Attention + LSTM hybrid<br>
+                Multi-horizon forecasting
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Summary: Design Principles</h2>
+        <table class="styled-table small-text" style="margin-top: 10px;">
+            <thead><tr><th>Era</th><th>Architecture</th><th>Core Idea</th><th>Physics Connection</th></tr></thead>
+            <tbody>
+                <tr><td><span class="em-yellow">1980s</span></td><td>Hopfield / Boltzmann</td><td>Energy minimization as computation</td><td>Ising model, stat mech</td></tr>
+                <tr><td><span class="em-yellow">1990s</span></td><td>RNN / LSTM</td><td>Learned dynamics in hidden space</td><td>Dynamical systems, state-space</td></tr>
+                <tr><td><span class="em-yellow">2000s</span></td><td>Echo State Networks</td><td>Random dynamics + linear readout</td><td>Edge of chaos, physical reservoirs</td></tr>
+                <tr><td><span class="em-yellow">2020s</span></td><td>Transformers / SSMs</td><td>Attention = Hopfield retrieval</td><td>Modern Hopfield energy</td></tr>
+            </tbody>
+        </table>
+        <div class="fragment principle-box small-text" style="margin-top: 10px;">
+            <strong>The takeaway:</strong> Understanding these architectures is about understanding the <em>design logic</em>: what problem does each design choice solve? What tradeoff does it make? This is how you invent the next one.
+        </div>
+    </section>
+
+    <section>
+        <h2>References</h2>
+        <div class="tiny-text" style="column-count: 2; column-gap: 25px; line-height: 1.8;">
+            <p><strong>Hopfield & Boltzmann</strong></p>
+            <p>Hopfield (1982). Neural networks and physical systems with emergent collective computational abilities. <em>PNAS</em>.</p>
+            <p>Ramsauer et al. (2021). Hopfield networks is all you need. <em>ICLR</em>.</p>
+            <p>McEliece et al. (1987). The capacity of the Hopfield associative memory. <em>IEEE TIT</em>.</p>
+            <p>Hinton & Sejnowski (1983). Boltzmann machines. <em>CVPR</em>.</p>
+            <p>Hinton (2002). Contrastive divergence. <em>Neural Computation</em>.</p>
+            <p>Hinton et al. (2006). Deep belief nets. <em>Neural Computation</em>.</p>
+            <p><strong>RNNs & LSTMs</strong></p>
+            <p>Hochreiter & Schmidhuber (1997). Long short-term memory. <em>Neural Computation</em>.</p>
+            <p>Cho et al. (2014). GRU encoder-decoder. <em>EMNLP</em>.</p>
+            <p><strong>Reservoir Computing</strong></p>
+            <p>Jaeger (2001). Echo state networks. <em>GMD Report 148</em>.</p>
+            <p>Maass et al. (2002). Liquid state machines. <em>Neural Computation</em>.</p>
+            <p>Pathak et al. (2018). Predicting spatiotemporal chaos. <em>PRL</em>.</p>
+            <p>Dambre et al. (2012). Information processing capacity. <em>Scientific Reports</em>.</p>
+            <p>Gauthier et al. (2021). Next generation RC. <em>Nature Comm.</em></p>
+            <p><strong>Modern</strong></p>
+            <p>Chen et al. (2018). Neural ODEs. <em>NeurIPS</em>.</p>
+            <p>LeCun et al. (2006). Energy-based learning. <em>MIT Press</em>.</p>
+        </div>
+    </section>
+</section>
+
+</div><!-- end slides -->
+</div><!-- end reveal -->
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.min.js"></script>
+<script>
+Reveal.initialize({
+    hash: true,
+    width: 1200, height: 700,
+    margin: 0.04,
+    transition: 'fade',
+    slideNumber: 'c/t',
+    plugins: [RevealHighlight]
+});
+</script>
+
+<script>
+// =========================================================
+// SHARED HELPERS
+// =========================================================
+function makeSVG(containerId, width, height, margins) {
+    const container = d3.select('#' + containerId);
+    container.selectAll('*').remove();
+    const svg = container.append('svg')
+        .attr('width', width).attr('height', height);
+    const g = svg.append('g')
+        .attr('transform', `translate(${margins.left},${margins.top})`);
+    return { svg, g, iW: width - margins.left - margins.right, iH: height - margins.top - margins.bottom };
+}
+
+function drawAxes(g, xS, yS, iW, iH, xLabel, yLabel, ticks) {
+    ticks = ticks || 5;
+    g.append('g').attr('transform', `translate(0,${iH})`)
+        .call(d3.axisBottom(xS).ticks(ticks))
+        .selectAll('text').style('fill', '#abb2bf').style('font-size', '10px');
+    g.append('g')
+        .call(d3.axisLeft(yS).ticks(ticks))
+        .selectAll('text').style('fill', '#abb2bf').style('font-size', '10px');
+    g.selectAll('.domain, .tick line').attr('stroke', '#555');
+    if (xLabel) g.append('text').attr('x', iW / 2).attr('y', iH + 30)
+        .attr('text-anchor', 'middle').style('fill', '#888').style('font-size', '10px').text(xLabel);
+    if (yLabel) g.append('text').attr('transform', 'rotate(-90)')
+        .attr('x', -iH / 2).attr('y', -35)
+        .attr('text-anchor', 'middle').style('fill', '#888').style('font-size', '10px').text(yLabel);
+}
+
+const COLORS = ['#61afef', '#98c379', '#e5c07b', '#e06c75', '#c678dd', '#56b6c2', '#d19a66', '#ff6b81'];
+
+// =========================================================
+// 1. ISING MODEL SIMULATION
+// =========================================================
+let isingGrid, isingSize = 50, isingTimer = null, isingRunning = false;
+
+function initIsing() {
+    isingGrid = Array.from({ length: isingSize }, () =>
+        Array.from({ length: isingSize }, () => Math.random() < 0.5 ? 1 : -1));
+    drawIsing();
+}
+function drawIsing() {
+    const container = d3.select('#ising-viz');
+    container.selectAll('*').remove();
+    const size = Math.min(container.node().clientWidth || 280, 280);
+    const cellSize = size / isingSize;
+    const canvas = container.append('canvas').attr('width', size).attr('height', size).style('border-radius', '6px');
+    const ctx = canvas.node().getContext('2d');
+    for (let i = 0; i < isingSize; i++)
+        for (let j = 0; j < isingSize; j++) {
+            ctx.fillStyle = isingGrid[i][j] === 1 ? '#61afef' : '#1a1a2e';
+            ctx.fillRect(j * cellSize, i * cellSize, cellSize, cellSize);
+        }
+}
+function isingStep(T) {
+    const N = isingSize;
+    for (let step = 0; step < N * N; step++) {
+        const i = Math.floor(Math.random() * N), j = Math.floor(Math.random() * N);
+        const s = isingGrid[i][j];
+        const nb = isingGrid[(i-1+N)%N][j] + isingGrid[(i+1)%N][j] + isingGrid[i][(j-1+N)%N] + isingGrid[i][(j+1)%N];
+        const dE = 2 * s * nb;
+        if (dE <= 0 || Math.random() < Math.exp(-dE / T)) isingGrid[i][j] = -s;
+    }
+}
+function toggleIsing() {
+    isingRunning = !isingRunning;
+    document.getElementById('ising-play-btn').textContent = isingRunning ? 'Pause' : 'Play';
+    if (isingRunning) isingTimer = setInterval(() => { isingStep(parseFloat(document.getElementById('ising-temp').value)); drawIsing(); }, 50);
+    else clearInterval(isingTimer);
+}
+function resetIsing() { if (isingRunning) toggleIsing(); initIsing(); }
+document.getElementById('ising-temp').addEventListener('input', function() { document.getElementById('ising-temp-val').textContent = parseFloat(this.value).toFixed(2); });
+
+// =========================================================
+// 2. HOPFIELD NETWORK
+// =========================================================
+let hopfieldState, hopfieldPatterns = [], hopfieldN = 10;
+function initHopfield() { hopfieldState = Array.from({ length: hopfieldN * hopfieldN }, () => Math.random() < 0.5 ? 1 : -1); hopfieldPatterns = []; drawHopfield(); }
+function drawHopfield() {
+    const container = d3.select('#hopfield-viz');
+    container.selectAll('*').remove();
+    const size = Math.min(container.node().clientWidth || 220, 220);
+    const cellSize = size / hopfieldN;
+    const canvas = container.append('canvas').attr('width', size).attr('height', size).style('border-radius', '6px').style('border', '1px solid #444');
+    const ctx = canvas.node().getContext('2d');
+    for (let i = 0; i < hopfieldN; i++)
+        for (let j = 0; j < hopfieldN; j++) {
+            ctx.fillStyle = hopfieldState[i * hopfieldN + j] === 1 ? '#98c379' : '#1a1a2e';
+            ctx.fillRect(j * cellSize, i * cellSize, cellSize, cellSize);
+        }
+}
+function hopfieldStore() {
+    const N = hopfieldN, pattern = Array.from({ length: N * N }, () => -1);
+    const pIdx = hopfieldPatterns.length % 3;
+    for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
+        if (pIdx === 0 && (i === Math.floor(N/2) || j === Math.floor(N/2))) pattern[i*N+j] = 1;
+        if (pIdx === 1 && (i === 0 || i === N-1 || j === 0 || j === N-1)) pattern[i*N+j] = 1;
+        if (pIdx === 2 && (i === j || i === N-1-j)) pattern[i*N+j] = 1;
+    }
+    hopfieldPatterns.push([...pattern]); hopfieldState = [...pattern];
+    document.getElementById('hopfield-status').textContent = `Stored ${hopfieldPatterns.length} pattern(s). Now click "Corrupt".`;
+    drawHopfield();
+}
+function hopfieldCorrupt() {
+    if (!hopfieldPatterns.length) return;
+    hopfieldState = hopfieldPatterns[hopfieldPatterns.length-1].map(s => Math.random() < 0.3 ? -s : s);
+    document.getElementById('hopfield-status').textContent = 'Corrupted 30% of pixels. Click "Recall".';
+    drawHopfield();
+}
+function hopfieldRecall() {
+    if (!hopfieldPatterns.length) return;
+    const N2 = hopfieldN * hopfieldN;
+    const W = Array.from({ length: N2 }, () => new Float32Array(N2));
+    for (const p of hopfieldPatterns) for (let i = 0; i < N2; i++) for (let j = 0; j < N2; j++) if (i !== j) W[i][j] += p[i] * p[j] / N2;
+    for (let iter = 0; iter < 50; iter++) {
+        const idx = Math.floor(Math.random() * N2);
+        let h = 0; for (let j = 0; j < N2; j++) h += W[idx][j] * hopfieldState[j];
+        hopfieldState[idx] = h >= 0 ? 1 : -1;
+    }
+    document.getElementById('hopfield-status').textContent = 'Recalled! Network converged to nearest stored pattern.';
+    drawHopfield();
+}
+
+// =========================================================
+// 3. BOLTZMANN MACHINE DIAGRAM
+// =========================================================
+function drawBoltzmannArch() {
+    const { g, iW, iH } = makeSVG('boltzmann-arch', 350, 250, { left: 20, right: 20, top: 20, bottom: 20 });
+    const visY = iH - 20, hidY = 30, nVis = 5, nHid = 4;
+    const visX = d3.range(nVis).map(i => 30 + i * (iW - 60) / (nVis - 1));
+    const hidX = d3.range(nHid).map(i => 50 + i * (iW - 100) / (nHid - 1));
+    for (const vx of visX) for (const hx of hidX)
+        g.append('line').attr('x1', vx).attr('y1', visY).attr('x2', hx).attr('y2', hidY).attr('stroke', '#444').attr('stroke-width', 0.8);
+    for (const vx of visX) g.append('circle').attr('cx', vx).attr('cy', visY).attr('r', 14).attr('fill', 'rgba(97,175,239,0.3)').attr('stroke', '#61afef').attr('stroke-width', 1.5);
+    for (const hx of hidX) g.append('circle').attr('cx', hx).attr('cy', hidY).attr('r', 14).attr('fill', 'rgba(198,120,221,0.3)').attr('stroke', '#c678dd').attr('stroke-width', 1.5);
+    g.append('text').attr('x', iW/2).attr('y', visY+35).attr('text-anchor', 'middle').style('fill', '#61afef').style('font-size', '11px').text('Visible units v (observed data)');
+    g.append('text').attr('x', iW/2).attr('y', hidY-15).attr('text-anchor', 'middle').style('fill', '#c678dd').style('font-size', '11px').text('Hidden units h (latent features)');
+    g.append('text').attr('x', iW+10).attr('y', (visY+hidY)/2+4).style('fill', '#e5c07b').style('font-size', '11px').text('W');
+    // No intra-layer connections label
+    g.append('text').attr('x', iW/2).attr('y', (visY+hidY)/2+4).attr('text-anchor', 'middle').style('fill', '#555').style('font-size', '9px').text('(no connections within layers)');
+}
+
+// =========================================================
+// 4. RNN ARCHITECTURE (FIXED: correct subscripts + arrows)
+// =========================================================
+function drawRNNArch() {
+    const { svg, g, iW, iH } = makeSVG('rnn-arch-viz', 700, 260, { left: 30, right: 30, top: 20, bottom: 30 });
+    const nSteps = 5, dx = iW / (nSteps + 1);
+    const inputY = iH - 10, hiddenY = iH / 2, outputY = 20;
+    // Arrowhead defs
+    const defs = svg.append('defs');
+    defs.append('marker').attr('id', 'arr').attr('markerWidth', 8).attr('markerHeight', 6).attr('refX', 8).attr('refY', 3).attr('orient', 'auto')
+        .append('path').attr('d', 'M0,0 L8,3 L0,6 Z').attr('fill', '#555');
+    defs.append('marker').attr('id', 'arrY').attr('markerWidth', 8).attr('markerHeight', 6).attr('refX', 8).attr('refY', 3).attr('orient', 'auto')
+        .append('path').attr('d', 'M0,0 L8,3 L0,6 Z').attr('fill', '#e5c07b');
+    defs.append('marker').attr('id', 'arrG').attr('markerWidth', 8).attr('markerHeight', 6).attr('refX', 8).attr('refY', 3).attr('orient', 'auto')
+        .append('path').attr('d', 'M0,0 L8,3 L0,6 Z').attr('fill', '#98c379');
+
+    for (let i = 0; i < nSteps; i++) {
+        const x = dx * (i + 1);
+        // Input node
+        g.append('circle').attr('cx', x).attr('cy', inputY).attr('r', 16).attr('fill', 'rgba(97,175,239,0.2)').attr('stroke', '#61afef');
+        g.append('text').attr('x', x).attr('y', inputY + 5).attr('text-anchor', 'middle').style('fill', '#61afef').style('font-size', '12px').text('x');
+        g.append('text').attr('x', x + 8).attr('y', inputY + 10).attr('text-anchor', 'start').style('fill', '#61afef').style('font-size', '8px').text(i + 1);
+        // Hidden node
+        g.append('rect').attr('x', x - 18).attr('y', hiddenY - 18).attr('width', 36).attr('height', 36).attr('rx', 6)
+            .attr('fill', 'rgba(198,120,221,0.2)').attr('stroke', '#c678dd');
+        g.append('text').attr('x', x).attr('y', hiddenY + 5).attr('text-anchor', 'middle').style('fill', '#c678dd').style('font-size', '12px').text('h');
+        g.append('text').attr('x', x + 8).attr('y', hiddenY + 10).attr('text-anchor', 'start').style('fill', '#c678dd').style('font-size', '8px').text(i + 1);
+        // Input -> Hidden (W_xh)
+        g.append('line').attr('x1', x).attr('y1', inputY - 18).attr('x2', x).attr('y2', hiddenY + 20).attr('stroke', '#555').attr('stroke-width', 1.5).attr('marker-end', 'url(#arr)');
+        // Hidden -> next output (h_i predicts x_{i+1}): dotted diagonal
+        if (i < nSteps - 1) {
+            const xNext = dx * (i + 2);
+            // Output prediction node
+            g.append('circle').attr('cx', xNext).attr('cy', outputY).attr('r', 14).attr('fill', 'rgba(152,195,121,0.2)').attr('stroke', '#98c379');
+            // x-hat label with correct subscript (i+2)
+            g.append('text').attr('x', xNext - 4).attr('y', outputY + 4).attr('text-anchor', 'middle').style('fill', '#98c379').style('font-size', '11px').text('x\u0302');
+            g.append('text').attr('x', xNext + 8).attr('y', outputY + 9).attr('text-anchor', 'start').style('fill', '#98c379').style('font-size', '7px').text(i + 2);
+            // Diagonal arrow from h_i to x-hat_{i+1} (W_hy)
+            g.append('line').attr('x1', x + 12).attr('y1', hiddenY - 16).attr('x2', xNext - 10).attr('y2', outputY + 12)
+                .attr('stroke', '#98c379').attr('stroke-width', 1.5).attr('stroke-dasharray', '4,3').attr('marker-end', 'url(#arrG)');
+        }
+        // Recurrent arrow (W_hh)
+        if (i < nSteps - 1) {
+            const x2 = dx * (i + 2);
+            g.append('line').attr('x1', x + 20).attr('y1', hiddenY).attr('x2', x2 - 20).attr('y2', hiddenY)
+                .attr('stroke', '#e5c07b').attr('stroke-width', 2).attr('marker-end', 'url(#arrY)');
+        }
+    }
+    // Weight labels
+    const midX = dx * 2.5;
+    g.append('text').attr('x', midX).attr('y', hiddenY - 26).attr('text-anchor', 'middle').style('fill', '#e5c07b').style('font-size', '10px').text('W\u2095\u2095 (recurrent)');
+    g.append('text').attr('x', dx - 14).attr('y', (inputY + hiddenY) / 2).style('fill', '#888').style('font-size', '9px').text('W\u2093\u2095');
+    g.append('text').attr('x', dx * 2 + 16).attr('y', (outputY + hiddenY) / 2 - 5).style('fill', '#98c379').style('font-size', '9px').text('W\u2095\u2099');
+}
+
+// =========================================================
+// 5. BPTT VISUALIZATION
+// =========================================================
+function drawBPTT() {
+    const { svg, g, iW, iH } = makeSVG('bptt-viz', 650, 180, { left: 20, right: 20, top: 10, bottom: 10 });
+    const nSteps = 5, dx = iW / (nSteps + 1), y = iH / 2;
+    const defs = svg.append('defs');
+    defs.append('marker').attr('id', 'arrowR').attr('markerWidth', 8).attr('markerHeight', 6).attr('refX', 0).attr('refY', 3).attr('orient', 'auto')
+        .append('path').attr('d', 'M8,0 L0,3 L8,6 Z').attr('fill', '#e06c75');
+    for (let i = 0; i < nSteps; i++) {
+        const x = dx * (i + 1);
+        g.append('rect').attr('x', x-20).attr('y', y-20).attr('width', 40).attr('height', 40).attr('rx', 6)
+            .attr('fill', 'rgba(97,175,239,0.15)').attr('stroke', '#61afef');
+        g.append('text').attr('x', x).attr('y', y+5).attr('text-anchor', 'middle').style('fill', '#61afef').style('font-size', '11px').text('h' + (i+1));
+        // Loss
+        g.append('line').attr('x1', x).attr('y1', y-22).attr('x2', x).attr('y2', y-45).attr('stroke', '#98c379').attr('stroke-width', 1).attr('stroke-dasharray', '3,3');
+        g.append('text').attr('x', x).attr('y', y-50).attr('text-anchor', 'middle').style('fill', '#98c379').style('font-size', '9px').text('L' + (i+1));
+        // Forward
+        if (i < nSteps - 1) g.append('line').attr('x1', x+22).attr('y1', y).attr('x2', dx*(i+2)-22).attr('y2', y).attr('stroke', '#61afef').attr('stroke-width', 1.5);
+    }
+    // Backward gradient
+    for (let i = nSteps - 1; i > 0; i--) {
+        const opacity = Math.pow(0.65, nSteps - 1 - i);
+        g.append('line').attr('x1', dx*(i+1)-22).attr('y1', y+28).attr('x2', dx*i+22).attr('y2', y+28)
+            .attr('stroke', '#e06c75').attr('stroke-width', Math.max(0.5, 3 * opacity)).attr('opacity', Math.max(0.2, opacity))
+            .attr('marker-end', 'url(#arrowR)');
+    }
+    g.append('text').attr('x', iW/2).attr('y', y+52).attr('text-anchor', 'middle').style('fill', '#e06c75').style('font-size', '10px').text('Gradient shrinks as it flows backward through time');
+}
+
+// =========================================================
+// 6. VANISHING GRADIENT INTERACTIVE
+// =========================================================
+function drawVanishingGrad() {
+    const rho = parseFloat(document.getElementById('vg-rho').value);
+    const steps = parseInt(document.getElementById('vg-steps').value);
+    document.getElementById('vg-rho-val').textContent = rho.toFixed(2);
+    document.getElementById('vg-steps-val').textContent = steps;
+    const { g, iW, iH } = makeSVG('vanishing-grad-viz', 580, 260, { left: 55, right: 20, top: 20, bottom: 35 });
+    const data = [];
+    for (let k = 0; k < steps; k++) {
+        const gradMag = Math.pow(rho * 0.65, k);
+        data.push({ k, gradMag: Math.log10(Math.max(gradMag, 1e-20)) });
+    }
+    const xS = d3.scaleLinear().domain([0, steps - 1]).range([0, iW]);
+    const yMin = Math.min(-6, d3.min(data, d => d.gradMag) - 0.5);
+    const yMax = Math.max(2, d3.max(data, d => d.gradMag) + 0.5);
+    const yS = d3.scaleLinear().domain([yMin, yMax]).range([iH, 0]);
+    drawAxes(g, xS, yS, iW, iH, 'Time steps back', 'log\u2081\u2080(|gradient|)', 5);
+    const safeY = yS(Math.log10(0.01));
+    if (safeY > 0 && safeY < iH) {
+        g.append('rect').attr('x', 0).attr('y', 0).attr('width', iW).attr('height', safeY).attr('fill', 'rgba(152,195,121,0.08)');
+        g.append('rect').attr('x', 0).attr('y', safeY).attr('width', iW).attr('height', iH - safeY).attr('fill', 'rgba(224,108,117,0.08)');
+        g.append('line').attr('x1', 0).attr('y1', safeY).attr('x2', iW).attr('y2', safeY).attr('stroke', '#e06c75').attr('stroke-dasharray', '4,4').attr('opacity', 0.5);
+        g.append('text').attr('x', iW - 5).attr('y', safeY + 14).attr('text-anchor', 'end').style('fill', '#e06c75').style('font-size', '9px').text('threshold = 0.01');
+    }
+    const line = d3.line().x(d => xS(d.k)).y(d => yS(d.gradMag)).curve(d3.curveMonotoneX);
+    g.append('path').datum(data).attr('d', line).attr('fill', 'none').attr('stroke', '#e5c07b').attr('stroke-width', 2.5);
+    g.selectAll('.dot').data(data).join('circle').attr('cx', d => xS(d.k)).attr('cy', d => yS(d.gradMag)).attr('r', 3)
+        .attr('fill', d => d.gradMag < Math.log10(0.01) ? '#e06c75' : '#98c379');
+    g.append('text').attr('x', iW - 5).attr('y', 15).attr('text-anchor', 'end').style('fill', '#888').style('font-size', '10px')
+        .text('Effective \u03C1 = ' + (rho * 0.65).toFixed(2));
+}
+document.getElementById('vg-rho').addEventListener('input', drawVanishingGrad);
+document.getElementById('vg-steps').addEventListener('input', drawVanishingGrad);
+
+// =========================================================
+// 7. LSTM ARCHITECTURE (simplified block diagram)
+// =========================================================
+function drawLSTMArch() {
+    const { g, iW, iH } = makeSVG('lstm-arch-viz', 650, 290, { left: 20, right: 20, top: 15, bottom: 15 });
+    // Cell state highway (thick yellow line at top)
+    g.append('line').attr('x1', 30).attr('y1', 35).attr('x2', iW - 30).attr('y2', 35).attr('stroke', '#e5c07b').attr('stroke-width', 4);
+    g.append('text').attr('x', iW/2).attr('y', 18).attr('text-anchor', 'middle').style('fill', '#e5c07b').style('font-size', '12px').text('Cell state c\u209C (additive highway)');
+    // Arrow at end of highway
+    g.append('text').attr('x', iW - 20).attr('y', 40).style('fill', '#e5c07b').style('font-size', '16px').text('\u2192');
+
+    // Gate boxes
+    const gates = [
+        { x: 110, label: 'Forget', sub: 'f\u209C = \u03C3(...)', color: '#e06c75', op: '\u00D7', opX: 110 },
+        { x: 250, label: 'Input', sub: 'i\u209C = \u03C3(...)', color: '#98c379', op: null },
+        { x: 370, label: 'Candidate', sub: 'c\u0303\u209C = tanh(...)', color: '#61afef', op: '+', opX: 310 },
+        { x: 520, label: 'Output', sub: 'o\u209C = \u03C3(...)', color: '#c678dd', op: null },
+    ];
+    for (const gt of gates) {
+        g.append('rect').attr('x', gt.x - 50).attr('y', 90).attr('width', 100).attr('height', 55)
+            .attr('rx', 8).attr('fill', `${gt.color}22`).attr('stroke', gt.color).attr('stroke-width', 1.5);
+        g.append('text').attr('x', gt.x).attr('y', 110).attr('text-anchor', 'middle')
+            .style('fill', gt.color).style('font-size', '12px').style('font-weight', 'bold').text(gt.label);
+        g.append('text').attr('x', gt.x).attr('y', 130).attr('text-anchor', 'middle')
+            .style('fill', gt.color).style('font-size', '9px').text(gt.sub);
+        // Arrow to cell state
+        g.append('line').attr('x1', gt.x).attr('y1', 88).attr('x2', gt.x).attr('y2', 42)
+            .attr('stroke', gt.color).attr('stroke-width', 1.5).attr('stroke-dasharray', '3,3');
+    }
+    // Operators on highway
+    const opStyle = { fontSize: '18px', fontWeight: 'bold' };
+    g.append('circle').attr('cx', 110).attr('cy', 60).attr('r', 10).attr('fill', '#1a1a2e').attr('stroke', '#e06c75');
+    g.append('text').attr('x', 110).attr('y', 65).attr('text-anchor', 'middle').style('fill', '#e06c75').style('font-size', '14px').text('\u00D7');
+    g.append('circle').attr('cx', 310).attr('cy', 60).attr('r', 10).attr('fill', '#1a1a2e').attr('stroke', '#98c379');
+    g.append('text').attr('x', 310).attr('y', 65).attr('text-anchor', 'middle').style('fill', '#98c379').style('font-size', '14px').text('+');
+    // tanh at output
+    g.append('rect').attr('x', 495).attr('y', 50).attr('width', 50).attr('height', 25).attr('rx', 5).attr('fill', 'rgba(86,182,194,0.2)').attr('stroke', '#56b6c2');
+    g.append('text').attr('x', 520).attr('y', 67).attr('text-anchor', 'middle').style('fill', '#56b6c2').style('font-size', '10px').text('tanh');
+
+    // Inputs at bottom
+    g.append('text').attr('x', 30).attr('y', iH - 20).style('fill', '#c678dd').style('font-size', '12px').text('h\u209C\u208B\u2081');
+    g.append('line').attr('x1', 65).attr('y1', iH - 25).attr('x2', 65).attr('y2', 155)
+        .attr('stroke', '#c678dd').attr('stroke-width', 1.5);
+    g.append('line').attr('x1', 65).attr('y1', 155).attr('x2', iW - 60).attr('y2', 155)
+        .attr('stroke', '#c678dd').attr('stroke-width', 1);
+    g.append('text').attr('x', 30).attr('y', iH).style('fill', '#61afef').style('font-size', '12px').text('x\u209C');
+    g.append('line').attr('x1', 50).attr('y1', iH - 5).attr('x2', 50).attr('y2', 170)
+        .attr('stroke', '#61afef').attr('stroke-width', 1.5);
+    g.append('line').attr('x1', 50).attr('y1', 170).attr('x2', iW - 60).attr('y2', 170)
+        .attr('stroke', '#61afef').attr('stroke-width', 1);
+    // Output
+    g.append('text').attr('x', iW - 30).attr('y', iH - 20).attr('text-anchor', 'end').style('fill', '#56b6c2').style('font-size', '12px').text('h\u209C');
+    g.append('line').attr('x1', iW - 45).attr('y1', 90).attr('x2', iW - 45).attr('y2', iH - 30).attr('stroke', '#56b6c2').attr('stroke-width', 2);
+}
+
+// =========================================================
+// 8. ESN ARCHITECTURE
+// =========================================================
+function drawESNArch() {
+    const { g, iW, iH } = makeSVG('esn-arch-viz', 350, 240, { left: 15, right: 15, top: 10, bottom: 10 });
+    const nNodes = 15;
+    const nodes = d3.range(nNodes).map(() => ({ x: 80 + Math.random() * (iW - 160), y: 30 + Math.random() * (iH - 80) }));
+    for (let i = 0; i < nNodes; i++) for (let j = i+1; j < nNodes; j++)
+        if (Math.random() < 0.25) g.append('line').attr('x1', nodes[i].x).attr('y1', nodes[i].y).attr('x2', nodes[j].x).attr('y2', nodes[j].y).attr('stroke', '#333').attr('stroke-width', 0.8);
+    for (const n of nodes) g.append('circle').attr('cx', n.x).attr('cy', n.y).attr('r', 7).attr('fill', 'rgba(198,120,221,0.3)').attr('stroke', '#c678dd');
+    // Input
+    g.append('circle').attr('cx', 20).attr('cy', iH/2).attr('r', 12).attr('fill', 'rgba(97,175,239,0.3)').attr('stroke', '#61afef');
+    g.append('text').attr('x', 20).attr('y', iH/2+4).attr('text-anchor', 'middle').style('fill', '#61afef').style('font-size', '10px').text('x');
+    for (let i = 0; i < 4; i++) g.append('line').attr('x1', 33).attr('y1', iH/2).attr('x2', nodes[i].x-8).attr('y2', nodes[i].y).attr('stroke', '#61afef').attr('stroke-width', 1).attr('opacity', 0.5);
+    // Output
+    g.append('circle').attr('cx', iW-20).attr('cy', iH/2).attr('r', 12).attr('fill', 'rgba(152,195,121,0.3)').attr('stroke', '#98c379');
+    g.append('text').attr('x', iW-20).attr('y', iH/2+4).attr('text-anchor', 'middle').style('fill', '#98c379').style('font-size', '10px').text('y');
+    for (let i = nNodes-4; i < nNodes; i++) g.append('line').attr('x1', nodes[i].x+8).attr('y1', nodes[i].y).attr('x2', iW-33).attr('y2', iH/2).attr('stroke', '#98c379').attr('stroke-width', 1).attr('opacity', 0.5);
+    g.append('text').attr('x', 20).attr('y', iH-5).attr('text-anchor', 'middle').style('fill', '#61afef').style('font-size', '9px').text('W_in (fixed)');
+    g.append('text').attr('x', iW/2).attr('y', iH-5).attr('text-anchor', 'middle').style('fill', '#c678dd').style('font-size', '9px').text('W (fixed)');
+    g.append('text').attr('x', iW-20).attr('y', iH-5).attr('text-anchor', 'middle').style('fill', '#98c379').style('font-size', '9px').text('W_out (trained)');
+}
+
+// =========================================================
+// 9. ESN DYNAMICS INTERACTIVE
+// =========================================================
+let esnW, esnWin;
+function initESNDynamics() {
+    const N = 8;
+    esnW = Array.from({ length: N }, () => Array.from({ length: N }, () => (Math.random() - 0.5) * 2));
+    esnWin = Array.from({ length: N }, () => (Math.random() - 0.5) * 2);
+}
+function drawESNDynamics() {
+    const rho = parseFloat(document.getElementById('esn-rho').value);
+    const freq = parseFloat(document.getElementById('esn-freq').value);
+    document.getElementById('esn-rho-val').textContent = rho.toFixed(2);
+    document.getElementById('esn-freq-val').textContent = freq.toFixed(2);
+    const N = 8, T = 200, scale = rho / 1.5;
+    const states = Array.from({ length: N }, () => []), input = [];
+    let h = new Array(N).fill(0);
+    for (let t = 0; t < T; t++) {
+        const x = Math.sin(2 * Math.PI * freq * t); input.push(x);
+        const newH = new Array(N).fill(0);
+        for (let i = 0; i < N; i++) { let s = esnWin[i] * x; for (let j = 0; j < N; j++) s += esnW[i][j] * scale * h[j]; newH[i] = Math.tanh(s); }
+        h = newH; for (let i = 0; i < N; i++) states[i].push(h[i]);
+    }
+    const { g, iW, iH } = makeSVG('esn-dynamics-viz', 580, 260, { left: 45, right: 15, top: 15, bottom: 30 });
+    const xS = d3.scaleLinear().domain([0, T-1]).range([0, iW]);
+    const yS = d3.scaleLinear().domain([-1.2, 1.2]).range([iH, 0]);
+    drawAxes(g, xS, yS, iW, iH, 'Time step', 'Activation');
+    g.append('path').datum(input).attr('d', d3.line().x((d,i) => xS(i)).y(d => yS(d * 0.5)))
+        .attr('fill', 'none').attr('stroke', '#61afef').attr('stroke-width', 2).attr('opacity', 0.4);
+    for (let i = 0; i < N; i++)
+        g.append('path').datum(states[i]).attr('d', d3.line().x((d,j) => xS(j)).y(d => yS(d)))
+            .attr('fill', 'none').attr('stroke', COLORS[i]).attr('stroke-width', 1.2).attr('opacity', 0.7);
+}
+function resetESN() { initESNDynamics(); drawESNDynamics(); }
+document.getElementById('esn-rho').addEventListener('input', drawESNDynamics);
+document.getElementById('esn-freq').addEventListener('input', drawESNDynamics);
+
+// =========================================================
+// 10. MEMORY CAPACITY
+// =========================================================
+function drawMemoryCapacity() {
+    const { g, iW, iH } = makeSVG('memory-capacity-viz', 280, 240, { left: 45, right: 15, top: 15, bottom: 35 });
+    const data = d3.range(0, 1.01, 0.05).map(rho => ({
+        rho, linear: rho < 0.3 ? rho * 20 : Math.min(50, 15 + 40 * rho),
+        nonlinear: rho < 0.3 ? 50 - rho * 20 : Math.max(0, 50 - 15 - 40 * rho)
+    }));
+    const xS = d3.scaleLinear().domain([0, 1]).range([0, iW]);
+    const yS = d3.scaleLinear().domain([0, 55]).range([iH, 0]);
+    drawAxes(g, xS, yS, iW, iH, 'Spectral radius \u03C1', 'Capacity', 5);
+    g.append('path').datum(data).attr('d', d3.area().x(d => xS(d.rho)).y0(iH).y1(d => yS(d.linear)).curve(d3.curveMonotoneX))
+        .attr('fill', 'rgba(97,175,239,0.3)').attr('stroke', '#61afef').attr('stroke-width', 1.5);
+    g.append('path').datum(data).attr('d', d3.area().x(d => xS(d.rho)).y0(d => yS(d.linear)).y1(d => yS(d.linear + d.nonlinear)).curve(d3.curveMonotoneX))
+        .attr('fill', 'rgba(224,108,117,0.2)').attr('stroke', '#e06c75').attr('stroke-width', 1.5);
+    g.append('rect').attr('x', iW-100).attr('y', 5).attr('width', 10).attr('height', 10).attr('fill', 'rgba(97,175,239,0.5)');
+    g.append('text').attr('x', iW-85).attr('y', 14).style('fill', '#61afef').style('font-size', '9px').text('Linear memory');
+    g.append('rect').attr('x', iW-100).attr('y', 20).attr('width', 10).attr('height', 10).attr('fill', 'rgba(224,108,117,0.4)');
+    g.append('text').attr('x', iW-85).attr('y', 29).style('fill', '#e06c75').style('font-size', '9px').text('Nonlinear comp.');
+    g.append('line').attr('x1', 0).attr('y1', yS(50)).attr('x2', iW).attr('y2', yS(50)).attr('stroke', '#888').attr('stroke-dasharray', '4,3');
+    g.append('text').attr('x', iW).attr('y', yS(50)-4).attr('text-anchor', 'end').style('fill', '#888').style('font-size', '9px').text('Total = N');
+}
+
+// =========================================================
+// 11. KS SOLUTION
+// =========================================================
+function drawKSSolution() {
+    const { g, iW, iH } = makeSVG('ks-solution-viz', 300, 200, { left: 35, right: 10, top: 10, bottom: 30 });
+    const nx = 64, nt = 80, data = [];
+    for (let t = 0; t < nt; t++) for (let x = 0; x < nx; x++) {
+        const v = Math.sin(2*Math.PI*x/nx + 0.3*t) * Math.cos(4*Math.PI*x/nx - 0.15*t) + 0.5*Math.sin(6*Math.PI*x/nx + 0.5*t)*Math.exp(-0.01*t) + 0.3*Math.cos(3*Math.PI*x/nx + 0.2*t + Math.sin(0.1*t));
+        data.push({ x, t, v });
+    }
+    const xS = d3.scaleLinear().domain([0, nx-1]).range([0, iW]);
+    const yS = d3.scaleLinear().domain([0, nt-1]).range([0, iH]);
+    const cS = d3.scaleSequential(d3.interpolateRdBu).domain([-2, 2]);
+    const cW = iW/nx, cH = iH/nt;
+    for (const d of data) g.append('rect').attr('x', xS(d.x)).attr('y', yS(d.t)).attr('width', cW+0.5).attr('height', cH+0.5).attr('fill', cS(d.v));
+    g.append('text').attr('x', iW/2).attr('y', iH+22).attr('text-anchor', 'middle').style('fill', '#888').style('font-size', '10px').text('Space x');
+    g.append('text').attr('transform', 'rotate(-90)').attr('x', -iH/2).attr('y', -25).attr('text-anchor', 'middle').style('fill', '#888').style('font-size', '10px').text('Time t');
+}
+
+// =========================================================
+// 12. PATHAK ARCHITECTURE
+// =========================================================
+function drawPathakArch() {
+    const { g, iW, iH } = makeSVG('pathak-arch-viz', 650, 180, { left: 15, right: 15, top: 10, bottom: 10 });
+    const bW = 110, bH = 45;
+    // Input
+    g.append('rect').attr('x', 15).attr('y', 60).attr('width', bW).attr('height', bH).attr('rx', 8).attr('fill', 'rgba(97,175,239,0.15)').attr('stroke', '#61afef');
+    g.append('text').attr('x', 70).attr('y', 80).attr('text-anchor', 'middle').style('fill', '#61afef').style('font-size', '10px').text('KS data u(x,t)');
+    g.append('text').attr('x', 70).attr('y', 94).attr('text-anchor', 'middle').style('fill', '#61afef').style('font-size', '8px').text('64 spatial points');
+    g.append('line').attr('x1', 130).attr('y1', 82).attr('x2', 160).attr('y2', 82).attr('stroke', '#555').attr('stroke-width', 2);
+    // Reservoir
+    g.append('rect').attr('x', 165).attr('y', 45).attr('width', 140).attr('height', 75).attr('rx', 12).attr('fill', 'rgba(198,120,221,0.1)').attr('stroke', '#c678dd').attr('stroke-width', 2);
+    g.append('text').attr('x', 235).attr('y', 72).attr('text-anchor', 'middle').style('fill', '#c678dd').style('font-size', '12px').text('Reservoir');
+    g.append('text').attr('x', 235).attr('y', 90).attr('text-anchor', 'middle').style('fill', '#c678dd').style('font-size', '9px').text('N=5000, \u03C1\u22480.9');
+    g.append('line').attr('x1', 310).attr('y1', 82).attr('x2', 340).attr('y2', 82).attr('stroke', '#555').attr('stroke-width', 2);
+    // Readout
+    g.append('rect').attr('x', 345).attr('y', 60).attr('width', bW).attr('height', bH).attr('rx', 8).attr('fill', 'rgba(152,195,121,0.15)').attr('stroke', '#98c379');
+    g.append('text').attr('x', 400).attr('y', 80).attr('text-anchor', 'middle').style('fill', '#98c379').style('font-size', '10px').text('W_out (ridge)');
+    g.append('text').attr('x', 400).attr('y', 94).attr('text-anchor', 'middle').style('fill', '#98c379').style('font-size', '8px').text('Linear readout');
+    g.append('line').attr('x1', 460).attr('y1', 82).attr('x2', 490).attr('y2', 82).attr('stroke', '#555').attr('stroke-width', 2);
+    // Output
+    g.append('rect').attr('x', 495).attr('y', 60).attr('width', 90).attr('height', bH).attr('rx', 8).attr('fill', 'rgba(229,192,123,0.15)').attr('stroke', '#e5c07b');
+    g.append('text').attr('x', 540).attr('y', 80).attr('text-anchor', 'middle').style('fill', '#e5c07b').style('font-size', '10px').text('Prediction');
+    g.append('text').attr('x', 540).attr('y', 94).attr('text-anchor', 'middle').style('fill', '#e5c07b').style('font-size', '8px').text('\u00FB(x, t+\u0394t)');
+    // Feedback
+    g.append('path').attr('d', 'M 540,105 L 540,140 L 235,140 L 235,125').attr('fill', 'none').attr('stroke', '#e06c75').attr('stroke-width', 2).attr('stroke-dasharray', '5,4');
+    g.append('text').attr('x', 390).attr('y', 155).attr('text-anchor', 'middle').style('fill', '#e06c75').style('font-size', '9px').text('Output feedback (autonomous prediction mode)');
+}
+
+// =========================================================
+// INIT ALL
+// =========================================================
+initIsing();
+initHopfield();
+drawBoltzmannArch();
+drawRNNArch();
+drawBPTT();
+drawVanishingGrad();
+drawLSTMArch();
+drawESNArch();
+initESNDynamics();
+drawESNDynamics();
+drawMemoryCapacity();
+drawKSSolution();
+drawPathakArch();
+
+Reveal.on('slidechanged', event => {
+    setTimeout(() => {
+        const s = event.currentSlide;
+        if (s.querySelector('#ising-viz')) drawIsing();
+        if (s.querySelector('#hopfield-viz')) drawHopfield();
+        if (s.querySelector('#boltzmann-arch')) drawBoltzmannArch();
+        if (s.querySelector('#rnn-arch-viz')) drawRNNArch();
+        if (s.querySelector('#bptt-viz')) drawBPTT();
+        if (s.querySelector('#vanishing-grad-viz')) drawVanishingGrad();
+        if (s.querySelector('#lstm-arch-viz')) drawLSTMArch();
+        if (s.querySelector('#esn-arch-viz')) drawESNArch();
+        if (s.querySelector('#esn-dynamics-viz')) drawESNDynamics();
+        if (s.querySelector('#memory-capacity-viz')) drawMemoryCapacity();
+        if (s.querySelector('#ks-solution-viz')) drawKSSolution();
+        if (s.querySelector('#pathak-arch-viz')) drawPathakArch();
+    }, 100);
+});
+</script>
+</body>
+</html>
