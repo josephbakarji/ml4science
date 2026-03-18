@@ -1,19 +1,22 @@
 ---
 lecture_num: '16'
-title: Deep Learning for Time Series
+title: 'Advanced Deep Learning: Autoencoders & CNNs'
 date: '2026-03-17T08:00:00+03:00'
 type: lecture
-tldr: 'From Ising models to RNNs: Hopfield networks, Boltzmann machines, LSTMs, echo
-  state networks, and reservoir computing.'
+tldr: Autoencoders for dimensionality reduction and convolutional neural networks
+  for spatial data.
+preparation:
+- name: Goodfellow, Bengio, Courville — Deep Learning, Chapters 9 (CNNs) and 14 (Autoencoders)
+  type: reading
+  label: recommended
+  url: https://www.deeplearningbook.org/
 material:
-- name: Lecture Slides
-  type: slides
-  url: https://learnslides.onrender.com/slides/dl_time_series
-assignments:
-- name: 'Problem Set 5: Data-Driven Reduced Order Modeling'
-  type: homework
-  label: required
-  url: /content/hw/hw5_26/
+- name: Lecture Slides (PDF)
+  type: pdf
+  url: /static_files/lectures/16/deep-learning-lecture-2.pdf
+- name: Lecture Recording (March 17)
+  type: video
+  url: https://mailaub-my.sharepoint.com/:v:/g/personal/jb50_aub_edu_lb/IQCxDg3rVoROTpjQhKgvW32RAT23dVhppnEV2yfcnX-KBD8?e=7XcvYz&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D
 hide_from_announcments: false
-folder: 16_dl_time_series
+folder: 16_advanced_deep_learning
 ---

@@ -407,7 +407,7 @@
     url: /content/hw/hw5_26/
   hide_from_announcments: false
   folder: 15_dmd
-- lecture_num: '17'
+- lecture_num: '16'
   title: 'Advanced Deep Learning: Autoencoders & CNNs'
   date: '2026-03-17T08:00:00+03:00'
   type: lecture
@@ -422,12 +422,12 @@
   material:
   - name: Lecture Slides (PDF)
     type: pdf
-    url: /static_files/lectures/17/deep-learning-lecture-2.pdf
+    url: /static_files/lectures/16/deep-learning-lecture-2.pdf
   - name: Lecture Recording (March 17)
     type: video
     url: https://mailaub-my.sharepoint.com/:v:/g/personal/jb50_aub_edu_lb/IQCxDg3rVoROTpjQhKgvW32RAT23dVhppnEV2yfcnX-KBD8?e=7XcvYz&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D
   hide_from_announcments: false
-  folder: 17_advanced_deep_learning
+  folder: 16_advanced_deep_learning
 - lecture_num: '18'
   title: Deep Learning for Time Series
   date: '2026-03-19T08:00:00+03:00'
