@@ -1,5 +1,5 @@
 ---
-lecture_num: '18'
+lecture_num: '17'
 title: Deep Learning for Time Series
 date: '2026-03-19T08:00:00+03:00'
 type: lecture
@@ -15,5 +15,5 @@ assignments:
   label: required
   url: /content/hw/hw5_26/
 hide_from_announcments: false
-folder: 18_dl_time_series
+folder: 17_dl_time_series
 ---
