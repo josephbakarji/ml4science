@@ -1,0 +1,1252 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operator Learning &amp; Neural Operators</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/night.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/monokai.css">
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+    <style>
+        :root {
+            --accent-blue: #61afef;
+            --accent-green: #98c379;
+            --accent-yellow: #e5c07b;
+            --accent-red: #e06c75;
+            --accent-purple: #c678dd;
+            --accent-cyan: #56b6c2;
+            --accent-orange: #d19a66;
+        }
+        .reveal { font-size: 28px; }
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; }
+        .reveal h1 { font-size: 1.8em; color: var(--accent-yellow); }
+        .reveal h2 { font-size: 1.3em; color: var(--accent-blue); margin-bottom: 0.5em; }
+        .reveal h3 { font-size: 1.1em; color: var(--accent-purple); }
+        .reveal .slides section { text-align: left; font-size: 0.85em; }
+        .reveal ul { display: block; }
+        .reveal li { margin: 0.5em 0; font-size: 0.85em; }
+        .center-text { text-align: center; }
+        .small-text { font-size: 0.75em; line-height: 1.6; }
+        pre code { font-size: 0.8em !important; line-height: 1.5 !important; border-radius: 8px; }
+        .reveal pre { width: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .tiny-text { font-size: 0.6em; line-height: 1.5; }
+        .keyword { color: var(--accent-yellow); font-weight: bold; }
+        .em-blue { color: var(--accent-blue); }
+        .em-green { color: var(--accent-green); }
+        .em-red { color: var(--accent-red); }
+        .em-purple { color: var(--accent-purple); }
+        .em-cyan { color: var(--accent-cyan); }
+        .em-orange { color: var(--accent-orange); }
+        .highlight-box {
+            background: rgba(97,175,239,0.1); border-left: 4px solid var(--accent-blue);
+            padding: 12px 18px; border-radius: 6px; margin: 10px 0;
+        }
+        .warning-box {
+            background: rgba(224,108,117,0.1); border-left: 4px solid var(--accent-red);
+            padding: 12px 18px; border-radius: 6px; margin: 10px 0;
+        }
+        .success-box {
+            background: rgba(152,195,121,0.1); border-left: 4px solid var(--accent-green);
+            padding: 12px 18px; border-radius: 6px; margin: 10px 0;
+        }
+        .principle-box {
+            background: rgba(198,120,221,0.1); border-left: 4px solid var(--accent-purple);
+            padding: 12px 18px; border-radius: 6px; margin: 10px 0;
+        }
+        .equation-box {
+            background: rgba(40,44,52,0.8); border: 1px solid #444; border-radius: 8px;
+            padding: 15px 20px; text-align: center; font-size: 1.1em; margin: 10px auto;
+            display: inline-block;
+        }
+        .two-column { display: flex; gap: 30px; align-items: flex-start; }
+        .two-column > div { flex: 1; }
+        .three-column { display: flex; gap: 15px; }
+        .three-column > div { flex: 1; }
+        .slider-container {
+            display: flex; align-items: center; gap: 6px; margin: 3px 0;
+        }
+        .slider-container label { min-width: 80px; font-size: 0.85em; }
+        .slider-container input[type="range"] { flex: 1; }
+        .slider-container span { min-width: 45px; font-size: 0.85em; color: var(--accent-blue); }
+        svg text { fill: #abb2bf; font-size: 12px; }
+        .author-info { font-size: 0.7em; color: #8b949e; }
+        .styled-table {
+            width: 100%; border-collapse: collapse; font-size: 0.8em;
+        }
+        .styled-table th {
+            background: rgba(97, 175, 239, 0.15);
+            color: var(--accent-blue); padding: 10px; text-align: left;
+            border-bottom: 2px solid var(--accent-blue);
+        }
+        .styled-table td {
+            padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .styled-table tr:hover td { background: rgba(255,255,255,0.03); }
+        .control-panel {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; padding: 8px 12px; margin: 6px 0;
+        }
+        button.demo-btn {
+            background: rgba(97, 175, 239, 0.2);
+            border: 1px solid var(--accent-blue);
+            color: var(--accent-blue);
+            padding: 4px 10px; border-radius: 5px;
+            cursor: pointer; font-size: 0.7em;
+            transition: background 0.15s;
+        }
+        button.demo-btn:hover { background: rgba(97, 175, 239, 0.35); }
+        button.demo-btn.active { background: var(--accent-blue); color: #0d1117; }
+        .reveal blockquote {
+            font-style: italic;
+            background: rgba(255,255,255,0.05);
+            padding: 12px 20px;
+            border-left: 4px solid var(--accent-purple);
+            width: 90%; margin: 0 auto;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.75em;
+        }
+        .pipeline-step {
+            display: flex; align-items: center; gap: 12px; margin: 8px 0;
+        }
+        .pipeline-box {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px; padding: 10px 16px;
+            text-align: center; flex: 1;
+        }
+        .pipeline-arrow {
+            font-size: 1.5em; color: var(--accent-yellow); flex-shrink: 0;
+        }
+        .check { color: var(--accent-green); }
+        .cross { color: var(--accent-red); }
+    </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ============================================================ -->
+<!-- TITLE SLIDE -->
+<!-- ============================================================ -->
+<section data-background-gradient="linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1a1a2e 100%)">
+    <h1 style="font-size: 2em;">Operator Learning &amp; Neural Operators</h1>
+    <p style="color: var(--accent-purple); font-size: 1.2em; font-weight: 400;">
+        From Separation of Variables to Fourier Neural Operators
+    </p>
+    <br>
+    <p class="author-info">
+        ML for Science and Engineering &middot; Lecture 18<br>
+        Joseph Bakarji
+    </p>
+</section>
+
+<!-- ============================================================ -->
+<!-- VERTICAL DECK: MOTIVATION -->
+<!-- ============================================================ -->
+<section>
+    <section>
+        <h2>Where We Are</h2>
+        <div class="two-column" style="margin-top: 6px;">
+            <div>
+                <div id="sst-heatmap-viz" style="width: 100%; height: 240px; margin-bottom: 6px;"></div>
+                <p class="tiny-text" style="color: #ccc; text-align: center;">A spatio-temporal PDE solution $u(x, t)$, e.g. advection-diffusion</p>
+            </div>
+            <div>
+                <div class="highlight-box small-text">
+                    <strong>PINNs:</strong> train a network $(x, t) \to u(x,t)$ for a <em>single</em> initial condition.<br><br>
+                    <span class="em-red">Shortcoming:</span> for a different $u_0(x)$, you must <strong>retrain from scratch</strong>.
+                </div>
+                <div class="fragment warning-box small-text" style="margin-top: 6px;">
+                    <strong>Can we do better?</strong> Learn the <em>solution operator</em> $\mathcal{G}: u_0 \mapsto u(x,t)$, the inverse of the differential operator, so that <strong>one trained model</strong> works for <em>any</em> initial condition?
+                </div>
+            </div>
+        </div>
+        <div class="fragment principle-box small-text" style="margin-top: 8px;">
+            This means mapping <strong>functions to functions</strong>, not vectors to vectors. This is where the notion of an <span class="keyword">operator</span> comes in.
+        </div>
+    </section>
+</section>
+
+<!-- ============================================================ -->
+<!-- VERTICAL DECK: FROM VECTORS TO FUNCTIONS -->
+<!-- ============================================================ -->
+<section>
+    <section>
+        <h2 style="color: var(--accent-yellow);">Part I: From Vectors to Functions</h2>
+        <p class="small-text" style="color: #8b949e;">What are operators, and why should neural networks learn them?</p>
+    </section>
+
+    <section>
+        <h2>What Is an Operator?</h2>
+        <div class="two-column">
+            <div>
+                <div class="highlight-box small-text">
+                    <strong>Standard Neural Network</strong><br>
+                    Maps vectors to vectors:<br>
+                    $f_\theta: \mathbb{R}^n \to \mathbb{R}^m$<br><br>
+                    Input: $\mathbf{x} = [x_1, \ldots, x_n]$<br>
+                    Output: $\mathbf{y} = [y_1, \ldots, y_m]$
+                </div>
+            </div>
+            <div>
+                <div class="principle-box small-text">
+                    <strong>Operator Network</strong><br>
+                    Maps functions to functions:<br>
+                    $\mathcal{G}_\theta: \mathcal{U} \to \mathcal{V}$<br><br>
+                    Input: $u(\cdot)$ (e.g., initial condition)<br>
+                    Output: $\mathcal{G}(u)(\cdot)$ (e.g., solution)
+                </div>
+            </div>
+        </div>
+        <p class="fragment small-text" style="margin-top: 10px;">
+            <strong>Example:</strong> $u_0(x) \mapsto u(x, T)$: given an initial temperature distribution, predict the temperature at time $T$.
+        </p>
+    </section>
+
+    <section>
+        <h2>Why Functions, Not Vectors?</h2>
+        <p class="small-text fragment">A vector $[u_1, u_2, \ldots, u_n]$ is just a <em>discretization</em> of a function $u(x)$ on a grid.</p>
+        <p class="small-text fragment">If we think in terms of <strong>functions</strong>, the learned operator should work at <em>any</em> resolution: coarse or fine.</p>
+        <div class="fragment principle-box small-text" style="margin-top: 10px;">
+            <strong>Discretization invariance:</strong> the same trained model works on grids of different sizes. Train on $64 \times 64$, evaluate on $256 \times 256$.
+        </div>
+        <p class="small-text fragment" style="margin-top: 8px;">
+            This is fundamentally different from CNNs, which are tied to a fixed grid resolution.
+        </p>
+    </section>
+
+    <section>
+        <h2>Universal Approximation for Operators</h2>
+        <p class="small-text"><strong>Chen &amp; Chen (1995):</strong> A neural network with a single hidden layer can approximate <em>any</em> continuous nonlinear operator.
+            <a href="https://doi.org/10.1109/72.392253" target="_blank" style="color: var(--accent-cyan); font-size: 0.8em;">[paper]</a>
+        </p>
+        <div class="two-column" style="margin-top: 6px;">
+            <div>
+                <div class="equation-box" style="display: block;">
+                    $$\mathcal{G}(u)(y) \approx \sum_{i=1}^{p} c_i(u) \cdot \psi_i(y)$$
+                </div>
+                <div class="small-text" style="margin-top: 8px;">
+                    <strong>$c_i(u)$</strong> , coefficients from the <em>input function</em> (the <span class="em-blue">branch</span>)<br>
+                    <strong>$\psi_i(y)$</strong> , basis functions at the <em>query point</em> (the <span class="em-purple">trunk</span>)
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <img src="/static/data/operator_learning/approx_visual.png" alt="Basis functions weighted by coefficients"
+                     style="max-height: 240px; border-radius: 6px;">
+            </div>
+        </div>
+        <p class="fragment small-text" style="margin-top: 6px;">
+            This is a modal decomposition: <strong>basis functions $\times$ coefficients, summed</strong>. It is the theoretical foundation for <span class="keyword">DeepONet</span>.
+        </p>
+    </section>
+
+    <section>
+        <h2>The Operator Learning Setup</h2>
+        <div class="pipeline-step">
+            <div class="pipeline-box">
+                <strong style="color: var(--accent-yellow);">Input</strong><br>
+                <span class="small-text">$u_0(x)$, BCs, forcing $f$</span>
+            </div>
+            <div class="pipeline-arrow">&rarr;</div>
+            <div class="pipeline-box" style="border-color: var(--accent-blue);">
+                <strong style="color: var(--accent-blue);">Operator Network</strong><br>
+                <span class="small-text">$\mathcal{G}_\theta$</span>
+            </div>
+            <div class="pipeline-arrow">&rarr;</div>
+            <div class="pipeline-box">
+                <strong style="color: var(--accent-green);">Output</strong><br>
+                <span class="small-text">$u(x,t)$ at any $(x,t)$</span>
+            </div>
+        </div>
+        <div class="small-text" style="margin-top: 12px;">
+            <p><strong>Training data:</strong> many (input function, solution) pairs from a classical PDE solver.</p>
+            <p class="fragment"><strong>Once trained:</strong> instant evaluation for <em>any</em> new input (no retraining needed).</p>
+        </div>
+        <div class="fragment highlight-box small-text" style="margin-top: 8px;">
+            <strong>Two main architectures:</strong>
+            <ul style="margin: 4px 0 0 0;">
+                <li><span class="em-blue">Deep Operator Networks (DeepONet)</span> , inspired by Chen &amp; Chen's universal approximation theorem
+                    <a href="https://doi.org/10.1038/s42256-021-00302-5" target="_blank" style="color: var(--accent-cyan); font-size: 0.85em;">[Lu et al. 2021]</a></li>
+                <li><span class="em-purple">Fourier Neural Operators</span> , inspired by Green's functions and Fourier transformations
+                    <a href="https://arxiv.org/abs/2010.08895" target="_blank" style="color: var(--accent-cyan); font-size: 0.85em;">[Li et al. 2021]</a></li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- MCQ injected by quiz_engine from operator_learning.json (after_section: 2) -->
+</section>
+
+<!-- ============================================================ -->
+<!-- VERTICAL DECK: DEEP OPERATOR NETWORKS -->
+<!-- ============================================================ -->
+<section>
+    <section>
+        <h2 style="color: var(--accent-yellow);">Part II: Deep Operator Networks</h2>
+        <p class="small-text" style="color: #8b949e;">From classical modal decomposition to learned operators.</p>
+    </section>
+
+    <section>
+        <h2>Spatial-Temporal Modal Decomposition</h2>
+        <p class="small-text">Many PDE solutions can be written as a sum of <span class="keyword">spatial modes</span> weighted by <span class="keyword">temporal coefficients</span>:</p>
+        <div class="equation-box" style="display: block; margin-top: 10px;">
+            $$u(x, t) = \sum_{k=1}^{K} a_k(t) \cdot \varphi_k(x)$$
+        </div>
+        <div class="small-text" style="margin-top: 10px;">
+            <p>You have seen this in multiple forms:</p>
+            <ul>
+                <li><strong>SVD/POD</strong> (Lecture 9): orthogonal modes from data ($U \Sigma V^\top$)</li>
+                <li><strong>DMD</strong> (Lecture 10): dynamic modes with eigenvalue evolution</li>
+                <li><strong>Fourier series</strong>: sines and cosines as basis functions</li>
+            </ul>
+        </div>
+        <div class="fragment principle-box small-text" style="margin-top: 8px;">
+            All of these share the same structure: <strong>basis functions &times; coefficients, summed over modes</strong>.
+        </div>
+    </section>
+
+
+    <section>
+        <h2>DeepONet Architecture</h2>
+        <p class="small-text">Two sub-networks whose outputs are combined via a dot product (Lu et al., <em>Nature Machine Intelligence</em>, 2021):
+            <a href="https://doi.org/10.1038/s42256-021-00302-5" target="_blank" style="color: var(--accent-cyan); font-size: 0.85em;">[paper]</a>
+        </p>
+        <div style="text-align: center; margin: 6px 0;">
+            <img src="/static/data/operator_learning/deeponet_fig1.png" alt="DeepONet Architecture (Lu et al. 2021, Fig. 1)"
+                 style="max-height: 260px; border-radius: 8px; background: rgba(255,255,255,0.92); padding: 8px;">
+        </div>
+        <div class="equation-box small-text" style="display: block; margin-top: 6px;">
+            $\mathcal{G}(u)(y) = \sum_{i=1}^{p} \underbrace{\text{Branch}_i(u)}_{\text{coefficients}} \cdot \underbrace{\text{Trunk}_i(y)}_{\text{basis functions}} = \langle \mathbf{b}(u),\, \mathbf{t}(y) \rangle$
+        </div>
+    </section>
+
+    <section>
+        <h2>DeepONet = Learned Modal Decomposition</h2>
+        <div class="two-column">
+            <div>
+                <div class="highlight-box small-text">
+                    <strong>Classical SVD/POD</strong><br>
+                    $u(x,t) \approx \sum_k a_k \cdot \varphi_k(x)$<br><br>
+                    $\varphi_k(x)$: eigenvectors (fixed)<br>
+                    $a_k$: projection coefficients (linear)
+                </div>
+            </div>
+            <div>
+                <div class="principle-box small-text">
+                    <strong>DeepONet</strong><br>
+                    $\mathcal{G}(u)(y) \approx \sum_i b_i(u) \cdot t_i(y)$<br><br>
+                    $t_i(y)$: trunk outputs (learned basis)<br>
+                    $b_i(u)$: branch outputs (nonlinear in $u$)
+                </div>
+            </div>
+        </div>
+        <div class="fragment success-box small-text" style="margin-top: 12px;">
+            The <span class="em-purple">trunk</span> learns basis functions. The <span class="em-blue">branch</span> learns how to <strong>weight them given the input function</strong>. This is separation of variables, generalized by neural networks.
+        </div>
+    </section>
+
+    <section>
+        <h2>Training DeepONet</h2>
+        <div class="two-column">
+            <div>
+                <p class="small-text"><strong>Supervised training:</strong> given $N$ (input function, solution) pairs from a PDE solver:</p>
+                <div class="equation-box small-text" style="display: block; margin-top: 6px;">
+                    $\mathcal{L}_{\text{data}} = \frac{1}{N} \sum_{k=1}^{N} \sum_{j} \left\| \mathcal{G}_\theta(u_k)(y_j) - u_k^{\text{true}}(y_j) \right\|^2$
+                </div>
+                <p class="tiny-text" style="margin-top: 6px;">
+                    Here $u_k$ is the $k$-th initial condition (sampled at sensor locations), and $y_j$ are query points where we evaluate the output solution.
+                </p>
+            </div>
+            <div>
+                <div id="training-heatmap-viz" style="width: 100%; height: 190px;"></div>
+                <p class="tiny-text" style="color: #8b949e; text-align: center;">
+                    <span class="em-blue">$\bullet$ sensors</span> = where $u_k$ is sampled &bull;
+                    <span class="em-green">$\bullet$ $y_j$</span> = query points
+                </p>
+            </div>
+        </div>
+        <p class="fragment small-text" style="margin-top: 6px;"><strong>Physics-informed (PI-DeepONet):</strong> add PDE residual loss where $f$ is the forcing/source term:</p>
+        <div class="fragment equation-box small-text" style="display: block;">
+            $\mathcal{L} = \alpha \cdot \mathcal{L}_{\text{data}} + \beta \cdot \int \left\| \mathcal{N}\big[\mathcal{G}_\theta(u)\big] - f \right\|^2 dx$
+            <span style="font-size: 0.8em; color: #8b949e;">&nbsp; ($\mathcal{N}$: PDE operator, $f$: forcing term)</span>
+        </div>
+    </section>
+
+    <section>
+        <h2>DeepONet: Key Properties</h2>
+        <table class="styled-table">
+            <thead>
+                <tr><th>Property</th><th>DeepONet</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Irregular geometries</td><td><span class="check">&#10003;</span> trunk evaluates at any point</td></tr>
+                <tr><td>Variable sensor locations</td><td><span class="check">&#10003;</span> branch takes arbitrary inputs</td></tr>
+                <tr><td>Noise robustness</td><td><span class="check">&#10003;</span> error increases &lt;10&times; at 0.1% noise</td></tr>
+                <tr><td>No grid requirement</td><td><span class="check">&#10003;</span> fully meshless</td></tr>
+                <tr><td>Resolution invariance</td><td><span class="em-orange">~</span> approximate (depends on sensor density)</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>DeepONet: Results</h2>
+        <p class="small-text">From Lu et al. (2021), DeepONet achieves high accuracy across diverse PDE families:</p>
+        <table class="styled-table" style="margin-top: 8px;">
+            <thead>
+                <tr><th>Problem</th><th>Relative $L^2$ Error</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Advection equation</td><td>$\sim\!10^{-3}$</td><td>Linear, smooth solutions</td></tr>
+                <tr><td>Diffusion-reaction</td><td>$\sim\!10^{-3}$</td><td>Nonlinear source term</td></tr>
+                <tr><td>Stochastic ODE system</td><td>$\sim\!10^{-2}$</td><td>Random forcing</td></tr>
+                <tr><td>Gravity pendulum</td><td>$\sim\!10^{-3}$</td><td>Nonlinear ODE</td></tr>
+            </tbody>
+        </table>
+        <div class="fragment success-box small-text" style="margin-top: 8px;">
+            <strong>Key finding:</strong> A single trained DeepONet generalizes over <em>thousands</em> of initial conditions with millisecond inference time, while maintaining $&lt;1\%$ relative error.
+        </div>
+        <p class="tiny-text" style="margin-top: 6px; color: #8b949e;">
+            Lu et al. (2021). Learning nonlinear operators via DeepONet. <em>Nature Machine Intelligence</em>, 3, 218&ndash;229.
+            <a href="https://doi.org/10.1038/s42256-021-00302-5" target="_blank" style="color: var(--accent-cyan);">[link]</a>
+        </p>
+    </section>
+</section>
+
+<!-- ============================================================ -->
+<!-- VERTICAL DECK: GREEN'S FUNCTIONS → FNO -->
+<!-- ============================================================ -->
+<section>
+    <section>
+        <h2 style="color: var(--accent-yellow);">Part III: Green's Functions &rarr; Fourier Neural Operators</h2>
+        <p class="small-text" style="color: #8b949e;">From integral solutions to learnable spectral layers.</p>
+    </section>
+
+    <section>
+        <h2>Green's Functions: The Integral Solution</h2>
+        <div class="two-column" style="margin-top: 6px;">
+            <div>
+                <div class="equation-box small-text" style="display: block;">
+                    $\mathcal{L}\, u(x) = f(x)$
+                    <span style="color: #8b949e; font-size: 0.85em;">&nbsp; (linear PDE, $f$ = forcing/source)</span>
+                </div>
+                <p class="small-text" style="margin-top: 8px;">
+                    The <span class="keyword">Green's function</span> $G(x,y)$ is the solution to the PDE when the forcing is a single impulse at $y$:
+                </p>
+                <div class="equation-box small-text" style="display: block;">
+                    $\mathcal{L}_x\, G(x,y) = \delta(x - y)$
+                </div>
+                <p class="small-text" style="margin-top: 6px;">
+                    It tells you how a <strong>point source at $y$</strong> influences the solution at $x$. Because the PDE is linear, the full solution is a <strong>superposition</strong> of these impulse responses:
+                </p>
+            </div>
+            <div>
+                <div class="equation-box" style="display: block; margin-top: 20px;">
+                    $$u(x) = \int_\Omega G(x, y)\, f(y)\, dy$$
+                </div>
+                <div class="fragment principle-box small-text" style="margin-top: 10px;">
+                    If you know $G$, you can solve the PDE for <strong>any forcing $f$</strong> via integration. This is the ultimate <span class="keyword">non-local</span> solution operator: every point in the domain can influence every other.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Superposition: Interactive</h2>
+        <p class="small-text">For the 1D <strong>diffusion equation</strong> $\;\frac{\partial u}{\partial t} = \nu \frac{\partial^2 u}{\partial x^2} + f(x)$, the Green's function is a Gaussian kernel. Add impulses to $f(x)$ and see the superposition build the solution $u(x)$.</p>
+        <div id="greens-viz" style="width: 100%; height: 300px;"></div>
+        <div class="control-panel" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <button class="demo-btn" onclick="addImpulse()">Add impulse</button>
+            <button class="demo-btn" onclick="addContinuousF()">Continuous f(x)</button>
+            <button class="demo-btn" onclick="clearImpulses()">Clear all</button>
+            <span class="small-text" style="color: #8b949e; margin-left: 8px;">Add impulses or a smooth forcing. Drag dots to reposition.</span>
+        </div>
+    </section>
+
+    <section>
+        <h2>From Green's Functions to Neural Operator Layers</h2>
+        <p class="small-text">Green's functions rely on <strong>linearity</strong> (superposition). For nonlinear PDEs, no simple $G$ exists. But we can <em>learn</em> a kernel and compose it through nonlinear layers.</p>
+        <div class="two-column" style="margin-top: 8px;">
+            <div>
+                <div class="highlight-box" style="padding: 16px 20px;">
+                    <strong style="font-size: 1.0em;">Standard NN layer</strong>
+                    <div class="equation-box" style="display: block; margin-top: 8px; font-size: 1.15em;">
+                        $v^{(\ell+1)} = \sigma\!\big(W v^{(\ell)} + b\big)$
+                    </div>
+                    <p class="small-text" style="margin-top: 6px;">$W$ is a finite matrix (fixed input dimension)</p>
+                </div>
+            </div>
+            <div>
+                <div class="principle-box" style="padding: 16px 20px;">
+                    <strong style="font-size: 1.0em;">Neural operator layer</strong>
+                    <div class="equation-box" style="display: block; margin-top: 8px; font-size: 1.15em;">
+                        $v^{(\ell+1)}\!(x) = \sigma\!\left(W v^{(\ell)}\!(x) + \int \kappa(x,y)\, v^{(\ell)}\!(y)\, dy + b\right)$
+                    </div>
+                    <p class="small-text" style="margin-top: 6px;">$\kappa(x,y)$ is a learnable kernel (continuous, any resolution)</p>
+                </div>
+            </div>
+        </div>
+        <div class="fragment small-text" style="margin-top: 8px;">
+            The kernel $\kappa(x,y)$ is the <strong>learned analogue of the Green's function</strong>: a continuous mapping from input to output, capturing how point $y$ influences point $x$. When discretized on a grid, $\kappa$ reduces to the weight matrix $W$. But by learning it in continuous form, the operator generalizes across resolutions.
+        </div>
+        <p class="fragment tiny-text" style="color: #8b949e; margin-top: 6px;">
+            Kovachki, N. et al. (2023). Neural Operator: Learning Maps Between Function Spaces. <em>JMLR</em>, 24(89), 1&ndash;97.
+        </p>
+    </section>
+
+    <section>
+        <h2>The Convolution Trick</h2>
+        <p class="small-text fragment">A general kernel $\kappa(x, y)$ is expensive: $O(n^2)$ to evaluate on a grid of $n$ points.</p>
+        <p class="small-text fragment">Assume <span class="keyword">translation invariance</span>: the kernel depends only on the <em>difference</em> $\kappa(x, y) = \kappa(x - y)$.</p>
+        <p class="small-text fragment" style="margin-left: 20px;">&rarr; This is <strong>convolution</strong>!</p>
+        <p class="small-text fragment" style="margin-left: 20px;">&rarr; Convolution in space = <strong>multiplication in Fourier domain</strong>.</p>
+        <div class="fragment principle-box small-text" style="margin-top: 8px;">
+            The FFT makes this $O(n \log n)$ instead of $O(n^2)$. We fit the kernel parameters <strong>in Fourier space</strong>, where the integral becomes element-wise multiplication.
+        </div>
+    </section>
+
+    <section>
+        <h2>FNO Layer: Interactive</h2>
+        <p class="small-text">Each Fourier Neural Operator layer: apply FFT, multiply by learned weights, inverse FFT, add spatial path, activate.</p>
+        <div id="fno-layer-viz" style="width: 100%; height: 280px;"></div>
+        <div class="control-panel">
+            <div class="slider-container">
+                <label style="min-width: 200px; font-size: 1.0em;">Fourier modes kept <em>K</em></label>
+                <input type="range" id="fno-modes" min="1" max="20" step="1" value="10">
+                <span id="fno-modes-val" style="font-size: 1.0em;">10</span>
+            </div>
+        </div>
+        <div class="equation-box small-text" style="display: block; margin-top: 4px;">
+            $v^{(\ell+1)} = \sigma\!\left(W v^{(\ell)} + \mathcal{F}^{-1}\!\big(R_\phi \cdot \mathcal{F}(v^{(\ell)})\big)\right)$
+        </div>
+    </section>
+
+    <section>
+        <h2>FNO: Key Properties</h2>
+        <table class="styled-table">
+            <thead>
+                <tr><th>Property</th><th>FNO</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Resolution invariance</td><td><span class="check">&#10003;</span> same parameters at any grid size</td></tr>
+                <tr><td>Computational cost</td><td><span class="check">&#10003;</span> $O(n \log n)$ per layer (via FFT)</td></tr>
+                <tr><td>Regular grids only</td><td><span class="cross">&#10007;</span> requires uniform Cartesian mesh</td></tr>
+                <tr><td>Spectral bias</td><td><span class="cross">&#10007;</span> mode truncation discards high frequencies</td></tr>
+                <tr><td>Speed vs. classical</td><td><span class="check">&#10003;</span> 1000&times; faster than pseudo-spectral solvers</td></tr>
+            </tbody>
+        </table>
+        <p class="tiny-text" style="margin-top: 8px; color: #8b949e;">
+            Li, Z., Kovachki, N., Azizzadenesheli, K., Liu, B., Bhatt, K., Stuart, A. &amp; Anandkumar, A. (2021). Fourier Neural Operator for Parametric PDEs. <em>ICLR 2021</em>.
+        </p>
+    </section>
+
+    <section>
+        <h2>In Code: DeepONet</h2>
+        <pre><code class="language-python" style="font-size: 0.85em !important; line-height: 1.6 !important;">class DeepONet(nn.Module):
+    def __init__(self, u_dim, y_dim, p=64):
+        super().__init__()
+        self.branch = nn.Sequential(        # input function → coefficients
+            nn.Linear(u_dim, 128), nn.ReLU(),
+            nn.Linear(128, p))
+        self.trunk = nn.Sequential(         # query point → basis functions
+            nn.Linear(y_dim, 128), nn.ReLU(),
+            nn.Linear(128, p))
+
+    def forward(self, u, y):
+        b = self.branch(u)                  # (batch, p)
+        t = self.trunk(y)                   # (batch, p)
+        return (b * t).sum(-1)              # dot product</code></pre>
+    </section>
+
+    <section>
+        <h2>In Code: FNO Layer</h2>
+        <pre><code class="language-python" style="font-size: 0.85em !important; line-height: 1.6 !important;">class SpectralConv1d(nn.Module):
+    def __init__(self, ch, modes):
+        super().__init__()
+        self.modes = modes
+        self.weights = nn.Parameter(         # learnable Fourier weights
+            torch.randn(ch, ch, modes, 2))
+
+    def forward(self, x):                    # x: (batch, ch, N)
+        x_ft = torch.fft.rfft(x)
+        out_ft = torch.zeros_like(x_ft)
+        out_ft[:,:,:self.modes] = \          # multiply low modes by R
+            complex_mul(x_ft[:,:,:self.modes], self.weights)
+        return torch.fft.irfft(out_ft, n=x.size(-1))</code></pre>
+    </section>
+</section>
+
+<!-- ============================================================ -->
+<!-- VERTICAL DECK: COMPARISON & BENCHMARKS -->
+<!-- ============================================================ -->
+<section>
+    <section>
+        <h2 style="color: var(--accent-yellow);">Part IV: Comparing Architectures</h2>
+        <p class="small-text" style="color: #8b949e;">DeepONet vs FNO vs PINNs: when to use what.</p>
+    </section>
+
+    <section>
+        <h2>When to Use What</h2>
+        <table class="styled-table" style="font-size: 0.9em;">
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th style="color: var(--accent-blue);">DeepONet</th>
+                    <th style="color: var(--accent-purple);">FNO</th>
+                    <th style="color: var(--accent-orange);">PINNs</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Irregular geometry</td><td><span class="check">&#10003;&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="check">&#10003;</span></td></tr>
+                <tr><td>Resolution invariance</td><td><span class="em-orange">~</span></td><td><span class="check">&#10003;&#10003;</span></td><td><span class="cross">&#10007;</span></td></tr>
+                <tr><td>Noise robustness</td><td><span class="check">&#10003;&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="em-orange">~</span></td></tr>
+                <tr><td>No training data needed</td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="check">&#10003;</span></td></tr>
+                <tr><td>Generalize over ICs</td><td><span class="check">&#10003;</span></td><td><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td></tr>
+                <tr><td>Speed (inference)</td><td><span class="check">&#10003;</span> ~ms</td><td><span class="check">&#10003;&#10003;</span> ~ms</td><td><span class="cross">&#10007;</span> retrain</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- MCQ injected by quiz_engine from operator_learning.json (after_section: 5) -->
+</section>
+
+<!-- ============================================================ -->
+<!-- VERTICAL DECK: BEYOND & SUMMARY -->
+<!-- ============================================================ -->
+<section>
+    <section>
+        <h2>Other Operator Architectures</h2>
+        <p class="small-text">The field is evolving rapidly. Some notable variants:</p>
+        <div class="two-column small-text" style="margin-top: 8px;">
+            <div>
+                <div class="highlight-box">
+                    <strong>Neural POD / POD-DeepONet</strong><br>
+                    Replace Fourier basis with POD modes learned from data. Better for problems with dominant coherent structures.
+                </div>
+                <div class="success-box" style="margin-top: 8px;">
+                    <strong>Graph Neural Operators</strong><br>
+                    Kernel as message-passing on graphs. Works on irregular meshes. $O(n^2)$ complexity.
+                </div>
+            </div>
+            <div>
+                <div class="principle-box">
+                    <strong>LOCA (Attention-based)</strong><br>
+                    Attention-weighted averaging of features. Strong with sparse measurements. (Kissas et al., JMLR 2022)
+                </div>
+                <div class="warning-box" style="margin-top: 8px;">
+                    <strong>Open question:</strong><br>
+                    No single architecture dominates. Choice depends on geometry, data quality, and problem structure.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+<h2>Connections Across the Course</h2>
+<div class="two-column small-text">
+<div>
+<div class="highlight-box">
+<strong>SVD/POD</strong> <br/>
+                    → DeepONet trunk learns generalized basis functions
+                </div>
+<div class="success-box" style="margin-top: 8px;">
+<strong>DMD</strong> <br/>
+                    → Temporal dynamics of modes, eigenvalue evolution
+                </div>
+</div>
+<div>
+<div class="principle-box">
+<strong>PINNs</strong> <br/>
+                    → PI-DeepONet adds PDE loss to operator training
+                </div>
+<div class="highlight-box" style="margin-top: 8px; border-left-color: var(--accent-yellow);">
+<strong>Separation of Variables</strong> <br/>
+                    → Branch-trunk split is a neural generalization
+                </div>
+</div>
+</div>
+<div class="fragment principle-box small-text" style="margin-top: 10px;">
+<strong>Unifying theme:</strong> the more you know about classical methods, the better your neural architecture. Every operator architecture encodes some classical structure as an inductive bias.
+        </div>
+</section>
+
+    <section>
+        <h2>Summary: Design Principles</h2>
+        <div class="three-column small-text">
+            <div>
+                <div class="highlight-box">
+                    <strong>Function &rarr; Function</strong><br>
+                    Operators map functions to functions, generalizing beyond fixed-size vectors. Discretization invariance is the goal.
+                </div>
+            </div>
+            <div>
+                <div class="principle-box">
+                    <strong>Classical &rarr; Neural</strong><br>
+                    Modal decomposition &rarr; DeepONet.<br>
+                    Green's function &rarr; FNO.<br>
+                    Inductive bias from mathematics.
+                </div>
+            </div>
+            <div>
+                <div class="success-box">
+                    <strong>Train Once, Evaluate Many</strong><br>
+                    The key advantage over PINNs: learn the operator once, then instantly solve for any new input.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>References</h2>
+        <div class="small-text" style="line-height: 1.8;">
+            <p><strong>Chen, T. &amp; Chen, H.</strong> (1995). Universal approximation to nonlinear operators by neural networks with arbitrary activation functions. <em>IEEE Trans. Neural Networks</em>, 6(4), 911&ndash;917.</p>
+            <p><strong>Lu, L., Jin, P., Pang, G., Zhang, Z. &amp; Karniadakis, G.E.</strong> (2021). Learning nonlinear operators via DeepONet. <em>Nature Machine Intelligence</em>, 3, 218&ndash;229.</p>
+            <p><strong>Li, Z., Kovachki, N., Azizzadenesheli, K. et al.</strong> (2021). Fourier Neural Operator for Parametric PDEs. <em>ICLR 2021</em>.</p>
+            <p><strong>Kovachki, N., Li, Z., Liu, B. et al.</strong> (2023). Neural Operator: Learning Maps Between Function Spaces. <em>JMLR</em>, 24(89), 1&ndash;97.</p>
+        </div>
+    </section>
+</section>
+
+</div><!-- /slides -->
+</div><!-- /reveal -->
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js"></script>
+<script>
+Reveal.initialize({
+    hash: true,
+    slideNumber: true,
+    transition: 'slide',
+    plugins: [ RevealMath.KaTeX, RevealHighlight ]
+});
+
+// =============================================
+// HELPER: create SVG with margins
+// =============================================
+function makeSVG(containerId, W, H, margin) {
+    const m = Object.assign({ top: 20, right: 20, bottom: 30, left: 45 }, margin);
+    const container = document.getElementById(containerId);
+    if (!container) return null;
+    container.innerHTML = '';
+    const svg = d3.select('#' + containerId).append('svg')
+        .attr('width', W).attr('height', H)
+        .attr('viewBox', `0 0 ${W} ${H}`);
+    const g = svg.append('g').attr('transform', `translate(${m.left},${m.top})`);
+    return { svg, g, iW: W - m.left - m.right, iH: H - m.top - m.bottom };
+}
+
+// =============================================
+// VIZ: SST Heatmap (motivation slide)
+// =============================================
+function drawSSTHeatmap() {
+    const W = 340, H = 220;
+    const res = makeSVG('sst-heatmap-viz', W, H, { left: 40, right: 10, top: 8, bottom: 30 });
+    if (!res) return;
+    const { svg, g, iW, iH } = res;
+
+    const nx = 40, nt = 30;
+    const cellW = iW / nx, cellH = iH / nt;
+    // Advection-diffusion-like pattern with clear spatial-temporal structure
+    for (let i = 0; i < nx; i++) {
+        for (let j = 0; j < nt; j++) {
+            const x = i / (nx - 1), t = j / (nt - 1);
+            const u = Math.exp(-1.5*t) * Math.sin(Math.PI * x)
+                    + 0.5 * Math.exp(-4*t) * Math.sin(3 * Math.PI * x)
+                    + 0.2 * Math.sin(2 * Math.PI * (x - 0.8*t));
+            // Blue (cold) to red (hot) colormap
+            const norm = (u + 0.5) / 2.0;
+            const clamped = Math.max(0, Math.min(1, norm));
+            const r = Math.round(20 + 235 * clamped);
+            const gv = Math.round(20 + 120 * Math.sin(Math.PI * clamped));
+            const b = Math.round(200 * (1 - clamped) + 20);
+            g.append('rect').attr('x', i * cellW).attr('y', j * cellH).attr('width', cellW + 0.5).attr('height', cellH + 0.5)
+                .attr('fill', `rgb(${r},${gv},${b})`);
+        }
+    }
+    // Axes
+    const xS = d3.scaleLinear().domain([0, 1]).range([0, iW]);
+    const tS = d3.scaleLinear().domain([0, 1]).range([0, iH]);
+    g.append('g').attr('transform', `translate(0,${iH})`).call(d3.axisBottom(xS).ticks(4)).selectAll('text').style('fill', '#ddd').style('font-size', '11px');
+    g.append('g').call(d3.axisLeft(tS).ticks(4)).selectAll('text').style('fill', '#ddd').style('font-size', '11px');
+    g.selectAll('.domain, .tick line').style('stroke', '#777');
+    g.append('text').attr('x', iW / 2).attr('y', iH + 26).attr('text-anchor', 'middle').style('fill', '#fff').style('font-size', '13px').style('font-weight', 'bold').text('x');
+    g.append('text').attr('x', -32).attr('y', iH / 2).attr('text-anchor', 'middle').style('fill', '#fff').style('font-size', '13px').style('font-weight', 'bold')
+        .attr('transform', `rotate(-90, -32, ${iH/2})`).text('t');
+}
+
+// =============================================
+// VIZ: Universal Approximation Visual (u-sensors and y-query)
+// =============================================
+function drawApproxVisual() {
+    const W = 320, H = 240;
+    const res = makeSVG('approx-visual-viz', W, H, { left: 35, right: 15, top: 12, bottom: 10 });
+    if (!res) return;
+    const { svg, g, iW, iH } = res;
+
+    // Show: G(u)(y) ≈ Σ c_i(u) · ψ_i(y) with 3 basis functions
+    const nPts = 80;
+    const xS = d3.scaleLinear().domain([0, 1]).range([0, iW]);
+    const xArr = d3.range(nPts).map(i => i / (nPts - 1));
+
+    // 3 basis functions (trunk outputs)
+    const basis = [
+        x => 0.8 * Math.sin(Math.PI * x),
+        x => 0.5 * Math.sin(2 * Math.PI * x),
+        x => 0.3 * Math.sin(3 * Math.PI * x),
+    ];
+    const basisColors = ['#e06c75', '#e5c07b', '#c678dd'];
+    const basisLabels = ['ψ₁(y)', 'ψ₂(y)', 'ψ₃(y)'];
+
+    // Coefficients (branch outputs, depend on input u)
+    const coeffs = [1.0, 0.6, 0.4];
+    const coeffLabels = ['c₁(u)=1.0', 'c₂(u)=0.6', 'c₃(u)=0.4'];
+
+    // Compute sum
+    function approxSum(x) { return coeffs.reduce((s, c, i) => s + c * basis[i](x), 0); }
+
+    const yExt = [-0.6, 1.6];
+    const yS = d3.scaleLinear().domain(yExt).range([iH, 0]);
+    const line = d3.line().x(d => xS(d.x)).y(d => yS(d.y)).curve(d3.curveMonotoneX);
+
+    // x-axis
+    g.append('line').attr('x1', 0).attr('x2', iW).attr('y1', yS(0)).attr('y2', yS(0)).attr('stroke', '#444').attr('stroke-width', 0.5);
+
+    // Draw individual basis functions (faded)
+    basis.forEach((fn, i) => {
+        const data = xArr.map(x => ({ x, y: coeffs[i] * fn(x) }));
+        g.append('path').datum(data).attr('fill', 'none').attr('stroke', basisColors[i])
+            .attr('stroke-width', 1.2).attr('opacity', 0.5).attr('stroke-dasharray', '4,3').attr('d', line);
+        // Label
+        const lx = 0.85;
+        const ly = coeffs[i] * fn(lx);
+        g.append('text').attr('x', xS(lx) + 4).attr('y', yS(ly))
+            .style('fill', basisColors[i]).style('font-size', '9px').text(coeffLabels[i]);
+    });
+
+    // Draw the sum (thick green)
+    const sumData = xArr.map(x => ({ x, y: approxSum(x) }));
+    g.append('path').datum(sumData).attr('fill', 'none').attr('stroke', 'var(--accent-green)')
+        .attr('stroke-width', 2.5).attr('d', line);
+
+    // Query points on the sum curve
+    const queries = [0.15, 0.35, 0.55, 0.75];
+    queries.forEach((qx, i) => {
+        const val = approxSum(qx);
+        g.append('circle').attr('cx', xS(qx)).attr('cy', yS(val)).attr('r', 5)
+            .attr('fill', 'var(--accent-green)').attr('stroke', '#fff').attr('stroke-width', 1);
+    });
+
+    // Labels
+    g.append('text').attr('x', iW * 0.02).attr('y', yS(approxSum(0.3)) - 10)
+        .style('fill', 'var(--accent-green)').style('font-size', '11px').style('font-weight', 'bold')
+        .text('G(u)(y) = Σ cᵢ·ψᵢ');
+
+    // Legend box
+    const legY = iH - 45;
+    g.append('text').attr('x', 0).attr('y', legY).style('fill', '#ccc').style('font-size', '9px').text('Dashed: individual cᵢ(u)·ψᵢ(y) terms');
+    g.append('text').attr('x', 0).attr('y', legY + 14).style('fill', 'var(--accent-green)').style('font-size', '9px').text('Solid green: their sum = G(u)(y)');
+    g.append('text').attr('x', 0).attr('y', legY + 28).style('fill', 'var(--accent-green)').style('font-size', '9px').text('● = query points yⱼ where we evaluate');
+}
+
+// =============================================
+// VIZ: Training Heatmap (DeepONet training slide)
+// =============================================
+function drawTrainingHeatmap() {
+    const W = 250, H = 180;
+    const res = makeSVG('training-heatmap-viz', W, H, { left: 30, right: 10, top: 8, bottom: 25 });
+    if (!res) return;
+    const { svg, g, iW, iH } = res;
+
+    const nx = 30, nt = 20;
+    const cellW = iW / nx, cellH = iH / nt;
+    for (let i = 0; i < nx; i++) {
+        for (let j = 0; j < nt; j++) {
+            const x = i / nx, t = j / nt;
+            const u = Math.exp(-3*t) * Math.sin(Math.PI * x);
+            const norm = (u + 0.2) / 1.4;
+            const r = Math.round(20 + 80 * (1 - norm));
+            const gv = Math.round(30 + 60 * norm);
+            const b = Math.round(60 + 195 * norm);
+            g.append('rect').attr('x', i * cellW).attr('y', j * cellH).attr('width', cellW + 0.5).attr('height', cellH + 0.5)
+                .attr('fill', `rgb(${r},${gv},${b})`);
+        }
+    }
+
+    const xS = d3.scaleLinear().domain([0, 1]).range([0, iW]);
+    const tS = d3.scaleLinear().domain([0, 1]).range([0, iH]);
+
+    // Sensor locations (top row, t=0) — blue dots
+    [0.1, 0.25, 0.4, 0.55, 0.7, 0.85].forEach(sx => {
+        g.append('circle').attr('cx', xS(sx)).attr('cy', 2).attr('r', 4).attr('fill', 'var(--accent-blue)').attr('stroke', '#fff').attr('stroke-width', 0.8);
+    });
+
+    // Query points (scattered in interior) — green dots
+    [[0.2, 0.3], [0.5, 0.5], [0.7, 0.2], [0.3, 0.7], [0.8, 0.6], [0.4, 0.4]].forEach(([qx, qt]) => {
+        g.append('circle').attr('cx', xS(qx)).attr('cy', tS(qt)).attr('r', 4).attr('fill', 'var(--accent-green)').attr('stroke', '#fff').attr('stroke-width', 0.8);
+    });
+
+    // Axes
+    g.append('g').attr('transform', `translate(0,${iH})`).call(d3.axisBottom(xS).ticks(3)).selectAll('text').style('fill', '#8b949e').style('font-size', '9px');
+    g.append('g').call(d3.axisLeft(tS).ticks(3)).selectAll('text').style('fill', '#8b949e').style('font-size', '9px');
+    g.selectAll('.domain, .tick line').style('stroke', '#555');
+    g.append('text').attr('x', iW / 2).attr('y', iH + 22).attr('text-anchor', 'middle').style('fill', '#8b949e').style('font-size', '9px').text('x');
+    g.append('text').attr('x', -22).attr('y', iH / 2).attr('text-anchor', 'middle').style('fill', '#8b949e').style('font-size', '9px')
+        .attr('transform', `rotate(-90, -22, ${iH/2})`).text('t');
+}
+
+// (Modal decomposition and DeepONet D3 arch removed per review feedback)
+
+
+// =============================================
+// VIZ 3: Green's Function Superposition
+// =============================================
+let impulses = [];
+
+function greensFunc(x, x0, sigma) {
+    // Gaussian-like Green's function (heat kernel)
+    sigma = sigma || 0.05;
+    return Math.exp(-(x - x0) * (x - x0) / (2 * sigma)) / Math.sqrt(2 * Math.PI * sigma);
+}
+
+function drawGreens() {
+    const W = 580, H = 280;
+    const res = makeSVG('greens-viz', W, H, { left: 45, right: 15, top: 15, bottom: 30 });
+    if (!res) return;
+    const { svg, g, iW, iH } = res;
+
+    const nPts = 200;
+    const xArr = d3.range(nPts).map(i => i / (nPts - 1));
+    const sigma = 0.005;
+
+    const xS = d3.scaleLinear().domain([0, 1]).range([0, iW]);
+    const panelH = iH * 0.42;
+    const gap = iH * 0.16;
+
+    // Top panel: solution u(x) (superposition)
+    const topG = g.append('g');
+    // Bottom panel: forcing f(x) (impulses)
+    const botG = g.append('g').attr('transform', `translate(0, ${panelH + gap})`);
+
+    // Top: u(x) — solution
+    topG.append('line').attr('x1', 0).attr('x2', iW).attr('y1', panelH).attr('y2', panelH).attr('stroke', '#444');
+    topG.append('text').attr('x', -8).attr('y', 5).style('fill', '#98c379').style('font-size', '10px').style('font-weight', 'bold').text('u(x)');
+    topG.append('text').attr('x', iW / 2).attr('y', panelH + 12).attr('text-anchor', 'middle').style('fill', '#555').style('font-size', '9px').text('Solution (superposition of Green\'s responses)');
+
+    // Bottom: f(x) — forcing
+    const botPanelH = iH - panelH - gap;
+    botG.append('line').attr('x1', 0).attr('x2', iW).attr('y1', botPanelH).attr('y2', botPanelH).attr('stroke', '#444');
+    botG.append('text').attr('x', -8).attr('y', 5).style('fill', '#e5c07b').style('font-size', '10px').style('font-weight', 'bold').text('f(x)');
+    botG.append('text').attr('x', iW / 2).attr('y', botPanelH + 12).attr('text-anchor', 'middle').style('fill', '#555').style('font-size', '9px').text('Forcing (impulses / source)');
+
+    // Compute actual min/max of superposition to scale properly
+    let superMax = 1.5;
+    if (impulses.length > 0) {
+        const nS = 200;
+        const xTest = d3.range(nS).map(i => i / (nS - 1));
+        let sMax = 0;
+        xTest.forEach(x => {
+            let sum = 0;
+            impulses.forEach(imp => { sum += imp.amp * greensFunc(x, imp.pos, sigma); });
+            sMax = Math.max(sMax, Math.abs(sum));
+        });
+        superMax = sMax * 1.15;
+    }
+    const maxAmp = impulses.length > 0 ? Math.max(...impulses.map(imp => Math.abs(imp.amp))) : 1;
+    const yTopS = d3.scaleLinear().domain([0, Math.max(1.5, superMax)]).range([panelH, 0]);
+    const yBotS = d3.scaleLinear().domain([0, Math.max(2, maxAmp * 1.3)]).range([botPanelH, 0]);
+
+    const colors = ['#e06c75', '#61afef', '#98c379', '#e5c07b', '#c678dd', '#56b6c2'];
+
+    // Draw individual Green's responses (faded) in top panel
+    impulses.forEach((imp, idx) => {
+        const responseData = xArr.map(x => ({ x, y: imp.amp * greensFunc(x, imp.pos, sigma) }));
+        topG.append('path').datum(responseData)
+            .attr('fill', 'none').attr('stroke', colors[idx % colors.length]).attr('stroke-width', 1).attr('opacity', 0.35)
+            .attr('d', d3.line().x(d => xS(d.x)).y(d => yTopS(d.y)).curve(d3.curveMonotoneX));
+    });
+
+    // Draw superposition in top panel
+    if (impulses.length > 0) {
+        const superData = xArr.map(x => {
+            let sum = 0;
+            impulses.forEach(imp => { sum += imp.amp * greensFunc(x, imp.pos, sigma); });
+            return { x, y: sum };
+        });
+        topG.append('path').datum(superData)
+            .attr('fill', 'none').attr('stroke', '#98c379').attr('stroke-width', 2.5)
+            .attr('d', d3.line().x(d => xS(d.x)).y(d => yTopS(d.y)).curve(d3.curveMonotoneX));
+    }
+
+    // Draw impulse markers in bottom panel (draggable)
+    impulses.forEach((imp, idx) => {
+        const cx = xS(imp.pos);
+        botG.append('line').attr('x1', cx).attr('x2', cx).attr('y1', botPanelH).attr('y2', yBotS(imp.amp)).attr('stroke', colors[idx % colors.length]).attr('stroke-width', 2);
+        const dot = botG.append('circle').attr('cx', cx).attr('cy', yBotS(imp.amp)).attr('r', 5)
+            .attr('fill', colors[idx % colors.length]).attr('stroke', '#fff').attr('stroke-width', 1).style('cursor', 'grab');
+        dot.call(d3.drag()
+            .on('drag', function(event) {
+                const newPos = Math.max(0, Math.min(1, xS.invert(event.x)));
+                impulses[idx].pos = newPos;
+                drawGreens();
+            })
+        );
+    });
+
+    if (impulses.length === 0) {
+        topG.append('text').attr('x', iW / 2).attr('y', panelH / 2).attr('text-anchor', 'middle')
+            .style('fill', '#555').style('font-size', '12px').text('Add impulses or continuous f(x) below');
+    }
+}
+
+function addImpulse() {
+    const pos = 0.2 + Math.random() * 0.6;
+    const amp = 0.5 + Math.random() * 1.5;
+    impulses.push({ pos, amp });
+    drawGreens();
+}
+
+function addContinuousF() {
+    // Approximate a smooth f(x) = sin(πx) as many small impulses
+    impulses = [];
+    const n = 15;
+    for (let i = 1; i < n; i++) {
+        const pos = i / n;
+        const amp = 1.2 * Math.sin(Math.PI * pos);
+        if (amp > 0.05) impulses.push({ pos, amp });
+    }
+    drawGreens();
+}
+
+function clearImpulses() {
+    impulses = [];
+    drawGreens();
+}
+
+// =============================================
+// VIZ 4: FNO Layer
+// =============================================
+function drawFNOLayer() {
+    const W = 750, H = 260;
+    const res = makeSVG('fno-layer-viz', W, H, { left: 40, right: 15, top: 10, bottom: 25 });
+    if (!res) return;
+    const { svg, g, iW, iH } = res;
+
+    // Arrowhead marker (used by FNO arrows)
+    const defs = svg.append('defs');
+    defs.append('marker').attr('id', 'onet-arr').attr('viewBox', '0 0 10 6').attr('refX', 10).attr('refY', 3)
+        .attr('markerWidth', 8).attr('markerHeight', 6).attr('orient', 'auto')
+        .append('path').attr('d', 'M0,0 L10,3 L0,6 Z').attr('fill', '#555');
+
+    const K = parseInt(document.getElementById('fno-modes')?.value || 10);
+    const nPts = 100;
+    const maxModes = 20;
+    const xArr = d3.range(nPts).map(i => i / (nPts - 1));
+
+    // Generate a sample input function (sum of some Fourier modes)
+    const inputCoeffs = d3.range(maxModes).map(k => (k < 3 ? 1.0 : 0.3) / (k + 1));
+    function inputFunc(x) {
+        let sum = 0;
+        for (let k = 0; k < maxModes; k++) sum += inputCoeffs[k] * Math.sin((k + 1) * 2 * Math.PI * x);
+        return sum;
+    }
+
+    // Fake learned weights in Fourier domain
+    const learnedWeights = d3.range(maxModes).map(k => 0.3 + 0.7 * Math.exp(-k * 0.15));
+
+    // Apply FNO: truncate to K modes, multiply by weights, reconstruct
+    function fnoOutput(x) {
+        let sum = 0;
+        for (let k = 0; k < K; k++) sum += inputCoeffs[k] * learnedWeights[k] * Math.sin((k + 1) * 2 * Math.PI * x);
+        return sum;
+    }
+
+    // Layout: 3 panels side by side
+    const panelW = iW * 0.28, gap = iW * 0.08;
+
+    function drawPanel(offsetX, title, data, color, type) {
+        const pg = g.append('g').attr('transform', `translate(${offsetX}, 0)`);
+        pg.append('text').attr('x', panelW / 2).attr('y', -1).attr('text-anchor', 'middle').style('fill', color).style('font-size', '11px').style('font-weight', 'bold').text(title);
+
+        if (type === 'line') {
+            const xS = d3.scaleLinear().domain([0, 1]).range([0, panelW]);
+            const yExt = d3.extent(data, d => d.y);
+            const pad = (yExt[1] - yExt[0]) * 0.2 || 0.5;
+            const yS = d3.scaleLinear().domain([yExt[0] - pad, yExt[1] + pad]).range([iH, 0]);
+            pg.append('g').attr('transform', `translate(0,${iH})`).call(d3.axisBottom(xS).ticks(3)).selectAll('text').style('fill', '#8b949e').style('font-size', '9px');
+            pg.append('g').call(d3.axisLeft(yS).ticks(4)).selectAll('text').style('fill', '#8b949e').style('font-size', '9px');
+            pg.selectAll('.domain, .tick line').style('stroke', '#444');
+            pg.append('path').datum(data).attr('fill', 'none').attr('stroke', color).attr('stroke-width', 2)
+                .attr('d', d3.line().x(d => xS(d.x)).y(d => yS(d.y)).curve(d3.curveMonotoneX));
+        } else if (type === 'bars') {
+            const xS = d3.scaleBand().domain(d3.range(maxModes)).range([0, panelW]).padding(0.15);
+            const yMax = d3.max(data, d => Math.abs(d.y));
+            const yS = d3.scaleLinear().domain([0, yMax * 1.2]).range([iH, 0]);
+            pg.append('g').attr('transform', `translate(0,${iH})`).call(d3.axisBottom(xS).tickValues([0, 4, 9, 14, 19]).tickFormat(d => d + 1)).selectAll('text').style('fill', '#8b949e').style('font-size', '9px');
+            pg.selectAll('.domain, .tick line').style('stroke', '#444');
+
+            data.forEach((d, i) => {
+                const active = i < K;
+                pg.append('rect').attr('x', xS(i)).attr('y', yS(Math.abs(d.y))).attr('width', xS.bandwidth()).attr('height', iH - yS(Math.abs(d.y)))
+                    .attr('fill', active ? color : '#333').attr('opacity', active ? 0.8 : 0.3);
+            });
+
+            // Truncation line
+            if (K < maxModes) {
+                const cutX = xS(K) - xS.step() * 0.1;
+                pg.append('line').attr('x1', cutX).attr('x2', cutX).attr('y1', 0).attr('y2', iH).attr('stroke', 'var(--accent-red)').attr('stroke-width', 1.5).attr('stroke-dasharray', '4,3');
+                pg.append('text').attr('x', cutX + 3).attr('y', 12).style('fill', 'var(--accent-red)').style('font-size', '9px').text('K=' + K);
+            }
+        }
+    }
+
+    // Arrows between panels
+    function drawArrow(x1, x2, label) {
+        const midY = iH / 2;
+        g.append('line').attr('x1', x1).attr('y1', midY).attr('x2', x2).attr('y2', midY).attr('stroke', '#555').attr('stroke-width', 1.5).attr('marker-end', 'url(#onet-arr)');
+        g.append('text').attr('x', (x1 + x2) / 2).attr('y', midY - 6).attr('text-anchor', 'middle').style('fill', '#8b949e').style('font-size', '9px').text(label);
+    }
+
+    // Panel 1: Input function v(x)
+    const inputData = xArr.map(x => ({ x, y: inputFunc(x) }));
+    drawPanel(0, 'v(x) — Input', inputData, 'var(--accent-blue)', 'line');
+
+    // Arrow
+    drawArrow(panelW + 5, panelW + gap - 5, 'FFT');
+
+    // Panel 2: Spectrum |v̂(k)| with weights
+    const specData = d3.range(maxModes).map(k => ({ k, y: Math.abs(inputCoeffs[k]) * learnedWeights[k] }));
+    drawPanel(panelW + gap, '|R · v̂(k)| — Fourier', specData, 'var(--accent-yellow)', 'bars');
+
+    // Arrow
+    drawArrow(2 * panelW + gap + 5, 2 * (panelW + gap) - 5, 'iFFT');
+
+    // Panel 3: Output
+    const outputData = xArr.map(x => ({ x, y: fnoOutput(x) }));
+    drawPanel(2 * (panelW + gap), 'Output', outputData, 'var(--accent-green)', 'line');
+}
+
+document.getElementById('fno-modes')?.addEventListener('input', function() {
+    document.getElementById('fno-modes-val').textContent = this.value;
+    drawFNOLayer();
+});
+
+// =============================================
+// VIZ 5: Operator Generalization Comparison
+// =============================================
+function drawOperatorCompare() {
+    const W = 580, H = 260;
+    const res = makeSVG('operator-compare-viz', W, H, { left: 35, right: 10, top: 15, bottom: 25 });
+    if (!res) return;
+    const { svg, g, iW, iH } = res;
+
+    const activeIC = parseInt(document.querySelector('.ic-btn.active')?.dataset?.ic || 0);
+    const nPts = 80;
+    const xArr = d3.range(nPts).map(i => i / (nPts - 1));
+
+    // Define ICs and "solutions" (pre-computed fake data for demo)
+    const ics = [
+        { name: 'Smooth', fn: x => Math.sin(Math.PI * x) },
+        { name: 'Peaked', fn: x => Math.exp(-80 * (x - 0.5) * (x - 0.5)) },
+        { name: 'Oscillatory', fn: x => Math.sin(5 * Math.PI * x) * (1 - x) },
+        { name: 'Step', fn: x => x < 0.5 ? 1 : 0 },
+    ];
+
+    // Fake "true" solution at t=0.1 (heat-equation-like diffusion)
+    function diffuse(fn, t) {
+        return x => {
+            let sum = 0, n = 50;
+            for (let i = 0; i < n; i++) {
+                const xi = i / (n - 1);
+                sum += fn(xi) * Math.exp(-((x - xi) * (x - xi)) / (4 * t + 0.001)) / n;
+            }
+            return sum * 2;
+        };
+    }
+
+    const trueSol = diffuse(ics[activeIC].fn, 0.1);
+
+    // Methods: DeepONet (good), FNO (good on smooth, worse on step), PINN (shows "retraining" note)
+    const methods = [
+        { name: 'DeepONet', color: 'var(--accent-blue)', noise: 0.02 },
+        { name: 'FNO', color: 'var(--accent-purple)', noise: activeIC === 3 ? 0.12 : 0.03 },
+        { name: 'PINNs', color: 'var(--accent-orange)', noise: 0.04 },
+    ];
+
+    const panelW = iW / 3 - 8;
+
+    methods.forEach((method, mi) => {
+        const offsetX = mi * (panelW + 12);
+        const pg = g.append('g').attr('transform', `translate(${offsetX}, 0)`);
+
+        // Title
+        pg.append('text').attr('x', panelW / 2).attr('y', -2).attr('text-anchor', 'middle')
+            .style('fill', method.color).style('font-size', '11px').style('font-weight', 'bold').text(method.name);
+
+        const trueData = xArr.map(x => ({ x, y: trueSol(x) }));
+        const yExt = d3.extent(trueData, d => d.y);
+        const pad = (yExt[1] - yExt[0]) * 0.2 || 0.3;
+        const xS = d3.scaleLinear().domain([0, 1]).range([0, panelW]);
+        const yS = d3.scaleLinear().domain([yExt[0] - pad, yExt[1] + pad]).range([iH - 20, 0]);
+
+        pg.append('g').attr('transform', `translate(0,${iH - 20})`).call(d3.axisBottom(xS).ticks(3)).selectAll('text').style('fill', '#8b949e').style('font-size', '9px');
+        pg.selectAll('.domain, .tick line').style('stroke', '#444');
+
+        // True solution (dashed)
+        const line = d3.line().x(d => xS(d.x)).y(d => yS(d.y)).curve(d3.curveMonotoneX);
+        pg.append('path').datum(trueData).attr('fill', 'none').attr('stroke', '#555').attr('stroke-width', 1).attr('stroke-dasharray', '4,3').attr('d', line);
+
+        // Method prediction (with noise)
+        const rng = d3.randomNormal(0, method.noise);
+        const predData = xArr.map(x => ({ x, y: trueSol(x) + rng() }));
+        pg.append('path').datum(predData).attr('fill', 'none').attr('stroke', method.color).attr('stroke-width', 2).attr('d', line);
+
+        // Error metric
+        const mse = d3.mean(xArr.map((x, i) => Math.pow(predData[i].y - trueData[i].y, 2)));
+        pg.append('text').attr('x', panelW / 2).attr('y', iH - 4).attr('text-anchor', 'middle')
+            .style('fill', '#8b949e').style('font-size', '9px').text('MSE: ' + mse.toFixed(4));
+
+        // PINN: add "retraining" note
+        if (mi === 2) {
+            pg.append('text').attr('x', panelW / 2).attr('y', iH + 8).attr('text-anchor', 'middle')
+                .style('fill', 'var(--accent-red)').style('font-size', '9px').text('(must retrain for each IC)');
+        }
+    });
+}
+
+// IC button listeners
+document.querySelectorAll('.ic-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.ic-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        drawOperatorCompare();
+    });
+});
+
+// =============================================
+// INIT ALL VISUALIZATIONS
+// =============================================
+Reveal.on('ready', () => {
+    drawSSTHeatmap();
+    drawTrainingHeatmap();
+    drawGreens();
+    drawFNOLayer();
+});
+
+Reveal.on('slidechanged', event => {
+    setTimeout(() => {
+        const s = event.currentSlide;
+        if (s.querySelector('#sst-heatmap-viz')) drawSSTHeatmap();
+        if (s.querySelector('#training-heatmap-viz')) drawTrainingHeatmap();
+        if (s.querySelector('#greens-viz')) drawGreens();
+        if (s.querySelector('#fno-layer-viz')) drawFNOLayer();
+    }, 100);
+});
+</script>
+</body>
+</html>
