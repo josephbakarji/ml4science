@@ -333,3 +333,30 @@ article ul#archive > li:before {
 ul#archive li span a:hover {
        border-bottom: #bdbdbd 1px solid;
 } */
+
+
+/* Teaching assistant cards: matches the intro2ml site */
+.ta-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.ta-card {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 8px;
+    margin: 0;
+    width: 220px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.ta-card h3 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+}
+
+.ta-card p {
+    margin: 2px 0;
+}

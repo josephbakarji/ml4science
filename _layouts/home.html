@@ -48,21 +48,14 @@ layout: default
         </div>
 
         <div style="width:65%; float: left">
-            <div class="profile-pic-gallary ">
-                <h2>Teaching Assistants</h2>
+            <h2>Teaching Assistants</h2>
+            <div class="ta-container">
                 {% for ta in site.data.people.teaching_assistants %}
-                <div class="image--cover-container">
-                    {% if ta.profile_pic %}
-                    <img src="{{ta.profile_pic | prepend: site.baseurl }}" class="image--cover">
-                    {% endif %}
-                    {% if ta.webpage %}
-                    <p><a href="{{ ta.webpage }}">{{ta.name}}</a></p>
-                    {% else %}
-                    <p>{{ta.name}}</p>
-                    {% endif %}
-                    {% if ta.email %}
-                    <p><a href="mailto:{{ta.email}}">{{ta.email}}</a></p>
-                    {% endif %}
+                <div class="ta-card">
+                    <h3>{{ ta.name }}</h3>
+                    {% if ta.email %}<p><strong>Email:</strong> {{ ta.email }}</p>{% endif %}
+                    {% if ta.office_hours %}<p><strong>Office Hours:</strong> {{ ta.office_hours }}</p>{% endif %}
+                    {% if ta.office %}<p><strong>Office:</strong> {{ ta.office }}</p>{% endif %}
                 </div>
                 {% endfor %}
             </div>
