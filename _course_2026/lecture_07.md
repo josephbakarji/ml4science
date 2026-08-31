@@ -1,10 +1,15 @@
 ---
 lecture_num: '07'
 title: 'Time Series Analysis: Starting from Data'
-date: '2026-02-05T08:00:00+03:00'
+date: '2026-09-24T15:30:00+03:00'
 type: lecture
 tldr: From Fourier decomposition through autoregressive models to the logistic map
   and SINDy.
+preparation:
+- name: 'Data-Driven Science and Engineering, Ch. 2 (Fourier and wavelet transforms)'
+  type: reading
+  label: recommended
+  url: https://www.databookuw.com/
 material:
 - name: Time Series Analysis Slides
   type: slides

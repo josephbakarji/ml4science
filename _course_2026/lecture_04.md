@@ -1,7 +1,7 @@
 ---
 lecture_num: '04'
 title: Scientific Modeling Principles and Differential Equations
-date: '2026-01-27T08:00:00+03:00'
+date: '2026-09-15T15:30:00+03:00'
 type: lecture
 tldr: 'Why differential equations are the language of physics. Inductive biases in
   scientific modeling: space-time, conservation laws, linearity. From Newton to Navier-Stokes.'

@@ -1,7 +1,7 @@
 ---
 lecture_num: '18'
 title: Operator Learning and Neural Operators
-date: '2026-04-02T08:00:00+03:00'
+date: '2026-11-03T15:30:00+03:00'
 type: lecture
 tldr: 'From separation of variables to Fourier neural operators: DeepONet, FNO, and
   learning solution maps between function spaces.'

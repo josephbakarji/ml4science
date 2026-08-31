@@ -1,7 +1,7 @@
 ---
 lecture_num: '14'
 title: 'SVD & PCA: Dimensionality Reduction'
-date: '2026-03-05T08:00:00+03:00'
+date: '2026-10-20T15:30:00+03:00'
 type: lecture
 tldr: Eigenvalues, singular value decomposition, principal component analysis, and
   low-rank approximation.

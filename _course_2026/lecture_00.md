@@ -1,9 +1,14 @@
 ---
 lecture_num: '00'
 title: Course Introduction and Logistics
-date: '2026-01-13T08:00:00+03:00'
+date: '2026-09-01T15:30:00+03:00'
 type: lecture
 tldr: Overview of Data-Driven Modeling and Course Structure
+preparation:
+- name: 'Course syllabus and logistics'
+  type: notes
+  label: required
+  url: /syllabus/
 material:
 - name: Lecture Slides
   type: slides

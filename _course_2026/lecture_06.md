@@ -1,7 +1,7 @@
 ---
 lecture_num: '06'
 title: Complex Systems and Probabilistic Modeling
-date: '2026-02-03T08:00:00+03:00'
+date: '2026-09-22T15:30:00+03:00'
 type: lecture
 tldr: Complex systems, chaos, sensitivity to initial conditions, probability theory,
   uncertainty propagation, and the bridge from randomness to determinism.

@@ -1,7 +1,7 @@
 ---
 lecture_num: 09
 title: Sparse Identification of Differential Equations, Part 2
-date: '2026-02-12T08:00:00+03:00'
+date: '2026-10-01T15:30:00+03:00'
 type: lecture
 tldr: Extending sparse equation discovery to partial differential equations. Building
   PDE feature matrices from spatiotemporal data and discovering classical PDEs.

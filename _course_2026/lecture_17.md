@@ -1,10 +1,15 @@
 ---
 lecture_num: '17'
 title: Deep Learning for Time Series
-date: '2026-03-19T08:00:00+03:00'
+date: '2026-10-29T15:30:00+03:00'
 type: lecture
 tldr: 'From Ising models to RNNs: Hopfield networks, Boltzmann machines, LSTMs, echo
   state networks, and reservoir computing.'
+preparation:
+- name: 'Goodfellow, Bengio, Courville - Deep Learning, Ch. 10 (Sequence modeling)'
+  type: reading
+  label: recommended
+  url: https://www.deeplearningbook.org/
 material:
 - name: Lecture Slides
   type: slides

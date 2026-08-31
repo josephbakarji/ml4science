@@ -1,9 +1,14 @@
 ---
 lecture_num: '01'
 title: Learning Examples and Data
-date: '2026-01-15T08:00:00+03:00'
+date: '2026-09-03T15:30:00+03:00'
 type: lecture
 tldr: The various types of data and examples of modeling them
+preparation:
+- name: 'Review: Probability and statistics basics'
+  type: video
+  label: recommended
+  url: https://www.khanacademy.org/math/statistics-probability/probability-library
 material:
 - name: Learning from Data
   type: slides

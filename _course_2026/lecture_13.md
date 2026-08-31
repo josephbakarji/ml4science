@@ -1,7 +1,7 @@
 ---
 lecture_num: '13'
 title: Physics-Informed Neural Networks
-date: '2026-02-26T08:00:00+03:00'
+date: '2026-10-15T15:30:00+03:00'
 type: lecture
 tldr: From classical residual minimization to PINNs. Basis function expansions, collocation
   methods, automatic differentiation, forward and inverse problems, training challenges,

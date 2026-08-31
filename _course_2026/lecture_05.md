@@ -1,7 +1,7 @@
 ---
 lecture_num: '05'
 title: Numerical Computing and Scientific Simulation
-date: '2026-01-29T08:00:00+03:00'
+date: '2026-09-17T15:30:00+03:00'
 type: lecture
 tldr: From differential equations to predictions on a computer. Discretization, error
   analysis, stability, and chaos.

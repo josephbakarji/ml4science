@@ -1,7 +1,7 @@
 ---
 lecture_num: '02'
 title: From Empirical Laws to Linear Regression
-date: '2026-01-20T08:00:00+03:00'
+date: '2026-09-08T15:30:00+03:00'
 type: lecture
 tldr: 'On the early days of science: fitting empirical measurements to linear models'
 preparation:

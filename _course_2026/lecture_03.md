@@ -1,7 +1,7 @@
 ---
 lecture_num: '03'
 title: Generalization
-date: '2026-01-22T08:00:00+03:00'
+date: '2026-09-10T15:30:00+03:00'
 type: lecture
 tldr: Review of generalization, touching on deep learning, with a Python example on
   extrapolation in time

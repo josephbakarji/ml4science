@@ -1,7 +1,7 @@
 ---
 lecture_num: '16'
 title: 'Advanced Deep Learning: Autoencoders & CNNs'
-date: '2026-03-17T08:00:00+03:00'
+date: '2026-10-27T15:30:00+03:00'
 type: lecture
 tldr: Autoencoders for dimensionality reduction and convolutional neural networks
   for spatial data.

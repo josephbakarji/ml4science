@@ -1,7 +1,7 @@
 ---
 lecture_num: 08
 title: Sparse Identification of Differential Equations, Part 1
-date: '2026-02-10T08:00:00+03:00'
+date: '2026-09-29T15:30:00+03:00'
 type: lecture
 tldr: Discovering governing equations from data using sparse regression. Building
   feature libraries, solving overdetermined systems, and sparsifying with sequential

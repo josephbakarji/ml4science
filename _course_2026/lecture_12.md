@@ -1,10 +1,15 @@
 ---
 lecture_num: '12'
 title: Project Pre-Proposal Feedback Session
-date: '2026-02-24T08:00:00+03:00'
+date: '2026-10-13T15:30:00+03:00'
 type: lecture
 tldr: Peer feedback workshop for project pre-proposals. Review guidelines, swap proposals,
   discuss, and revise.
+preparation:
+- name: 'Project guidelines and proposal requirements'
+  type: notes
+  label: required
+  url: /project/
 material:
 - name: Workshop Slides
   type: slides

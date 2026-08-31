@@ -1,7 +1,7 @@
 ---
 lecture_num: '11'
 title: Introduction to Deep Learning
-date: '2026-02-19T08:00:00+03:00'
+date: '2026-10-08T15:30:00+03:00'
 type: lecture
 tldr: Building intuition from linear regression to neural networks. Universal approximation,
   backpropagation, and training deep networks.
