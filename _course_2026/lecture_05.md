@@ -13,7 +13,7 @@ preparation:
 material:
 - name: Numerical Computing Slides
   type: slides
-  url: https://learnslides.onrender.com/slides/05_numerical_computing
+  url: https://learn.sematlas.com/slides/05_numerical_computing
 - name: Stable Fluids (Stam, SIGGRAPH 1999)
   type: paper
   label: optional

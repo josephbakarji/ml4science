@@ -8,7 +8,7 @@ tldr: 'From Ising models to RNNs: Hopfield networks, Boltzmann machines, LSTMs, 
 material:
 - name: Lecture Slides
   type: slides
-  url: https://learnslides.onrender.com/slides/dl_time_series
+  url: https://learn.sematlas.com/slides/dl_time_series
 assignments:
 - name: 'Problem Set 5: Data-Driven Reduced Order Modeling'
   type: homework

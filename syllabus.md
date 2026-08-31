@@ -5,7 +5,7 @@ permalink: syllabus/
 ---
 
 ## Course Info 
-* Lectures: Tue, Thu - 11:00 - 12:15 PM @ Bechtel 202
+* Lectures: Tue, Thu - 3:30 - 5:45 PM @ SRB 413
 * Instructor: [Joseph Bakarji](https://www.josephbakarji.com)
 * Office: Bechtel 418 
 * Office hours: Thu 1:30 PM - 3:30 PM
@@ -66,7 +66,8 @@ You will be provided with a list of suggested datasets to which you have to appl
 
 ## Assessment
 - Short Quizzes (10%)
-- Assignments (25%)
+- Assignments (20%)
+- Participation (5%)
 - Late Midterm Exam (25%)
 - Group project (40%)
     - Proposal (5%)

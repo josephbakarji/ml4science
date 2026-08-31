@@ -26,8 +26,10 @@ layout: default
 
         {% for event in all_events_sorted %}
         {% assign event_date = event.date | date: "%Y%m%d" | plus: 0 %}
-        {% comment %} Show events up to Jan 16, 2026 (adjust this date as course progresses) {% endcomment %}
-        {% if event_date <= 20260116 %}
+        {% comment %} Reset for Fall 2026. The cutoff sits before every event, so nothing
+        is listed yet; raise it as the semester progresses to reveal each week. {% endcomment %}
+        {% assign schedule_cutoff = 20260101 %}
+        {% if event_date <= schedule_cutoff %}
         <li class="table-row table-row-{{ event.type}}">
             {% include schedule_row_{{ event.type }}.html event=event %}
         </li>

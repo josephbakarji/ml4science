@@ -140,7 +140,7 @@
   material:
   - name: Scientific Modeling Principles
     type: slides
-    url: https://learnslides.onrender.com/slides/04_scientific_modeling
+    url: https://learn.sematlas.com/slides/04_scientific_modeling
   - name: 'Lecture Notes: Scientific Modeling Principles'
     type: notes
     label: required
@@ -165,7 +165,7 @@
   material:
   - name: Numerical Computing Slides
     type: slides
-    url: https://learnslides.onrender.com/slides/05_numerical_computing
+    url: https://learn.sematlas.com/slides/05_numerical_computing
   - name: Stable Fluids (Stam, SIGGRAPH 1999)
     type: paper
     label: optional
@@ -206,7 +206,7 @@
   material:
   - name: Complex Systems and Probability Slides
     type: slides
-    url: https://learnslides.onrender.com/slides/06_complex_systems
+    url: https://learn.sematlas.com/slides/06_complex_systems
   - name: 'Lorenz (1963): Deterministic Nonperiodic Flow'
     type: paper
     label: optional
@@ -230,7 +230,7 @@
   material:
   - name: Time Series Analysis Slides
     type: slides
-    url: https://learnslides.onrender.com/slides/07_time_series
+    url: https://learn.sematlas.com/slides/07_time_series
   - name: 'Lecture Notes: Time Series Analysis'
     type: notes
     url: /static_files/lectures/07/notes_time_series
@@ -252,7 +252,7 @@
   material:
   - name: Lecture Slides (Parts 1 & 2)
     type: slides
-    url: https://learnslides.onrender.com/slides/08_sindy
+    url: https://learn.sematlas.com/slides/08_sindy
   - name: Sparse Nonlinear Dynamics Models with SINDy, Part 1
     type: video
     url: https://www.youtube.com/watch?v=NxAn0oglMVw
@@ -288,7 +288,7 @@
   material:
   - name: Lecture Slides (Parts 1 & 2)
     type: slides
-    url: https://learnslides.onrender.com/slides/08_sindy
+    url: https://learn.sematlas.com/slides/08_sindy
   - name: PDE FIND
     type: video
     url: https://www.youtube.com/watch?v=oI3grKBxkqM
@@ -304,7 +304,7 @@
   material:
   - name: Lecture Slides
     type: slides
-    url: https://learnslides.onrender.com/slides/12_symbolic_regression
+    url: https://learn.sematlas.com/slides/12_symbolic_regression
   hide_from_announcments: false
   folder: 10_symbolic_regression
 - lecture_num: '11'
@@ -321,7 +321,7 @@
   material:
   - name: Lecture Slides
     type: slides
-    url: https://learnslides.onrender.com/slides/11_deep_learning
+    url: https://learn.sematlas.com/slides/11_deep_learning
   - name: Lecture Slides (PDF)
     type: pdf
     url: /static_files/slides/deep-learning-lecture.pdf
@@ -355,7 +355,7 @@
   material:
   - name: Lecture Slides
     type: slides
-    url: https://learnslides.onrender.com/slides/20_pinns
+    url: https://learn.sematlas.com/slides/20_pinns
   - name: 'PINNs: Physics Informed Neural Networks — Ben Moseley'
     type: video
     url: https://www.youtube.com/watch?v=G_hIppUWcsc
@@ -375,7 +375,7 @@
   material:
   - name: Lecture Slides
     type: slides
-    url: https://learnslides.onrender.com/slides/09_svd_pca
+    url: https://learn.sematlas.com/slides/09_svd_pca
   - name: PCA Reference (PDF)
     type: notes
     label: recommended
@@ -396,7 +396,7 @@
   material:
   - name: Lecture Slides
     type: slides
-    url: https://learnslides.onrender.com/slides/10_dmd
+    url: https://learn.sematlas.com/slides/10_dmd
   - name: Lecture Recording — DMD (March 12)
     type: video
     url: https://teams.microsoft.com/l/meetingrecap?driveId=b%21bJ0d-pNdx0Ks8vhDBeIsafFHjccgzdhPua4HL33q-SRmGRJ8_wZ6SoitW7-b_rZt&driveItemId=01COK4GJEXOCFQCPOMK5GZ7OFTPE4NUOQ5&sitePath=https%3A%2F%2Fmailaub-my.sharepoint.com%2F%3Av%3A%2Fg%2Fpersonal%2Fjb50_aub_edu_lb%2FIQCXcIsBPcxXTZ-4s3k42jodAf_ysFbCcAsi1k7tpYTc2bI&fileUrl=https%3A%2F%2Fmailaub-my.sharepoint.com%2Fpersonal%2Fjb50_aub_edu_lb%2FDocuments%2FRecordings%2FData-Driven+Modeling+Lecture-20260312_140214-Meeting+Recording.mp4%3Fweb%3D1&iCalUid=040000008200E00074C5B7101A82E008000000005580F087ECB1DC010000000000000000100000006C6D92BA4BC7104DA0098EF1F8F7C080&threadId=19%3Ameeting_MTcxZjc1MzktMjkzOS00NzQ3LWEyNzUtMTViMjNjMTZlMWYz%40thread.v2&organizerId=879bbc5b-4fb7-4d7a-9527-40ff9edea65e&tenantId=c7ba5b1a-41b6-43e9-a120-6ff654ada137&callId=748af552-3364-4016-b13c-5f0daaadb7f6&threadType=meeting&meetingType=Scheduled&subType=RecapSharingLink_RecapCore
@@ -437,7 +437,7 @@
   material:
   - name: Lecture Slides
     type: slides
-    url: https://learnslides.onrender.com/slides/dl_time_series
+    url: https://learn.sematlas.com/slides/dl_time_series
   assignments:
   - name: 'Problem Set 5: Data-Driven Reduced Order Modeling'
     type: homework

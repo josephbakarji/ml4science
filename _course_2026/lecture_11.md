@@ -13,7 +13,7 @@ preparation:
 material:
 - name: Lecture Slides
   type: slides
-  url: https://learnslides.onrender.com/slides/11_deep_learning
+  url: https://learn.sematlas.com/slides/11_deep_learning
 - name: Lecture Slides (PDF)
   type: pdf
   url: /static_files/slides/deep-learning-lecture.pdf
