@@ -26,11 +26,16 @@ layout: default
 
         {% for event in all_events_sorted %}
         {% assign event_date = event.date | date: "%Y%m%d" | plus: 0 %}
-        {% comment %} Reset for Fall 2026. The cutoff sits before every event, so nothing
-        is listed yet; raise it as the semester progresses to reveal each week. {% endcomment %}
-        {% assign schedule_cutoff = 20260101 %}
+        {% comment %} Reveal each lecture on the day it happens. This used to be a
+        hand-set number that had to be raised every week, and it was still sitting
+        at 20260101 on the day of the second lecture, so students had no schedule
+        at all. Deriving it from the build date is not enough either: Jekyll's
+        site.time is when the site was last built, not when it is read, so a week
+        with no push would silently show nothing. The list below is filtered in the
+        browser instead, against the reader's own date. {% endcomment %}
+        {% assign schedule_cutoff = 20991231 %}
         {% if event_date <= schedule_cutoff %}
-        <li class="table-row table-row-{{ event.type}}">
+        <li class="table-row table-row-{{ event.type}} is-scheduled" data-on="{{ event.date | date: '%Y-%m-%d' }}" hidden>
             {% include schedule_row_{{ event.type }}.html event=event %}
         </li>
         {% endif %}
@@ -38,3 +43,25 @@ layout: default
 
     </ul>
 </div>
+
+<script>
+// Show every event up to and including today, decided when the page is read
+// rather than when it was built.
+(function () {
+  var today = new Date(); today.setHours(0, 0, 0, 0);
+  // Lectures were moved to the Fall calendar but the assignments and their due
+  // dates were not, so they still carry Spring 2026 dates. Without a floor at
+  // the start of term, every one of them would surface as a past event. They
+  // will appear on their own once their dates are updated.
+  var termStart = new Date(2026, 8, 1);
+  var shown = 0;
+  document.querySelectorAll('.table-row.is-scheduled').forEach(function (el) {
+    var p = (el.dataset.on || '').split('-');
+    if (p.length !== 3) return;
+    var when = new Date(+p[0], +p[1] - 1, +p[2]);
+    if (when >= termStart && when <= today) { el.hidden = false; shown++; }
+  });
+  var note = document.getElementById('schedule-empty');
+  if (note && !shown) note.hidden = false;
+})();
+</script>

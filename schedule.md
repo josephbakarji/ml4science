@@ -4,4 +4,7 @@ title: Schedule
 permalink: schedule/
 ---
 
-The Fall 2026 schedule will be posted here before the semester begins.
+Lectures appear here on the day they happen. Slides and readings for each one
+are on the [lectures page](/lectures/).
+
+<p id="schedule-empty" hidden>Nothing scheduled yet.</p>
