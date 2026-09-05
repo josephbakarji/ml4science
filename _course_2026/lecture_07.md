@@ -6,7 +6,7 @@ type: lecture
 tldr: From Fourier decomposition through autoregressive models to the logistic map
   and SINDy.
 preparation:
-- name: 'Data-Driven Science and Engineering, Ch. 2 (Fourier and wavelet transforms)'
+- name: Data-Driven Science and Engineering, Ch. 2 (Fourier and wavelet transforms)
   type: reading
   label: recommended
   url: https://www.databookuw.com/

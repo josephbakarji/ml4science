@@ -5,8 +5,12 @@ layout: page
 {{ content }}
 <ul id="archive">
 {% for asg in site.assignments %}
+      {% comment %} Problem sets 1 to 5 and the project instructions still carry
+      Spring 2026 dates and last spring's Moodle links, so they stay off the page
+      until their Fall dates are set. visible: false in the assignment front
+      matter is the one flag that hides a row. {% endcomment %}
       {% assign asg_year = asg.date | date: "%Y" | plus: 0 %}
-      {% if asg_year < 2027 %}
+      {% if asg_year < 2027 and asg.visible != false %}
       <li class="archiveposturl" style="background: transparent">
         <!-- <span><a href="{{ asg.url | prepend: site.baseurl}}">{{ asg.title }}</a></span> -->
         <span><a href="{{ asg.location | prepend: site.baseurl}}">{{ asg.title }}</a></span>

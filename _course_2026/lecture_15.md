@@ -5,7 +5,7 @@ date: '2026-10-22T15:30:00+03:00'
 type: lecture
 tldr: Linear dynamical systems, eigenvalue dynamics, and Dynamic Mode Decomposition.
 preparation:
-- name: "Review: Steve Brunton's SVD series"
+- name: 'Review: Steve Brunton''s SVD series'
   type: video
   label: recommended
   url: https://www.youtube.com/playlist?list=PLMrJAkhIeNNSVjnsviglFoY2nXildDCcv

@@ -2,6 +2,7 @@
 type: assignment
 date: 2026-03-11T16:00:00+03:00
 title: 'Problem Set #5 - Data-Driven Reduced Order Modeling'
+visible: false
 location: /content/hw/hw5_26/
 hide_from_announcments: false
 due_event:

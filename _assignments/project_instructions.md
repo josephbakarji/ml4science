@@ -2,6 +2,7 @@
 type: assignment
 date: 2027-03-10T16:00:00+4:30
 title: 'Final Project Instructions'
+visible: false
 location: /content/hw/final_project_instructions/
 hide_from_announcments: true 
 due_event: 

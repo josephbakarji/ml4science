@@ -1,8 +1,13 @@
 - lecture_num: '00'
   title: Course Introduction and Logistics
-  date: '2026-01-13T08:00:00+03:00'
+  date: '2026-09-01T15:30:00+03:00'
   type: lecture
   tldr: Overview of Data-Driven Modeling and Course Structure
+  preparation:
+  - name: Course syllabus and logistics
+    type: notes
+    label: required
+    url: /syllabus/
   material:
   - name: Lecture Slides
     type: slides
@@ -10,16 +15,13 @@
   - name: Course Description and Logistics
     type: notes
     url: /static_files/lectures/00/notes_course_description
-  - name: The Big Questions
-    type: notes
-    url: /static_files/lectures/00/notes_the_questions
   - name: Data-Driven Science and Engineering (Textbook)
     type: reference
     url: https://www.databookuw.com/
   - name: On Discovering Physics from Data
     type: reference
     label: recommended
-    url: https://www.josephbakarji.com/articles/on-discovering-physics-from-data
+    url: https://www.josephbakarji.com/articles/?slug=on-discovering-physics-from-data
   assignments:
   - name: Machine learning and big scientific data
     type: reading
@@ -37,13 +39,21 @@
   folder: 00_intro_logistics
 - lecture_num: '01'
   title: Learning Examples and Data
-  date: '2026-01-15T08:00:00+03:00'
+  date: '2026-09-03T15:30:00+03:00'
   type: lecture
   tldr: The various types of data and examples of modeling them
+  preparation:
+  - name: 'Review: Probability and statistics basics'
+    type: video
+    label: recommended
+    url: https://www.khanacademy.org/math/statistics-probability/probability-library
   material:
-  - name: Learning from Data
+  - name: From Data to Learning (interactive slides)
     type: slides
-    url: /static_files/lectures/01/learning examples and data.pdf
+    url: https://learn.sematlas.com/slides/ml4sci_01_data
+  - name: Learning from Data (PDF)
+    type: slides
+    url: /static_files/lectures/01/learning_examples_and_data.pdf
   - name: Data-Driven Science and Engineering (Ch. 1)
     type: reference
     url: https://www.databookuw.com/
@@ -56,11 +66,11 @@
     type: reading
     label: recommended
     url: https://cs229.stanford.edu/section/cs229-linalg.pdf
-  - name: Revie material in Lecture 3 of Intro2ML
+  - name: Review material in Lecture 3 of Intro2ML
     type: reading
     label: recommended
     url: https://intro2ml.com/schedule/
-  - name: 'Problem Set 0: Linear Algebra and Calculus Recap'
+  - name: 'Problem Set 0: Linear Algebra and Calculus Recap and Project Ideas'
     type: homework
     label: recommended
     url: /content/hw/hw0/
@@ -68,7 +78,7 @@
   folder: 01_modeling_world
 - lecture_num: '02'
   title: From Empirical Laws to Linear Regression
-  date: '2026-01-20T08:00:00+03:00'
+  date: '2026-09-08T15:30:00+03:00'
   type: lecture
   tldr: 'On the early days of science: fitting empirical measurements to linear models'
   preparation:
@@ -101,7 +111,7 @@
   folder: 02_empirical_laws_to_linear_reg
 - lecture_num: '03'
   title: Generalization
-  date: '2026-01-22T08:00:00+03:00'
+  date: '2026-09-10T15:30:00+03:00'
   type: lecture
   tldr: Review of generalization, touching on deep learning, with a Python example
     on extrapolation in time
@@ -127,7 +137,7 @@
   folder: 03_generalization_deep_learning_and_others
 - lecture_num: '04'
   title: Scientific Modeling Principles and Differential Equations
-  date: '2026-01-27T08:00:00+03:00'
+  date: '2026-09-15T15:30:00+03:00'
   type: lecture
   tldr: 'Why differential equations are the language of physics. Inductive biases
     in scientific modeling: space-time, conservation laws, linearity. From Newton
@@ -153,7 +163,7 @@
   folder: 04_scientific_modeling_principles_diffeq
 - lecture_num: '05'
   title: Numerical Computing and Scientific Simulation
-  date: '2026-01-29T08:00:00+03:00'
+  date: '2026-09-17T15:30:00+03:00'
   type: lecture
   tldr: From differential equations to predictions on a computer. Discretization,
     error analysis, stability, and chaos.
@@ -190,7 +200,7 @@
   folder: 05_forward_comp_modeling_numerics
 - lecture_num: '06'
   title: Complex Systems and Probabilistic Modeling
-  date: '2026-02-03T08:00:00+03:00'
+  date: '2026-09-22T15:30:00+03:00'
   type: lecture
   tldr: Complex systems, chaos, sensitivity to initial conditions, probability theory,
     uncertainty propagation, and the bridge from randomness to determinism.
@@ -223,10 +233,15 @@
   folder: 06_complex_system_probabilistic_modeling
 - lecture_num: '07'
   title: 'Time Series Analysis: Starting from Data'
-  date: '2026-02-05T08:00:00+03:00'
+  date: '2026-09-24T15:30:00+03:00'
   type: lecture
   tldr: From Fourier decomposition through autoregressive models to the logistic map
     and SINDy.
+  preparation:
+  - name: Data-Driven Science and Engineering, Ch. 2 (Fourier and wavelet transforms)
+    type: reading
+    label: recommended
+    url: https://www.databookuw.com/
   material:
   - name: Time Series Analysis Slides
     type: slides
@@ -238,7 +253,7 @@
   folder: 07_time_series
 - lecture_num: 08
   title: Sparse Identification of Differential Equations, Part 1
-  date: '2026-02-10T08:00:00+03:00'
+  date: '2026-09-29T15:30:00+03:00'
   type: lecture
   tldr: Discovering governing equations from data using sparse regression. Building
     feature libraries, solving overdetermined systems, and sparsifying with sequential
@@ -275,7 +290,7 @@
   folder: 09_svd_pca
 - lecture_num: 09
   title: Sparse Identification of Differential Equations, Part 2
-  date: '2026-02-12T08:00:00+03:00'
+  date: '2026-10-01T15:30:00+03:00'
   type: lecture
   tldr: Extending sparse equation discovery to partial differential equations. Building
     PDE feature matrices from spatiotemporal data and discovering classical PDEs.
@@ -296,11 +311,17 @@
   folder: 09_system_identification
 - lecture_num: '10'
   title: Symbolic Regression + Quiz
-  date: '2026-02-17T08:00:00+03:00'
+  date: '2026-10-06T15:30:00+03:00'
   type: lecture
   tldr: Quiz covering time series, autoregression, and SINDy. Discovering equations
     as expression trees using genetic algorithms. Selection, crossover, mutation,
     Pareto-optimal complexity-accuracy tradeoffs, and PySR.
+  preparation:
+  - name: Brunton, Proctor & Kutz - Discovering governing equations from data (PNAS,
+      2016)
+    type: reading
+    label: recommended
+    url: https://doi.org/10.1073/pnas.1517384113
   material:
   - name: Lecture Slides
     type: slides
@@ -309,7 +330,7 @@
   folder: 10_symbolic_regression
 - lecture_num: '11'
   title: Introduction to Deep Learning
-  date: '2026-02-19T08:00:00+03:00'
+  date: '2026-10-08T15:30:00+03:00'
   type: lecture
   tldr: Building intuition from linear regression to neural networks. Universal approximation,
     backpropagation, and training deep networks.
@@ -329,10 +350,15 @@
   folder: 11_intro_deep_learning
 - lecture_num: '12'
   title: Project Pre-Proposal Feedback Session
-  date: '2026-02-24T08:00:00+03:00'
+  date: '2026-10-13T15:30:00+03:00'
   type: lecture
   tldr: Peer feedback workshop for project pre-proposals. Review guidelines, swap
     proposals, discuss, and revise.
+  preparation:
+  - name: Project guidelines and proposal requirements
+    type: notes
+    label: required
+    url: /project/
   material:
   - name: Workshop Slides
     type: slides
@@ -341,7 +367,7 @@
   folder: 12_preproposal_feedback
 - lecture_num: '13'
   title: Physics-Informed Neural Networks
-  date: '2026-02-26T08:00:00+03:00'
+  date: '2026-10-15T15:30:00+03:00'
   type: lecture
   tldr: From classical residual minimization to PINNs. Basis function expansions,
     collocation methods, automatic differentiation, forward and inverse problems,
@@ -363,7 +389,7 @@
   folder: 13_pinns
 - lecture_num: '14'
   title: 'SVD & PCA: Dimensionality Reduction'
-  date: '2026-03-05T08:00:00+03:00'
+  date: '2026-10-20T15:30:00+03:00'
   type: lecture
   tldr: Eigenvalues, singular value decomposition, principal component analysis, and
     low-rank approximation.
@@ -390,9 +416,14 @@
   folder: 14_svd_autoencoders
 - lecture_num: '15'
   title: Linear Dynamical Systems & DMD
-  date: '2026-03-12T08:00:00+03:00'
+  date: '2026-10-22T15:30:00+03:00'
   type: lecture
   tldr: Linear dynamical systems, eigenvalue dynamics, and Dynamic Mode Decomposition.
+  preparation:
+  - name: 'Review: Steve Brunton''s SVD series'
+    type: video
+    label: recommended
+    url: https://www.youtube.com/playlist?list=PLMrJAkhIeNNSVjnsviglFoY2nXildDCcv
   material:
   - name: Lecture Slides
     type: slides
@@ -409,7 +440,7 @@
   folder: 15_dmd
 - lecture_num: '16'
   title: 'Advanced Deep Learning: Autoencoders & CNNs'
-  date: '2026-03-17T08:00:00+03:00'
+  date: '2026-10-27T15:30:00+03:00'
   type: lecture
   tldr: Autoencoders for dimensionality reduction and convolutional neural networks
     for spatial data.
@@ -430,10 +461,15 @@
   folder: 16_advanced_deep_learning
 - lecture_num: '17'
   title: Deep Learning for Time Series
-  date: '2026-03-19T08:00:00+03:00'
+  date: '2026-10-29T15:30:00+03:00'
   type: lecture
   tldr: 'From Ising models to RNNs: Hopfield networks, Boltzmann machines, LSTMs,
     echo state networks, and reservoir computing.'
+  preparation:
+  - name: Goodfellow, Bengio, Courville - Deep Learning, Ch. 10 (Sequence modeling)
+    type: reading
+    label: recommended
+    url: https://www.deeplearningbook.org/
   material:
   - name: Lecture Slides
     type: slides
@@ -447,7 +483,7 @@
   folder: 17_dl_time_series
 - lecture_num: '18'
   title: Operator Learning and Neural Operators
-  date: '2026-04-02T08:00:00+03:00'
+  date: '2026-11-03T15:30:00+03:00'
   type: lecture
   tldr: 'From separation of variables to Fourier neural operators: DeepONet, FNO,
     and learning solution maps between function spaces.'

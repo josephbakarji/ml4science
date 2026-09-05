@@ -6,7 +6,7 @@ type: lecture
 tldr: 'From Ising models to RNNs: Hopfield networks, Boltzmann machines, LSTMs, echo
   state networks, and reservoir computing.'
 preparation:
-- name: 'Goodfellow, Bengio, Courville - Deep Learning, Ch. 10 (Sequence modeling)'
+- name: Goodfellow, Bengio, Courville - Deep Learning, Ch. 10 (Sequence modeling)
   type: reading
   label: recommended
   url: https://www.deeplearningbook.org/

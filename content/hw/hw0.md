@@ -1,10 +1,22 @@
 ---
 layout: page
-title: "Problem Set #0 - Linear Algebra and Calculus Recap"
+title: "Problem Set #0 - Linear Algebra and Calculus Recap and Project Ideas"
 permalink: /content/hw/hw0/
 ---
 
-These questions are inspired by those given in the introduction to machine learning course at Stanford (CS229). They require some thinking but brief answers. The purpose of this homework is to brush up on your linear algebra and multivariate calculus. Some of them may be useful for subsequent problem sets. If you have questions, I encourage you to post them on the forum. This homework is not graded, but it doesn't mean that you should do it.
+**Posted:** Saturday, September 5. **Due:** Sunday, September 13 at 23:59.
+
+These questions are inspired by those given in the introduction to machine learning course at Stanford (CS229). They require some thinking but brief answers. The purpose of this problem set is to brush up on your linear algebra and multivariate calculus, which the rest of the course leans on heavily. Some of the results come back later in the semester.
+
+## Submission
+
+This is an individual assignment. Review the [syllabus](/syllabus/) for the policy on collaboration and late submissions before you start.
+
+Problems 1 to 3 are written problems. Problem 4 is a short report, two pages at most.
+
+Submit one zip file on Moodle containing one PDF per problem, named `name_problem_1.pdf` through `name_problem_4.pdf`: [Submission Link](https://lms.aub.edu.lb/mod/assign/view.php?id=2820737). Handwritten solutions are fine as long as they are scanned and legible.
+
+You can raise and answer each other's questions on Slack, but please don't post exact solutions. If you use a language model, say how you used it. For Problem 4, include the conversation as an appendix. Undisclosed use costs points.
 
 ## Problem 1: Gradients and Hessians
 

@@ -2,6 +2,7 @@
 type: assignment
 date: 2026-02-24T16:00:00+03:00
 title: 'Problem Set #4 - Project Proposal'
+visible: false
 location: /content/hw/hw4_26/
 hide_from_announcments: false
 due_event:

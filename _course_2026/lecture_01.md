@@ -10,9 +10,12 @@ preparation:
   label: recommended
   url: https://www.khanacademy.org/math/statistics-probability/probability-library
 material:
-- name: Learning from Data
+- name: From Data to Learning (interactive slides)
   type: slides
-  url: /static_files/lectures/01/learning examples and data.pdf
+  url: https://learn.sematlas.com/slides/ml4sci_01_data
+- name: Learning from Data (PDF)
+  type: slides
+  url: /static_files/lectures/01/learning_examples_and_data.pdf
 - name: Data-Driven Science and Engineering (Ch. 1)
   type: reference
   url: https://www.databookuw.com/
@@ -25,11 +28,11 @@ assignments:
   type: reading
   label: recommended
   url: https://cs229.stanford.edu/section/cs229-linalg.pdf
-- name: Revie material in Lecture 3 of Intro2ML
+- name: Review material in Lecture 3 of Intro2ML
   type: reading
   label: recommended
   url: https://intro2ml.com/schedule/
-- name: 'Problem Set 0: Linear Algebra and Calculus Recap'
+- name: 'Problem Set 0: Linear Algebra and Calculus Recap and Project Ideas'
   type: homework
   label: recommended
   url: /content/hw/hw0/

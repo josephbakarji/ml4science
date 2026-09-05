@@ -2,6 +2,7 @@
 type: assignment
 date: 2026-01-22T16:00:00+4:30
 title: 'Problem Set #1 - Regression in Empirical Laws'
+visible: false
 location: /content/hw/hw1_1_26/
 hide_from_announcments: false
 due_event:

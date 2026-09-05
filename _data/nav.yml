@@ -19,10 +19,6 @@ items:
     name: Project
     icon_class: fas fa-flask
 
-  - url: /schedule/
-    name: Schedule
-    icon_class: fas fa-calendar-alt
-
   - url: /references/
     name: References
     icon_class: fas fa-book

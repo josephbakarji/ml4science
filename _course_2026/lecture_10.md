@@ -7,7 +7,8 @@ tldr: Quiz covering time series, autoregression, and SINDy. Discovering equation
   as expression trees using genetic algorithms. Selection, crossover, mutation, Pareto-optimal
   complexity-accuracy tradeoffs, and PySR.
 preparation:
-- name: 'Brunton, Proctor & Kutz - Discovering governing equations from data (PNAS, 2016)'
+- name: Brunton, Proctor & Kutz - Discovering governing equations from data (PNAS,
+    2016)
   type: reading
   label: recommended
   url: https://doi.org/10.1073/pnas.1517384113

@@ -5,7 +5,7 @@ date: '2026-09-01T15:30:00+03:00'
 type: lecture
 tldr: Overview of Data-Driven Modeling and Course Structure
 preparation:
-- name: 'Course syllabus and logistics'
+- name: Course syllabus and logistics
   type: notes
   label: required
   url: /syllabus/
@@ -16,16 +16,13 @@ material:
 - name: Course Description and Logistics
   type: notes
   url: /static_files/lectures/00/notes_course_description
-- name: The Big Questions
-  type: notes
-  url: /static_files/lectures/00/notes_the_questions
 - name: Data-Driven Science and Engineering (Textbook)
   type: reference
   url: https://www.databookuw.com/
 - name: On Discovering Physics from Data
   type: reference
   label: recommended
-  url: https://www.josephbakarji.com/articles/on-discovering-physics-from-data
+  url: https://www.josephbakarji.com/articles/?slug=on-discovering-physics-from-data
 assignments:
 - name: Machine learning and big scientific data
   type: reading
