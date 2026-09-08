@@ -23,7 +23,7 @@ layout: page
     </div>
 
     <div class="lecture-content" style="display: none;">
-        {% if lecture.preparation or lecture.material or lecture.assignments %}
+        {% if lecture.preparation or lecture.material or lecture.references or lecture.assignments %}
 
         {% if lecture.preparation %}
         <div class="lecture-section">
@@ -60,6 +60,31 @@ layout: page
                         {% if item.type == 'notes' %}<span class="link-badge notes">Notes</span>{% endif %}
                         {% if item.type == 'reference' %}<span class="link-badge reference">Reference</span>{% endif %}
                         {% if item.type == 'notebook' %}<span class="link-badge notebook">Notebook</span>{% endif %}
+                        {% if item.label == 'required' %}<span class="label-badge required">Required</span>{% endif %}
+                        {% if item.label == 'recommended' %}<span class="label-badge recommended">Recommended</span>{% endif %}
+                        {% if item.label == 'optional' %}<span class="label-badge optional">Optional</span>{% endif %}
+                    </a>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if lecture.references %}
+        <div class="lecture-section">
+            <h4 class="section-title"><i class="fas fa-book"></i> References</h4>
+            <ul class="lecture-links">
+            {% for item in lecture.references %}
+                <li>
+                    <a href="{% if item.url contains '://' %}{{ item.url }}{% else %}{{ site.baseurl }}{{ item.url }}{% endif %}"
+                       {% if item.url contains '://' %}target="_blank"{% endif %}>
+                        {{ item.name }}
+                        {% if item.type == 'slides' %}<span class="link-badge slides">Slides</span>{% endif %}
+                        {% if item.type == 'notes' %}<span class="link-badge notes">Notes</span>{% endif %}
+                        {% if item.type == 'reference' %}<span class="link-badge reference">Reference</span>{% endif %}
+                        {% if item.type == 'notebook' %}<span class="link-badge notebook">Notebook</span>{% endif %}
+                        {% if item.type == 'video' %}<span class="link-badge video">Video</span>{% endif %}
+                        {% if item.type == 'reading' %}<span class="link-badge reading">Reading</span>{% endif %}
                         {% if item.label == 'required' %}<span class="label-badge required">Required</span>{% endif %}
                         {% if item.label == 'recommended' %}<span class="label-badge recommended">Recommended</span>{% endif %}
                         {% if item.label == 'optional' %}<span class="label-badge optional">Optional</span>{% endif %}

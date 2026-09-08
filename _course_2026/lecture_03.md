@@ -11,16 +11,16 @@ preparation:
   label: required
   url: https://www.youtube.com/watch?v=504PwSIr-DI
 material:
-- name: Generalization and Feature Engineering
+- name: Generalization and Feature Engineering (PDF)
   type: slides
   label: required
   url: /static_files/lectures/03/generalization-and-features.pdf
 - name: Machine Learning with Python Sklearn - Live Coding Tutorial
-  type: Video
+  type: video
   label: recommended
   url: https://www.youtube.com/watch?v=f-EFJXCzLsQ
-- name: Machine Learning with Python Sklearn - Live Coding Tutorial
-  type: references
+- name: Sklearn Tutorial Notebook (from Intro2ML)
+  type: notebook
   label: recommended
   url: https://intro2ml.com/materials/notebooks/ML_tutorial/
 hide_from_announcments: false
