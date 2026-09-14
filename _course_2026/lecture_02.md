@@ -29,6 +29,11 @@ references:
   type: video
   label: recommended
   url: https://www.youtube.com/watch?v=UThuJRt9_N8
+assignments:
+- name: 'Problem Set 1: Regression for Empirical Laws'
+  type: homework
+  label: required
+  url: /content/hw/hw1_1_26/
 hide_from_announcments: false
 folder: 02_empirical_laws_to_linear_reg
 ---

@@ -106,6 +106,11 @@
     type: video
     label: recommended
     url: https://www.youtube.com/watch?v=UThuJRt9_N8
+  assignments:
+  - name: 'Problem Set 1: Regression for Empirical Laws'
+    type: homework
+    label: required
+    url: /content/hw/hw1_1_26/
   hide_from_announcments: false
   folder: 02_empirical_laws_to_linear_reg
 - lecture_num: '03'
@@ -132,6 +137,10 @@
     type: notebook
     label: recommended
     url: https://intro2ml.com/materials/notebooks/ML_tutorial/
+  - name: Everything is a Function
+    type: notes
+    label: optional
+    url: /static_files/lectures/03/notes_modeling_functions
   hide_from_announcments: false
   folder: 03_generalization_deep_learning_and_others
 - lecture_num: '04'

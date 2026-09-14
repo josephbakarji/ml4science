@@ -23,6 +23,10 @@ material:
   type: notebook
   label: recommended
   url: https://intro2ml.com/materials/notebooks/ML_tutorial/
+- name: Everything is a Function
+  type: notes
+  label: optional
+  url: /static_files/lectures/03/notes_modeling_functions
 hide_from_announcments: false
 folder: 03_generalization_deep_learning_and_others
 ---
