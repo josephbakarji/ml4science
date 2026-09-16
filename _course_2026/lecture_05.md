@@ -11,27 +11,28 @@ preparation:
   label: recommended
   url: https://www.khanacademy.org/math/ap-calculus-bc/bc-series-new/bc-10-11/v/maclaurin-and-taylor-series-intuition
 material:
-- name: Numerical Computing Slides
+- name: Numerical Computing (interactive slides)
   type: slides
   url: https://learn.sematlas.com/slides/05_numerical_computing
+references:
 - name: Stable Fluids (Stam, SIGGRAPH 1999)
-  type: paper
+  type: reading
   label: optional
   url: https://www.dgp.toronto.edu/public_user/stam/reality/Research/pdf/ns.pdf
 - name: 'Lorenz (1963): Deterministic Nonperiodic Flow'
-  type: paper
+  type: reading
   label: optional
   url: https://journals.ametsoc.org/view/journals/atsc/20/2/1520-0469_1963_020_0130_dnf_2_0_co_2.xml
-- name: Numerical Recipes (Free Online)
-  type: textbook
+- name: Numerical Recipes (free online)
+  type: reference
   label: optional
   url: https://numerical.recipes/book.html
 - name: 'LeVeque: Finite Volume Methods for Hyperbolic Problems'
-  type: textbook
+  type: reference
   label: optional
   url: https://depts.washington.edu/clawpack/book.html
 - name: 'MIT OCW: Numerical Methods for PDEs'
-  type: course
+  type: reference
   label: optional
   url: https://ocw.mit.edu/courses/16-920j-numerical-methods-for-partial-differential-equations-sma-5212-spring-2003/
 hide_from_announcments: false
