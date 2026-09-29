@@ -279,6 +279,11 @@
   - name: 'Lecture Notes: Time Series Analysis'
     type: notes
     url: /static_files/lectures/07/notes_time_series
+  assignments:
+  - name: 'Problem Set 2: Differential Equations and Probabilistic Models'
+    type: homework
+    label: required
+    url: /content/hw/hw2_26f/
   hide_from_announcments: false
   folder: 07_time_series
 - lecture_num: 08
