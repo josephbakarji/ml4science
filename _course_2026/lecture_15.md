@@ -1,7 +1,7 @@
 ---
 lecture_num: '15'
 title: Linear Dynamical Systems & DMD
-date: '2026-10-22T15:30:00+03:00'
+date: '2026-11-03T15:30:00+03:00'
 type: lecture
 tldr: Linear dynamical systems, eigenvalue dynamics, and Dynamic Mode Decomposition.
 preparation:

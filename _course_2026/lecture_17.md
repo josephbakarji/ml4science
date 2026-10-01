@@ -1,7 +1,7 @@
 ---
 lecture_num: '17'
 title: Deep Learning for Time Series
-date: '2026-10-29T15:30:00+03:00'
+date: '2026-11-10T15:30:00+03:00'
 type: lecture
 tldr: 'From Ising models to RNNs: Hopfield networks, Boltzmann machines, LSTMs, echo
   state networks, and reservoir computing.'

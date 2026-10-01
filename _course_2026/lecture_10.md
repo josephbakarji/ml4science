@@ -1,7 +1,7 @@
 ---
 lecture_num: '10'
 title: Symbolic Regression + Quiz
-date: '2026-10-06T15:30:00+03:00'
+date: '2026-10-20T15:30:00+03:00'
 type: lecture
 tldr: Quiz covering time series, autoregression, and SINDy. Discovering equations
   as expression trees using genetic algorithms. Selection, crossover, mutation, Pareto-optimal

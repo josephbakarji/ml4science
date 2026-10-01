@@ -230,7 +230,7 @@
   folder: 05_forward_comp_modeling_numerics
 - lecture_num: '06'
   title: Complex Systems and Probabilistic Modeling
-  date: '2026-09-22T15:30:00+03:00'
+  date: '2026-10-01T15:30:00+03:00'
   type: lecture
   tldr: Complex systems, chaos, sensitivity to initial conditions, probability theory,
     uncertainty propagation, and the bridge from randomness to determinism.
@@ -263,7 +263,7 @@
   folder: 06_complex_system_probabilistic_modeling
 - lecture_num: '07'
   title: 'Time Series Analysis: Starting from Data'
-  date: '2026-09-24T15:30:00+03:00'
+  date: '2026-10-06T15:30:00+03:00'
   type: lecture
   tldr: From Fourier decomposition through autoregressive models to the logistic map
     and SINDy.
@@ -288,7 +288,7 @@
   folder: 07_time_series
 - lecture_num: 08
   title: Sparse Identification of Differential Equations, Part 1
-  date: '2026-09-29T15:30:00+03:00'
+  date: '2026-10-08T15:30:00+03:00'
   type: lecture
   tldr: Discovering governing equations from data using sparse regression. Building
     feature libraries, solving overdetermined systems, and sparsifying with sequential
@@ -325,7 +325,7 @@
   folder: 09_svd_pca
 - lecture_num: 09
   title: Sparse Identification of Differential Equations, Part 2
-  date: '2026-10-01T15:30:00+03:00'
+  date: '2026-10-15T15:30:00+03:00'
   type: lecture
   tldr: Extending sparse equation discovery to partial differential equations. Building
     PDE feature matrices from spatiotemporal data and discovering classical PDEs.
@@ -346,7 +346,7 @@
   folder: 09_system_identification
 - lecture_num: '10'
   title: Symbolic Regression + Quiz
-  date: '2026-10-06T15:30:00+03:00'
+  date: '2026-10-20T15:30:00+03:00'
   type: lecture
   tldr: Quiz covering time series, autoregression, and SINDy. Discovering equations
     as expression trees using genetic algorithms. Selection, crossover, mutation,
@@ -365,7 +365,7 @@
   folder: 10_symbolic_regression
 - lecture_num: '11'
   title: Introduction to Deep Learning
-  date: '2026-10-08T15:30:00+03:00'
+  date: '2026-10-22T15:30:00+03:00'
   type: lecture
   tldr: Building intuition from linear regression to neural networks. Universal approximation,
     backpropagation, and training deep networks.
@@ -402,7 +402,7 @@
   folder: 12_preproposal_feedback
 - lecture_num: '13'
   title: Physics-Informed Neural Networks
-  date: '2026-10-15T15:30:00+03:00'
+  date: '2026-10-27T15:30:00+03:00'
   type: lecture
   tldr: From classical residual minimization to PINNs. Basis function expansions,
     collocation methods, automatic differentiation, forward and inverse problems,
@@ -424,7 +424,7 @@
   folder: 13_pinns
 - lecture_num: '14'
   title: 'SVD & PCA: Dimensionality Reduction'
-  date: '2026-10-20T15:30:00+03:00'
+  date: '2026-10-29T15:30:00+03:00'
   type: lecture
   tldr: Eigenvalues, singular value decomposition, principal component analysis, and
     low-rank approximation.
@@ -451,7 +451,7 @@
   folder: 14_svd_autoencoders
 - lecture_num: '15'
   title: Linear Dynamical Systems & DMD
-  date: '2026-10-22T15:30:00+03:00'
+  date: '2026-11-03T15:30:00+03:00'
   type: lecture
   tldr: Linear dynamical systems, eigenvalue dynamics, and Dynamic Mode Decomposition.
   preparation:
@@ -475,7 +475,7 @@
   folder: 15_dmd
 - lecture_num: '16'
   title: 'Advanced Deep Learning: Autoencoders & CNNs'
-  date: '2026-10-27T15:30:00+03:00'
+  date: '2026-11-05T15:30:00+03:00'
   type: lecture
   tldr: Autoencoders for dimensionality reduction and convolutional neural networks
     for spatial data.
@@ -496,7 +496,7 @@
   folder: 16_advanced_deep_learning
 - lecture_num: '17'
   title: Deep Learning for Time Series
-  date: '2026-10-29T15:30:00+03:00'
+  date: '2026-11-10T15:30:00+03:00'
   type: lecture
   tldr: 'From Ising models to RNNs: Hopfield networks, Boltzmann machines, LSTMs,
     echo state networks, and reservoir computing.'
@@ -518,7 +518,7 @@
   folder: 17_dl_time_series
 - lecture_num: '18'
   title: Operator Learning and Neural Operators
-  date: '2026-11-03T15:30:00+03:00'
+  date: '2026-11-12T15:30:00+03:00'
   type: lecture
   tldr: 'From separation of variables to Fourier neural operators: DeepONet, FNO,
     and learning solution maps between function spaces.'
