@@ -1,8 +1,8 @@
 ---
 type: assignment
-date: 2026-10-15T12:00:00+03:00
+date: 2026-10-19T12:00:00+03:00
 title: 'Problem Set #3 - Project Proposal'
-# Posted Thursday October 15, due Tuesday October 20 at 23:59 Beirut. Points
+# Posted Monday October 19, due Thursday October 22 at 23:59 Beirut. Points
 # at the Fall page hw3_26f; the Spring page hw3_26 (pre-proposal + NN surrogate)
 # is kept for reference and is no longer built.
 visible: true
@@ -14,6 +14,6 @@ hide_from_announcments: false
 # hide_time: true
 due_event:
     type: due
-    date: 2026-10-20T23:59:00+03:00
+    date: 2026-10-22T23:59:00+03:00
     description: 'Problem Set #3 (Project Proposal) due'
 ---
