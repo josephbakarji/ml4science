@@ -361,6 +361,11 @@
   - name: Lecture Slides
     type: slides
     url: https://learn.sematlas.com/slides/12_symbolic_regression
+  assignments:
+  - name: 'Problem Set 3: Project Proposal (due Thursday Oct 22)'
+    type: homework
+    label: required
+    url: /content/hw/hw3_26f/
   hide_from_announcments: false
   folder: 10_symbolic_regression
 - lecture_num: '11'
