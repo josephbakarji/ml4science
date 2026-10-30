@@ -15,10 +15,10 @@ material:
   type: slides
   url: https://learn.sematlas.com/slides/dl_time_series
 assignments:
-- name: 'Problem Set 5: Data-Driven Reduced Order Modeling'
+- name: 'Problem Set 4: Data-Driven Reduced Order Modeling (due Tuesday Nov 10)'
   type: homework
   label: required
-  url: /content/hw/hw5_26/
+  url: /content/hw/hw4_26f/
 hide_from_announcments: false
 folder: 17_dl_time_series
 ---
