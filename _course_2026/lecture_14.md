@@ -1,10 +1,10 @@
 ---
 lecture_num: '14'
-title: 'SVD & PCA: Dimensionality Reduction'
+title: 'SVD, PCA & POD: Patterns in Space and Time'
 date: '2026-10-29T15:30:00+03:00'
 type: lecture
-tldr: Eigenvalues, singular value decomposition, principal component analysis, and
-  low-rank approximation.
+tldr: Singular value decomposition, principal component analysis, low-rank approximation,
+  and proper orthogonal decomposition.
 preparation:
 - name: Steve Brunton - SVD YouTube series
   type: video
@@ -13,7 +13,7 @@ preparation:
 material:
 - name: Lecture Slides
   type: slides
-  url: https://learn.sematlas.com/slides/09_svd_pca
+  url: https://learn.sematlas.com/slides/svd_pod
 - name: PCA Reference (PDF)
   type: notes
   label: recommended
