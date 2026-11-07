@@ -429,7 +429,7 @@
   folder: 13_pinns
 - lecture_num: '14'
   title: 'SVD, PCA & POD: Patterns in Space and Time'
-  date: '2026-10-29T15:30:00+03:00'
+  date: '2026-11-03T15:30:00+03:00'
   type: lecture
   tldr: Singular value decomposition, principal component analysis, low-rank approximation,
     and proper orthogonal decomposition.
@@ -456,7 +456,7 @@
   folder: 14_svd_autoencoders
 - lecture_num: '15'
   title: Linear Dynamical Systems & DMD
-  date: '2026-11-03T15:30:00+03:00'
+  date: '2026-11-05T15:30:00+03:00'
   type: lecture
   tldr: Linear dynamical systems, eigenvalue dynamics, and Dynamic Mode Decomposition.
   preparation:
@@ -480,7 +480,7 @@
   folder: 15_dmd
 - lecture_num: '16'
   title: 'Advanced Deep Learning: Autoencoders & CNNs'
-  date: '2026-11-05T15:30:00+03:00'
+  date: '2026-11-10T15:30:00+03:00'
   type: lecture
   tldr: Autoencoders for dimensionality reduction and convolutional neural networks
     for spatial data.
@@ -497,11 +497,16 @@
   - name: Lecture Recording (March 17)
     type: video
     url: https://mailaub-my.sharepoint.com/:v:/g/personal/jb50_aub_edu_lb/IQCxDg3rVoROTpjQhKgvW32RAT23dVhppnEV2yfcnX-KBD8?e=7XcvYz&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D
+  assignments:
+  - name: 'Problem Set 4: Data-Driven Reduced Order Modeling (due Tuesday Nov 10)'
+    type: homework
+    label: required
+    url: /content/hw/hw4_26f/
   hide_from_announcments: false
   folder: 16_advanced_deep_learning
 - lecture_num: '17'
   title: Deep Learning for Time Series
-  date: '2026-11-10T15:30:00+03:00'
+  date: '2026-11-12T15:30:00+03:00'
   type: lecture
   tldr: 'From Ising models to RNNs: Hopfield networks, Boltzmann machines, LSTMs,
     echo state networks, and reservoir computing.'
@@ -514,16 +519,11 @@
   - name: Lecture Slides
     type: slides
     url: https://learn.sematlas.com/slides/dl_time_series
-  assignments:
-  - name: 'Problem Set 4: Data-Driven Reduced Order Modeling (due Tuesday Nov 10)'
-    type: homework
-    label: required
-    url: /content/hw/hw4_26f/
   hide_from_announcments: false
   folder: 17_dl_time_series
 - lecture_num: '18'
   title: Operator Learning and Neural Operators
-  date: '2026-11-12T15:30:00+03:00'
+  date: '2026-11-17T15:30:00+03:00'
   type: lecture
   tldr: 'From separation of variables to Fourier neural operators: DeepONet, FNO,
     and learning solution maps between function spaces.'

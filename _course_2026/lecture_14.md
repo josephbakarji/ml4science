@@ -1,7 +1,7 @@
 ---
 lecture_num: '14'
 title: 'SVD, PCA & POD: Patterns in Space and Time'
-date: '2026-10-29T15:30:00+03:00'
+date: '2026-11-03T15:30:00+03:00'
 type: lecture
 tldr: Singular value decomposition, principal component analysis, low-rank approximation,
   and proper orthogonal decomposition.

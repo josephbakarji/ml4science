@@ -1,7 +1,7 @@
 ---
 lecture_num: '17'
 title: Deep Learning for Time Series
-date: '2026-11-10T15:30:00+03:00'
+date: '2026-11-12T15:30:00+03:00'
 type: lecture
 tldr: 'From Ising models to RNNs: Hopfield networks, Boltzmann machines, LSTMs, echo
   state networks, and reservoir computing.'
@@ -14,11 +14,6 @@ material:
 - name: Lecture Slides
   type: slides
   url: https://learn.sematlas.com/slides/dl_time_series
-assignments:
-- name: 'Problem Set 4: Data-Driven Reduced Order Modeling (due Tuesday Nov 10)'
-  type: homework
-  label: required
-  url: /content/hw/hw4_26f/
 hide_from_announcments: false
 folder: 17_dl_time_series
 ---
